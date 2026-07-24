@@ -26,6 +26,7 @@
 | **Governance as Foundation, Extension as Superstructure** | Policy Engine is the foundation (like an OS kernel) — builtin, always-on, non-optional. Extension SPIs are the superstructure (like user-space programs) — optional, configurable, distributable. Governance is the ground the platform stands on; everything else is built on top. This resolves the tension between "minimal core" and "always-on governance": the core is minimal in its *extension* surface, not in its *governance* surface. |
 | **Layered Independence** | Each architectural layer is independently usable. In v2.0+, the Agent Loop can be used standalone (SDK mode) after LangGraph is replaced. In v1.2–v1.7, the Agent Loop is a decoupling abstraction over LangGraph — usable via SDK but not yet independent of LangGraph. Policy Engine is embedded in the Agent Loop at SDK level, and gateway-level at platform level. Governance is everywhere; the deployment topology varies. |
 | **Open Evolution** | From single-organization governance to cross-organization federation. Governance capabilities should be open-sourced to build community trust and set standards. |
+| **Human on the Loop** | Humans are a core component of the system, not external observers. They serve two irreplaceable functions: intent provision (the first mover — agents don't self-generate goals) and value arbitration (judging "right vs wrong" beyond logic). Humans don't intervene in every step but maintain continuous awareness, intervene at key nodes, and retain termination capability. `require_approval` in Policy Engine is its engineering realization. Rationale: Harness Engineering ch15 — operational alignment is maintained through continuous sensing + key-node intervention, not step-by-step participation. |
 
 ### 1.3 Explicit Non-Goals
 
@@ -136,6 +137,10 @@ Each version lists capabilities with priority tags:
 ### v1.2 — Agent Loop Primitive
 
 **Focus**: Extract the Agent Loop as an abstraction layer over LangGraph, decoupling platform code from DeerFlow-specific APIs. This is the first step toward v2.0's autonomous runtime (which replaces LangGraph entirely). No workflow engine yet — that comes in v1.3. Note: v1.2 is decoupling, not independence from LangGraph.
+
+**Minimum Viable Harness (5 components)**: The Harness Engineering book (ch2) proves that any mature Harness converges to the same 5 components with the same topology: System Prompt, Context, Plan, Tool, Hook. Our Agent Loop instantiates all 5. This reference frame ensures we don't miss foundational components.
+
+**Q/T/C Three-Axis Constraint**: Quality (output correctness), Time (latency), Cost (token budget). These are the three irreducible constraints of any Agent system (Harness Engineering ch3-4). Every operation consumes from all three axes. v1.2 introduces the budget concept; v1.4 Plan Schema carries estimated_cost (C-axis) and success_criteria (Q-axis); v1.9 SLO definitions cover the T-axis.
 
 | Priority | Scope | Content |
 |----------|-------|---------|
@@ -252,6 +257,7 @@ Workflow: Trigger → Step1(HTTP) → Step2(Agent) → Step3(Approve) → Step4(
 |----------|-------|---------|
 | **P0** | **Policy Engine (Builtin)** | **Deterministic tool-call interception engine. Always on — not optional, not a plugin. Policy strictness is configurable; the engine itself is not.** |
 | **P0** | **Policy as Code** | **YAML-based declarative policies. `default_action: deny` with explicit `allow` rules. Supports `risk_tier` field per rule: `low` (auto-allow, e.g., read-only queries — avoids approval fatigue), `medium` (require_approval, e.g., write operations), `high` (deny unless explicitly approved, e.g., destructive ops). Rationale: Pi-Agent warns that per-call approval becomes "security theater"; tiered auto-allow for low-risk operations balances governance with usability.** |
+| **P0** | **Plan-before-Act** | **Agent must submit a structured Plan before executing irreversible actions. Plan Schema: goal, steps[] (action, expected_output, fallback, depends_on, estimated_cost), success_criteria, abort_conditions. Policy Engine validates Plan at submission time — verifying Q/T/C budget before execution is 1-2 orders of magnitude cheaper than inspecting execution traces. Rationale: Harness Engineering ch9 — principal-agent theory; reviewing a plan is cheaper than reviewing an execution trace.** |
 | **P0** | **OWASP Agentic AI Top 10** | **Built-in compliance rule set covering all 10 categories. Enabled by default for high-severity rules.** |
 | **P0** | **Tamper-Evident Audit Log** | **Merkle-tree structured audit trail. Decision BOM (active policy, agent request, allow/deny reason).** |
 | **P1** | Policy Lint & Validation | Static analysis of policy files — catch misconfigurations before deployment. |
@@ -278,7 +284,25 @@ rules:
     condition: "tool_name == 'http_request' && !target_host.endswith('.internal')"
     action: deny
     risk_tier: high
+  - name: auto-correct-known-format
+    condition: "tool_name == 'file_write' && error_type == 'format_mismatch'"
+    action: auto_correct   # reversible + known pattern → Hook corrects automatically, no interruption
+    risk_tier: low
+  - name: abort-safety-redline
+    condition: "tool_name == 'shell_exec' && command matches 'rm -rf /'"
+    action: abort          # immediate task termination + alert
+    risk_tier: high
 ```
+
+**Escalation policy (three-tier, from Harness Engineering ch11):**
+
+| Tier | Trigger | Response |
+|------|---------|----------|
+| **Auto-correct** | Reversible operation + known error pattern | Hook corrects automatically, logs decision |
+| **Human confirm** | Irreversible operation / plan deviation > threshold | Suspend execution, await human approval |
+| **Task abort** | Explicit safety redline triggered | Immediate termination + alert notification |
+
+Rationale: A binary allow/deny creates approval fatigue. Three-tier escalation matches the cost structure of errors — auto-correct is cheapest (no human interruption), human confirm is for genuinely ambiguous cases, and abort is for clear safety violations.
 
 **Policy Engine is always-on — migration strategy:**
 
@@ -312,7 +336,7 @@ SDK deployment modes (Embedded / Remote) are defined in v1.7 when the SDK is int
 | **P0** | **Skill Lazy Loading** | **Progressive disclosure — metadata always visible, full instructions + tools loaded only on invocation.** |
 | **P0** | Skill Marketplace Phase 1 | Git repository import + Official skill library + Tenant-internal sharing |
 | **P0** | Agent-to-Agent (A2A) Protocol | Intra-tenant Agent discovery, capability advertisement, and direct invocation |
-| **P1** | Multi-Agent Collaboration | Sequential (pipeline), Parallel (fan-out), Debate (multi-perspective) modes |
+| **P1** | Multi-Agent Collaboration | Sequential (pipeline), Parallel (fan-out), Debate (multi-perspective) modes. Includes coordination cost accounting: each mode must evaluate specialization benefit vs coordination cost. Dec-POMDP is NEXP-complete (Harness Engineering ch14) — the theoretical lower bound for coordination cost is exponential in agent count. Swarm mode is gated behind explicit cost/benefit approval. Prefer structured message communication over natural language for agent-to-agent messages. |
 | **P1** | Skill Trust Scoring | Download count, user ratings, security scan results, source verification |
 | **P0** | Admin Perspective | Agent provisioning, usage statistics, cost control, permission approval |
 
@@ -329,7 +353,25 @@ SDK deployment modes (Embedded / Remote) are defined in v1.7 when the SDK is int
 |-------|-----------|------------|-------------|
 | **Builtin SPIs** | PolicyEnforcer — always on, not optional | Configurable strictness | Platform core |
 | **Extension SPIs** | EventSource, Executor, Notifier, DataConnector | Via config toggle | Built-in registry |
-| **Event Hooks** | Agent lifecycle hooks: `tool_call_before/after`, `turn_start/end`, `error`, `session_start/end` | Hot reload | Extension packages |
+| **Event Hooks** | Agent lifecycle hooks: `tool_call_before/after`, `turn_start/end`, `error`, `session_start/end`, `stop` (task completion verification) | Hot reload | Extension packages |
+
+**Event Hooks — three time nodes (from Harness Engineering ch11):**
+
+| Node | Cost | Coverage | Example Sensors |
+|------|------|----------|-----------------|
+| **PreToolUse** | Lowest (prevention) | Critical risks | Permission check (computational, <1ms), input format validation (computational, <5ms), dangerous pattern detection (rule-based, <10ms) |
+| **PostToolUse** | Medium (correction) | Output errors | Output format validation (computational), critical error detection (rule-based), semantic quality assessment (LLM-as-judge, optional, triggered only after expensive ops) |
+| **Stop** | Highest (verification) | Goal achievement | Full test suite run (computational), task goal verification (semantic) |
+
+**Sensor types (cost-ordered pipeline, fail-fast):**
+
+| Type | Cost | Reliability | Examples |
+|------|------|-------------|----------|
+| **Computational** | ~1/100~1/1000 of semantic | Deterministic, cheap | Linter, structural tests, format validators, dependency checks |
+| **Rule-based** | ~1/10 of semantic | Deterministic, medium | Regex patterns, policy rule matching, threshold checks |
+| **Semantic** | Base cost (LLM call) | Probabilistic, expensive | LLM-as-judge, code review agent, semantic quality assessment |
+
+Pipeline design: computational sensors first (filter most errors at lowest cost), rule-based second, semantic last (and only when cheaper checks pass). This is fail-fast — most requests pass or fail at the cheapest tier. A vague failure message ("operation failed") vs a precise one ("line 42 assertion failed, expected 5 got 3") differ by orders of magnitude in the agent's search narrowing effectiveness — sensor output quality is equally important as capture rate.
 | **Skills** | Lazy-loaded "instruction + tools" packs. Progressive disclosure. Metadata always visible, full content on invocation. | Hot reload | Git import + marketplace |
 | **Prompt Templates** | Reusable markdown templates with parameter substitution. Slash-command loadable. Version-controlled. Variable injection, version management, per-tenant defaults. Prompt budget enforced. | Hot reload | Template marketplace |
 
@@ -580,7 +622,7 @@ v1.7 upgrade:
 |----------|-------|---------|
 | **P0** | Agent Runtime Metrics | Success rate, latency, token consumption, user satisfaction |
 | **P0** | Workflow Analytics | Bottleneck identification, failure hotspots, optimization suggestions |
-| **P0** | **Evaluation Framework** | **Offline eval (test suites), online eval (production sampling), human annotation pipeline** |
+| **P0** | **Evaluation Framework** | **Offline eval (test suites, including counterfactual tests — rewriting premises to out-of-distribution forms to verify the agent still reaches correct conclusions; this detects semantic-correlation extrapolation vs true causal reasoning. Harness Engineering ch18: LLMs do Inference (statistical correlation) not Reasoning (causal truth-preservation); silent errors in Chain-of-Thought produce grammatically correct but logically wrong steps with high confidence. Counterfactual testing is the primary detection mechanism.)** |
 | **P0** | **Feedback Loop** | **User rating → auto sample collection → prompt/model iteration** |
 | **P1** | **Agent Self-Refinement** | **Agent adjusts its own prompt/skill config based on feedback signals. All self-modifications must pass Policy Engine approval before activation (prevents governance bypass via self-editing). Rationale: Pi-Agent enables "agents modify their own capabilities"; this aligns with Data Flywheel but requires governance gate — an agent editing itself is high-risk and must be intercepted.** |
 | **P0** | A/B Testing | Compare different prompts/models/processes, data-driven iteration |
@@ -763,6 +805,7 @@ class EventHook(Protocol):
     async def on_error(self, ctx: ErrorContext) -> ErrorAction: ...
     async def on_session_start(self, ctx: SessionContext) -> None: ...
     async def on_session_end(self, ctx: SessionContext) -> None: ...
+    async def on_stop(self, ctx: StopContext) -> StopDecision: ...  # task completion verification (v1.5)
 ```
 
 **Current plugins (v1.1):**
