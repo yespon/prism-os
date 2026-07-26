@@ -217,7 +217,7 @@ class TestClientCheckpointerFallback:
 
         with (
             patch("deerflow.client.get_app_config", return_value=config_mock),
-            patch("deerflow.client.create_agent", side_effect=fake_create_agent),
+            patch("deerflow.agents.create_agent", side_effect=fake_create_agent),
             patch("deerflow.client.create_chat_model", return_value=MagicMock()),
             patch("deerflow.client._build_middlewares", return_value=[]),
             patch("deerflow.client.apply_prompt_template", return_value=""),
@@ -251,7 +251,7 @@ class TestClientCheckpointerFallback:
 
         with (
             patch("deerflow.client.get_app_config", return_value=config_mock),
-            patch("deerflow.client.create_agent", side_effect=fake_create_agent),
+            patch("deerflow.agents.create_agent", side_effect=fake_create_agent),
             patch("deerflow.client.create_chat_model", return_value=MagicMock()),
             patch("deerflow.client._build_middlewares", return_value=[]),
             patch("deerflow.client.apply_prompt_template", return_value=""),

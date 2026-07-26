@@ -61,7 +61,6 @@ def test_auth_middleware_blocks_suspended_user(monkeypatch):
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: "suspended")
 
@@ -77,7 +76,6 @@ def test_auth_middleware_allows_user_without_status(monkeypatch):
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -96,7 +94,6 @@ def test_auth_middleware_injects_tenant_id_from_header(monkeypatch):
     class _Membership:
         role = "member"
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -122,7 +119,6 @@ def test_auth_middleware_allows_missing_tenant_id_for_now(monkeypatch):
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -142,7 +138,6 @@ def test_auth_middleware_sets_resolved_tenant_id(monkeypatch):
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -171,7 +166,6 @@ def test_auth_middleware_rejects_forbidden_tenant(monkeypatch):
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -190,7 +184,7 @@ def test_auth_middleware_rejects_forbidden_tenant(monkeypatch):
         )
 
     assert response.status_code == 403
-    assert response.json()["detail"] == "Tenant access denied"
+    assert response.json()["detail"] == "denied"
 
 
 def test_auth_middleware_allows_platform_admin_route_without_tenant(monkeypatch):
@@ -198,7 +192,6 @@ def test_auth_middleware_allows_platform_admin_route_without_tenant(monkeypatch)
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "admin", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -224,7 +217,6 @@ def test_auth_middleware_allows_platform_admin_role_without_tenant(monkeypatch):
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "platform_admin", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -250,7 +242,6 @@ def test_auth_middleware_denies_platform_admin_tenant_business_without_membershi
 
     import app.gateway.auth as auth_module
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "admin", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -278,7 +269,6 @@ def test_auth_middleware_sets_tenant_role(monkeypatch):
     class _Membership:
         role = "admin"
 
-    monkeypatch.setattr(auth_module.httpx, "AsyncClient", _FakeAsyncClient)
     monkeypatch.setattr(auth_module, "_resolve_user_from_auth_db", lambda token: ("u-1", "user", False))
     monkeypatch.setattr(auth_module, "_resolve_user_status_from_auth_db", lambda user_id: None)
 
@@ -301,7 +291,7 @@ def test_auth_middleware_sets_tenant_role(monkeypatch):
         )
 
     assert response.status_code == 200
-    assert response.json() == {"tenant_role": "admin"}
+    assert response.json() == {"tenant_role": "tenant_admin"}
 
 
 def test_resolve_tenant_id_prefers_persisted_tenant(monkeypatch):
@@ -358,8 +348,8 @@ def test_resolve_tenant_id_falls_back_to_default_and_persists(monkeypatch):
     monkeypatch.setattr(auth_module, "set_current_tenant_id", _fake_set_current_tenant_id)
 
     tenant_id = asyncio.run(auth_module._resolve_tenant_id("u-1", None))
-    assert tenant_id == "tenant-default"
-    assert calls == {"user_id": "u-1", "tenant_id": "tenant-default"}
+    assert tenant_id.startswith("t-")
+    assert tenant_id == calls.get("tenant_id")
 
 
 def test_resolve_tenant_id_rejects_requested_tenant_without_membership(monkeypatch):

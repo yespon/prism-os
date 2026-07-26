@@ -48,6 +48,7 @@ def test_list_tenants_returns_memberships(monkeypatch):
                 "name": "Tenant A",
                 "slug": "tenant-a",
                 "role": "tenant_admin",
+                "tenant_type": "general",
             }
         ]
     }
@@ -85,7 +86,7 @@ def test_get_current_tenant_falls_back_to_first_when_not_persisted(monkeypatch):
         resp = client.get("/api/tenants/current")
 
     assert resp.status_code == 200
-    assert resp.json() == {"tenant_id": "tenant-a", "role": "tenant_member"}
+    assert resp.json() == {"tenant_id": "tenant-a", "role": "tenant_member", "tenant_type": "general"}
     assert called["tenant_id"] == "tenant-a"
 
 
@@ -142,7 +143,7 @@ def test_switch_tenant_persists_and_returns_role(monkeypatch):
         resp = client.post("/api/tenants/switch", json={"tenant_id": "tenant-b"})
 
     assert resp.status_code == 200
-    assert resp.json() == {"tenant_id": "tenant-b", "role": "tenant_admin"}
+    assert resp.json() == {"tenant_id": "tenant-b", "role": "tenant_admin", "tenant_type": "general"}
     assert calls == {"user_id": "user-a", "tenant_id": "tenant-b"}
 
 
@@ -165,7 +166,7 @@ def test_add_member_records_audit_event(monkeypatch):
         status = "active"
 
     class _Repo:
-        def __init__(self, _):
+        def __init__(self):
             pass
 
         def get_user_by_id(self, user_id: str):
@@ -238,7 +239,7 @@ def test_update_member_role_records_audit_event(monkeypatch):
         status = "active"
 
     class _Repo:
-        def __init__(self, _):
+        def __init__(self):
             pass
 
         def get_user_by_id(self, user_id: str):
@@ -281,7 +282,7 @@ def test_update_member_status_records_audit_event(monkeypatch):
         status = "inactive"
 
     class _Repo:
-        def __init__(self, _):
+        def __init__(self):
             pass
 
         def get_user_by_id(self, user_id: str):
