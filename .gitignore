@@ -44,6 +44,9 @@ log/
 # Local git hooks (keep only on this machine, do not push)
 .githooks/
 
+# Local implementation worktrees
+.worktrees/
+
 # pnpm
 .pnpm-store
 sandbox_image_cache.tar
