@@ -16,11 +16,11 @@ export function CommunitySection() {
           Join the Community
         </AuroraText>
       }
-      subtitle="Contribute brilliant ideas to shape the future of OpsinTech. Collaborate, innovate, and make impacts."
+      subtitle="Contribute brilliant ideas to shape the future of PrismOS. Collaborate, innovate, and make impacts."
     >
       <div className="flex justify-center">
         <Button className="text-xl" size="lg" asChild>
-          <Link href="https://github.com/opsintech/opsintech-platform" target="_blank">
+          <Link href="https://github.com/yespon/prism-os" target="_blank">
             <GitHubLogoIcon />
             Contribute Now
           </Link>

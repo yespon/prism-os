@@ -64,7 +64,7 @@ export function AgentGallery() {
   return (
     <div className="flex size-full flex-col bg-zinc-50/50 dark:bg-zinc-950/20 overflow-hidden p-6 gap-4 animate-in fade-in duration-300">
       
-      {/* Standard OpsinTech Page Header - Consistent with tools & skills manager */}
+      {/* Standard PrismOS page header - consistent with tools & skills manager */}
       <div className="flex shrink-0 items-start justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold">{t.agentGallery.title}</h1>

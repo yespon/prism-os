@@ -6,19 +6,19 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
-function OpsinTechMark({ className }: { className?: string }) {
+function PrismOSMark({ className }: { className?: string }) {
   return (
     <div
       className={cn(
         "flex h-6 w-6 items-center justify-center shrink-0",
         className,
       )}
-      aria-label="OpsinTech"
+      aria-label="PrismOS"
     >
-      <img 
-        src="/images/opsintech.svg" 
-        alt="OpsinTech Logo" 
-        className="h-full w-full object-contain" 
+        <img
+        src="/images/opsintech.svg"
+        alt="PrismOS Logo"
+        className="h-full w-full object-contain"
       />
     </div>
   );
@@ -36,22 +36,22 @@ export function WorkspaceHeader({ className }: { className?: string }) {
       >
         {state === "collapsed" ? (
           <div className="flex w-full items-center justify-center">
-            <OpsinTechMark className="transition-transform hover:scale-105" />
+            <PrismOSMark className="transition-transform hover:scale-105" />
           </div>
         ) : (
           <div className="flex items-center px-1">
             {env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" ? (
               <Link href="/" className="text-foreground ml-1 flex items-center gap-2.5 transition-opacity hover:opacity-80">
-                <OpsinTechMark />
+                <PrismOSMark />
                 <span className="truncate text-sm font-semibold tracking-tight">
-                  OpsinTech Platform
+                  PrismOS Platform
                 </span>
               </Link>
             ) : (
               <div className="text-foreground ml-1 flex items-center gap-2.5 cursor-default">
-                <OpsinTechMark />
+                <PrismOSMark />
                 <span className="truncate text-sm font-semibold tracking-tight">
-                  OpsinTech Platform
+                  PrismOS Platform
                 </span>
               </div>
             )}

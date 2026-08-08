@@ -77,11 +77,11 @@ export const enUS: Translations = {
   welcome: {
     greeting: "Hello, again!",
     description:
-      "Welcome to 🦌 OpsinTech, an open source super agent. With built-in and custom skills, OpsinTech helps you search on the web, analyze data, and generate artifacts like slides, web pages and do almost anything.",
+      "Welcome to PrismOS, a governed Agent operating system for enterprise teams. With built-in and custom skills, PrismOS helps you work with models, tools, sandboxes, and artifacts in a controlled workspace.",
 
     createYourOwnSkill: "Create Your Own Skill",
     createYourOwnSkillDescription:
-      "Create your own skill to release the power of OpsinTech. With customized skills,\nOpsinTech can help you search on the web, analyze data, and generate\n artifacts like slides, web pages and do almost anything.",
+      "Create your own skill to extend PrismOS. With customized skills,\nPrismOS can help your team execute repeatable work with governed tools\nand sandboxed artifacts.",
   },
 
   // Clipboard
@@ -307,14 +307,14 @@ export const enUS: Translations = {
 
   // Workspace
   workspace: {
-    officialWebsite: "OpsinTech's official website",
-    githubTooltip: "OpsinTech on Github",
+    officialWebsite: "PrismOS project homepage",
+    githubTooltip: "PrismOS on GitHub",
     settingsAndMore: "Settings and more",
     user: "User",
-    visitGithub: "OpsinTech on GitHub",
+    visitGithub: "PrismOS on GitHub",
     reportIssue: "Report a issue",
     contactUs: "Contact us",
-    about: "About OpsinTech",
+    about: "About PrismOS",
     globalSearch: "Global Search",
     manageWorkspace: "Manage Workspace",
     unboundWorkspace: "Unbound Workspace",
@@ -333,7 +333,7 @@ export const enUS: Translations = {
 
   // Page titles (document title)
   pages: {
-    appName: "OpsinTech",
+    appName: "PrismOS",
     chats: "Chats",
     newChat: "New chat",
     untitled: "Untitled",
@@ -359,7 +359,7 @@ export const enUS: Translations = {
     writeFile: "Write file",
     clickToViewContent: "Click to view file content",
     writeTodos: "Update to-do list",
-    skillInstallTooltip: "Install skill and make it available to OpsinTech",
+    skillInstallTooltip: "Install skill and make it available to PrismOS",
   },
 
   // Subtasks
@@ -408,7 +408,7 @@ export const enUS: Translations = {
     noResults: "No results found.",
     actions: "Actions",
     keyboardShortcuts: "Keyboard Shortcuts",
-    keyboardShortcutsDescription: "Navigate OpsinTech faster with keyboard shortcuts.",
+    keyboardShortcutsDescription: "Navigate PrismOS faster with keyboard shortcuts.",
     openCommandPalette: "Open Command Palette",
     toggleSidebar: "Toggle Sidebar",
   },
@@ -1071,7 +1071,7 @@ export const enUS: Translations = {
   // Settings
   settings: {
     title: "Settings",
-    description: "Adjust how OpsinTech looks and behaves for you.",
+    description: "Adjust how PrismOS looks and behaves for you.",
     sections: {
       appearance: "Appearance",
       user: "User",
@@ -1086,7 +1086,7 @@ export const enUS: Translations = {
     memory: {
       title: "Memory",
       description:
-        "OpsinTech automatically learns from your conversations in the background. These memories help OpsinTech understand you better and deliver a more personalized experience.",
+        "PrismOS can retain workspace memory from your conversations. These memories help your agents understand context and deliver a more useful experience.",
       empty: "No memory data to display.",
       rawJson: "Raw JSON",
       markdown: {
@@ -1270,7 +1270,7 @@ export const enUS: Translations = {
       createSkill: "Create skill",
       emptyTitle: "No agent skill yet",
       emptyDescription:
-        "Put your agent skill folders under the `/skills/custom` folder under the root folder of OpsinTech.",
+        "Put your agent skill folders under the `/skills/custom` folder under the PrismOS root folder.",
       emptyButton: "Create Your First Skill",
       readOnlyViewHint: "Personal settings are read-only. Please go to workspace governance to edit.",
       createDisabledHint: "Creation entry is disabled. Only workspace shared skills are displayed and toggled.",
@@ -1278,12 +1278,12 @@ export const enUS: Translations = {
     notification: {
       title: "Notification",
       description:
-        "OpsinTech only sends a completion notification when the window is not active. This is especially useful for long-running tasks so you can switch to other work and get notified when done.",
+        "PrismOS only sends a completion notification when the window is not active. This is especially useful for long-running tasks so you can switch to other work and get notified when done.",
       requestPermission: "Request notification permission",
       deniedHint:
         "Notification permission was denied. You can enable it in your browser's site settings to receive completion alerts.",
       testButton: "Send test notification",
-      testTitle: "OpsinTech",
+      testTitle: "PrismOS",
       testBody: "This is a test notification.",
       notSupported: "Your browser does not support notifications.",
       disableNotification: "Disable notification",
@@ -1322,7 +1322,7 @@ export const enUS: Translations = {
       iUnderstand: "I Understand",
     },
     signUp: {
-      title: "Sign Up for OpsinTech",
+      title: "Sign Up for PrismOS",
       description: "Create an account and get invited to enter workspaces.",
       nickname: "Nickname",
       nicknamePlaceholder: "Enter your nickname",

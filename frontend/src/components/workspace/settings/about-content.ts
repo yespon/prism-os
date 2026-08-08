@@ -1,18 +1,20 @@
 /**
- * About OpsinTech markdown content. Inlined to avoid raw-loader dependency
+ * About PrismOS markdown content. Inlined to avoid raw-loader dependency
  * (Turbopack cannot resolve raw-loader for .md imports).
  */
-export const aboutMarkdown = `# 🦌 [About OpsinTech 2.0](https://github.com/opsintech/opsintech-platform)
+export const aboutMarkdown = `# [About PrismOS](https://github.com/yespon/prism-os)
 
 > **From Open Source, Back to Open Source**
 
-OpsinTech is an open-source **super agent harness** that orchestrates **sub-agents**, **memory**, and **sandboxes** to do almost anything — powered by **extensible skills**.
+PrismOS is a governed Agent operating system for enterprise teams. It provides **multi-tenant workspaces**, **RBAC**, **Skills**, **MCP configuration**, **sandboxed execution**, **artifacts**, and an extensible runtime foundation.
+
+This alpha continues to use the [DeerFlow](https://github.com/bytedance/deer-flow) and [LangGraph](https://github.com/langchain-ai/langgraph) execution stack. Policy, workflow lifecycle, evaluation, connector federation, and runtime independence remain roadmap work rather than completed platform guarantees.
 
 ---
 
 ## 🚀 Core Features
 
-* **Skills & Tools**: With built-in and extensible skills and tools, OpsinTech can do almost anything.
+* **Skills & Tools**: Configure reusable skills and tools for governed workspace execution.
 * **Sub-Agents**: Sub-Agents help the main agent to do the tasks that are too complex to be done by the main agent.
 * **Sandbox & File System**: Safely execute code and manipulate files in the sandbox.
 * **Context Engineering**: Isolated sub-agent context, summarization to keep the context window sharp.
@@ -22,29 +24,27 @@ OpsinTech is an open-source **super agent harness** that orchestrates **sub-agen
 
 ## 🌟 GitHub Repository
 
-![Star History Chart](https://api.star-history.com/svg?repos=opsintech/opsintech-platform&type=Date)
-
-Explore OpsinTech on GitHub: [github.com/opsintech/opsintech-platform](https://github.com/opsintech/opsintech-platform)
+Explore PrismOS on GitHub: [github.com/yespon/prism-os](https://github.com/yespon/prism-os)
 
 ## 🌐 Official Website
 
-Visit the official website of OpsinTech: [opsintech.com](https://opsintech.com/)
+The project homepage is [github.com/yespon/prism-os](https://github.com/yespon/prism-os).
 
 ## 📧 Support
 
-If you have any questions or need help, please contact us at [support@opsintech.com](mailto:support@opsintech.com).
+For questions and support, please open an issue in the project repository.
 
 ---
 
 ## 📜 License
 
-OpsinTech is proudly open source and distributed under the **MIT License**.
+PrismOS is distributed under the **MIT License**. See the repository license and upstream notices for applicable attribution requirements.
 
 ---
 
 ## 🙌 Acknowledgments
 
-We extend our heartfelt gratitude to the open source projects and contributors who have made OpsinTech a reality. We truly stand on the shoulders of giants.
+We extend our gratitude to the open source projects and contributors who make PrismOS possible. PrismOS preserves the required DeerFlow and LangGraph attribution; it is not a claim that the upstream runtime was authored here.
 
 ### Core Frameworks
 - **[LangChain](https://github.com/langchain-ai/langchain)**: A phenomenal framework that powers our LLM interactions and chains.
@@ -55,13 +55,8 @@ We extend our heartfelt gratitude to the open source projects and contributors w
 - **[Shadcn](https://ui.shadcn.com/)**: Minimalistic components that power our UI.
 - **[SToneX](https://github.com/stonexer)**: For his invaluable contribution to token-by-token visual effects.
 
-These outstanding projects form the backbone of OpsinTech and exemplify the transformative power of open source collaboration.
+These projects form part of the current PrismOS runtime and UI foundation.
 
 ### Special Thanks
-Finally, we want to express our heartfelt gratitude to the core authors of OpsinTech 1.0 and 2.0:
-
-- **[Daniel Walnut](https://github.com/hetaoBackend/)**
-- **[Henry Li](https://github.com/magiccube/)**
-
-Without their vision, passion and dedication, \`OpsinTech\` would not be what it is today.
+Please see the repository history and upstream project acknowledgements for contributors to the inherited codebase.
 `;

@@ -9,8 +9,9 @@ import { I18nProvider } from "@/core/i18n/context";
 import { detectLocaleServer } from "@/core/i18n/server";
 
 export const metadata: Metadata = {
-  title: "OpsinTech",
-  description: "A LangChain-based framework for building super agents.",
+  title: "PrismOS",
+  description:
+    "A governed Agent operating system for enterprise teams, with multi-tenant control, sandboxed execution, Skills, MCP, and artifacts.",
 };
 
 export default async function RootLayout({

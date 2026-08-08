@@ -77,11 +77,11 @@ export const ko: Translations = {
   welcome: {
     greeting: "안녕하세요!",
     description:
-      "OpsinTech에 오신 것을 환영합니다. OpsinTech는 오픈소스 슈퍼 에이전트입니다. 내장 및 사용자 정의 스킬을 통해 웹 검색, 데이터 분석, 슬라이드 및 웹 페이지와 같은 아티팩트 생성 등 거의 모든 작업을 수행할 수 있습니다.",
+      "PrismOS에 오신 것을 환영합니다. PrismOS는 엔터프라이즈 팀을 위한 거버넌스형 Agent 운영체제입니다. 관리되는 워크스페이스에서 모델, 도구, 샌드박스, 아티팩트를 사용할 수 있습니다.",
 
     createYourOwnSkill: "나만의 스킬 만들기",
     createYourOwnSkillDescription:
-      "나만의 스킬을 만들어 OpsinTech의 강력한 기능을 활용하세요. 맞춤형 스킬을 통해\nOpsinTech는 웹 검색, 데이터 분석, 슬라이드 및 웹 페이지와 같은\n아티팩트 생성 등 거의 모든 작업을 도와드릴 수 있습니다.",
+      "나만의 스킬을 만들어 PrismOS를 확장하세요. 맞춤형 스킬을 통해\nPrismOS는 거버넌스된 도구와 샌드박스에서 반복 가능한 작업을 실행할 수 있습니다.",
   },
 
   // Clipboard
@@ -305,14 +305,14 @@ export const ko: Translations = {
 
   // Workspace
   workspace: {
-    officialWebsite: "OpsinTech 공식 웹사이트",
-    githubTooltip: "Github에서 OpsinTech 보기",
+    officialWebsite: "PrismOS 프로젝트 홈페이지",
+    githubTooltip: "GitHub에서 PrismOS 보기",
     settingsAndMore: "설정 및 더 보기",
     user: "사용자",
-    visitGithub: "GitHub에서 OpsinTech 보기",
+    visitGithub: "GitHub에서 PrismOS 보기",
     reportIssue: "이슈 보고",
     contactUs: "문의하기",
-    about: "OpsinTech 소개",
+    about: "PrismOS 소개",
     globalSearch: "전체 검색",
     manageWorkspace: "워크스페이스 관리",
     unboundWorkspace: "연결되지 않은 워크스페이스",
@@ -331,7 +331,7 @@ export const ko: Translations = {
 
   // Page titles (document title)
   pages: {
-    appName: "OpsinTech",
+    appName: "PrismOS",
     chats: "채팅",
     newChat: "새 채팅",
     untitled: "제목 없음",
@@ -357,7 +357,7 @@ export const ko: Translations = {
     writeFile: "파일 쓰기",
     clickToViewContent: "클릭하여 파일 내용 보기",
     writeTodos: "할 일 목록 업데이트",
-    skillInstallTooltip: "스킬을 설치하여 OpsinTech에서 사용 가능하게 합니다",
+    skillInstallTooltip: "스킬을 설치하여 PrismOS에서 사용 가능하게 합니다",
   },
 
   // Subtasks
@@ -406,7 +406,7 @@ export const ko: Translations = {
     noResults: "결과를 찾을 수 없습니다.",
     actions: "작업",
     keyboardShortcuts: "키보드 단축키",
-    keyboardShortcutsDescription: "키보드 단축키로 OpsinTech를 더 빠르게 탐색하세요.",
+    keyboardShortcutsDescription: "키보드 단축키로 PrismOS를 더 빠르게 탐색하세요.",
     openCommandPalette: "명령 팔레트 열기",
     toggleSidebar: "사이드바 전환",
   },
@@ -1069,7 +1069,7 @@ export const ko: Translations = {
   // Settings
   settings: {
     title: "설정",
-    description: "OpsinTech의 외관과 동작을 원하는 대로 조정하세요.",
+    description: "PrismOS의 외관과 동작을 원하는 대로 조정하세요.",
     sections: {
       appearance: "외관",
       user: "사용자",
@@ -1084,7 +1084,7 @@ export const ko: Translations = {
     memory: {
       title: "메모리",
       description:
-        "OpsinTech는 백그라운드에서 자동으로 대화로부터 학습합니다. 이 메모리는 OpsinTech가 사용자를 더 잘 이해하고 개인화된 경험을 제공하는 데 도움이 됩니다.",
+        "PrismOS는 워크스페이스 대화에서 메모리를 유지할 수 있습니다. 이 메모리는 Agent가 맥락을 이해하고 더 유용한 경험을 제공하는 데 도움이 됩니다.",
       empty: "표시할 메모리 데이터가 없습니다.",
       rawJson: "Raw JSON",
       markdown: {
@@ -1268,7 +1268,7 @@ export const ko: Translations = {
       createSkill: "스킬 생성",
       emptyTitle: "아직 에이전트 스킬이 없습니다",
       emptyDescription:
-        "에이전트 스킬 폴더를 OpsinTech 루트 폴더의 `/skills/custom` 폴더 아래에 배치하세요.",
+        "에이전트 스킬 폴더를 PrismOS 루트 폴더의 `/skills/custom` 폴더 아래에 배치하세요.",
       emptyButton: "첫 번째 스킬 만들기",
       readOnlyViewHint: "개인 설정은 읽기 전용입니다. 편집하려면 워크스페이스 거버넌스로 이동하세요.",
       createDisabledHint: "생성 항목이 비활성화되어 있습니다. 워크스페이스 공유 스킬만 표시 및 전환됩니다.",
@@ -1276,12 +1276,12 @@ export const ko: Translations = {
     notification: {
       title: "알림",
       description:
-        "OpsinTech는 창이 활성화되지 않았을 때만 완료 알림을 보냅니다. 장시간 실행 작업 중에 특히 유용하여 다른 작업으로 전환한 후 완료 시 알림을 받을 수 있습니다.",
+        "PrismOS는 창이 활성화되지 않았을 때만 완료 알림을 보냅니다. 장시간 실행 작업 중에 특히 유용합니다.",
       requestPermission: "알림 권한 요청",
       deniedHint:
         "알림 권한이 거부되었습니다. 완료 알림을 받으려면 브라우저 사이트 설정에서 활성화할 수 있습니다.",
       testButton: "테스트 알림 보내기",
-      testTitle: "OpsinTech",
+      testTitle: "PrismOS",
       testBody: "이것은 테스트 알림입니다.",
       notSupported: "브라우저가 알림을 지원하지 않습니다.",
       disableNotification: "알림 비활성화",
@@ -1320,7 +1320,7 @@ export const ko: Translations = {
       iUnderstand: "이해했습니다",
     },
     signUp: {
-      title: "OpsinTech 회원가입",
+      title: "PrismOS 회원가입",
       description: "계정을 만들고 워크스페이스에 초대받으세요.",
       nickname: "닉네임",
       nicknamePlaceholder: "닉네임을 입력하세요",

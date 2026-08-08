@@ -123,7 +123,7 @@ export const WebTerminal = forwardRef<WebTerminalRef, WebTerminalProps>(({ class
     term.open(terminalRef.current);
     fit.fit();
 
-    term.writeln('\x1b[1;34mOpsinTech\x1b[0m Terminal Ready. Connecting...');
+    term.writeln('\x1b[1;34mPrismOS\x1b[0m Terminal Ready. Connecting...');
 
     // On Data from Xterm (User typed something)
     term.onData((data) => {

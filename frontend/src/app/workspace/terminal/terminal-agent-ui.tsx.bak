@@ -333,7 +333,7 @@ export function TerminalAgentUI({ activeAsset }: { activeAsset: any }) {
             <div className="w-10 h-10 rounded-full border-2 border-zinc-300 flex items-center justify-center mb-3">
               <span className="font-semibold text-lg text-zinc-400">AI</span>
             </div>
-            <p className="text-xs">OpsinTech Agent Ready.</p>
+            <p className="text-xs">PrismOS Agent Ready.</p>
             <p className="text-[10px] text-zinc-300 mt-1">Cmd+/ 切换模式 · Cmd+K 聚焦输入</p>
           </div>
         ) : (

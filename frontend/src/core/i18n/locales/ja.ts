@@ -77,11 +77,11 @@ export const ja: Translations = {
   welcome: {
     greeting: "こんにちは！",
     description:
-      "🦌 OpsinTechへようこそ。オープンソースのスーパーエージェントです。組み込みおよびカスタムスキルにより、OpsinTechはウェブ検索、データ分析、スライドやウェブページなどのアーティファクト生成を支援し、ほぼあらゆることを行えます。",
+      "PrismOSへようこそ。エンタープライズチーム向けのガバナンス型Agentオペレーティングシステムです。組み込みおよびカスタムスキルにより、管理されたワークスペースでモデル、ツール、サンドボックス、アーティファクトを利用できます。",
 
     createYourOwnSkill: "独自のスキルを作成",
     createYourOwnSkillDescription:
-      "独自のスキルを作成してOpsinTechの能力を引き出しましょう。カスタマイズされたスキルにより、\nOpsinTechはウェブ検索、データ分析、スライドやウェブページなどの\nアーティファクト生成を支援し、ほぼあらゆることを行えます。",
+      "独自のスキルを作成してPrismOSを拡張しましょう。カスタマイズされたスキルにより、\nPrismOSはガバナンスされたツールとサンドボックスで再利用可能な作業を\n実行できます。",
   },
 
   // Clipboard
@@ -305,14 +305,14 @@ export const ja: Translations = {
 
   // Workspace
   workspace: {
-    officialWebsite: "OpsinTech公式ウェブサイト",
-    githubTooltip: "OpsinTech on GitHub",
+    officialWebsite: "PrismOSプロジェクトホーム",
+    githubTooltip: "PrismOS on GitHub",
     settingsAndMore: "設定など",
     user: "ユーザー",
-    visitGithub: "OpsinTech on GitHub",
+    visitGithub: "PrismOS on GitHub",
     reportIssue: "問題を報告",
     contactUs: "お問い合わせ",
-    about: "OpsinTechについて",
+    about: "PrismOSについて",
     globalSearch: "グローバル検索",
     manageWorkspace: "ワークスペース管理",
     unboundWorkspace: "未バインドのワークスペース",
@@ -331,7 +331,7 @@ export const ja: Translations = {
 
   // Page titles (document title)
   pages: {
-    appName: "OpsinTech",
+    appName: "PrismOS",
     chats: "チャット",
     newChat: "新しいチャット",
     untitled: "無題",
@@ -357,7 +357,7 @@ export const ja: Translations = {
     writeFile: "ファイルを書き込み",
     clickToViewContent: "クリックしてファイル内容を表示",
     writeTodos: "ToDoリストを更新",
-    skillInstallTooltip: "スキルをインストールしてOpsinTechで利用可能にする",
+    skillInstallTooltip: "スキルをインストールしてPrismOSで利用可能にする",
   },
 
   // Subtasks
@@ -406,7 +406,7 @@ export const ja: Translations = {
     noResults: "結果が見つかりません。",
     actions: "アクション",
     keyboardShortcuts: "キーボードショートカット",
-    keyboardShortcutsDescription: "キーボードショートカットでOpsinTechをより速く操作できます。",
+    keyboardShortcutsDescription: "キーボードショートカットでPrismOSをより速く操作できます。",
     openCommandPalette: "コマンドパレットを開く",
     toggleSidebar: "サイドバーを切り替え",
   },
@@ -1069,7 +1069,7 @@ export const ja: Translations = {
   // Settings
   settings: {
     title: "設定",
-    description: "OpsinTechの外観と動作を自分好みに調整します。",
+    description: "PrismOSの外観と動作を自分好みに調整します。",
     sections: {
       appearance: "外観",
       user: "ユーザー",
@@ -1084,7 +1084,7 @@ export const ja: Translations = {
     memory: {
       title: "メモリー",
       description:
-        "OpsinTechはバックグラウンドで自動的に会話から学習します。これらのメモリーはOpsinTechがあなたをより深く理解し、よりパーソナライズされた体験を提供するのに役立ちます。",
+        "PrismOSは会話からワークスペースのメモリーを保持できます。これらのメモリーはAgentが文脈を理解し、より役立つ体験を提供するのに役立ちます。",
       empty: "表示するメモリーデータがありません。",
       rawJson: "生JSON",
       markdown: {
@@ -1268,7 +1268,7 @@ export const ja: Translations = {
       createSkill: "スキルを作成",
       emptyTitle: "まだエージェントスキルがありません",
       emptyDescription:
-        "OpsinTechのルートフォルダ配下の `/skills/custom` フォルダにエージェントスキルフォルダを配置してください。",
+        "PrismOSのルートフォルダ配下の `/skills/custom` フォルダにエージェントスキルフォルダを配置してください。",
       emptyButton: "最初のスキルを作成",
       readOnlyViewHint: "個人設定は読み取り専用です。編集するにはワークスペースガバナンスに移動してください。",
       createDisabledHint: "作成エントリは無効化されています。ワークスペース共有スキルのみ表示および切り替え可能です。",
@@ -1276,12 +1276,12 @@ export const ja: Translations = {
     notification: {
       title: "通知",
       description:
-        "OpsinTechはウィンドウがアクティブでない場合にのみ完了通知を送信します。これは長時間実行タスクに特に便利で、他の作業に切り替えても完了時に通知を受け取れます。",
+        "PrismOSはウィンドウがアクティブでない場合にのみ完了通知を送信します。これは長時間実行タスクに特に便利です。",
       requestPermission: "通知権限をリクエスト",
       deniedHint:
         "通知権限が拒否されました。ブラウザのサイト設定で有効にすると完了アラートを受信できます。",
       testButton: "テスト通知を送信",
-      testTitle: "OpsinTech",
+      testTitle: "PrismOS",
       testBody: "これはテスト通知です。",
       notSupported: "お使いのブラウザは通知に対応していません。",
       disableNotification: "通知を無効化",
@@ -1320,7 +1320,7 @@ export const ja: Translations = {
       iUnderstand: "了解しました",
     },
     signUp: {
-      title: "OpsinTechに登録",
+      title: "PrismOSに登録",
       description: "アカウントを作成し、ワークスペースへの招待を受け取りましょう。",
       nickname: "ニックネーム",
       nicknamePlaceholder: "ニックネームを入力",

@@ -230,7 +230,7 @@ export default function SignInPage() {
           >
             <img
               src="/images/opsintech.svg"
-              alt="OpsinTech"
+              alt="PrismOS"
               className="h-36 w-36 xl:h-44 xl:w-44 drop-shadow-[0_0_40px_rgba(6,182,212,0.3)]"
             />
             {/* 图标光晕 */}
@@ -246,7 +246,7 @@ export default function SignInPage() {
           {/* 品牌信息 */}
           <div className="mt-10 text-center">
             <h1 className="text-3xl xl:text-4xl font-bold tracking-tight text-white">
-              OpsinTech
+              PrismOS
             </h1>
             <p className="mt-3 text-sm text-zinc-400 font-medium tracking-[0.2em] uppercase">
               {t.auth.signIn.brandTagline}
@@ -291,11 +291,11 @@ export default function SignInPage() {
           <div className="flex flex-col items-center mb-10 lg:hidden">
             <img
               src="/images/opsintech.svg"
-              alt="OpsinTech"
+              alt="PrismOS"
               className="h-16 w-16"
             />
             <h1 className="mt-4 text-xl font-bold text-zinc-900 dark:text-zinc-100">
-              OpsinTech
+              PrismOS
             </h1>
           </div>
 

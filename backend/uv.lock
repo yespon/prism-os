@@ -13,7 +13,7 @@ resolution-markers = [
 [manifest]
 members = [
     "deerflow-harness",
-    "opsintech",
+    "prismos",
 ]
 
 [[package]]
@@ -2573,7 +2573,7 @@ wheels = [
 ]
 
 [[package]]
-name = "opsintech"
+name = "prismos"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

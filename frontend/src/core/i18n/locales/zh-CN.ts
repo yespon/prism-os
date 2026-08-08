@@ -76,11 +76,11 @@ export const zhCN: Translations = {
   welcome: {
     greeting: "你好，欢迎回来！",
     description:
-      "欢迎使用 🦌 OpsinTech，一个完全开源的超级智能体。通过内置和自定义的 Skills，\nOpsinTech 可以帮你搜索网络、分析数据，还能为你生成幻灯片、\n图片、视频、播客及网页等，几乎可以做任何事情。",
+      "欢迎使用 PrismOS，一个面向企业团队的治理型 Agent 操作系统。通过内置和自定义 Skills，\nPrismOS 支持在受控工作空间中使用模型、工具、沙盒和文件产物。",
 
     createYourOwnSkill: "创建你自己的 Agent SKill",
     createYourOwnSkillDescription:
-      "创建你的 Agent Skill 来释放 OpsinTech 的潜力。通过自定义技能，OpsinTech\n可以帮你搜索网络、分析数据，还能为你生成幻灯片、\n网页等作品，几乎可以做任何事情。",
+      "创建你的 Agent Skill 来扩展 PrismOS。通过自定义技能，PrismOS\n可以帮助团队在治理工具和沙盒环境中执行可复用的工作流程。",
   },
 
   // Clipboard
@@ -296,14 +296,14 @@ export const zhCN: Translations = {
 
   // Workspace
   workspace: {
-    officialWebsite: "访问 OpsinTech 官方网站",
-    githubTooltip: "访问 OpsinTech 的 Github 仓库",
+    officialWebsite: "访问 PrismOS 项目主页",
+    githubTooltip: "访问 PrismOS 的 GitHub 仓库",
     settingsAndMore: "设置和更多",
     user: "用户",
-    visitGithub: "在 Github 上查看 OpsinTech",
+    visitGithub: "在 GitHub 上查看 PrismOS",
     reportIssue: "报告问题",
     contactUs: "联系我们",
-    about: "关于 OpsinTech",
+    about: "关于 PrismOS",
     globalSearch: "全局搜索",
     manageWorkspace: "管理工作台",
     unboundWorkspace: "未绑定工作空间",
@@ -322,7 +322,7 @@ export const zhCN: Translations = {
 
   // Page titles (document title)
   pages: {
-    appName: "OpsinTech",
+    appName: "PrismOS",
     chats: "对话",
     newChat: "新对话",
     untitled: "未命名",
@@ -347,7 +347,7 @@ export const zhCN: Translations = {
     writeFile: "写入文件",
     clickToViewContent: "点击查看文件内容",
     writeTodos: "更新 To-do 列表",
-    skillInstallTooltip: "安装技能并使其可在 OpsinTech 中使用",
+    skillInstallTooltip: "安装技能并使其可在 PrismOS 中使用",
   },
 
   uploads: {
@@ -395,7 +395,7 @@ export const zhCN: Translations = {
     noResults: "未找到结果。",
     actions: "操作",
     keyboardShortcuts: "键盘快捷键",
-    keyboardShortcutsDescription: "使用键盘快捷键更快地操作 OpsinTech。",
+    keyboardShortcutsDescription: "使用键盘快捷键更快地操作 PrismOS。",
     openCommandPalette: "打开命令面板",
     toggleSidebar: "切换侧边栏",
   },
@@ -1058,7 +1058,7 @@ export const zhCN: Translations = {
   // Settings
   settings: {
     title: "设置",
-    description: "根据你的偏好调整 OpsinTech 的界面和行为。",
+    description: "根据你的偏好调整 PrismOS 的界面和行为。",
     sections: {
       appearance: "外观",
       user: "用户",
@@ -1073,7 +1073,7 @@ export const zhCN: Translations = {
     memory: {
       title: "记忆",
       description:
-        "OpsinTech 会在后台不断从你的对话中自动学习。这些记忆能帮助 OpsinTech 更好地理解你，并提供更个性化的体验。",
+        "PrismOS 可以保留工作空间中的对话记忆，帮助 Agent 理解上下文并提供更有用的体验。",
       empty: "暂无可展示的记忆数据。",
       rawJson: "原始 JSON",
       markdown: {
@@ -1254,7 +1254,7 @@ export const zhCN: Translations = {
       createSkill: "新建技能",
       emptyTitle: "还没有技能",
       emptyDescription:
-        "将你的 Agent Skill 文件夹放在 OpsinTech 根目录下的 `/skills/custom` 文件夹中。",
+        "将你的 Agent Skill 文件夹放在 PrismOS 根目录下的 `/skills/custom` 文件夹中。",
       emptyButton: "创建你的第一个技能",
       readOnlyViewHint: "个人设置为只读视图，请前往工作空间治理进行编辑。",
       createDisabledHint: "创建入口已禁用，仅展示与启停工作空间共享技能。",
@@ -1262,12 +1262,12 @@ export const zhCN: Translations = {
     notification: {
       title: "通知",
       description:
-        "OpsinTech 只会在窗口不活跃时发送完成通知，特别适合长时间任务：你可以先去做别的事，完成后会收到提醒。",
+        "PrismOS 只会在窗口不活跃时发送完成通知，特别适合长时间任务：你可以先去做别的事，完成后会收到提醒。",
       requestPermission: "请求通知权限",
       deniedHint:
         "通知权限已被拒绝。可在浏览器的网站设置中重新开启，以接收完成提醒。",
       testButton: "发送测试通知",
-      testTitle: "OpsinTech",
+      testTitle: "PrismOS",
       testBody: "这是一条测试通知。",
       notSupported: "当前浏览器不支持通知功能。",
       disableNotification: "关闭通知",
@@ -1306,7 +1306,7 @@ export const zhCN: Translations = {
       iUnderstand: "我知道了",
     },
     signUp: {
-      title: "注册 OpsinTech",
+      title: "注册 PrismOS",
       description: "创建账号并被邀请后即可登陆进入工作区",
       nickname: "昵称",
       nicknamePlaceholder: "请输入昵称",

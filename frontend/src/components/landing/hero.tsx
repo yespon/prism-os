@@ -50,7 +50,7 @@ export function Hero({ className }: { className?: string }) {
               "Plugin Architecture",
             ]}
           />{" "}
-          <div>with OpsinTech</div>
+          <div>with PrismOS</div>
         </h1>
         <p
           className="mt-8 scale-105 text-center text-2xl text-shadow-sm"

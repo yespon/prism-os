@@ -160,11 +160,11 @@ def create_app() -> FastAPI:
     """
 
     app = FastAPI(
-        title="OpsinTech API Gateway",
+        title="PrismOS API Gateway",
         description="""
-## OpsinTech API Gateway
+## PrismOS API Gateway
 
-API Gateway for OpsinTech - A LangGraph-based AI agent backend with sandbox execution capabilities.
+API Gateway for PrismOS, a governed Agent operating system built on a LangGraph-based execution backend with sandbox capabilities.
 
 ### Features
 
@@ -216,7 +216,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
             },
             {
                 "name": "threads",
-                "description": "Manage OpsinTech thread-local filesystem data",
+                "description": "Manage PrismOS thread-local filesystem data",
             },
             {
                 "name": "tenants",
@@ -351,7 +351,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
         Returns:
             Service health status information.
         """
-        return {"status": "healthy", "service": "opsintech-gateway"}
+        return {"status": "healthy", "service": "prismos-gateway"}
 
     return app
 
