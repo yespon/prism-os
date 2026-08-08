@@ -1,0 +1,141 @@
+name: Publish PrismOS Container
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Optional image tag for a manual publish, for example v0.1.0-alpha.1'
+        required: false
+        type: string
+      publish_edge:
+        description: 'Publish edge when manually dispatching from the default branch'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/yespon/prism-os
+
+jobs:
+  validate:
+    name: Validate publish gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.26
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Check PrismOS environment compatibility
+        run: bash scripts/test-prismos-env.sh
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: uv sync --locked
+
+      - name: Collect backend tests
+        working-directory: backend
+        run: uv run pytest --collect-only -q
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Run frontend static checks
+        working-directory: frontend
+        run: pnpm check
+
+      - name: Validate root Compose configuration
+        run: docker compose config --quiet
+
+      - name: Validate production Compose configuration
+        run: docker compose -f docker/docker-compose.yaml config --quiet
+
+      - name: Prepare local env files for development Compose validation
+        run: |
+          touch .env
+          cp frontend/.env.example frontend/.env
+
+      - name: Validate development Compose configuration
+        run: docker compose -f docker/docker-compose-dev.yaml config --quiet
+
+  publish:
+    name: Publish PrismOS backend/runtime OCI image
+    needs: validate
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=sha,prefix=sha-
+            type=raw,value=${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
+            type=raw,value=edge,enable=${{ github.event_name == 'workflow_dispatch' && github.ref_name == github.event.repository.default_branch && inputs.publish_edge == true }}
+          labels: |
+            org.opencontainers.image.title=PrismOS
+            org.opencontainers.image.description=PrismOS backend and Agent runtime image; the full alpha application is assembled by the repository Compose stack.
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Validate release reference
+        if: github.event_name == 'push'
+        run: |
+          case "$GITHUB_REF_NAME" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "Expected a SemVer tag beginning with v, got $GITHUB_REF_NAME" >&2; exit 1 ;;
+          esac
+
+      - name: Build and publish multi-architecture image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=prismos-publish
+          cache-to: type=gha,mode=max,scope=prismos-publish
