@@ -17,6 +17,12 @@ fi
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
+if [ -f "$REPO_ROOT/.env" ]; then
+    set -a
+    source "$REPO_ROOT/.env"
+    set +a
+fi
+source "$REPO_ROOT/scripts/prismos-env.sh"
 
 # ── Stop existing services ────────────────────────────────────────────────────
 
@@ -27,7 +33,7 @@ pkill -f "next dev" 2>/dev/null || true
 nginx -c "$REPO_ROOT/docker/nginx/nginx.local.conf" -p "$REPO_ROOT" -s quit 2>/dev/null || true
 sleep 1
 pkill -9 nginx 2>/dev/null || true
-./scripts/cleanup-containers.sh opsintech-sandbox 2>/dev/null || true
+./scripts/cleanup-containers.sh prismos-sandbox 2>/dev/null || true
 sleep 1
 
 # ── Banner ────────────────────────────────────────────────────────────────────
@@ -41,13 +47,13 @@ echo ""
 # ── Config check ─────────────────────────────────────────────────────────────
 
 if ! { \
-        [ -n "$OPSINTECH_CONFIG_PATH" ] && [ -f "$OPSINTECH_CONFIG_PATH" ] || \
+        [ -f "$PRISMOS_CONFIG_PATH" ] || \
         [ -f backend/config.yaml ] || \
         [ -f config.yaml ]; \
     }; then
-    echo "✗ No OpsInTech config file found."
+    echo "✗ No PrismOS config file found."
     echo "  Checked these locations:"
-    echo "    - $OPSINTECH_CONFIG_PATH (when OPSINTECH_CONFIG_PATH is set)"
+    echo "    - $PRISMOS_CONFIG_PATH (PRISMOS_CONFIG_PATH → OPSINTECH_CONFIG_PATH → default)"
     echo "    - backend/config.yaml"
     echo "    - ./config.yaml"
     echo ""

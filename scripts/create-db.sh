@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-cd "$(dirname "$0")/.."
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$REPO_ROOT"
+source "$REPO_ROOT/scripts/prismos-env.sh"
 
 DB_TYPE=$(python3 -c "
 import yaml
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 db = cfg.get('database', {})
 print(db.get('type', 'sqlite'))
@@ -36,7 +38,7 @@ create_db() {
 
 TENANT_URL=$(python3 -c "
 import yaml, urllib.parse
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 url = cfg['database']['url']
 parsed = urllib.parse.urlparse(url.replace('postgresql+asyncpg', 'postgresql'))
@@ -45,7 +47,7 @@ print(f'host={parsed.hostname} port={parsed.port or 5432} user={parsed.username}
 
 AUTH_URL=$(python3 -c "
 import yaml, urllib.parse
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 url = cfg['database']['auth']['url']
 parsed = urllib.parse.urlparse(url.replace('postgresql+asyncpg', 'postgresql'))
@@ -54,7 +56,7 @@ print(f'host={parsed.hostname} port={parsed.port or 5432} user={parsed.username}
 
 CHECKPOINT_URL=$(python3 -c "
 import yaml, urllib.parse
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 cp = cfg.get('checkpointer', {})
 if cp.get('type') == 'postgres':

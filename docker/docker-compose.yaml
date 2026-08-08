@@ -1,4 +1,4 @@
-# OpsinTech Platform - Production Environment
+# PrismOS - Production Environment
 # Usage: ./scripts/deploy.sh up
 #
 # Services:
@@ -11,10 +11,11 @@
 #   - provisioner: (optional) Sandbox provisioner for Kubernetes mode
 #
 # Key environment variables (set via scripts/deploy.sh):
-#   OPSINTECH_HOME                   — runtime data dir, default $REPO_ROOT/backend/.opsintech
-#   OPSINTECH_CONFIG_PATH            — path to config.yaml
-#   OPSINTECH_DOCKER_SOCKET          — Docker socket path, default /var/run/docker.sock
-#   OPSINTECH_REPO_ROOT              — repo root (used for skills host path in DooD)
+#   PRISMOS_HOME                     — runtime data dir, default $REPO_ROOT/backend/.prismos
+#   PRISMOS_CONFIG_PATH              — path to config.yaml
+#   PRISMOS_DOCKER_SOCKET            — Docker socket path, default /var/run/docker.sock
+#   PRISMOS_REPO_ROOT                — repo root (used for skills host path in DooD)
+#   OPSINTECH_*                      — supported legacy aliases, lower priority
 #
 # Database modes:
 #   - SQLite (default): no extra services needed, db-init creates the file
@@ -22,23 +23,27 @@
 #
 # Access: http://localhost:${PORT:-2026}
 
+name: prismos
+
 services:
   # ── Database Migration (runs before gateway/langgraph) ─────────────────────
   db-init:
     build:
       context: ../
       dockerfile: backend/Dockerfile
-    container_name: opsintech-db-init
+    image: prismos-db-init:latest
+    container_name: prismos-db-init
     command: sh -c "cd backend && PYTHONPATH=. uv run alembic upgrade head"
     volumes:
-      - ${OPSINTECH_CONFIG_PATH}:/app/backend/config.yaml:ro
-      - ${OPSINTECH_HOME}:/app/backend/.opsintech
+      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/backend/config.yaml:ro
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
     working_dir: /app
     environment:
       - CI=true
-      - OPSINTECH_HOME=/app/backend/.opsintech
+      - PRISMOS_HOME=/app/backend/.prismos
+      - OPSINTECH_HOME=/app/backend/.prismos
     networks:
-      - opsintech
+      - prismos
     depends_on:
       postgres:
         condition: service_healthy
@@ -52,21 +57,21 @@ services:
   # ── PostgreSQL (optional, profile: postgres) ───────────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: opsintech-postgres
+    container_name: prismos-postgres
     profiles:
       - postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-opsintech}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-opsintech}
-      POSTGRES_DB: ${POSTGRES_DB:-opsintech}
+      POSTGRES_USER: ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}}
+      POSTGRES_PASSWORD: ${PRISMOS_POSTGRES_PASSWORD:-${OPSINTECH_POSTGRES_PASSWORD:-${POSTGRES_PASSWORD:-prismos}}}
+      POSTGRES_DB: ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-opsintech} -d ${POSTGRES_DB:-opsintech}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}} -d ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -79,7 +84,7 @@ services:
   # ── Reverse Proxy ──────────────────────────────────────────────────────────
   nginx:
     image: nginx:alpine
-    container_name: opsintech-nginx
+    container_name: prismos-nginx
     ports:
       - "${PORT:-2026}:2026"
     volumes:
@@ -92,7 +97,7 @@ services:
       langgraph:
         condition: service_healthy
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     deploy:
       resources:
@@ -108,14 +113,15 @@ services:
       args:
         PNPM_STORE_PATH: ${PNPM_STORE_PATH:-/root/.local/share/pnpm/store}
         NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
-    container_name: opsintech-frontend
+    image: prismos-frontend:latest
+    container_name: prismos-frontend
     volumes:
-      - ${OPSINTECH_CONFIG_PATH}:/app/config.yaml:ro
-      - ${OPSINTECH_HOME}:/app/backend/.opsintech
+      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml:ro
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
     environment:
       SERVER_BACKEND_URL: http://gateway:8001
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
@@ -133,26 +139,30 @@ services:
     build:
       context: ../
       dockerfile: backend/Dockerfile
-    container_name: opsintech-gateway
+    image: prismos-gateway:latest
+    container_name: prismos-gateway
     command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes:
-      - ${OPSINTECH_CONFIG_PATH}:/app/backend/config.yaml:ro
+      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/backend/config.yaml:ro
       - ../skills:/app/skills:ro
-      - ${OPSINTECH_HOME}:/app/backend/.opsintech
-      - ${OPSINTECH_DOCKER_SOCKET}:/var/run/docker.sock
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_DOCKER_SOCKET:-${OPSINTECH_DOCKER_SOCKET:-/var/run/docker.sock}}:/var/run/docker.sock
     working_dir: /app
     environment:
       - CI=true
-      - OPSINTECH_HOME=/app/backend/.opsintech
-      - OPSINTECH_HOST_BASE_DIR=${OPSINTECH_HOME}
-      - OPSINTECH_HOST_SKILLS_PATH=${OPSINTECH_REPO_ROOT}/skills
+      - PRISMOS_HOME=/app/backend/.prismos
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
+      - OPSINTECH_HOME=/app/backend/.prismos
+      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
       - OPSINTECH_SANDBOX_HOST=host.docker.internal
       - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech
+      - prismos
     depends_on:
       db-init:
         condition: service_completed_successfully
@@ -174,20 +184,25 @@ services:
     build:
       context: ../
       dockerfile: backend/Dockerfile
-    container_name: opsintech-langgraph
+    image: prismos-langgraph:latest
+    container_name: prismos-langgraph
     command: sh -c "cd /app/backend && uv run langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
     volumes:
-      - ${OPSINTECH_CONFIG_PATH}:/app/config.yaml:ro
-      - ${OPSINTECH_HOME}:/app/backend/.opsintech
+      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml:ro
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
       - ../skills:/app/skills:ro
       - ../backend/.langgraph_api:/app/backend/.langgraph_api
-      - ${OPSINTECH_DOCKER_SOCKET}:/var/run/docker.sock
+      - ${PRISMOS_DOCKER_SOCKET:-${OPSINTECH_DOCKER_SOCKET:-/var/run/docker.sock}}:/var/run/docker.sock
     environment:
       - CI=true
-      - OPSINTECH_HOME=/app/backend/.opsintech
+      - PRISMOS_HOME=/app/backend/.prismos
+      - PRISMOS_CONFIG_PATH=/app/config.yaml
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
+      - OPSINTECH_HOME=/app/backend/.prismos
       - OPSINTECH_CONFIG_PATH=/app/config.yaml
-      - OPSINTECH_HOST_BASE_DIR=${OPSINTECH_HOME}
-      - OPSINTECH_HOST_SKILLS_PATH=${OPSINTECH_REPO_ROOT}/skills
+      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
       - OPSINTECH_SANDBOX_HOST=host.docker.internal
       - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
       - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
@@ -195,7 +210,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech
+      - prismos
     depends_on:
       db-init:
         condition: service_completed_successfully
@@ -218,21 +233,22 @@ services:
     build:
       context: ./provisioner
       dockerfile: Dockerfile
-    container_name: opsintech-provisioner
+    image: prismos-provisioner:latest
+    container_name: prismos-provisioner
     volumes:
       - ~/.kube/config:/root/.kube/config:ro
     environment:
-      - K8S_NAMESPACE=opsintech
+      - K8S_NAMESPACE=${PRISMOS_K8S_NAMESPACE:-${OPSINTECH_K8S_NAMESPACE:-prismos}}
       - SANDBOX_IMAGE=enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
-      - SKILLS_HOST_PATH=${OPSINTECH_REPO_ROOT}/skills
-      - THREADS_HOST_PATH=${OPSINTECH_HOME}/threads
+      - SKILLS_HOST_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
+      - THREADS_HOST_PATH=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}/threads
       - KUBECONFIG_PATH=/root/.kube/config
       - NODE_HOST=host.docker.internal
       - K8S_API_SERVER=https://host.docker.internal:26443
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
@@ -242,7 +258,7 @@ services:
       start_period: 15s
 
 networks:
-  opsintech:
+  prismos:
     driver: bridge
 
 volumes:

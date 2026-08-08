@@ -11,12 +11,13 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 DOCKER_DIR="$PROJECT_ROOT/docker"
+source "$PROJECT_ROOT/scripts/prismos-env.sh"
 
 # Docker Compose command with project name
-COMPOSE_CMD="docker compose -p opsintech-dev -f docker-compose-dev.yaml"
+COMPOSE_CMD=(docker compose -p "${PRISMOS_COMPOSE_PROJECT}-dev" -f docker-compose-dev.yaml)
 
 detect_sandbox_mode() {
-    local config_file="$PROJECT_ROOT/config.yaml"
+    local config_file="$PRISMOS_CONFIG_PATH"
     local sandbox_use=""
     local provisioner_url=""
 
@@ -173,25 +174,19 @@ start() {
     fi
     echo ""
     
-    # Set OPSINTECH_ROOT for provisioner if not already set
-    if [ -z "$OPSINTECH_ROOT" ]; then
-        export OPSINTECH_ROOT="$PROJECT_ROOT"
-        echo -e "${BLUE}Setting OPSINTECH_ROOT=$OPSINTECH_ROOT${NC}"
-        echo ""
-    fi
-    
     # Ensure config.yaml exists before starting.
-    if [ ! -f "$PROJECT_ROOT/config.yaml" ]; then
+    if [ ! -f "$PRISMOS_CONFIG_PATH" ]; then
         if [ -f "$PROJECT_ROOT/config.example.yaml" ]; then
-            cp "$PROJECT_ROOT/config.example.yaml" "$PROJECT_ROOT/config.yaml"
+            mkdir -p "$(dirname "$PRISMOS_CONFIG_PATH")"
+            cp "$PROJECT_ROOT/config.example.yaml" "$PRISMOS_CONFIG_PATH"
             echo ""
             echo -e "${YELLOW}============================================================${NC}"
             echo -e "${YELLOW}  config.yaml has been created from config.example.yaml.${NC}"
             echo -e "${YELLOW}  Please edit config.yaml to set your API keys and model   ${NC}"
-            echo -e "${YELLOW}  configuration before starting DeerFlow.                  ${NC}"
+            echo -e "${YELLOW}  configuration before starting PrismOS.                   ${NC}"
             echo -e "${YELLOW}============================================================${NC}"
             echo ""
-            echo -e "${YELLOW}  Edit the file:  $PROJECT_ROOT/config.yaml${NC}"
+            echo -e "${YELLOW}  Edit the file:  $PRISMOS_CONFIG_PATH${NC}"
             echo -e "${YELLOW}  Then run:        make docker-start${NC}"
             echo ""
             exit 0
@@ -202,10 +197,10 @@ start() {
     fi
 
     echo "Building and starting containers..."
-    cd "$DOCKER_DIR" && $COMPOSE_CMD up --build -d --remove-orphans $services
+    cd "$DOCKER_DIR" && "${COMPOSE_CMD[@]}" up --build -d --remove-orphans $services
     echo ""
     echo "=========================================="
-    echo "  DeerFlow Docker is starting!"
+    echo "  PrismOS Docker is starting!"
     echo "=========================================="
     echo ""
     echo "  🌐 Application: http://localhost:2026"
@@ -248,20 +243,15 @@ logs() {
             ;;
     esac
     
-    cd "$DOCKER_DIR" && $COMPOSE_CMD logs -f $service
+    cd "$DOCKER_DIR" && "${COMPOSE_CMD[@]}" logs -f $service
 }
 
 # Stop Docker development environment
 stop() {
-    # OPSINTECH_ROOT is referenced in docker-compose-dev.yaml; set it before
-    # running compose down to suppress "variable is not set" warnings.
-    if [ -z "$OPSINTECH_ROOT" ]; then
-        export OPSINTECH_ROOT="$PROJECT_ROOT"
-    fi
     echo "Stopping Docker development services..."
-    cd "$DOCKER_DIR" && $COMPOSE_CMD down
+    cd "$DOCKER_DIR" && "${COMPOSE_CMD[@]}" down
     echo "Cleaning up sandbox containers..."
-    "$SCRIPT_DIR/cleanup-containers.sh" opsintech-sandbox 2>/dev/null || true
+    "$SCRIPT_DIR/cleanup-containers.sh" prismos-sandbox 2>/dev/null || true
     echo -e "${GREEN}✓ Docker services stopped${NC}"
 }
 
@@ -272,7 +262,7 @@ restart() {
     echo "========================================"
     echo ""
     echo -e "${BLUE}Restarting containers...${NC}"
-    cd "$DOCKER_DIR" && $COMPOSE_CMD restart
+    cd "$DOCKER_DIR" && "${COMPOSE_CMD[@]}" restart
     echo ""
     echo -e "${GREEN}✓ Docker services restarted${NC}"
     echo ""

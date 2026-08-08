@@ -1,4 +1,4 @@
-# OpsinTech Platform - Development Environment
+# PrismOS - Development Environment
 # Usage: docker-compose -f docker-compose-dev.yaml up --build
 #
 # Services:
@@ -13,6 +13,8 @@
 #
 # Access: http://localhost:2026
 
+name: prismos-dev
+
 services:
   # ── Sandbox Provisioner ────────────────────────────────────────────────
   # Manages per-sandbox Pod + Service lifecycle in the host Kubernetes
@@ -24,18 +26,20 @@ services:
     build:
       context: ./provisioner
       dockerfile: Dockerfile
-    container_name: opsintech-provisioner
+    image: prismos-provisioner:latest
+    container_name: prismos-provisioner
     volumes:
       - ~/.kube/config:/root/.kube/config:ro
     environment:
-      - K8S_NAMESPACE=opsintech
+      - K8S_NAMESPACE=${PRISMOS_K8S_NAMESPACE:-${OPSINTECH_K8S_NAMESPACE:-prismos}}
       - SANDBOX_IMAGE=enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
       # Host paths for K8s HostPath volumes (must be absolute paths accessible by K8s node)
       # On Docker Desktop/OrbStack, use your actual host paths like /Users/username/...
       # Set these in your shell before running docker-compose:
-      #   export OPSINTECH_ROOT=/absolute/path/to/opsintech
-      - SKILLS_HOST_PATH=${OPSINTECH_ROOT}/skills
-      - THREADS_HOST_PATH=${OPSINTECH_ROOT}/backend/.opsintech/threads
+      #   export PRISMOS_REPO_ROOT=/absolute/path/to/prism-os
+      # OPSINTECH_ROOT remains a supported legacy alias.
+      - SKILLS_HOST_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
+      - THREADS_HOST_PATH=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}/threads
       - KUBECONFIG_PATH=/root/.kube/config
       - NODE_HOST=host.docker.internal
       # Override K8S API server URL since kubeconfig uses 127.0.0.1
@@ -46,7 +50,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech-dev
+      - prismos-dev
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
@@ -62,7 +66,7 @@ services:
   # - nginx.conf: includes provisioner route (provisioner mode)
   nginx:
     image: nginx:alpine
-    container_name: opsintech-nginx
+    container_name: prismos-nginx
     ports:
       - "2026:2026"
     volumes:
@@ -72,7 +76,7 @@ services:
       - gateway
       - langgraph
     networks:
-      - opsintech-dev
+      - prismos-dev
     restart: unless-stopped
 
   # Frontend - Next.js Development Server
@@ -84,7 +88,8 @@ services:
       args:
         PNPM_STORE_PATH: ${PNPM_STORE_PATH:-/root/.local/share/pnpm/store}
         NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
-    container_name: opsintech-frontend
+    image: prismos-frontend:dev
+    container_name: prismos-frontend
     command: sh -c "cd frontend && pnpm run dev > /app/logs/frontend.log 2>&1"
     volumes:
       - ../frontend/src:/app/frontend/src
@@ -93,7 +98,7 @@ services:
       - ../logs:/app/logs
       # Mount pnpm store for caching
       - ${PNPM_STORE_PATH:-~/.local/share/pnpm/store}:/root/.local/share/pnpm/store
-      - ${OPSINTECH_ROOT}/backend/.opsintech:/app/backend/.opsintech
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
     working_dir: /app
     environment:
       - NODE_ENV=development
@@ -102,7 +107,7 @@ services:
     env_file:
       - ../frontend/.env
     networks:
-      - opsintech-dev
+      - prismos-dev
     restart: unless-stopped
 
   # Backend - Gateway API
@@ -111,14 +116,15 @@ services:
       context: ../
       dockerfile: backend/Dockerfile
       # cache_from disabled - requires manual setup: mkdir -p /tmp/docker-cache-gateway
-    container_name: opsintech-gateway
+    image: prismos-gateway:dev
+    container_name: prismos-gateway
     command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --reload --reload-include='*.yaml .env' > /app/logs/gateway.log 2>&1"
     volumes:
       - ../backend/:/app/backend/
       # Preserve the .venv built during Docker image build — mounting the full backend/
       # directory above would otherwise shadow it with the (empty) host directory.
       - gateway-venv:/app/backend/.venv
-      - ../config.yaml:/app/config.yaml
+      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml
       - ../skills:/app/skills
       - ../logs:/app/logs
       # Mount uv cache for faster dependency installation
@@ -141,8 +147,12 @@ services:
     working_dir: /app
     environment:
       - CI=true
-      - OPSINTECH_HOST_BASE_DIR=${OPSINTECH_ROOT}/backend/.opsintech
-      - OPSINTECH_HOST_SKILLS_PATH=${OPSINTECH_ROOT}/skills
+      - PRISMOS_HOME=/app/backend/.prismos
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
+      - OPSINTECH_HOME=/app/backend/.prismos
+      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
       - OPSINTECH_SANDBOX_HOST=host.docker.internal
     env_file:
       - ../.env
@@ -150,7 +160,7 @@ services:
       # For Linux: map host.docker.internal to host gateway
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech-dev
+      - prismos-dev
     restart: unless-stopped
 
   # Backend - LangGraph Server
@@ -159,14 +169,15 @@ services:
       context: ../
       dockerfile: backend/Dockerfile
       # cache_from disabled - requires manual setup: mkdir -p /tmp/docker-cache-langgraph
-    container_name: opsintech-langgraph
+    image: prismos-langgraph:dev
+    container_name: prismos-langgraph
     command: sh -c "cd backend && uv run langgraph dev --no-browser --allow-blocking --host 0.0.0.0 --port 2024 > /app/logs/langgraph.log 2>&1"
     volumes:
       - ../backend/:/app/backend/
       # Preserve the .venv built during Docker image build — mounting the full backend/
       # directory above would otherwise shadow it with the (empty) host directory.
       - langgraph-venv:/app/backend/.venv
-      - ../config.yaml:/app/config.yaml
+      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml
       - ../skills:/app/skills
       - ../logs:/app/logs
       # Mount uv cache for faster dependency installation
@@ -189,8 +200,14 @@ services:
     working_dir: /app
     environment:
       - CI=true
-      - OPSINTECH_HOST_BASE_DIR=${OPSINTECH_ROOT}/backend/.opsintech
-      - OPSINTECH_HOST_SKILLS_PATH=${OPSINTECH_ROOT}/skills
+      - PRISMOS_HOME=/app/backend/.prismos
+      - PRISMOS_CONFIG_PATH=/app/config.yaml
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
+      - OPSINTECH_HOME=/app/backend/.prismos
+      - OPSINTECH_CONFIG_PATH=/app/config.yaml
+      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
       - OPSINTECH_SANDBOX_HOST=host.docker.internal
     env_file:
       - ../.env
@@ -198,7 +215,7 @@ services:
       # For Linux: map host.docker.internal to host gateway
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech-dev
+      - prismos-dev
     restart: unless-stopped
 
 volumes:
@@ -208,7 +225,7 @@ volumes:
   langgraph-venv:
 
 networks:
-  opsintech-dev:
+  prismos-dev:
     driver: bridge
     ipam:
       config:

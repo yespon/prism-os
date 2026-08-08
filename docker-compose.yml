@@ -1,4 +1,4 @@
-# OpsinTech Platform - Docker Compose
+# PrismOS - Docker Compose
 #
 # Quick start:
 #   1. cp config.example.yaml config.yaml 
@@ -16,10 +16,16 @@
 #   db-init    - Alembic migration runner (run once then exits)
 #   postgres   - (optional) PostgreSQL 16, profile: postgres
 
+name: prismos
+
 x-common-env: &common-env
-  OPSINTECH_HOME: /app/backend/.opsintech
-  OPSINTECH_HOST_BASE_DIR: ${OPSINTECH_HOME:-./backend/.opsintech}
-  OPSINTECH_HOST_SKILLS_PATH: ${PWD:-.}/skills
+  PRISMOS_HOME: /app/backend/.prismos
+  PRISMOS_HOST_BASE_DIR: ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}
+  PRISMOS_HOST_SKILLS_PATH: ${PRISMOS_HOST_SKILLS_PATH:-${OPSINTECH_HOST_SKILLS_PATH:-${PWD:-.}/skills}}
+  PRISMOS_SANDBOX_HOST: host.docker.internal
+  OPSINTECH_HOME: /app/backend/.prismos
+  OPSINTECH_HOST_BASE_DIR: ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}
+  OPSINTECH_HOST_SKILLS_PATH: ${PRISMOS_HOST_SKILLS_PATH:-${OPSINTECH_HOST_SKILLS_PATH:-${PWD:-.}/skills}}
   OPSINTECH_SANDBOX_HOST: host.docker.internal
   CI: "true"
 
@@ -31,17 +37,18 @@ services:
   db-init:
     build:
       <<: *common-build
-    container_name: opsintech-db-init
+    image: prismos-db-init:latest
+    container_name: prismos-db-init
     command: sh -c "cd backend && PYTHONPATH=. uv run alembic upgrade head"
     volumes:
       - ./config.yaml:/app/backend/config.yaml:ro
-      - ${OPSINTECH_HOME:-./backend/.opsintech}:/app/backend/.opsintech
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
       - ./skills:/app/skills:ro
     working_dir: /app
     environment:
       <<: *common-env
     networks:
-      - opsintech
+      - prismos
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,21 +61,21 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: opsintech-postgres
+    container_name: prismos-postgres
     profiles:
       - postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-opsintech}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-opsintech}
-      POSTGRES_DB: ${POSTGRES_DB:-opsintech}
+      POSTGRES_USER: ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}}
+      POSTGRES_PASSWORD: ${PRISMOS_POSTGRES_PASSWORD:-${OPSINTECH_POSTGRES_PASSWORD:-${POSTGRES_PASSWORD:-prismos}}}
+      POSTGRES_DB: ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-opsintech} -d ${POSTGRES_DB:-opsintech}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}} -d ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -80,7 +87,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: opsintech-nginx
+    container_name: prismos-nginx
     ports:
       - "${PORT:-2026}:2026"
     volumes:
@@ -93,7 +100,7 @@ services:
       langgraph:
         condition: service_healthy
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     deploy:
       resources:
@@ -105,14 +112,15 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       target: prod
-    container_name: opsintech-frontend
+    image: prismos-frontend:latest
+    container_name: prismos-frontend
     volumes:
       - ./config.yaml:/app/config.yaml:ro
-      - ${OPSINTECH_HOME:-./backend/.opsintech}:/app/backend/.opsintech
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
     environment:
       SERVER_BACKEND_URL: http://gateway:8001
     networks:
-      - opsintech
+      - prismos
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
@@ -128,11 +136,12 @@ services:
   gateway:
     build:
       <<: *common-build
-    container_name: opsintech-gateway
+    image: prismos-gateway:latest
+    container_name: prismos-gateway
     command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes:
       - ./config.yaml:/app/backend/config.yaml:ro
-      - ${OPSINTECH_HOME:-./backend/.opsintech}:/app/backend/.opsintech
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
       - ./skills:/app/skills:ro
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /app
@@ -141,7 +150,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech
+      - prismos
     depends_on:
       db-init:
         condition: service_completed_successfully
@@ -160,21 +169,23 @@ services:
   langgraph:
     build:
       <<: *common-build
-    container_name: opsintech-langgraph
+    image: prismos-langgraph:latest
+    container_name: prismos-langgraph
     command: sh -c "cd /app/backend && uv run langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
     volumes:
       - ./config.yaml:/app/config.yaml:ro
-      - ${OPSINTECH_HOME:-./backend/.opsintech}:/app/backend/.opsintech
+      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
       - ./skills:/app/skills:ro
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       <<: *common-env
+      PRISMOS_CONFIG_PATH: /app/config.yaml
       OPSINTECH_CONFIG_PATH: /app/config.yaml
       LANGCHAIN_TRACING_V2: ${LANGCHAIN_TRACING_V2:-false}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - opsintech
+      - prismos
     depends_on:
       db-init:
         condition: service_completed_successfully
@@ -191,7 +202,7 @@ services:
           memory: 2G
 
 networks:
-  opsintech:
+  prismos:
     driver: bridge
 
 volumes:

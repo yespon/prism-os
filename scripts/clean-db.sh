@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-cd "$(dirname "$0")/.."
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$REPO_ROOT"
+source "$REPO_ROOT/scripts/prismos-env.sh"
 
 # ── Read config.yaml to determine database type ──────────────────────────────
 DB_TYPE=$(python3 -c "
 import yaml
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 db = cfg.get('database', {})
 print(db.get('type', 'sqlite'))
 " 2>/dev/null || echo "sqlite")
 
-OPSINTECH_DIR="./backend/.opsintech"
+PRISMOS_DIR="$PRISMOS_HOME"
 
 echo ""
 echo "========================================"
@@ -27,7 +29,7 @@ if [ "$DB_TYPE" = "postgres" ]; then
 
     TENANT_URL=$(python3 -c "
 import yaml, urllib.parse
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 url = cfg['database']['url']
 # parse: postgresql+asyncpg://user:pass@host:port/dbname
@@ -37,7 +39,7 @@ print(f'host={parsed.hostname} port={parsed.port or 5432} user={parsed.username}
 
     AUTH_URL=$(python3 -c "
 import yaml, urllib.parse
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 url = cfg['database']['auth']['url']
 parsed = urllib.parse.urlparse(url.replace('postgresql+asyncpg', 'postgresql'))
@@ -46,7 +48,7 @@ print(f'host={parsed.hostname} port={parsed.port or 5432} user={parsed.username}
 
     CHECKPOINT_URL=$(python3 -c "
 import yaml, urllib.parse
-with open('config.yaml', 'r') as f:
+with open('$PRISMOS_CONFIG_PATH', 'r') as f:
     cfg = yaml.safe_load(f)
 cp = cfg.get('checkpointer', {})
 if cp.get('type') == 'postgres':
@@ -109,9 +111,9 @@ fi
 # ── SQLite cleanup ───────────────────────────────────────────────────────────
 if [ "$DB_TYPE" = "sqlite" ]; then
     FILES=(
-        "$OPSINTECH_DIR/tenant.db"
-        "$OPSINTECH_DIR/auth.db"
-        "$OPSINTECH_DIR/checkpoints.db"
+        "$PRISMOS_DIR/tenant.db"
+        "$PRISMOS_DIR/auth.db"
+        "$PRISMOS_DIR/checkpoints.db"
     )
 
     EXISTING=()
@@ -147,7 +149,7 @@ fi
 
 # ── Check for leftover SQLite files ──────────────────────────────────────────
 REMAINING=()
-for f in "$OPSINTECH_DIR/tenant.db" "$OPSINTECH_DIR/auth.db" "$OPSINTECH_DIR/checkpoints.db"; do
+for f in "$PRISMOS_DIR/tenant.db" "$PRISMOS_DIR/auth.db" "$PRISMOS_DIR/checkpoints.db"; do
     if [ -f "$f" ]; then
         REMAINING+=("$f")
     fi

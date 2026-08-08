@@ -1,6 +1,6 @@
 -- Auth identity tables for Better Auth.
 -- Run after the databases are created (init-databases.sql).
--- Target database: opsintech_auth_db
+-- Target database: prismos_auth_db
 
 -- user identity table (managed by Better Auth, augmented with custom fields)
 CREATE TABLE IF NOT EXISTS "user" (

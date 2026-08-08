@@ -1,4 +1,18 @@
-# Configuration for the OpsInTech application
+# Configuration for PrismOS
+#
+# Runtime environment variables are resolved by scripts/prismos-env.sh:
+#   PRISMOS_* takes precedence over OPSINTECH_*, then PrismOS defaults.
+# Supported path variables are PRISMOS_HOME and PRISMOS_CONFIG_PATH; the
+# legacy OPSINTECH_HOME and OPSINTECH_CONFIG_PATH names remain supported.
+#
+# New deployments store runtime data in backend/.prismos. If that directory
+# does not exist but backend/.opsintech does, PrismOS uses the old directory in
+# place without copying, deleting, or rewriting it. Keep an existing config
+# pointing at .opsintech when preserving old SQLite data; change paths only as
+# part of a separately backed-up migration.
+#
+# Security: do not commit a populated config.yaml or .env. Store API keys and
+# database passwords in a secret manager or protected environment variables.
 #
 # ============================================================================
 # Config Version (used to detect outdated config files)
@@ -10,7 +24,7 @@ config_version: 2
 # ============================================================================
 # Log Level
 # ============================================================================
-# Logging level for opsintech modules (debug/info/warning/error)
+# Logging level for PrismOS modules (debug/info/warning/error)
 log_level: info
 
 # ============================================================================
@@ -19,11 +33,11 @@ log_level: info
 # SQLite (default) — no extra services needed, db-init creates the file
 database:
   type: sqlite
-  url: sqlite+aiosqlite:///.opsintech/tenant.db
+  url: sqlite+aiosqlite:///.prismos/tenant.db
   echo: false
   auth:
     type: sqlite
-    url: sqlite+aiosqlite:///.opsintech/auth.db
+    url: sqlite+aiosqlite:///.prismos/auth.db
 
 # PostgreSQL (for production) — uncomment and set your credentials:
 # database:
@@ -49,7 +63,7 @@ sandbox:
 #   use: AioSandboxProvider
 #   image: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
 #   port: 8080
-#   container_prefix: opsintech-sandbox
+#   container_prefix: prismos-sandbox
 #   # Optional: Maximum number of concurrent sandbox containers (default: 3)
 #   replicas: 3
 
@@ -90,7 +104,7 @@ memory:
 # ============================================================================
 # Checkpointer Configuration
 # ============================================================================
-# Configure state persistence for the embedded OpsInTechClient.
+# Configure state persistence for the embedded PrismOS client.
 # The LangGraph Server manages its own state persistence separately
 # via the server infrastructure (this setting does not affect it).
 #
@@ -101,7 +115,7 @@ memory:
 
 checkpointer:
   type: sqlite
-  connection_string: .opsintech/checkpoints.db
+  connection_string: .prismos/checkpoints.db
 
 # In-memory (default when omitted — no persistence):
 # checkpointer:
@@ -110,7 +124,7 @@ checkpointer:
 # PostgreSQL (multi-process, production):
 # checkpointer:
 #   type: postgres
-#   connection_string: postgresql://user:password@localhost:5432/opsintech
+#   connection_string: postgresql://user:password@localhost:5432/prismos
 
 # ============================================================================
 # Plugin Configuration

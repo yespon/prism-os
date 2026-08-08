@@ -21,6 +21,7 @@ if [ -f "$REPO_ROOT/.env" ]; then
     source "$REPO_ROOT/.env"
     set +a
 fi
+source "$REPO_ROOT/scripts/prismos-env.sh"
 
 # ── Argument parsing ─────────────────────────────────────────────────────────
 
@@ -50,7 +51,7 @@ nginx -c "$REPO_ROOT/docker/nginx/nginx.local.conf" -p "$REPO_ROOT" -s quit 2>/d
 sleep 1
 pkill -9 nginx 2>/dev/null || true
 killall -9 nginx 2>/dev/null || true
-./scripts/cleanup-containers.sh opsintech-sandbox 2>/dev/null || true
+./scripts/cleanup-containers.sh prismos-sandbox 2>/dev/null || true
 sleep 1
 
 # ── Banner ────────────────────────────────────────────────────────────────────
@@ -77,13 +78,13 @@ echo ""
 # ── Config check ─────────────────────────────────────────────────────────────
 
 if ! { \
-        [ -n "$OPSINTECH_CONFIG_PATH" ] && [ -f "$OPSINTECH_CONFIG_PATH" ] || \
+        [ -f "$PRISMOS_CONFIG_PATH" ] || \
         [ -f backend/config.yaml ] || \
         [ -f config.yaml ]; \
     }; then
-    echo "✗ No OpsInTech config file found."
+    echo "✗ No PrismOS config file found."
     echo "  Checked these locations:"
-    echo "    - $OPSINTECH_CONFIG_PATH (when OPSINTECH_CONFIG_PATH is set)"
+    echo "    - $PRISMOS_CONFIG_PATH (PRISMOS_CONFIG_PATH → OPSINTECH_CONFIG_PATH → default)"
     echo "    - backend/config.yaml"
     echo "    - ./config.yaml"
     echo ""
@@ -129,7 +130,7 @@ if [ -z "${AUTH_DB_URL:-}" ]; then
     AUTH_DB_URL=$(cd "$REPO_ROOT/backend" && uv run --frozen python3 -c "
 import yaml, sys
 try:
-    with open('$REPO_ROOT/config.yaml') as f:
+    with open('$PRISMOS_CONFIG_PATH') as f:
         cfg = yaml.safe_load(f)
     db = cfg.get('database', {})
     if db.get('type') == 'postgres':
@@ -165,7 +166,7 @@ export LANGGRAPH_API_URL="${LANGGRAPH_API_URL:-http://localhost:2025}"
 
 echo "Starting LangGraph server..."
 # Read log_level from config.yaml, fallback to env var, then to "info"
-CONFIG_LOG_LEVEL=$(grep -m1 '^log_level:' config.yaml 2>/dev/null | awk '{print $2}' | tr -d ' ')
+CONFIG_LOG_LEVEL=$(grep -m1 '^log_level:' "$PRISMOS_CONFIG_PATH" 2>/dev/null | awk '{print $2}' | tr -d ' ')
 LANGGRAPH_LOG_LEVEL="${LANGGRAPH_LOG_LEVEL:-${CONFIG_LOG_LEVEL:-info}}"
 (cd backend && PYTHONPATH=. uv run langgraph dev --host 0.0.0.0 --port 2025 --server-log-level "$LANGGRAPH_LOG_LEVEL" --no-browser --allow-blocking > ../logs/langgraph.log 2>&1) &
 ./scripts/wait-for-port.sh 2025 60 "LangGraph" || {

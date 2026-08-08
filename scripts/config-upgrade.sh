@@ -9,17 +9,18 @@
 set -e
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$REPO_ROOT/scripts/prismos-env.sh"
 EXAMPLE="$REPO_ROOT/config.example.yaml"
 
 # Resolve config.yaml location: env var > backend/ > repo root
-if [ -n "$OPSINTECH_CONFIG_PATH" ] && [ -f "$OPSINTECH_CONFIG_PATH" ]; then
-    CONFIG="$OPSINTECH_CONFIG_PATH"
+if [ -f "$PRISMOS_CONFIG_PATH" ]; then
+    CONFIG="$PRISMOS_CONFIG_PATH"
 elif [ -f "$REPO_ROOT/backend/config.yaml" ]; then
     CONFIG="$REPO_ROOT/backend/config.yaml"
 elif [ -f "$REPO_ROOT/config.yaml" ]; then
     CONFIG="$REPO_ROOT/config.yaml"
 else
-    CONFIG=""
+    CONFIG="$PRISMOS_CONFIG_PATH"
 fi
 
 if [ ! -f "$EXAMPLE" ]; then
@@ -27,9 +28,10 @@ if [ ! -f "$EXAMPLE" ]; then
     exit 1
 fi
 
-if [ -z "$CONFIG" ]; then
+if [ ! -f "$CONFIG" ]; then
     echo "No config.yaml found — creating from example..."
-    cp "$EXAMPLE" "$REPO_ROOT/config.yaml"
+    mkdir -p "$(dirname "$CONFIG")"
+    cp "$EXAMPLE" "$CONFIG"
     echo "✓ config.yaml created. Please review and set your API keys."
     exit 0
 fi

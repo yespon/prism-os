@@ -4,10 +4,10 @@
 -- only on FIRST startup (when the data directory is empty).
 
 -- Platform database (tenant data, user configs, MCP servers, skills, models)
-CREATE DATABASE opsintech_tenant_db;
+CREATE DATABASE prismos_tenant_db;
 
 -- Auth database (Better Auth identity tables: users, accounts, sessions)
-CREATE DATABASE opsintech_auth_db;
+CREATE DATABASE prismos_auth_db;
 
 -- Checkpoint database (LangGraph state persistence)
-CREATE DATABASE opsintech_checkpoints;
+CREATE DATABASE prismos_checkpoints;
