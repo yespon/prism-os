@@ -1,4 +1,4 @@
-# OpsinTech Platform - Unified Development Environment
+# PrismOS - Unified Development Environment
 
 .PHONY: help config config-upgrade check install dev dev-daemon start stop up down clean docker-init docker-start docker-stop docker-logs docker-logs-frontend docker-logs-gateway
 
@@ -11,7 +11,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 help:
-	@echo "DeerFlow Development Commands:"
+	@echo "PrismOS Development Commands:"
 	@echo "  make config          - Generate local config files (skips files that already exist)"
 	@echo "  make config-upgrade  - Merge new fields from config.example.yaml into config.yaml"
 	@echo "  make check           - Check if all required tools are installed"
@@ -27,7 +27,7 @@ help:
 	@echo "  make up              - Build and start production Docker services (localhost:2026)"
 	@echo "  make up-nobuild      - Start production Docker services without rebuilding"
 	@echo "  make down            - Stop and remove production Docker containers"
-	@echo "  make rebuild-images  - Remove all OpsinTech images and rebuild from scratch"
+	@echo "  make rebuild-images  - Remove all PrismOS images and rebuild from scratch"
 	@echo ""
 	@echo "Docker Development Commands:"
 	@echo "  make docker-init     - Pull the sandbox image"
@@ -131,17 +131,15 @@ stop:
 	@sleep 1
 	@-pkill -9 nginx 2>/dev/null || true
 	@echo "Cleaning up sandbox containers..."
-	@-./scripts/cleanup-containers.sh opsintech-sandbox 2>/dev/null || true
+	@-./scripts/cleanup-containers.sh prismos-sandbox 2>/dev/null || true
 	@echo "✓ All services stopped"
 
 # Clean up
 clean: down
 	@echo "Cleaning up..."
-	@-rm -rf backend/.opsintech 2>/dev/null || true
 	@-rm -rf backend/.langgraph_api 2>/dev/null || true
-	@-rm -rf backend/data 2>/dev/null || true
 	@-rm -rf logs/*.log 2>/dev/null || true
-	@-docker volume rm opsintech_postgres-data 2>/dev/null || true
+	@echo "Preserving PrismOS runtime data and database volumes. Use make clean-db only after a backup."
 	@echo "✓ Cleanup complete"
 
 # ==========================================
@@ -182,7 +180,7 @@ up:
 up-nobuild:
 	@./scripts/deploy.sh --no-build
 
-# Remove all OpsinTech images and rebuild from scratch
+# Remove all PrismOS images and rebuild from scratch
 rebuild-images:
 	@./scripts/rebuild-images.sh
 

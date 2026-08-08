@@ -1,192 +1,145 @@
-# Quick Start Guide
+# PrismOS Quick Start
 
 [中文](./QUICKSTART_zh.md) | English
 
-This guide gets you from zero to your first AI conversation with OpsinTech in under 5 minutes.
+This guide starts a local PrismOS alpha instance with Docker. It gets you to a
+first authenticated workspace; it does not create a production security
+boundary for you.
 
 ## Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/) installed and running
-- A model API key (OpenAI, Anthropic, DeepSeek, etc.)
+- Docker Desktop or Docker Engine with Compose v2, running locally
+- A model API key for a provider supported by the admin UI
+- At least 8 GB of available memory is recommended for the core services
 
-## Step 1: Clone and Start
+The default `LocalSandboxProvider` executes on the host. Review the sandbox
+warning in [SECURITY.md](./SECURITY.md) before using untrusted code.
+
+## 1. Clone and bootstrap configuration
 
 ```bash
-git clone https://github.com/opsintech/opsintech-platform.git
-cd opsintech-platform
+git clone https://github.com/yespon/prism-os.git
+cd prism-os
 make config
+```
+
+`make config` creates local `config.yaml` and `frontend/.env` files only when
+they do not already exist. Do not commit either file after adding credentials.
+
+New deployments use `PRISMOS_*` variables and `backend/.prismos`. Legacy
+`OPSINTECH_*` variables remain accepted for existing installations. See the
+[configuration guide](./backend/docs/CONFIGURATION.md) before changing a data
+path.
+
+## 2. Start PrismOS
+
+```bash
 make up
 ```
 
-Wait 30-60 seconds for all services to start, then open http://localhost:2026.
-
-> You can also use `docker compose up -d`, but `make up` handles config initialization and secret generation automatically.
-
-## Step 2: Log In
-
-On first startup, a bootstrap admin account is created automatically. When you open the login page:
-- You'll be redirected to the **Setup Wizard** to set your admin email and password
-- After setup, you'll be automatically logged into the admin dashboard
-
-## Step 3: Add Models via Admin UI
-
-After logging in as platform admin, go to **Settings → Models** and pick from 20+ pre-configured provider templates:
-
-OpenAI · Anthropic · DeepSeek · Azure OpenAI · Gemini · Ollama · OpenRouter · Groq · Together AI · SiliconFlow · DashScope · Zhipu (GLM) · Moonshot (Kimi) · MiniMax · Baichuan · 01.AI · Volcengine Ark · Novita AI · + any OpenAI-compatible provider
-
-Select a provider, fill in your API key — done. The model is saved to the database.
-
-> Models are configured via the admin UI and stored in the database. Do **not** edit `config.yaml` for model configuration in production.
-
-## Step 4: Create Tenants and Users
-
-- Go to **Settings → Tenant Management**
-- Click **Create Tenant**
-- Fill in the tenant name (e.g. "My Tenant")
-- Click **Create Tenant** and set the default tenant admin
-
-> Each tenant can have multiple users, and each user can have multiple Agents.
-
-## Step 5: Start Using
-
-- Click **Smart Workbench** in the sidebar to start a new conversation
-- Upload files, ask questions, run research — the agent works inside an isolated sandbox
-- Check **Agents** to create custom agents with specific tools and behaviors
-- Open **Settings** to manage your models and tools
-
-## What's Next
-
-- **Add more models**: Go to Settings → Models and pick from 20+ provider templates
-- **Connect MCP servers**: Extend the agent with custom tools via MCP
-- **Add custom Skills**: Create Markdown-based skill files for your workflows
-- **Invite team members**: Go to tenant admin → Members (available to tenant admins)
-
----
-
-## Command Reference
-
-### Docker Production
+This initializes the configured database, builds local images, and starts the
+reverse proxy, frontend, gateway, and LangGraph services. Verify the gateway:
 
 ```bash
-make up              # Build images and start all services (recommended for first deploy)
-make up-nobuild      # Start services without rebuilding images
-make down            # Stop and remove all containers
-make rebuild-images  # Remove all OpsinTech images and rebuild from scratch
+curl http://localhost:2026/health
 ```
 
-### Local Development
+Open <http://localhost:2026> in a browser.
+
+## 3. Complete bootstrap setup
+
+On first visit, use the setup wizard to create the initial administrator. The
+bootstrap status endpoint can be inspected without logging in:
 
 ```bash
-make check           # Verify prerequisites (Node.js 22+, pnpm, uv, nginx)
-make install         # Install all dependencies (frontend + backend)
-make dev             # Start development servers (with hot-reload)
-make stop            # Stop all services
-make clean           # Clean up processes and temporary files
+curl http://localhost:2026/api/auth/bootstrap-status
 ```
 
-### Docker Development
+After setup, sign in and change temporary credentials immediately. Do not put
+credentials or provider keys in an issue, terminal transcript, or committed
+configuration file.
+
+## 4. Add a model
+
+From the administrator UI, open **Settings → Models**, select a provider
+template, enter the API key and model name, and save it. Model records are
+stored in the database and assigned to tenants; production model configuration
+should not be placed in `config.yaml`.
+
+## 5. Try the workspace
+
+- Start a conversation and inspect generated artifacts.
+- Upload a file and review the thread file flow.
+- Create or import a Skill and use its sandbox testing flow.
+- Configure an MCP server only after reviewing its command, network access,
+  credentials, and tenant scope.
+- Use **Settings** to manage users, tenants, models, Skills, MCP servers, and
+  optional vertical plugins.
+
+AI operations can be used as a validation scenario, but it is not required for
+the platform to run and is not the architectural boundary of PrismOS.
+
+## Container options
+
+The first local deployment builds images from the repository. The planned alpha
+release publishes a GHCR image for supported architectures:
 
 ```bash
-make docker-init     # Pull the sandbox container image
-make docker-start    # Start Docker development services
-make docker-stop     # Stop Docker development services
-make docker-logs     # View all Docker logs
-make docker-logs-frontend  # View frontend logs
-make docker-logs-gateway   # View gateway logs
+docker pull ghcr.io/yespon/prism-os:v0.1.0-alpha.1
 ```
 
-### Other Commands
+Use the exact tag from the release notes. PrismOS alpha releases do not publish
+or imply a `latest` tag. The current Compose files build local service images;
+release-specific notes describe the corresponding image consumption path.
+
+## Development commands
 
 ```bash
-make config          # Generate local config files (first-time setup)
-make config-upgrade  # Merge new config fields into existing config.yaml
-make setup-sandbox   # Pre-pull sandbox container image
-make help            # Show all available commands
+make check                 # Check local prerequisites
+make install               # Install uv and pnpm dependencies
+make dev                   # Run local services with hot reload
+make docker-init           # Prepare Docker development images
+make docker-start          # Start Docker development mode
+make docker-logs           # Follow Docker development logs
+make stop                  # Stop local development processes
+make down                  # Stop production Compose services
 ```
 
----
-
-## China Users: Preparing Images for Local Builds
-
-In China, pulling base images from overseas registries during Docker builds may fail due to network issues. Pre-pull the following images before building:
-
-### Required Images
-
-```bash
-# Backend base image
-docker pull python:3.12-slim
-
-# Frontend base image
-docker pull node:22-alpine
-
-# Reverse proxy
-docker pull nginx:alpine
-
-# Docker CLI (for sandbox container management)
-docker pull docker:cli
-```
-
-### Build-Stage Dependencies
-
-```bash
-# uv package manager (referenced via COPY --from in backend Dockerfile)
-docker pull ghcr.io/astral-sh/uv:0.9.26
-```
-
-### Optional Images
-
-```bash
-# PostgreSQL (only needed with --profile postgres)
-docker pull postgres:16-alpine
-
-# Sandbox image (for Docker sandbox mode)
-docker pull enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
-```
-
-### Using a Mirror Accelerator
-
-If pulling from Docker Hub / GHCR is slow, configure a Docker registry mirror:
-
-```bash
-# Edit Docker daemon config
-sudo vim /etc/docker/daemon.json
-```
-
-Add mirror sources:
-
-```json
-{
-  "registry-mirrors": [
-    "https://mirror.ccs.tencentyun.com",
-    "https://registry.docker-cn.com"
-  ]
-}
-```
-
-Restart Docker:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-```
-
-After configuration, run `make up` to build and start normally.
-
----
+The public entry point remains <http://localhost:2026>. The gateway serves
+`/api/*`; LangGraph traffic is exposed through `/api/langgraph/*`.
 
 ## Troubleshooting
 
-**"No tenant assigned" error after registration**
-→ Restart the backend service. The auto-tenant creation happens during the first API request. `docker compose restart gateway`
+### Health endpoint does not respond
 
-**Sandbox fails to start**
-→ Make sure Docker is running and the sandbox image is pulled: `make docker-init`
+```bash
+docker compose ps
+docker compose logs --tail=200 gateway langgraph nginx
+```
 
-**Model returns an error**
-→ Verify your API key is correct and the model name matches what the provider expects
+If configuration came from an old checkout, verify `PRISMOS_CONFIG_PATH` and
+the runtime data path. Do not remove `backend/.opsintech`; it may contain an
+existing installation's data.
 
-**Docker image build timeout in China**
-→ See the "China Users" section above — pre-pull base images or configure a registry mirror
+### Model requests fail
 
-**Hydration Error in browser console**
-→ Usually caused by browser extensions (e.g. Demoway) injecting HTML attributes. Safe to ignore
+Verify the provider key, base URL, model name, tenant assignment, and provider
+availability from **Settings → Models**. The health endpoint only confirms
+service availability; it does not validate an external model provider.
+
+### Sandbox execution fails
+
+The local sandbox runs on the host. For Docker mode, verify Docker socket access
+and pull the configured sandbox image. For Kubernetes provisioner mode, review
+the [provisioner guide](./docker/provisioner/README.md), kubeconfig mount, and
+namespace permissions.
+
+## Stop and reset
+
+```bash
+make down
+```
+
+`make clean` removes temporary development state and logs while preserving
+PrismOS runtime data and database volumes. `make clean-db` is destructive;
+back up data before using it.

@@ -1,45 +1,72 @@
 # Security Policy
 
-## Reporting a Vulnerability
+PrismOS is alpha software. It includes tenant, RBAC, audit, and sandbox
+controls, but it is not a security certification or a complete enterprise
+policy engine. Treat deployments and generated artifacts as sensitive until
+your team reviews the whole execution path.
 
-We take security vulnerabilities seriously. If you discover a security issue, please report it responsibly.
+## Reporting a vulnerability
 
-**Preferred method**: Submit a report via GitHub Security Advisories:
-https://github.com/opsintech/opsintech-platform/security
+Report suspected vulnerabilities privately through GitHub Security Advisories:
 
-**Alternative**: Send an email to the project maintainers if GitHub Security Advisories is not suitable for your situation.
+<https://github.com/yespon/prism-os/security/advisories/new>
 
-Please include the following in your report:
-- A description of the vulnerability and its potential impact
-- Steps to reproduce the issue
-- Any suggested mitigations or fixes
+If the private advisory flow is unavailable, contact the project maintainers
+through the private channel associated with the repository. Do not open a
+public issue for an undisclosed vulnerability.
 
-**What to expect**:
-- We will acknowledge your report within 48 hours
-- We will provide an initial assessment within 5 business days
-- We will keep you informed of progress throughout the resolution process
-- We will credit responsible disclosure in our release notes (unless you prefer to remain anonymous)
+Include, where possible:
 
-**Please do not**:
-- Publicly disclose the vulnerability before a fix is available
-- Access or modify data that does not belong to you
-- Use automated vulnerability scanners that may degrade service availability
+- affected version, commit, or deployment mode;
+- concise description and impact assessment;
+- reproducible steps or a minimal proof of concept;
+- logs, traces, or screenshots with secrets and personal data removed; and
+- a suggested mitigation, if available.
 
-## Supported Versions
+Do not access data that is not yours, degrade service availability, or publish
+exploit details before maintainers have had a reasonable opportunity to respond.
+We will acknowledge reports as soon as practical, assess severity, coordinate a
+fix or mitigation, and credit responsible disclosure when permitted.
 
-| Version | Supported |
-| ------- | --------- |
-| v1.0 (main branch) | Yes |
-| Pre-release / development builds | Best-effort |
+## Supported versions
 
-As OpsinTech is in its initial release phase, please use the latest version from the `main` branch for security updates. Once stable releases are published, we will provide security patches for the latest minor version.
+| Version | Support expectation |
+| --- | --- |
+| `main` | Development baseline; best-effort security fixes |
+| `v0.1.0-alpha.1` | Alpha pre-release; best-effort fixes and upgrade guidance |
+| Older snapshots | Not supported; upgrade to current release or main |
 
-## Security Features
+The support table will be tightened after alpha. A pre-release is not a promise
+of backward compatibility or a production SLA.
 
-OpsinTech v1.0 includes the following security capabilities:
-- Multi-tenancy with strict data isolation between tenants
-- Role-based access control (RBAC) with platform and tenant admin roles
-- Full audit trail for all administrative and user operations
-- Mandatory password change on first login
-- User status management (active / suspended)
-- Sandboxed code execution with configurable isolation levels
+## Security baseline and limitations
+
+The current implementation includes:
+
+- tenant-aware resource scopes and protected management routes;
+- platform and tenant RBAC roles;
+- database-backed model and integration configuration;
+- audit views for supported administrative operations;
+- local, Docker, and Kubernetes sandbox adapters; and
+- user/tenant management with status controls.
+
+It does not yet provide a complete centrally enforced policy engine, end-to-end
+Task/Run or Workflow lifecycle, evaluation framework, connector federation, or
+independent Agent runtime. These are roadmap items.
+
+In particular:
+
+- The default local filesystem sandbox executes on the host and is not a
+  production isolation boundary.
+- Docker-socket modes can grant substantial host control. Use dedicated hosts,
+  least privilege, reviewed images, and restrictive network policy.
+- Kubernetes provisioner mode requires operator-managed RBAC, namespace policy,
+  quotas, image provenance, network policy, and kubeconfig protection.
+- MCP servers and model providers are external code/data boundaries. Review
+  commands, URLs, tokens, scopes, and tenant assignments before enabling them.
+- Never place API keys, passwords, or personal data in `config.yaml`, `.env`,
+  logs, issue reports, or source control.
+
+AI operations is only a validation scenario. Security review must cover the
+PrismOS core and every enabled plugin or connector independently; it must not
+assume an operations workflow closes the governance loop.

@@ -9,7 +9,7 @@
 | Section            | Purpose                                                                 |
 | ------------------ | ----------------------------------------------------------------------- |
 | `config_version`   | Schema version tracking for `make config-upgrade`                       |
-| `log_level`        | Logging level for OpsInTech modules                                     |
+| `log_level`        | Logging level for PrismOS modules                                       |
 | `database`         | Database connection strings (SQLite/PostgreSQL for tenant and auth DBs) |
 | `sandbox`          | Sandbox provider (local or Docker-based)                                |
 | `title`            | Auto conversation title generation settings                             |
@@ -72,7 +72,7 @@ sandbox:
   use: AioSandboxProvider
   image: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
   port: 8080
-  container_prefix: opsintech-sandbox
+  container_prefix: prismos-sandbox
   replicas: 3
 ```
 
@@ -128,7 +128,7 @@ checkpointer:
 ```yaml
 checkpointer:
   type: postgres
-  connection_string: postgresql://user:password@localhost:5432/opsintech
+  connection_string: postgresql://user:password@localhost:5432/prismos
 ```
 
 <br />

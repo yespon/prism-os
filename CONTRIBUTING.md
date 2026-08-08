@@ -1,338 +1,165 @@
-# Contributing to OpsinTech
+# Contributing to PrismOS
 
-Thank you for your interest in contributing to OpsinTech! This guide will help you set up your development environment and understand our development workflow.
+Thank you for helping shape PrismOS. This is an independent repository. Please
+improve the platform foundation without turning a validation scenario into a
+hidden architectural dependency.
 
-## Development Environment Setup
+## Before you start
 
-We offer two development environments. **Docker is recommended** for the most consistent and hassle-free experience.
+Read the [README](./README.md), [architecture guide](./backend/docs/ARCHITECTURE.md),
+and [security policy](./SECURITY.md). PrismOS is alpha software: mark unfinished
+behavior as unfinished, preserve compatibility boundaries, and do not present
+roadmap items as delivered capabilities.
 
-### Option 1: Docker Development (Recommended)
+Intentional boundaries:
 
-Docker provides a consistent, isolated environment with all dependencies pre-configured. No need to install Node.js, Python, or nginx on your local machine.
+- Keep the `deerflow` import path and LangGraph/DeerFlow adapter intact.
+- Do not change existing API paths, database tables, or Alembic migrations as
+  part of a branding or documentation change.
+- Preserve existing data directories and compatibility environment variables.
+- Keep AI operations optional as a validation scenario.
+- Do not commit credentials, populated local configuration, runtime data, or
+  generated dependency directories.
 
-#### Prerequisites
+## Development environment
 
-- Docker Desktop or Docker Engine
-- pnpm (for caching optimization)
+### Docker development
 
-#### Setup Steps
-
-1. **Configure the application**:
-   ```bash
-   make config
-
-   export OPENAI_API_KEY="your-key-here"
-   ```
-
-2. **Initialize Docker environment** (first time only):
-   ```bash
-   make docker-init
-   ```
-   This will:
-   - Build Docker images
-   - Install frontend dependencies (pnpm)
-   - Install backend dependencies (uv)
-   - Share pnpm cache with host for faster builds
-
-3. **Start development services**:
-   ```bash
-   make docker-start
-   ```
-   `make docker-start` reads `config.yaml` and starts `provisioner` only for provisioner/Kubernetes sandbox mode.
-
-   All services will start with hot-reload enabled:
-   - Frontend changes are automatically reloaded
-   - Backend changes trigger automatic restart
-   - LangGraph server supports hot-reload
-
-4. **Access the application**:
-   - Web Interface: http://localhost:2026
-   - API Gateway: http://localhost:2026/api/*
-   - LangGraph: http://localhost:2026/api/langgraph/*
-
-#### Docker Commands
+Prerequisites are Docker Desktop or Docker Engine with Compose v2, a working
+Docker daemon, and pnpm if you want host cache optimization.
 
 ```bash
-make docker-init             # Build images and initialize
-make docker-start            # Start Docker services (mode-aware, localhost:2026)
-make docker-stop             # Stop Docker development services
-make docker-logs             # View Docker development logs
-make docker-logs-frontend    # View Docker frontend logs
-make docker-logs-gateway     # View Docker gateway logs
+make config
+make docker-init
+make docker-start
 ```
 
-#### Linux: Docker daemon permission denied
-
-If Docker-based commands fail on Linux with a permission error, your current user likely does not have permission to access the Docker daemon socket:
+The development entry point is <http://localhost:2026>:
 
 ```text
-unable to get image 'opsintech-dev-langgraph': permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
+prismos-dev
+  ├── nginx      :2026  reverse proxy
+  ├── frontend   :3000  Next.js development server
+  ├── gateway    :8001  FastAPI API gateway
+  ├── langgraph  :2024  LangGraph server with DeerFlow-compatible harness
+  └── provisioner:8002  optional Kubernetes sandbox provisioner
 ```
 
-Recommended fix: add your current user to the `docker` group so Docker commands work without `sudo`.
+The provisioner is only needed for Kubernetes sandbox mode. Review
+[docker/provisioner/README.md](./docker/provisioner/README.md) before enabling
+it. On Linux, fix Docker daemon permissions on the host rather than weakening
+container boundaries.
 
-1. Confirm the `docker` group exists:
-   ```bash
-   getent group docker
-   ```
-2. Add your current user to the `docker` group:
-   ```bash
-   sudo usermod -aG docker $USER
-   ```
-3. Apply the new group membership. The most reliable option is to log out completely and then log back in. If you want to refresh the current shell session instead, run:
-   ```bash
-   newgrp docker
-   ```
-4. Verify Docker access:
-   ```bash
-   docker ps
-   ```
-5. Retry the command:
-   ```bash
-   make docker-stop
-   make docker-start
-   ```
-
-If `docker ps` still reports a permission error after `usermod`, fully log out and log back in before retrying.
-
-#### Docker Architecture
-
-```
-Host Machine
-  ↓
-Docker Compose (opsintech-dev)
-  ├→ nginx (port 2026) ← Reverse proxy
-  ├→ web (port 3000) ← Frontend with hot-reload
-  ├→ api (port 8001) ← Gateway API with hot-reload
-  ├→ langgraph (port 2024) ← LangGraph server with hot-reload
-  └→ provisioner (optional, port 8002) ← Started only in provisioner/K8s sandbox mode
-```
-
-**Benefits of Docker Development**:
-- Consistent environment across different machines
-- No need to install Node.js, Python, or nginx locally
-- Isolated dependencies and services
-- Easy cleanup and reset
-- Hot-reload for all services
-- Production-like environment
-
-### Option 2: Local Development
-
-If you prefer to run services directly on your machine:
-
-#### Prerequisites
-
-Check that you have all required tools installed:
+### Local development
 
 ```bash
 make check
+make install
+make dev
 ```
 
-Required tools:
-- Node.js 22+
-- pnpm
-- uv (Python package manager)
-- nginx
-
-#### Setup Steps
-
-1. **Configure the application** (same as Docker setup above)
-
-2. **Install dependencies**:
-   ```bash
-   make install
-   ```
-
-3. **Run development server** (starts all services with nginx):
-   ```bash
-   make dev
-   ```
-
-4. **Access the application**:
-   - Web Interface: http://localhost:2026
-   - All API requests are automatically proxied through nginx
-
-#### Manual Service Control
-
-If you need to start services individually:
-
-1. **Start backend services**:
-   ```bash
-   # Terminal 1: Start LangGraph Server (port 2024)
-   cd backend
-   make dev
-
-   # Terminal 2: Start Gateway API (port 8001)
-   cd backend
-   make gateway
-
-   # Terminal 3: Start Frontend (port 3000)
-   cd frontend
-   pnpm dev
-   ```
-
-2. **Start nginx**:
-   ```bash
-   make nginx
-   ```
-
-3. **Access the application**:
-   - Web Interface: http://localhost:2026
-
-## Project Structure
-
-```
-opsintech-platform/
-├── config.example.yaml               # Configuration template
-├── Makefile                          # Build and development commands
-├── scripts/
-│   └── docker.sh                     # Docker management script
-├── docker/
-│   ├── docker-compose.yaml           # Docker Compose configuration
-│   └── nginx/
-│       ├── nginx.conf                # Nginx config for Docker
-│       └── nginx.local.conf          # Nginx config for local dev
-├── backend/                          # Backend application
-│   ├── packages/
-│   │   └── harness/
-│   │       └── deerflow/
-│   │           ├── agents/           # LangGraph agents
-│   │           ├── tools/            # Built-in and MCP tools
-│   │           ├── sandbox/          # Sandbox execution
-│   │           └── memory/           # Memory system
-│   ├── app/
-│   │   └── gateway/                  # Gateway API (port 8001)
-│   ├── docs/                         # Backend documentation
-│   └── Makefile                      # Backend commands
-├── frontend/                         # Frontend application
-│   └── Makefile                      # Frontend commands
-└── skills/                           # Agent skills
-    ├── public/                       # Public skills
-    └── custom/                       # Custom skills
-```
-
-## Architecture
-
-```
-Browser
-  ↓
-Nginx (port 2026) ← Unified entry point
-  ├→ Frontend (port 3000) ← / (non-API requests)
-  ├→ Gateway API (port 8001) ← /api/models, /api/mcp, /api/skills, /api/threads/*/artifacts
-  └→ LangGraph Server (port 2024) ← /api/langgraph/* (agent interactions)
-```
-
-## Development Workflow
-
-### For External Contributors (Fork)
-
-If you don't have write access to the repository, contribute via a fork:
-
-1. **Fork the repository**: Click the **Fork** button on GitHub to create your own copy.
-
-2. **Clone your fork and set up upstream**:
-   ```bash
-   git clone git@github.com:YOUR_USERNAME/opsintech-platform.git
-   cd opsintech-platform
-   git remote add upstream git@github.com:OpsinTech/opsintech-platform.git
-   ```
-
-3. **Keep your fork in sync**:
-   ```bash
-   git fetch upstream
-   git checkout main
-   git merge upstream/main
-   git push origin main
-   ```
-
-4. **Create a feature branch from upstream main**:
-   ```bash
-   git fetch upstream
-   git checkout -b feature/your-feature-name upstream/main
-   ```
-
-5. **Make your changes** with hot-reload enabled
-
-6. **Test your changes** thoroughly
-
-7. **Commit your changes**:
-   ```bash
-   git add .
-   git commit -m "feat: description of your changes"
-   ```
-
-8. **Push to your fork and create a Pull Request**:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-   Then open a Pull Request from your fork's branch to `OpsinTech/opsintech-platform:main` on GitHub.
-
-### For Team Members (Direct Access)
-
-If you have write access to the repository:
-
-1. **Create a feature branch**:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-2. **Make your changes** with hot-reload enabled
-
-3. **Test your changes** thoroughly
-
-4. **Commit your changes**:
-   ```bash
-   git add .
-   git commit -m "feat: description of your changes"
-   ```
-
-5. **Push and create a Pull Request**:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-### Commit Convention
-
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
-
-| Prefix     | Usage                      |
-|------------|----------------------------|
-| `feat:`    | New feature                |
-| `fix:`     | Bug fix                    |
-| `refactor:`| Code restructuring         |
-| `docs:`    | Documentation only         |
-| `test:`    | Adding or updating tests   |
-| `chore:`   | Maintenance tasks          |
-| `ci:`      | CI/CD changes              |
-
-## Testing
+The local stack uses Nginx on port 2026 and hot reload for frontend and backend.
+For manual service control:
 
 ```bash
-# Backend tests
-cd backend
-uv run pytest
+# LangGraph / Agent runtime
+cd backend && make dev
 
-# Frontend checks
-cd frontend
-pnpm check
+# API gateway, in another terminal
+cd backend && make gateway
+
+# Frontend, in another terminal
+cd frontend && pnpm dev
 ```
 
-## Code Style
+## Repository layout
 
-- **Backend (Python)**: We use `ruff` for linting and formatting
-- **Frontend (TypeScript)**: We use ESLint and Prettier
+```text
+prism-os/
+├── config.example.yaml       configuration template
+├── scripts/                   bootstrap, environment, deployment, and checks
+├── docker/                    Compose, Nginx, PostgreSQL, provisioner
+├── backend/
+│   ├── app/gateway/           PrismOS API gateway and management routes
+│   ├── packages/harness/deerflow/
+│   │                            DeerFlow-compatible Agent/LangGraph runtime
+│   ├── alembic/               database migrations
+│   └── tests/                 backend tests
+├── frontend/                  Next.js / React application
+├── skills/                    public and custom Skills
+├── docs/                      release notes and design documents
+└── .github/                   CI and issue templates
+```
 
-## Documentation
+## Branches and pull requests
 
-- [Configuration Guide](backend/docs/CONFIGURATION.md) - Setup and configuration
-- [Architecture Overview](backend/docs/ARCHITECTURE.md) - Technical architecture
-- [API Reference](backend/docs/API.md) - Complete API documentation
+There is no required upstream fork or upstream remote. If you have repository
+access:
 
-## Need Help?
+```bash
+git clone https://github.com/yespon/prism-os.git
+cd prism-os
+git checkout -b codex/short-description
+```
 
-- Check existing [Issues](https://github.com/opsintech/opsintech-platform/issues)
-- Read the [Documentation](backend/docs/)
+Use a focused branch and pull request. Explain user-facing behavior,
+compatibility impact, and verification evidence. For architectural work, link
+the relevant whitepaper/design section and state whether the change is
+implemented, partial, or roadmap-only.
+
+Do not rewrite history, delete the legacy `b20c668` tag, remove runtime data, or
+rename `deerflow` imports without an explicit migration design.
+
+## Commit convention
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Prefix | Use |
+| --- | --- |
+| `feat:` | User-visible capability |
+| `fix:` | Bug fix |
+| `refactor:` | Behavior-preserving structure change |
+| `docs:` | Documentation only |
+| `test:` | Test changes |
+| `chore:` | Maintenance |
+| `ci:` | Build or workflow changes |
+
+## Verification checklist
+
+Run relevant checks and report exact results in the pull request:
+
+```bash
+git diff --check
+bash -n scripts/*.sh
+docker compose config
+docker compose -f docker/docker-compose.yaml config
+
+cd backend
+uv run pytest --collect-only -q
+uv run pytest -q
+
+cd ../frontend
+pnpm check
+pnpm test:unit
+```
+
+If a dependency is unavailable or the full suite contains pre-existing failures,
+state that explicitly with counts. Successful collection is not the same as a
+fully passing suite.
+
+## Documentation and API changes
+
+Public documentation must use PrismOS and the canonical URL
+`https://github.com/yespon/prism-os`. Keep real upstream references for
+DeerFlow, LangGraph, and other dependencies. Update English and Chinese public
+docs together when behavior changes.
+
+Existing gateway routes are part of the alpha compatibility surface. Prefer
+additive changes, preserve response fields, and update API docs and tests when a
+route genuinely changes.
 
 ## License
 
-By contributing to OpsinTech, you agree that your contributions will be licensed under the [MIT License](./LICENSE).
+By contributing, you agree that contributions are licensed under the
+[MIT License](./LICENSE), subject to existing attribution and third-party
+license obligations.
