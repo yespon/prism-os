@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from collections.abc import AsyncIterator
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +22,14 @@ from deerflow.models.factory import create_chat_model
 logger = logging.getLogger(__name__)
 
 AGENT_NAME_PATTERN = __import__("re").compile(r"^[A-Za-z0-9-]+$")
+
+
+@dataclass(frozen=True, slots=True)
+class StreamEvent:
+    """A serialized event emitted by the DeerFlow client stream API."""
+
+    type: str
+    data: dict[str, Any]
 
 
 class DeerFlowClient:
