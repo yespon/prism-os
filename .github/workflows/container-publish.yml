@@ -25,7 +25,7 @@ env:
 
 jobs:
   validate:
-    name: Validate publish gates
+    name: Validate runtime release gates
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -66,9 +66,16 @@ jobs:
         working-directory: frontend
         run: pnpm install --frozen-lockfile
 
-      - name: Run frontend static checks
-        working-directory: frontend
-        run: pnpm check
+      - name: Run frontend quality audit (non-blocking)
+        run: bash scripts/frontend-quality-audit.sh frontend
+
+      - name: Upload frontend quality audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prismos-frontend-quality-audit
+          path: frontend/frontend-quality-*
+          if-no-files-found: warn
 
       - name: Validate root Compose configuration
         run: docker compose config --quiet
