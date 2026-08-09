@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "policy": "Exact paths only; compatibility entries expire at 0.3.0; historical documents require a Legacy / Historical banner.",
+  "entries": []
+}
