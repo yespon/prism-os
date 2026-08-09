@@ -70,7 +70,7 @@ export default function SkillDetailPage() {
     isLoading: testLoading,
   } = useTerminalAgent({
     taskId: sessionId,
-    mode: "sandbox",
+    mode: "agent",
     modelName: selectedModel,
     skillInstructions: instructions,
     onExecuteCommand: async () => {

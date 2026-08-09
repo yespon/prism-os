@@ -41,6 +41,25 @@ Environment notes:
 - `uv run` was blocked in the sandbox while resolving `/Users/yespon/.cache/uv/sdists-v9/.git`; the backend baseline was captured with the existing worktree `backend/.venv` executables and this limitation remains recorded for the final strict `uv run` gate.
 - No production database was modified. The existing `backend/.opsintech` test-side artifact was not staged.
 
+## Task 2: complete
+
+Reviewed files:
+
+- `frontend/src/app/workspace/files/page.tsx`
+- `frontend/src/app/workspace/skills/[name]/page.tsx`
+- `frontend/src/core/i18n/locales/en-US.ts`
+
+Changes were limited to the diagnosed frontend type/build contracts: safe empty folder-stack navigation, the canonical upload translation owner, the supported terminal-agent mode, and the canonical tenant-shaped English locale keys. No protected database, schema, API path, Deerflow import, or LangGraph interface was changed.
+
+Verification evidence:
+
+- `cd frontend && pnpm typecheck`: exit `0`.
+- `cd frontend && pnpm build`: exit `0` when rerun with the approved escalated environment; Next.js 16.1.7 compiled, passed TypeScript, and generated 42 pages.
+- `cd frontend && pnpm build` in the normal sandbox: environment failure before compilation because the Turbopack child process could not bind a port (`Operation not permitted (os error 1)`); this was not treated as a product failure.
+- `cd frontend && pnpm test:unit`: still `32 failed`, `54 passed` across `86` tests and `17`/`18` failing/passing files. The failures are the pre-existing provider/fixture/mock clusters assigned to Task 3, not new failures from the Task 2 files.
+
+Task 2 is committed independently as `fix: restore frontend type and build gates`; Task 3 owns the remaining frontend unit-test debt.
+
 Failure inventory and ownership:
 
 | Domain | Evidence | Root-cause hypothesis | Owner task | Verification |
