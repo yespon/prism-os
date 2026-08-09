@@ -247,13 +247,13 @@ def test_load_user_config_payload_decrypts_encrypted_secrets(monkeypatch):
     assert ext_payload["mcpServers"]["server-a"]["oauth"]["client_secret"] == "oauth-secret"
 
 
-def test_resolve_db_url_from_config_falls_back_to_default_when_database_missing(monkeypatch, tmp_path):
+def test_resolve_db_url_from_config_falls_back_to_prismos_default_when_database_missing(monkeypatch, tmp_path):
     config_file = tmp_path / "config.yaml"
     config_file.write_text("config_version: 3\n", encoding="utf-8")
 
     monkeypatch.setattr(store, "_resolve_config_path", lambda: config_file)
 
-    assert store._resolve_db_url_from_config() == "sqlite+pysqlite:///.opsintech/tenant.db"
+    assert store._resolve_db_url_from_config() == "sqlite+pysqlite:///.prismos/tenant.db"
 
 
 def test_resolve_db_url_from_config_supports_env_placeholder(monkeypatch, tmp_path):
@@ -266,7 +266,7 @@ def test_resolve_db_url_from_config_supports_env_placeholder(monkeypatch, tmp_pa
     assert store._resolve_db_url_from_config() == "postgresql+psycopg://u:p@h/db"
 
 
-def test_resolve_db_url_from_config_converts_async_sqlite_url_to_sync(monkeypatch, tmp_path):
+def test_legacy_resolve_db_url_from_config_converts_async_sqlite_url_to_sync(monkeypatch, tmp_path):
     config_file = tmp_path / "config.yaml"
     config_file.write_text("database:\n  url: sqlite+aiosqlite:///./.opsintech/tenant.db\n", encoding="utf-8")
 

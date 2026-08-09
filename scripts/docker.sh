@@ -17,7 +17,12 @@ source "$PROJECT_ROOT/scripts/prismos-env.sh"
 COMPOSE_CMD=(docker compose -p "${PRISMOS_COMPOSE_PROJECT}-dev" -f docker-compose-dev.yaml)
 
 detect_sandbox_mode() {
-    local config_file="$PRISMOS_CONFIG_PATH"
+    local config_file="${PRISMOS_CONFIG_PATH:-$PROJECT_ROOT/config.yaml}"
+    # Tests and callers may override PROJECT_ROOT after sourcing this script.
+    # In that case resolve the config relative to the active project root.
+    if [ "${PROJECT_ROOT}" != "${PRISMOS_REPO_ROOT:-}" ]; then
+        config_file="$PROJECT_ROOT/config.yaml"
+    fi
     local sandbox_use=""
     local provisioner_url=""
 

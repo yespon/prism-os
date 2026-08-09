@@ -165,7 +165,7 @@ async def get_memory_config_endpoint(request: Request) -> MemoryConfigResponse:
         ```json
         {
             "enabled": true,
-            "storage_path": ".opsintech/memory.json",
+            "storage_path": ".prismos/memory.json",
             "debounce_seconds": 30,
             "max_facts": 100,
             "fact_confidence_threshold": 0.7,

@@ -4,7 +4,6 @@ Defines the abstract interface that all storage backends (local, MinIO/S3, etc.)
 must implement, along with a configuration model for storage settings.
 """
 
-from abc import ABC, abstractmethod
 from typing import Protocol, runtime_checkable
 
 from pydantic import BaseModel, Field
@@ -33,7 +32,7 @@ class StorageProviderConfig(BaseModel):
     s3_access_key: str = Field(default="minioadmin", description="S3 access key")
     s3_secret_key: str = Field(default="minioadmin", description="S3 secret key")
     s3_bucket_name: str = Field(
-        default="opsintech-files", description="S3 bucket name for file storage"
+        default="prismos-files", description="S3 bucket name for file storage"
     )
     s3_region_name: str = Field(default="us-east-1", description="S3 region name")
     s3_use_ssl: bool = Field(default=False, description="Whether to use SSL for S3 connections")
@@ -43,7 +42,7 @@ class StorageProviderConfig(BaseModel):
         description="Mount path for JuiceFS volume (POSIX-compatible)",
     )
     juicefs_subdir: str = Field(
-        default="opsintech-files",
+        default="prismos-files",
         description="Subdirectory within the JuiceFS mount for this application's files",
     )
 

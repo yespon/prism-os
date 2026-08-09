@@ -3,6 +3,7 @@ import re
 import shutil
 from pathlib import Path
 
+from deerflow.config.prismos_env import discover_legacy_home, resolve_setting
 from deerflow.config.tenant_context import get_current_tenant_id
 
 # Virtual path prefix seen by agents inside the sandbox
@@ -35,9 +36,9 @@ class Paths:
 
     BaseDir resolution (in priority order):
         1. Constructor argument `base_dir`
-        2. OPSINTECH_HOME environment variable
-        3. Local dev fallback: cwd/.opsintech  (when cwd is the backend/ dir)
-        4. Default: $HOME/.opsintech
+        2. PRISMOS_HOME environment variable (with a bounded legacy bridge)
+        3. Local dev fallback: cwd/.prismos  (when cwd is the backend/ dir)
+        4. Default: $HOME/.prismos
     """
 
     def __init__(self, base_dir: str | Path | None = None) -> None:
@@ -57,10 +58,10 @@ class Paths:
     @staticmethod
     def _fallback_base_dir() -> Path:
         """Choose a safe writable fallback for runtime data."""
-        home_candidate = Path.home() / ".opsintech"
+        home_candidate = Path.home() / ".prismos"
         if Paths._is_writable_target(home_candidate):
             return home_candidate
-        return Path("/tmp/.opsintech")
+        return Path("/tmp/.prismos")
 
     @property
     def host_base_dir(self) -> Path:
@@ -68,13 +69,14 @@ class Paths:
 
         When running inside Docker with a mounted Docker socket (DooD), the Docker
         daemon runs on the host and resolves mount paths against the host filesystem.
-        Set OPSINTECH_HOST_BASE_DIR to the host-side path that corresponds to this
+        Set PRISMOS_HOST_BASE_DIR to the host-side path that corresponds to this
         container's base_dir so that sandbox container volume mounts work correctly.
 
         Falls back to base_dir when the env var is not set (native/local execution).
         """
-        if env := os.getenv("OPSINTECH_HOST_BASE_DIR"):
-            return Path(env)
+        setting = resolve_setting("PRISMOS_HOST_BASE_DIR")
+        if setting.value:
+            return Path(setting.value)
         return self.base_dir
 
     @property
@@ -83,16 +85,22 @@ class Paths:
         if self._base_dir is not None:
             return self._base_dir
 
-        if env_home := os.getenv("OPSINTECH_HOME"):
-            candidate = Path(env_home).resolve()
+        setting = resolve_setting(
+            "PRISMOS_HOME",
+            default=str(self._fallback_base_dir()),
+        )
+        if setting.value:
+            candidate = Path(setting.value).resolve()
             if self._is_writable_target(candidate):
+                discover_legacy_home(candidate)
                 return candidate
             return self._fallback_base_dir()
 
         cwd = Path.cwd()
         if cwd.name == "backend" or (cwd / "pyproject.toml").exists():
-            candidate = cwd / ".opsintech"
+            candidate = cwd / ".prismos"
             if self._is_writable_target(candidate):
+                discover_legacy_home(candidate)
                 return candidate
             return self._fallback_base_dir()
 

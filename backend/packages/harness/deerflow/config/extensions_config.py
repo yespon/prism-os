@@ -7,6 +7,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from deerflow.config.prismos_env import resolve_setting
 from deerflow.config.tenant_context import get_current_tenant_id, get_current_user_id
 from deerflow.database.user_config_store import load_user_config_payload
 
@@ -75,7 +76,7 @@ class ExtensionsConfig(BaseModel):
 
         Priority:
         1. If provided `config_path` argument, use it.
-        2. If provided `OPSINTECH_EXTENSIONS_CONFIG_PATH` environment variable, use it.
+        2. If provided `PRISMOS_EXTENSIONS_CONFIG_PATH` environment variable, use it.
         3. Otherwise, check for `extensions_config.json` in the current directory, then in the parent directory.
         4. For backward compatibility, also check for `mcp_config.json` if `extensions_config.json` is not found.
         5. If not found, return None (extensions are optional).
@@ -91,12 +92,17 @@ class ExtensionsConfig(BaseModel):
             if not path.exists():
                 raise FileNotFoundError(f"Extensions config file specified by param `config_path` not found at {path}")
             return path
-        elif os.getenv("OPSINTECH_EXTENSIONS_CONFIG_PATH"):
-            path = Path(os.getenv("OPSINTECH_EXTENSIONS_CONFIG_PATH"))
-            if not path.exists():
-                raise FileNotFoundError(f"Extensions config file specified by environment variable `OPSINTECH_EXTENSIONS_CONFIG_PATH` not found at {path}")
-            return path
         else:
+            setting = resolve_setting("PRISMOS_EXTENSIONS_CONFIG_PATH")
+            if setting.value:
+                path = Path(setting.value)
+                if not path.exists():
+                    raise FileNotFoundError(
+                        "Extensions config file specified by environment variable "
+                        f"`PRISMOS_EXTENSIONS_CONFIG_PATH` (source: {setting.source_name}) "
+                        f"not found at {path}"
+                    )
+                return path
             # Check if the extensions_config.json is in the current directory
             path = Path(os.getcwd()) / "extensions_config.json"
             if path.exists():

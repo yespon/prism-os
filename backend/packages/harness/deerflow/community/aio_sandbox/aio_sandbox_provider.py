@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 # Default configuration
 DEFAULT_IMAGE = "enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest"
 DEFAULT_PORT = 8080
-DEFAULT_CONTAINER_PREFIX = "opsintech-sandbox"
+DEFAULT_CONTAINER_PREFIX = "prismos-sandbox"
 DEFAULT_IDLE_TIMEOUT = 600  # 10 minutes in seconds
 DEFAULT_REPLICAS = 3  # Maximum concurrent sandbox containers
 IDLE_CHECK_INTERVAL = 60  # Check every 60 seconds
@@ -54,7 +54,7 @@ class AioSandboxProvider(SandboxProvider):
         use: deerflow.community.aio_sandbox:AioSandboxProvider
         image: <container image>
         port: 8080                      # Base port for local containers
-        container_prefix: opsintech-sandbox
+        container_prefix: prismos-sandbox
         idle_timeout: 600               # Idle timeout in seconds (0 to disable)
         replicas: 3                     # Max concurrent sandbox containers (LRU eviction when exceeded)
         mounts:                         # Volume mounts for local containers
@@ -201,7 +201,7 @@ class AioSandboxProvider(SandboxProvider):
         paths = get_paths()
         paths.ensure_thread_dirs(user_id, thread_id, tenant_id=tenant_id)
 
-        # host_paths resolves to the host-side base dir when OPSINTECH_HOST_BASE_DIR
+        # host_paths resolves to the host-side base dir when PRISMOS_HOST_BASE_DIR
         # is set, otherwise falls back to the container's own base dir (native mode).
         host_paths = Paths(base_dir=paths.host_base_dir)
 
@@ -227,7 +227,7 @@ class AioSandboxProvider(SandboxProvider):
     def _get_skills_mount() -> tuple[str, str, bool] | None:
         """Get the skills directory mount configuration.
 
-        Mount source uses OPSINTECH_HOST_SKILLS_PATH when running inside Docker (DooD)
+        Mount source uses PRISMOS_HOST_SKILLS_PATH when running inside Docker (DooD)
         so the host Docker daemon can resolve the path.
         """
         try:
@@ -237,7 +237,9 @@ class AioSandboxProvider(SandboxProvider):
 
             if skills_path.exists():
                 # When running inside Docker with DooD, use host-side skills path.
-                host_skills = os.environ.get("OPSINTECH_HOST_SKILLS_PATH") or str(skills_path)
+                from deerflow.config.prismos_env import resolve_setting
+
+                host_skills = resolve_setting("PRISMOS_HOST_SKILLS_PATH", default=str(skills_path)).value
                 return (host_skills, container_path, True)  # Read-only for security
         except Exception as e:
             logger.warning(f"Could not setup skills mount: {e}")

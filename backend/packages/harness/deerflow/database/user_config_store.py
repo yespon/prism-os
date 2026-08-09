@@ -8,6 +8,7 @@ import yaml
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
+from deerflow.config.prismos_env import resolve_setting
 from deerflow.database.secrets_crypto import (
     decrypt_app_payload,
     decrypt_extensions_payload,
@@ -15,7 +16,7 @@ from deerflow.database.secrets_crypto import (
     decrypt_model_settings,
 )
 
-_DEFAULT_DATABASE_URL = "sqlite+aiosqlite:///.opsintech/tenant.db"
+_DEFAULT_DATABASE_URL = "sqlite+aiosqlite:///.prismos/tenant.db"
 
 
 def _to_sync_db_url(db_url: str) -> str:
@@ -38,8 +39,9 @@ def _sqlite_db_path_from_url(db_url: str) -> Path | None:
 
 
 def _resolve_config_path() -> Path | None:
-    if os.getenv("OPSINTECH_CONFIG_PATH"):
-        path = Path(os.getenv("OPSINTECH_CONFIG_PATH"))
+    setting = resolve_setting("PRISMOS_CONFIG_PATH")
+    if setting.value:
+        path = Path(setting.value)
         return path if path.exists() else None
 
     cwd = Path(os.getcwd())
@@ -68,16 +70,6 @@ def _resolve_db_url_from_config() -> str | None:
             normalized = env_value.strip()
         else:
             return _to_sync_db_url(_DEFAULT_DATABASE_URL)
-
-    if normalized.startswith("sqlite"):
-        sqlite_path = _sqlite_db_path_from_url(normalized)
-        if sqlite_path is not None:
-            if not sqlite_path.exists() or sqlite_path.stat().st_size == 0:
-                if "data/" in str(sqlite_path):
-                    backend_root = Path(__file__).resolve().parents[4]
-                    opsintech_db = backend_root / ".opsintech" / "tenant.db"
-                    if opsintech_db.exists() and opsintech_db.stat().st_size > 0:
-                        return f"sqlite+pysqlite:///{opsintech_db}"
 
     return _to_sync_db_url(normalized)
 
@@ -144,8 +136,9 @@ def _resolve_env_variables(value: Any) -> Any:
 
 
 def _resolve_extensions_path() -> Path | None:
-    if os.getenv("OPSINTECH_EXTENSIONS_CONFIG_PATH"):
-        path = Path(os.getenv("OPSINTECH_EXTENSIONS_CONFIG_PATH"))
+    setting = resolve_setting("PRISMOS_EXTENSIONS_CONFIG_PATH")
+    if setting.value:
+        path = Path(setting.value)
         return path if path.exists() else None
 
     cwd = Path(os.getcwd())

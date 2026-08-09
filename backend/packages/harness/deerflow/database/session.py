@@ -5,25 +5,18 @@ from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from deerflow.config import get_app_config
+from deerflow.config.database_config import DatabaseConfig
 
 _engine: AsyncEngine | None = None
 _session_factory: async_sessionmaker[AsyncSession] | None = None
 
 
 def _resolve_database_url() -> str:
-    """Resolve database URL with fallback from legacy ./data/ to .opsintech/."""
-    db_url = get_app_config().database.url
-
-    if db_url.startswith("sqlite"):
-        raw_path = db_url.split(":///", maxsplit=1)[-1]
-        normalized_path = raw_path[1:] if raw_path.startswith("/") else raw_path
-        candidate = Path(normalized_path).resolve()
-        if not candidate.exists() or candidate.stat().st_size == 0:
-            if "data/" in normalized_path:
-                backend_root = Path(__file__).resolve().parents[4]
-                opsintech_db = backend_root / ".opsintech" / "tenant.db"
-                if opsintech_db.exists() and opsintech_db.stat().st_size > 0:
-                    return f"sqlite+aiosqlite:///{opsintech_db}"
+    """Resolve the configured database URL and initialize its local parent."""
+    try:
+        db_url = get_app_config().database.url
+    except FileNotFoundError:
+        db_url = DatabaseConfig().url
 
     return db_url
 
@@ -35,7 +28,10 @@ def get_database_url() -> str:
 
 def get_database_echo() -> bool:
     """Read SQL echo setting from AppConfig."""
-    return get_app_config().database.echo
+    try:
+        return get_app_config().database.echo
+    except FileNotFoundError:
+        return DatabaseConfig().echo
 
 
 def get_engine() -> AsyncEngine:

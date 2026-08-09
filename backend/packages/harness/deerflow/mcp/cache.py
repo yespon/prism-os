@@ -30,7 +30,7 @@ def _cache_version_file() -> str:
 
 def _read_cache_version() -> int:
     try:
-        with open(_cache_version_file(), "r") as f:
+        with open(_cache_version_file()) as f:
             return int(f.read().strip())
     except (FileNotFoundError, ValueError):
         return 0
@@ -116,7 +116,7 @@ def get_cached_mcp_tools() -> list[BaseTool]:
 
     Cache entries expire after _MCP_CACHE_TTL_SECONDS (default 300s). When expired,
     the next request triggers a fresh load from the database. Cross-process
-    invalidation is supported via a version file in the shared OPSINTECH_HOME
+    invalidation is supported via a version file in the shared PRISMOS_HOME
     directory — when the Gateway process writes a new version after MCP config
     changes, the LangGraph Server picks it up on the next request.
     """

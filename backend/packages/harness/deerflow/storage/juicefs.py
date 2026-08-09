@@ -42,11 +42,11 @@ class JuiceFSStorageDriver(LocalStorageDriver):
         storage:
             backend: juicefs
             juicefs_mount_path: /mnt/juicefs
-            juicefs_subdir: opsintech-files
+            juicefs_subdir: prismos-files
 
     This produces files at::
 
-        /mnt/juicefs/opsintech-files/{tenant_id}/objects/{ab}/{cd}/{uuid}.dat
+        /mnt/juicefs/prismos-files/{tenant_id}/objects/{ab}/{cd}/{uuid}.dat
     """
 
     def __init__(self, config: StorageProviderConfig | None = None) -> None:
@@ -92,7 +92,7 @@ class JuiceFSStorageDriver(LocalStorageDriver):
         self._root.mkdir(parents=True, exist_ok=True)
 
         # Write a small probe file to verify writability
-        probe = self._root / ".opsintech_write_probe"
+        probe = self._root / ".prismos_write_probe"
         try:
             probe.write_text("ok")
             probe.unlink()

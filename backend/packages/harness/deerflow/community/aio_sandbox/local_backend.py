@@ -7,9 +7,9 @@ Handles container lifecycle, port allocation, and cross-process container discov
 from __future__ import annotations
 
 import logging
-import os
 import subprocess
 
+from deerflow.config.prismos_env import resolve_setting
 from deerflow.utils.network import get_free_port, release_port
 
 from .backend import SandboxBackend, wait_for_sandbox_ready
@@ -142,7 +142,7 @@ class LocalContainerBackend(SandboxBackend):
 
         # When running inside Docker (DooD), sandbox containers are reachable via
         # host.docker.internal rather than localhost (they run on the host daemon).
-        sandbox_host = os.environ.get("OPSINTECH_SANDBOX_HOST", "localhost")
+        sandbox_host = resolve_setting("PRISMOS_SANDBOX_HOST", default="localhost").value or "localhost"
         return SandboxInfo(
             sandbox_id=sandbox_id,
             sandbox_url=f"http://{sandbox_host}:{port}",
@@ -191,7 +191,7 @@ class LocalContainerBackend(SandboxBackend):
         if port is None:
             return None
 
-        sandbox_host = os.environ.get("OPSINTECH_SANDBOX_HOST", "localhost")
+        sandbox_host = resolve_setting("PRISMOS_SANDBOX_HOST", default="localhost").value or "localhost"
         sandbox_url = f"http://{sandbox_host}:{port}"
         if not wait_for_sandbox_ready(sandbox_url, timeout=5):
             return None

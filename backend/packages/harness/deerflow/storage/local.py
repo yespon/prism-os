@@ -11,11 +11,11 @@ performance issues and to enable seamless migration to S3 later.
 
 import hashlib
 import logging
-import os
-import uuid
 from pathlib import Path
 
 from deerflow.config.paths import get_paths
+from deerflow.config.prismos_env import resolve_setting
+from deerflow.storage.legacy_resources import detect_legacy_object_resources
 from deerflow.storage.provider import StorageProviderConfig
 
 logger = logging.getLogger(__name__)
@@ -235,26 +235,32 @@ def _load_storage_config() -> StorageProviderConfig:
 
     Priority:
     1. ``storage`` section in ``config.yaml`` (via AppConfig extra fields)
-    2. Environment variables: ``OPSINTECH_STORAGE_BACKEND``, etc.
+    2. Environment variables: ``PRISMOS_STORAGE_*`` (with a bounded legacy bridge).
     3. Built-in defaults from ``StorageProviderConfig``
     """
-    import os
+    def setting(name: str, default: str) -> str:
+        resolved = resolve_setting(name, default=default)
+        return resolved.value or default
 
-    # Check environment variables first (highest priority for container deployments)
-    env_backend = os.getenv("OPSINTECH_STORAGE_BACKEND")
-    if env_backend:
-        return StorageProviderConfig(
-            backend=env_backend,
-            local_root_path=os.getenv("OPSINTECH_STORAGE_LOCAL_ROOT", "data/storage"),
-            s3_endpoint_url=os.getenv("OPSINTECH_STORAGE_S3_ENDPOINT", "http://localhost:9000"),
-            s3_access_key=os.getenv("OPSINTECH_STORAGE_S3_ACCESS_KEY", "minioadmin"),
-            s3_secret_key=os.getenv("OPSINTECH_STORAGE_S3_SECRET_KEY", "minioadmin"),
-            s3_bucket_name=os.getenv("OPSINTECH_STORAGE_S3_BUCKET", "opsintech-files"),
-            s3_region_name=os.getenv("OPSINTECH_STORAGE_S3_REGION", "us-east-1"),
-            s3_use_ssl=os.getenv("OPSINTECH_STORAGE_S3_USE_SSL", "false").lower() == "true",
-            juicefs_mount_path=os.getenv("OPSINTECH_STORAGE_JUICEFS_MOUNT", "/mnt/juicefs"),
-            juicefs_subdir=os.getenv("OPSINTECH_STORAGE_JUICEFS_SUBDIR", "opsintech-files"),
+    # Check environment variables first (highest priority for container deployments).
+    # Resolving every field through the adapter keeps legacy input in one place and
+    # allows a canonical value to win independently for each setting.
+    env_backend = resolve_setting("PRISMOS_STORAGE_BACKEND", default="local")
+    if env_backend.source.name != "DEFAULT":
+        config = StorageProviderConfig(
+            backend=env_backend.value or "local",
+            local_root_path=setting("PRISMOS_STORAGE_LOCAL_ROOT", "data/storage"),
+            s3_endpoint_url=setting("PRISMOS_STORAGE_S3_ENDPOINT", "http://localhost:9000"),
+            s3_access_key=setting("PRISMOS_STORAGE_S3_ACCESS_KEY", "minioadmin"),
+            s3_secret_key=setting("PRISMOS_STORAGE_S3_SECRET_KEY", "minioadmin"),
+            s3_bucket_name=setting("PRISMOS_STORAGE_S3_BUCKET", "prismos-files"),
+            s3_region_name=setting("PRISMOS_STORAGE_S3_REGION", "us-east-1"),
+            s3_use_ssl=_resolve_ssl_setting(),
+            juicefs_mount_path=setting("PRISMOS_STORAGE_JUICEFS_MOUNT", "/mnt/juicefs"),
+            juicefs_subdir=setting("PRISMOS_STORAGE_JUICEFS_SUBDIR", "prismos-files"),
         )
+        _log_legacy_resources(config)
+        return config
 
     # Try to read from AppConfig (config.yaml's `storage:` section)
     try:
@@ -270,7 +276,33 @@ def _load_storage_config() -> StorageProviderConfig:
     except Exception:
         logger.debug("Could not load storage config from AppConfig, using defaults")
 
-    return StorageProviderConfig()
+    config = StorageProviderConfig()
+    _log_legacy_resources(config)
+    return config
+
+
+def _log_legacy_resources(config: StorageProviderConfig) -> None:
+    for resource in detect_legacy_object_resources(config):
+        logger.warning(
+            "Legacy storage resource detected (%s: %s): %s",
+            resource.kind,
+            resource.name,
+            resource.guidance,
+        )
+
+
+def _resolve_ssl_setting() -> bool:
+    def validate(value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"true", "false"}:
+            raise ValueError("PRISMOS_STORAGE_S3_USE_SSL must be true or false")
+        return normalized
+
+    return resolve_setting(
+        "PRISMOS_STORAGE_S3_USE_SSL",
+        default="false",
+        validator=validate,
+    ).value == "true"
 
 
 def reset_storage_driver() -> None:

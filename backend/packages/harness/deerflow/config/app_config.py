@@ -13,6 +13,7 @@ from deerflow.config.extensions_config import ExtensionsConfig
 from deerflow.config.guardrails_config import load_guardrails_config_from_dict
 from deerflow.config.memory_config import load_memory_config_from_dict
 from deerflow.config.model_config import ModelConfig
+from deerflow.config.prismos_env import resolve_setting
 from deerflow.config.sandbox_config import SandboxConfig
 from deerflow.config.skills_config import SkillsConfig
 from deerflow.config.subagents_config import load_subagents_config_from_dict
@@ -22,7 +23,7 @@ from deerflow.config.title_config import load_title_config_from_dict
 from deerflow.config.token_usage_config import TokenUsageConfig
 from deerflow.config.tool_config import ToolConfig, ToolGroupConfig
 from deerflow.config.tool_search_config import ToolSearchConfig, load_tool_search_config_from_dict
-from deerflow.database.user_config_store import load_user_config_payload, load_platform_models_from_db
+from deerflow.database.user_config_store import load_platform_models_from_db, load_user_config_payload
 
 load_dotenv()
 
@@ -53,7 +54,7 @@ class AppConfig(BaseModel):
 
         Priority:
         1. If provided `config_path` argument, use it.
-        2. If provided `OPSINTECH_CONFIG_PATH` environment variable, use it.
+        2. If provided `PRISMOS_CONFIG_PATH` environment variable, use it.
         3. Otherwise, first check the `config.yaml` in the current directory, then fallback to `config.yaml` in the parent directory.
         """
         if config_path:
@@ -61,12 +62,19 @@ class AppConfig(BaseModel):
             if not Path.exists(path):
                 raise FileNotFoundError(f"Config file specified by param `config_path` not found at {path}")
             return path
-        elif os.getenv("OPSINTECH_CONFIG_PATH"):
-            path = Path(os.getenv("OPSINTECH_CONFIG_PATH"))
-            if not Path.exists(path):
-                raise FileNotFoundError(f"Config file specified by environment variable `OPSINTECH_CONFIG_PATH` not found at {path}")
-            return path
         else:
+            setting = resolve_setting("PRISMOS_CONFIG_PATH")
+            if not setting.value:
+                path = None
+            else:
+                path = Path(setting.value)
+            if path is not None and not Path.exists(path):
+                raise FileNotFoundError(
+                    f"Config file specified by environment variable `PRISMOS_CONFIG_PATH` "
+                    f"(source: {setting.source_name}) not found at {path}"
+                )
+            if path is not None:
+                return path
             # Check if the config.yaml is in the current directory
             path = Path(os.getcwd()) / "config.yaml"
             if not path.exists():

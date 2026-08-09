@@ -41,7 +41,7 @@ class S3StorageDriver:
             s3_endpoint_url="http://localhost:9000",
             s3_access_key="minioadmin",
             s3_secret_key="minioadmin",
-            s3_bucket_name="opsintech-files",
+            s3_bucket_name="prismos-files",
         )
         driver = S3StorageDriver(config)
         await driver.put_object("key", b"content", "text/plain")

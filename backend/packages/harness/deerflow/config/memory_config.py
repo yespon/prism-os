@@ -19,7 +19,7 @@ class MemoryConfig(BaseModel):
             "Relative paths are resolved against `Paths.base_dir` "
             "(not the backend working directory). "
             "Note: if you previously set this to `.opsintech/memory.json`, "
-            "the file will now be resolved as `{base_dir}/.opsintech/memory.json`; "
+            "the file remains an explicit legacy path; new installations use `{base_dir}/memory.json`; "
             "migrate existing data or use an absolute path to preserve the old location."
         ),
     )
