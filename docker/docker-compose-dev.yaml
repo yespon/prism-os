@@ -31,15 +31,14 @@ services:
     volumes:
       - ~/.kube/config:/root/.kube/config:ro
     environment:
-      - K8S_NAMESPACE=${PRISMOS_K8S_NAMESPACE:-${OPSINTECH_K8S_NAMESPACE:-prismos}}
+      - K8S_NAMESPACE=${PRISMOS_K8S_NAMESPACE:-prismos}
       - SANDBOX_IMAGE=enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
       # Host paths for K8s HostPath volumes (must be absolute paths accessible by K8s node)
       # On Docker Desktop/OrbStack, use your actual host paths like /Users/username/...
       # Set these in your shell before running docker-compose:
       #   export PRISMOS_REPO_ROOT=/absolute/path/to/prism-os
-      # OPSINTECH_ROOT remains a supported legacy alias.
-      - SKILLS_HOST_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
-      - THREADS_HOST_PATH=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}/threads
+      - SKILLS_HOST_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - THREADS_HOST_PATH=${PRISMOS_HOME:-../backend/.prismos}/threads
       - KUBECONFIG_PATH=/root/.kube/config
       - NODE_HOST=host.docker.internal
       # Override K8S API server URL since kubeconfig uses 127.0.0.1
@@ -98,7 +97,7 @@ services:
       - ../logs:/app/logs
       # Mount pnpm store for caching
       - ${PNPM_STORE_PATH:-~/.local/share/pnpm/store}:/root/.local/share/pnpm/store
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
     working_dir: /app
     environment:
       - NODE_ENV=development
@@ -124,7 +123,7 @@ services:
       # Preserve the .venv built during Docker image build — mounting the full backend/
       # directory above would otherwise shadow it with the (empty) host directory.
       - gateway-venv:/app/backend/.venv
-      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml
+      - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/config.yaml
       - ../skills:/app/skills
       - ../logs:/app/logs
       # Mount uv cache for faster dependency installation
@@ -148,12 +147,9 @@ services:
     environment:
       - CI=true
       - PRISMOS_HOME=/app/backend/.prismos
-      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
-      - OPSINTECH_HOME=/app/backend/.prismos
-      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
-      - OPSINTECH_SANDBOX_HOST=host.docker.internal
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - PRISMOS_SANDBOX_HOST=host.docker.internal
     env_file:
       - ../.env
     extra_hosts:
@@ -177,7 +173,7 @@ services:
       # Preserve the .venv built during Docker image build — mounting the full backend/
       # directory above would otherwise shadow it with the (empty) host directory.
       - langgraph-venv:/app/backend/.venv
-      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml
+      - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/config.yaml
       - ../skills:/app/skills
       - ../logs:/app/logs
       # Mount uv cache for faster dependency installation
@@ -202,13 +198,9 @@ services:
       - CI=true
       - PRISMOS_HOME=/app/backend/.prismos
       - PRISMOS_CONFIG_PATH=/app/config.yaml
-      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
-      - OPSINTECH_HOME=/app/backend/.prismos
-      - OPSINTECH_CONFIG_PATH=/app/config.yaml
-      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_ROOT:-..}}/skills
-      - OPSINTECH_SANDBOX_HOST=host.docker.internal
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - PRISMOS_SANDBOX_HOST=host.docker.internal
     env_file:
       - ../.env
     extra_hosts:

@@ -1,15 +1,9 @@
 # Configuration for PrismOS
 #
-# Runtime environment variables are resolved by scripts/prismos-env.sh:
-#   PRISMOS_* takes precedence over OPSINTECH_*, then PrismOS defaults.
-# Supported path variables are PRISMOS_HOME and PRISMOS_CONFIG_PATH; the
-# legacy OPSINTECH_HOME and OPSINTECH_CONFIG_PATH names remain supported.
-#
-# New deployments store runtime data in backend/.prismos. If that directory
-# does not exist but backend/.opsintech does, PrismOS uses the old directory in
-# place without copying, deleting, or rewriting it. Keep an existing config
-# pointing at .opsintech when preserving old SQLite data; change paths only as
-# part of a separately backed-up migration.
+# Runtime environment variables are resolved by scripts/prismos-env.sh.
+# New deployments use PRISMOS_* variables and store runtime data in
+# backend/.prismos. Existing installations should use the explicit home
+# migration command before switching their runtime directory.
 #
 # Security: do not commit a populated config.yaml or .env. Store API keys and
 # database passwords in a secret manager or protected environment variables.

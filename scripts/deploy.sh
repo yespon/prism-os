@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# deploy.sh - Build and start (or stop) OpsinTech Platform production services
+# deploy.sh - Build and start (or stop) PrismOS production services
 #
 # Usage:
 #   deploy.sh [up]   — build images and start containers (default)

@@ -15,7 +15,6 @@
 #   PRISMOS_CONFIG_PATH              — path to config.yaml
 #   PRISMOS_DOCKER_SOCKET            — Docker socket path, default /var/run/docker.sock
 #   PRISMOS_REPO_ROOT                — repo root (used for skills host path in DooD)
-#   OPSINTECH_*                      — supported legacy aliases, lower priority
 #
 # Database modes:
 #   - SQLite (default): no extra services needed, db-init creates the file
@@ -35,13 +34,12 @@ services:
     container_name: prismos-db-init
     command: sh -c "cd backend && PYTHONPATH=. uv run alembic upgrade head"
     volumes:
-      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/backend/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/backend/config.yaml:ro
+      - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
     working_dir: /app
     environment:
       - CI=true
       - PRISMOS_HOME=/app/backend/.prismos
-      - OPSINTECH_HOME=/app/backend/.prismos
     networks:
       - prismos
     depends_on:
@@ -61,9 +59,9 @@ services:
     profiles:
       - postgres
     environment:
-      POSTGRES_USER: ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}}
-      POSTGRES_PASSWORD: ${PRISMOS_POSTGRES_PASSWORD:-${OPSINTECH_POSTGRES_PASSWORD:-${POSTGRES_PASSWORD:-prismos}}}
-      POSTGRES_DB: ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}
+      POSTGRES_USER: ${PRISMOS_POSTGRES_USER:-${POSTGRES_USER:-prismos}}
+      POSTGRES_PASSWORD: ${PRISMOS_POSTGRES_PASSWORD:-${POSTGRES_PASSWORD:-prismos}}
+      POSTGRES_DB: ${PRISMOS_POSTGRES_DB:-${POSTGRES_DB:-prismos}}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
@@ -71,7 +69,7 @@ services:
       - prismos
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}} -d ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PRISMOS_POSTGRES_USER:-${POSTGRES_USER:-prismos}} -d ${PRISMOS_POSTGRES_DB:-${POSTGRES_DB:-prismos}}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -116,8 +114,8 @@ services:
     image: prismos-frontend:latest
     container_name: prismos-frontend
     volumes:
-      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/config.yaml:ro
+      - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
     environment:
       SERVER_BACKEND_URL: http://gateway:8001
     networks:
@@ -143,20 +141,17 @@ services:
     container_name: prismos-gateway
     command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes:
-      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/backend/config.yaml:ro
+      - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/backend/config.yaml:ro
       - ../skills:/app/skills:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
-      - ${PRISMOS_DOCKER_SOCKET:-${OPSINTECH_DOCKER_SOCKET:-/var/run/docker.sock}}:/var/run/docker.sock
+      - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
+      - ${PRISMOS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
     working_dir: /app
     environment:
       - CI=true
       - PRISMOS_HOME=/app/backend/.prismos
-      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
-      - OPSINTECH_HOME=/app/backend/.prismos
-      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
-      - OPSINTECH_SANDBOX_HOST=host.docker.internal
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - PRISMOS_SANDBOX_HOST=host.docker.internal
       - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
     extra_hosts:
@@ -188,22 +183,18 @@ services:
     container_name: prismos-langgraph
     command: sh -c "cd /app/backend && uv run langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
     volumes:
-      - ${PRISMOS_CONFIG_PATH:-${OPSINTECH_CONFIG_PATH:-../config.yaml}}:/app/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/config.yaml:ro
+      - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
       - ../skills:/app/skills:ro
       - ../backend/.langgraph_api:/app/backend/.langgraph_api
-      - ${PRISMOS_DOCKER_SOCKET:-${OPSINTECH_DOCKER_SOCKET:-/var/run/docker.sock}}:/var/run/docker.sock
+      - ${PRISMOS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
     environment:
       - CI=true
       - PRISMOS_HOME=/app/backend/.prismos
       - PRISMOS_CONFIG_PATH=/app/config.yaml
-      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
-      - OPSINTECH_HOME=/app/backend/.prismos
-      - OPSINTECH_CONFIG_PATH=/app/config.yaml
-      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
-      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
-      - OPSINTECH_SANDBOX_HOST=host.docker.internal
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - PRISMOS_SANDBOX_HOST=host.docker.internal
       - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
       - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
@@ -238,10 +229,10 @@ services:
     volumes:
       - ~/.kube/config:/root/.kube/config:ro
     environment:
-      - K8S_NAMESPACE=${PRISMOS_K8S_NAMESPACE:-${OPSINTECH_K8S_NAMESPACE:-prismos}}
+      - K8S_NAMESPACE=${PRISMOS_K8S_NAMESPACE:-prismos}
       - SANDBOX_IMAGE=enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
-      - SKILLS_HOST_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
-      - THREADS_HOST_PATH=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}/threads
+      - SKILLS_HOST_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - THREADS_HOST_PATH=${PRISMOS_HOME:-../backend/.prismos}/threads
       - KUBECONFIG_PATH=/root/.kube/config
       - NODE_HOST=host.docker.internal
       - K8S_API_SERVER=https://host.docker.internal:26443

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# start-daemon.sh - Start all OpsinTech Platform development services in daemon mode
+# start-daemon.sh - Start all PrismOS development services in daemon mode
 #
-# This script starts OpsinTech Platform services in the background without keeping
+# This script starts PrismOS services in the background without keeping
 # the terminal connection. Logs are written to separate files.
 #
 # Must be run from the repo root directory.
@@ -40,7 +40,7 @@ sleep 1
 
 echo ""
 echo "=========================================="
-echo " Starting OpsinTech Platform in Daemon Mode"
+echo " Starting PrismOS in Daemon Mode"
 echo "=========================================="
 echo ""
 
@@ -53,7 +53,7 @@ if ! { \
     }; then
     echo "✗ No PrismOS config file found."
     echo "  Checked these locations:"
-    echo "    - $PRISMOS_CONFIG_PATH (PRISMOS_CONFIG_PATH → OPSINTECH_CONFIG_PATH → default)"
+    echo "    - $PRISMOS_CONFIG_PATH (PRISMOS_CONFIG_PATH → default)"
     echo "    - backend/config.yaml"
     echo "    - ./config.yaml"
     echo ""
@@ -134,7 +134,7 @@ echo "✓ Nginx started on localhost:2026"
 
 echo ""
 echo "=========================================="
-echo " DeerFlow is running in daemon mode!"
+echo " PrismOS is running in daemon mode!"
 echo "=========================================="
 echo ""
 echo " 🌐 Application: http://localhost:2026"

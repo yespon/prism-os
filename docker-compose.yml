@@ -20,13 +20,9 @@ name: prismos
 
 x-common-env: &common-env
   PRISMOS_HOME: /app/backend/.prismos
-  PRISMOS_HOST_BASE_DIR: ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}
-  PRISMOS_HOST_SKILLS_PATH: ${PRISMOS_HOST_SKILLS_PATH:-${OPSINTECH_HOST_SKILLS_PATH:-${PWD:-.}/skills}}
+  PRISMOS_HOST_BASE_DIR: ${PRISMOS_HOME:-./backend/.prismos}
+  PRISMOS_HOST_SKILLS_PATH: ${PRISMOS_HOST_SKILLS_PATH:-${PWD:-.}/skills}
   PRISMOS_SANDBOX_HOST: host.docker.internal
-  OPSINTECH_HOME: /app/backend/.prismos
-  OPSINTECH_HOST_BASE_DIR: ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}
-  OPSINTECH_HOST_SKILLS_PATH: ${PRISMOS_HOST_SKILLS_PATH:-${OPSINTECH_HOST_SKILLS_PATH:-${PWD:-.}/skills}}
-  OPSINTECH_SANDBOX_HOST: host.docker.internal
   CI: "true"
 
 x-common-build: &common-build
@@ -42,7 +38,7 @@ services:
     command: sh -c "cd backend && PYTHONPATH=. uv run alembic upgrade head"
     volumes:
       - ./config.yaml:/app/backend/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_HOME:-./backend/.prismos}:/app/backend/.prismos
       - ./skills:/app/skills:ro
     working_dir: /app
     environment:
@@ -65,9 +61,9 @@ services:
     profiles:
       - postgres
     environment:
-      POSTGRES_USER: ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}}
-      POSTGRES_PASSWORD: ${PRISMOS_POSTGRES_PASSWORD:-${OPSINTECH_POSTGRES_PASSWORD:-${POSTGRES_PASSWORD:-prismos}}}
-      POSTGRES_DB: ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}
+      POSTGRES_USER: ${PRISMOS_POSTGRES_USER:-${POSTGRES_USER:-prismos}}
+      POSTGRES_PASSWORD: ${PRISMOS_POSTGRES_PASSWORD:-${POSTGRES_PASSWORD:-prismos}}
+      POSTGRES_DB: ${PRISMOS_POSTGRES_DB:-${POSTGRES_DB:-prismos}}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
@@ -75,7 +71,7 @@ services:
       - prismos
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PRISMOS_POSTGRES_USER:-${OPSINTECH_POSTGRES_USER:-${POSTGRES_USER:-prismos}}} -d ${PRISMOS_POSTGRES_DB:-${OPSINTECH_POSTGRES_DB:-${POSTGRES_DB:-prismos}}}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PRISMOS_POSTGRES_USER:-${POSTGRES_USER:-prismos}} -d ${PRISMOS_POSTGRES_DB:-${POSTGRES_DB:-prismos}}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -116,7 +112,7 @@ services:
     container_name: prismos-frontend
     volumes:
       - ./config.yaml:/app/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_HOME:-./backend/.prismos}:/app/backend/.prismos
     environment:
       SERVER_BACKEND_URL: http://gateway:8001
     networks:
@@ -141,7 +137,7 @@ services:
     command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes:
       - ./config.yaml:/app/backend/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_HOME:-./backend/.prismos}:/app/backend/.prismos
       - ./skills:/app/skills:ro
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /app
@@ -174,13 +170,12 @@ services:
     command: sh -c "cd /app/backend && uv run langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
     volumes:
       - ./config.yaml:/app/config.yaml:ro
-      - ${PRISMOS_HOME:-${OPSINTECH_HOME:-./backend/.prismos}}:/app/backend/.prismos
+      - ${PRISMOS_HOME:-./backend/.prismos}:/app/backend/.prismos
       - ./skills:/app/skills:ro
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       <<: *common-env
       PRISMOS_CONFIG_PATH: /app/config.yaml
-      OPSINTECH_CONFIG_PATH: /app/config.yaml
       LANGCHAIN_TRACING_V2: ${LANGCHAIN_TRACING_V2:-false}
     extra_hosts:
       - "host.docker.internal:host-gateway"

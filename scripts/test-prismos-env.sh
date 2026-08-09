@@ -23,9 +23,15 @@ assert_equals() {
 resolve() {
     env -i PATH="$PATH" "$@" bash -c '
         source "$1"
-        printf "%s|%s|%s|%s|%s\n" \
-            "$PRISMOS_HOME" "$PRISMOS_CONFIG_PATH" "$PRISMOS_COMPOSE_PROJECT" \
-            "$PRISMOS_POSTGRES_USER" "$OPSINTECH_HOME"
+        printf "%s|%s\n" "$PRISMOS_HOME" "${PRISMOS_LEGACY_INPUTS:-}"
+    ' bash "$ENV_SCRIPT"
+}
+
+resolve_settings() {
+    env -i PATH="$PATH" "$@" bash -c '
+        source "$1"
+        printf "%s|%s|%s\n" \
+            "$PRISMOS_CONFIG_PATH" "$PRISMOS_COMPOSE_PROJECT" "$PRISMOS_POSTGRES_USER"
     ' bash "$ENV_SCRIPT"
 }
 
@@ -33,14 +39,31 @@ resolve() {
 result="$(resolve \
     PRISMOS_REPO_ROOT="$TEMP_ROOT" \
     PRISMOS_HOME=/new/home \
-    OPSINTECH_HOME=/legacy/home \
+    OPSINTECH_HOME=/legacy/home)"
+assert_equals "/new/home|" "$result" "new setting wins without exporting legacy aliases"
+
+result="$(resolve OPSINTECH_HOME=/legacy)"
+assert_equals "/legacy|OPSINTECH_HOME" "$result" "legacy input is normalized and reported"
+
+result="$(resolve \
+    PRISMOS_REPO_ROOT="$TEMP_ROOT" \
     PRISMOS_CONFIG_PATH=/new/config.yaml \
     OPSINTECH_CONFIG_PATH=/legacy/config.yaml \
     PRISMOS_COMPOSE_PROJECT=new-project \
     OPSINTECH_COMPOSE_PROJECT=legacy-project \
     PRISMOS_POSTGRES_USER=new-db-user \
     OPSINTECH_POSTGRES_USER=legacy-db-user)"
-assert_equals "/new/home|/new/config.yaml|new-project|new-db-user|/new/home" "$result" "PRISMOS_* takes precedence"
+assert_equals "$TEMP_ROOT/backend/.prismos|" "$result" "PrismOS defaults are used when explicit settings are absent"
+
+result="$(resolve_settings \
+    PRISMOS_REPO_ROOT="$TEMP_ROOT" \
+    PRISMOS_CONFIG_PATH=/new/config.yaml \
+    OPSINTECH_CONFIG_PATH=/legacy/config.yaml \
+    PRISMOS_COMPOSE_PROJECT=new-project \
+    OPSINTECH_COMPOSE_PROJECT=legacy-project \
+    PRISMOS_POSTGRES_USER=new-db-user \
+    OPSINTECH_POSTGRES_USER=legacy-db-user)"
+assert_equals "/new/config.yaml|new-project|new-db-user" "$result" "PRISMOS_* settings take precedence"
 
 # This fails if legacy deployments can no longer supply their existing values.
 result="$(resolve \
@@ -49,21 +72,44 @@ result="$(resolve \
     OPSINTECH_CONFIG_PATH=/legacy/config.yaml \
     OPSINTECH_COMPOSE_PROJECT=legacy-project \
     OPSINTECH_POSTGRES_USER=legacy-db-user)"
-assert_equals "/legacy/home|/legacy/config.yaml|legacy-project|legacy-db-user|/legacy/home" "$result" "OPSINTECH_* remains a fallback"
+assert_equals "/legacy/home|OPSINTECH_HOME,OPSINTECH_CONFIG_PATH,OPSINTECH_COMPOSE_PROJECT,OPSINTECH_POSTGRES_USER" "$result" "OPSINTECH_* remains a reported fallback"
+
+result="$(resolve_settings \
+    PRISMOS_REPO_ROOT="$TEMP_ROOT" \
+    OPSINTECH_CONFIG_PATH=/legacy/config.yaml \
+    OPSINTECH_COMPOSE_PROJECT=legacy-project \
+    OPSINTECH_POSTGRES_USER=legacy-db-user)"
+assert_equals "/legacy/config.yaml|legacy-project|legacy-db-user" "$result" "legacy settings remain valid fallbacks"
 
 # OPSINTECH_ROOT was the legacy repository-root spelling used by the
 # development Compose setup and must remain a valid compatibility input.
 result="$(resolve \
     OPSINTECH_ROOT="$TEMP_ROOT")"
-assert_equals "$TEMP_ROOT/backend/.prismos|$TEMP_ROOT/config.yaml|prismos|prismos|$TEMP_ROOT/backend/.prismos" "$result" "OPSINTECH_ROOT remains a repository-root fallback"
+assert_equals "$TEMP_ROOT/backend/.prismos|OPSINTECH_ROOT" "$result" "OPSINTECH_ROOT remains a repository-root fallback"
 
 # This fails if a fresh deployment stops using the PrismOS defaults.
 result="$(resolve PRISMOS_REPO_ROOT="$TEMP_ROOT")"
-assert_equals "$TEMP_ROOT/backend/.prismos|$TEMP_ROOT/config.yaml|prismos|prismos|$TEMP_ROOT/backend/.prismos" "$result" "PrismOS defaults are used"
+assert_equals "$TEMP_ROOT/backend/.prismos|" "$result" "PrismOS defaults are used"
 
-# This fails if existing data is ignored or rewritten instead of being selected.
+# Existing legacy data must be reported for explicit migration rather than
+# silently selected as the active home.
 mkdir -p "$TEMP_ROOT/backend/.opsintech"
 result="$(resolve PRISMOS_REPO_ROOT="$TEMP_ROOT")"
-assert_equals "$TEMP_ROOT/backend/.opsintech|$TEMP_ROOT/config.yaml|prismos|prismos|$TEMP_ROOT/backend/.opsintech" "$result" "existing .opsintech data is preserved as a fallback"
+assert_equals "$TEMP_ROOT/backend/.prismos|" "$result" "existing .opsintech data is not selected automatically"
+
+# Sourcing the adapter repeatedly must not duplicate its diagnostic list.
+result="$(env -i PATH="$PATH" OPSINTECH_HOME=/legacy bash -c '
+    source "$1"
+    source "$1"
+    printf "%s\n" "$PRISMOS_LEGACY_INPUTS"
+' bash "$ENV_SCRIPT")"
+assert_equals "OPSINTECH_HOME" "$result" "legacy input diagnostics remain de-duplicated"
+
+# Legacy input names must not be re-exported into child processes after the
+# host-boundary adapter has resolved them.
+if env -i PATH="$PATH" OPSINTECH_HOME=/legacy bash -c 'source "$1"; env | grep -q "^OPSINTECH_"' bash "$ENV_SCRIPT"; then
+    echo "FAIL: legacy aliases leaked back into the environment" >&2
+    exit 1
+fi
 
 echo "PASS: PrismOS environment compatibility resolution"

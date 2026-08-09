@@ -93,7 +93,7 @@ docker_available() {
 # Initialize: pre-pull the sandbox image so first Pod startup is fast
 init() {
     echo "=========================================="
-    echo "  DeerFlow Init — Pull Sandbox Image"
+    echo "  PrismOS Init — Pull Sandbox Image"
     echo "=========================================="
     echo ""
 
@@ -159,7 +159,7 @@ start() {
     local services
 
     echo "=========================================="
-    echo "  Starting DeerFlow Docker Development"
+    echo "  Starting PrismOS Docker Development"
     echo "=========================================="
     echo ""
 
@@ -263,7 +263,7 @@ stop() {
 # Restart Docker development environment
 restart() {
     echo "========================================"
-    echo "  Restarting DeerFlow Docker Services"
+    echo "  Restarting PrismOS Docker Services"
     echo "========================================"
     echo ""
     echo -e "${BLUE}Restarting containers...${NC}"
@@ -278,7 +278,7 @@ restart() {
 
 # Show help
 help() {
-    echo "DeerFlow Docker Management Script"
+    echo "PrismOS Docker Management Script"
     echo ""
     echo "Usage: $0 <command> [options]"
     echo ""

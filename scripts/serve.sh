@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# start.sh - Start all OpsinTech Platform development services
+# serve.sh - Start all PrismOS development services
 #
 # Must be run from the repo root directory.
 
@@ -58,7 +58,7 @@ sleep 1
 
 echo ""
 echo "=========================================="
-echo "  Starting OpsinTech Platform Development Server"
+echo "  Starting PrismOS Development Server"
 echo "=========================================="
 echo ""
 if $DEV_MODE; then
@@ -84,7 +84,7 @@ if ! { \
     }; then
     echo "✗ No PrismOS config file found."
     echo "  Checked these locations:"
-    echo "    - $PRISMOS_CONFIG_PATH (PRISMOS_CONFIG_PATH → OPSINTECH_CONFIG_PATH → default)"
+    echo "    - $PRISMOS_CONFIG_PATH (PRISMOS_CONFIG_PATH → default)"
     echo "    - backend/config.yaml"
     echo "    - ./config.yaml"
     echo ""
@@ -212,9 +212,9 @@ echo "✓ Nginx started on localhost:2026"
 echo ""
 echo "=========================================="
 if $DEV_MODE; then
-    echo "  ✓ DeerFlow development server is running!"
+    echo "  ✓ PrismOS development server is running!"
 else
-    echo "  ✓ DeerFlow production server is running!"
+    echo "  ✓ PrismOS production server is running!"
 fi
 echo "=========================================="
 echo ""
