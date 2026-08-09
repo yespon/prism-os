@@ -1,4 +1,6 @@
 .env
+**/.env
+frontend/.env
 Dockerfile
 .dockerignore
 .git

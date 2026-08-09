@@ -24,6 +24,10 @@ EXPOSE 3000
 # ── Builder: install + compile Next.js ───────────────────────────────────────
 FROM base AS builder
 ARG NPM_REGISTRY
+ARG NEXT_PUBLIC_BACKEND_BASE_URL
+ARG NEXT_PUBLIC_LANGGRAPH_BASE_URL
+ENV NEXT_PUBLIC_BACKEND_BASE_URL=${NEXT_PUBLIC_BACKEND_BASE_URL}
+ENV NEXT_PUBLIC_LANGGRAPH_BASE_URL=${NEXT_PUBLIC_LANGGRAPH_BASE_URL}
 RUN cd /app/frontend && pnpm config set registry ${NPM_REGISTRY} && pnpm install --frozen-lockfile
 COPY frontend ./frontend
 RUN cd /app/frontend && SKIP_ENV_VALIDATION=1 pnpm build
@@ -37,4 +41,3 @@ WORKDIR /app
 COPY --from=builder /app/frontend ./frontend
 EXPOSE 3000
 CMD ["sh", "-c", "cd /app/frontend && pnpm start"]
-

@@ -103,7 +103,20 @@ export default function SetupPage() {
     );
   }
 
-  if (!status?.needs_setup) {
+  if (!status) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-zinc-50 p-4 dark:bg-zinc-950">
+        <div
+          role="alert"
+          className="w-full max-w-md rounded-xl border border-red-200 bg-red-50 p-6 text-center text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+        >
+          {error ?? t.auth.setup.errorCheckStatus}
+        </div>
+      </div>
+    );
+  }
+
+  if (!status.needs_setup) {
     return null;
   }
 

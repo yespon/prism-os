@@ -23,6 +23,8 @@ cd "$REPO_ROOT"
 DOCKER_DIR="$REPO_ROOT/docker"
 source "$REPO_ROOT/scripts/prismos-env.sh"
 COMPOSE_CMD=(docker compose -p "$PRISMOS_COMPOSE_PROJECT" -f "$DOCKER_DIR/docker-compose.yaml")
+PORT="${PORT:-2026}"
+export PORT
 
 # ── Colors ────────────────────────────────────────────────────────────────────
 
@@ -33,6 +35,49 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 echo -e "${BLUE}PRISMOS_HOME=$PRISMOS_HOME${NC}"
+
+validate_runtime() {
+    local python_bin="${PRISMOS_PYTHON:-}"
+    if [ -z "$python_bin" ] && [ -x "$REPO_ROOT/backend/.venv/bin/python" ]; then
+        python_bin="$REPO_ROOT/backend/.venv/bin/python"
+    fi
+    if [ -z "$python_bin" ] && command -v python3 >/dev/null 2>&1; then
+        python_bin="$(command -v python3)"
+    fi
+    if [ -z "$python_bin" ] || ! "$python_bin" -c 'import yaml' >/dev/null 2>&1; then
+        echo -e "${RED}✗ A Python interpreter with PyYAML is required for deployment preflight validation.${NC}"
+        echo "  Run 'make install' or set PRISMOS_PYTHON to a compatible interpreter."
+        exit 1
+    fi
+
+    local port_args=(--port "$PORT")
+    # A repeated `up` is safe when the published port belongs to the current
+    # PrismOS nginx container. Any other listener must still fail closed.
+    if docker ps --filter "name=^/${PRISMOS_COMPOSE_PROJECT}-nginx$" \
+        --format '{{.Ports}}' | grep -Eq "(^|,)[^,]*:${PORT}->2026/tcp"; then
+        port_args+=(--allow-port-in-use)
+    fi
+
+    if ! "$python_bin" "$REPO_ROOT/scripts/validate_runtime.py" \
+        --config "$PRISMOS_CONFIG_PATH" \
+        "${port_args[@]}"; then
+        echo -e "${RED}✗ Deployment preflight failed.${NC}"
+        echo "  Resolve the errors above, or choose a free port with PORT=<port> ./scripts/deploy.sh up."
+        exit 1
+    fi
+}
+
+require_docker_daemon() {
+    if ! command -v docker >/dev/null 2>&1; then
+        echo -e "${RED}✗ Docker CLI was not found.${NC}"
+        exit 1
+    fi
+    if ! docker info >/dev/null 2>&1; then
+        echo -e "${RED}✗ Docker daemon is not reachable.${NC}"
+        echo "  Start Docker/OrbStack and retry the deployment."
+        exit 1
+    fi
+}
 
 # ── .env ─────────────────────────────────────────────────────────────────────
 
@@ -121,6 +166,7 @@ detect_sandbox_mode() {
 # ── down ──────────────────────────────────────────────────────────────────────
 
 if [ "$CMD" = "down" ]; then
+    require_docker_daemon
     export BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-placeholder}"
     "${COMPOSE_CMD[@]}" down
     exit 0
@@ -133,6 +179,14 @@ mkdir -p "$PRISMOS_HOME"
 echo "=========================================="
 echo "  PrismOS Production Deployment"
 echo "=========================================="
+echo ""
+
+# ── Step 0: Validate host/runtime prerequisites ─────────────────────────────
+
+echo "Validating deployment prerequisites..."
+require_docker_daemon
+validate_runtime
+echo -e "${GREEN}✓ Runtime preflight passed (PORT=$PORT)${NC}"
 echo ""
 
 # ── Step 1: Detect sandbox mode ──────────────────────────────────────────────
@@ -178,9 +232,9 @@ echo "=========================================="
 echo "  PrismOS is running!"
 echo "=========================================="
 echo ""
-echo "  🌐 Application: http://localhost:${PORT:-2026}"
-echo "  📡 API Gateway: http://localhost:${PORT:-2026}/api/*"
-echo "  🤖 LangGraph:   http://localhost:${PORT:-2026}/api/langgraph/*"
+echo "  🌐 Application: http://localhost:${PORT}"
+echo "  📡 API Gateway: http://localhost:${PORT}/api/*"
+echo "  🤖 LangGraph:   http://localhost:${PORT}/api/langgraph/*"
 echo ""
 echo "  Manage:"
 echo "    ./scripts/deploy.sh down    — stop and remove containers"
