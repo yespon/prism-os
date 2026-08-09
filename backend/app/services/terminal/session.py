@@ -15,6 +15,17 @@ from app.models.assets import Keychain, LocalAsset
 
 logger = logging.getLogger(__name__)
 
+
+def _new_command_marker() -> str:
+    return f"__PRISMOS_MARKER_{uuid.uuid4().hex}__"
+
+
+def _strip_command_markers(data: str) -> str:
+    """Remove complete output lines containing PrismOS command markers."""
+    return "".join(
+        line for line in data.splitlines(keepends=True) if "__PRISMOS_MARKER_" not in line
+    )
+
 def build_ssh_command(asset: LocalAsset, keychain: Keychain | None = None) -> tuple[list[str], dict, list[str]]:
     ssh_cmd = ["ssh", "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "ConnectTimeout=15", "-p", str(asset.port)]
     env_updates = {}
@@ -140,10 +151,7 @@ class TerminalSession:
             return
 
         # Filter out marker strings to keep the terminal clean
-        clean_data = data
-        if "__OPSINTECH_MARKER_" in clean_data:
-            import re
-            clean_data = re.sub(r'.*__OPSINTECH_MARKER_.*(\r\n|\n)?', '', clean_data)
+        clean_data = _strip_command_markers(data)
 
         if clean_data:
             dead_ws = set()
@@ -185,7 +193,7 @@ class TerminalSession:
         self.command_output_buffer = ""
         self.command_future = asyncio.get_event_loop().create_future()
         
-        marker = f"__OPSINTECH_MARKER_{uuid.uuid4().hex}__"
+        marker = _new_command_marker()
         self.end_marker = f"{marker}_END"
         
         # Write the command exactly as it is so it looks native to the user.
@@ -215,7 +223,7 @@ class TerminalSession:
                 output = output[:end_idx].rstrip()
 
             # Clean the output string to remove any marker echoes
-            output = re.sub(r'.*__OPSINTECH_MARKER_.*(\r\n|\n)?', '', output).strip()
+            output = _strip_command_markers(output).strip()
 
             # Strip ANSI escape sequences (color codes, cursor movements, etc.)
             ansi_escape = re.compile(r'\x1b\[[0-9;]*[a-zA-Z]|\x1b\][0-9;]*[a-zA-Z]|\x1b[()][0-9AB]|\x1b\[[?][0-9;]*[hl]')

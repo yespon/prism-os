@@ -22,7 +22,11 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.types import interrupt
 
-from app.agent.terminal_tools import terminal_tools_list
+from app.agent.terminal_tools import (
+    _build_web_fetch_command,
+    _build_write_file_command,
+    terminal_tools_list,
+)
 from app.services.terminal.security import CommandSecurityResult, security_service
 from app.services.terminal.session import build_ssh_command, session_manager
 from deerflow.models.factory import create_chat_model
@@ -697,8 +701,7 @@ class TerminalAgentNodes:
                     elif tool_name == "write_file":
                         path = tc_args.get("path", "")
                         content = tc_args.get("content", "")
-                        escaped = content.replace("'", "'\\''")
-                        cmd = f"cat > '{path}' << 'OPSINTECH_EOF'\n{escaped}\nOPSINTECH_EOF"
+                        cmd = _build_write_file_command(path, content)
                         logger.info(f"[execute_node] Writing file on {target_name}: {path}")
                         try:
                             result = await session.execute_command(cmd, broadcast=should_broadcast)
@@ -721,7 +724,7 @@ class TerminalAgentNodes:
 
                     elif tool_name == "web_fetch":
                         url = tc_args.get("url", "")
-                        cmd = f"curl -sL --max-time 15 -H 'User-Agent: OpsinTech/1.0' '{url}' 2>/dev/null | head -c 10000"
+                        cmd = _build_web_fetch_command(url)
                         logger.info(f"[execute_node] Web fetch on {target_name}: {url}")
                         try:
                             result = await session.execute_command(cmd, broadcast=should_broadcast)

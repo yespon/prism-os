@@ -43,6 +43,14 @@ class WebFetchRequest(BaseModel):
     timeout_seconds: int = 30
 
 
+def _build_web_fetch_argv(url: str) -> list[str]:
+    return [
+        "curl", "-sL", "--max-time", "15",
+        "-H", "User-Agent: Mozilla/5.0 (compatible; PrismOS/0.2)",
+        url,
+    ]
+
+
 @router.websocket("/ws")
 async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, session_id: str | None = None, db: AsyncSession = Depends(get_session)):
     """
@@ -290,11 +298,7 @@ async def web_fetch_proxy(req: WebFetchRequest):
         raise HTTPException(status_code=400, detail="Invalid URL scheme")
 
     # Use curl with timeout to fetch the URL
-    cmd = [
-        "curl", "-sL", "--max-time", "15",
-        "-H", "User-Agent: Mozilla/5.0 (compatible; OpsinTech/1.0)",
-        url
-    ]
+    cmd = _build_web_fetch_argv(url)
 
     try:
         proc = await asyncio.create_subprocess_exec(

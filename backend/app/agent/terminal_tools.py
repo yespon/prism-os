@@ -26,6 +26,15 @@ logger = logging.getLogger(__name__)
 _terminal_context: dict = {}
 
 
+def _build_write_file_command(path: str, content: str) -> str:
+    escaped = content.replace("'", "'\\''")
+    return f"cat > '{path}' << 'PRISMOS_EOF'\n{escaped}\nPRISMOS_EOF"
+
+
+def _build_web_fetch_command(url: str) -> str:
+    return f"curl -sL --max-time 15 -H 'User-Agent: PrismOS/0.2' '{url}' 2>/dev/null | head -c 10000"
+
+
 def set_terminal_context(context: dict):
     """Called by make_lead_agent to set the terminal session context."""
     global _terminal_context
@@ -329,8 +338,7 @@ async def write_file(path: str, content: str, host_index: int = -1) -> str:
         content: The complete file content to write.
         host_index: Index of the host (0-based) from the connected assets list. Default -1 (targets ALL connected hosts).
     """
-    escaped = content.replace("'", "'\\''")
-    cmd = f"cat > '{path}' << 'OPSINTECH_EOF'\n{escaped}\nOPSINTECH_EOF"
+    cmd = _build_write_file_command(path, content)
     
     async def op(session):
         result = await _execute_cmd_raw(cmd, session)
@@ -376,7 +384,7 @@ async def web_fetch(url: str, host_index: int = -1) -> str:
     """
     if not url.startswith(("http://", "https://")):
         return "Error: URL must start with http:// or https://"
-    cmd = f"curl -sL --max-time 15 -H 'User-Agent: OpsinTech/1.0' '{url}' 2>/dev/null | head -c 10000"
+    cmd = _build_web_fetch_command(url)
     
     async def op(session):
         result = await _execute_cmd_raw(cmd, session)

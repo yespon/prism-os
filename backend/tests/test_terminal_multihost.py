@@ -1,6 +1,22 @@
 import pytest
 from app.agent.terminal_graph import _resolve_tool_targets, _target_assets
-from app.services.terminal.session import session_manager
+from app.services.terminal.session import _new_command_marker, _strip_command_markers, session_manager
+
+
+def test_terminal_marker_uses_prismos_identity() -> None:
+    marker = _new_command_marker()
+    assert marker.startswith("__PRISMOS_MARKER_")
+    assert "OPSINTECH" not in marker
+
+
+def test_terminal_output_strips_prismos_marker() -> None:
+    marker = "__PRISMOS_MARKER_abc__"
+    assert _strip_command_markers(f"hello\n{marker}\n") == "hello\n"
+
+
+def test_terminal_output_preserves_lines_around_marker() -> None:
+    marker = "__PRISMOS_MARKER_abc__"
+    assert _strip_command_markers(f"before\n{marker}\nafter\n") == "before\nafter\n"
 
 def test_session_manager_composite_key():
     # Clear existing sessions for clean test state
