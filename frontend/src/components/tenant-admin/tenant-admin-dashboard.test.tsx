@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import { TenantAdminDashboard } from "./tenant-admin-dashboard";
@@ -38,7 +38,7 @@ describe("TenantAdminDashboard", () => {
 
     render(<TenantAdminDashboard />);
 
-    expect(screen.getByRole("heading", { level: 1, name: "工作空间治理总览" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "总览" })).toBeInTheDocument();
     expect(screen.getByText("成员数量")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "风险提醒" })).toBeInTheDocument();
   });

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@/test/utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WorkspaceNavMenu } from "./workspace-nav-menu";
@@ -25,7 +25,8 @@ vi.mock("next/navigation", () => ({
   useRouter: mocks.useRouter,
 }));
 
-vi.mock("@tanstack/react-query", () => ({
+vi.mock("@tanstack/react-query", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-query")>()),
   useQueryClient: mocks.useQueryClient,
 }));
 

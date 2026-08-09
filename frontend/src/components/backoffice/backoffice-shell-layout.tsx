@@ -59,7 +59,7 @@ export function BackofficeShellLayout({
   moduleDescription,
   moduleIcon: ModuleIcon,
   navItems,
-  bottomItems: _bottomItems = [],
+  bottomItems = [],
   sidebarExtra,
   topSlot,
   children,
@@ -150,6 +150,32 @@ export function BackofficeShellLayout({
             );
           })}
         </nav>
+
+        {bottomItems.length > 0 ? (
+          <nav className="border-t border-sidebar-border p-2">
+            {bottomItems.map((item) => {
+              const Icon = item.icon;
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex h-9 items-center rounded-md text-sm transition-colors",
+                    sidebarCollapsed ? "justify-center px-2" : "gap-2 px-3",
+                    active
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                      : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                  )}
+                  title={sidebarCollapsed ? item.label : undefined}
+                >
+                  <Icon className="size-4" />
+                  {!sidebarCollapsed && <span>{item.label}</span>}
+                </Link>
+              );
+            })}
+          </nav>
+        ) : null}
 
         <div className="border-t border-sidebar-border p-3">
           <div className="flex items-center gap-2">

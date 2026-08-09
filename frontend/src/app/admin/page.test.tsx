@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import AdminDashboardPage from "./page";
@@ -7,7 +7,8 @@ const mocks = vi.hoisted(() => ({
   useQuery: vi.fn(),
 }));
 
-vi.mock("@tanstack/react-query", () => ({
+vi.mock("@tanstack/react-query", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-query")>()),
   useQuery: mocks.useQuery,
 }));
 
@@ -38,7 +39,7 @@ describe("AdminDashboardPage", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(screen.getByRole("heading", { level: 1, name: "平台总览" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "总览" })).toBeInTheDocument();
     expect(screen.getByText("平台治理核心指标与全局运行统计")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "查看审计日志" })).toBeInTheDocument();
 

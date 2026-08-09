@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/utils";
 import { ShieldCheck } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -6,15 +6,18 @@ import { BackofficeShellLayout } from "./backoffice-shell-layout";
 
 const mocks = vi.hoisted(() => ({
   usePathname: vi.fn(),
+  useRouter: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
   usePathname: mocks.usePathname,
+  useRouter: mocks.useRouter,
 }));
 
 describe("BackofficeShellLayout", () => {
   it("renders unified sidebar width and main container classes", () => {
     mocks.usePathname.mockReturnValue("/admin");
+    mocks.useRouter.mockReturnValue({ replace: vi.fn(), refresh: vi.fn() });
 
     const navItems = [
       { href: "/admin", label: "总览", icon: ShieldCheck },
@@ -33,15 +36,14 @@ describe("BackofficeShellLayout", () => {
       </BackofficeShellLayout>,
     );
 
-    expect(screen.getByText("系统治理中心")).toBeInTheDocument();
+    expect(screen.getByText("平台管理")).toBeInTheDocument();
     expect(screen.getByText("平台级治理")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "总览" })).toBeInTheDocument();
 
-    const sidebar = screen.getByText("系统治理中心").closest("aside");
+    const sidebar = screen.getByText("平台管理").closest("aside");
     expect(sidebar).toHaveClass("w-[240px]");
 
     const content = screen.getByText("content");
-    const maxWidthContainer = content.closest("div.max-w-7xl");
-    expect(maxWidthContainer).toBeTruthy();
+    expect(content.parentElement).toHaveClass("w-full", "px-6", "py-6");
   });
 });

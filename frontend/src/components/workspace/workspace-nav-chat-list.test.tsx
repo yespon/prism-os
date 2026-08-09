@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/utils";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { WorkspaceNavChatList } from "./workspace-nav-chat-list";

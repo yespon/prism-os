@@ -1,5 +1,5 @@
 import type { Message } from "@langchain/langgraph-sdk";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@/test/utils";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -75,6 +75,7 @@ describe("MessageListItem", () => {
     mocks.useI18n.mockReturnValue({
       t: {
         uploads: { uploading: "上传中" },
+        messageGroup: { retryInstruction: "重试此指令" },
         clipboard: {
           copyToClipboard: "复制",
           copiedToClipboard: "已复制",
@@ -119,6 +120,7 @@ describe("MessageListItem", () => {
     mocks.useI18n.mockReturnValue({
       t: {
         uploads: { uploading: "上传中" },
+        messageGroup: { retryInstruction: "重试此指令" },
         clipboard: {
           copyToClipboard: "复制",
           copiedToClipboard: "已复制",

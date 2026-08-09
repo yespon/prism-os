@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@/test/utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { AvailableMcpServerResponse } from "@/core/mcp/types";
@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => ({
   useDeleteTenantMCPServer: vi.fn(),
   useEnableTenantMCPServer: vi.fn(),
   usePingMCPServer: vi.fn(),
+  useCheckMCPHealth: vi.fn(),
   useUpdateSingleTenantMCPServer: vi.fn(),
   toastError: vi.fn(),
   toastSuccess: vi.fn(),
@@ -22,6 +23,7 @@ vi.mock("@/core/mcp/hooks", () => ({
   useDeleteTenantMCPServer: mocks.useDeleteTenantMCPServer,
   useEnableTenantMCPServer: mocks.useEnableTenantMCPServer,
   usePingMCPServer: mocks.usePingMCPServer,
+  useCheckMCPHealth: mocks.useCheckMCPHealth,
   useUpdateSingleTenantMCPServer: mocks.useUpdateSingleTenantMCPServer,
 }));
 
@@ -69,6 +71,7 @@ function mockPageHooks(tools: AvailableMcpServerResponse[]) {
   mocks.useDeleteTenantMCPServer.mockReturnValue({ mutateAsync: deleteTenantTool });
   mocks.useEnableTenantMCPServer.mockReturnValue({ mutateAsync: enableTenantTool });
   mocks.usePingMCPServer.mockReturnValue({ mutateAsync: pingTool, isPending: false });
+  mocks.useCheckMCPHealth.mockReturnValue({ mutateAsync: pingTool, isPending: false });
 
   return {
     createTenantTool,
@@ -117,9 +120,9 @@ describe("TenantAdminToolsPage", () => {
     expect(screen.getByText("filesystem")).toBeInTheDocument();
     expect(screen.getByText("tenant-tool")).toBeInTheDocument();
     expect(screen.getByText("内置工具", { selector: "span" })).toBeInTheDocument();
-    expect(screen.getByText("工作空间自建")).toBeInTheDocument();
+    expect(screen.getByText("工作空间自建", { selector: "span" })).toBeInTheDocument();
     expect(screen.queryByText("private-tool")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "只读" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "删除" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "编辑" })).toBeEnabled();
   });
 
@@ -147,7 +150,7 @@ describe("TenantAdminToolsPage", () => {
 
     render(<TenantAdminToolsPage />);
 
-    fireEvent.click(screen.getByRole("switch", { name: "filesystem 启用状态" }));
+    fireEvent.click(screen.getByRole("switch", { name: "filesystem 状态" }));
 
     await waitFor(() => {
       expect(hooks.enableTenantTool).toHaveBeenCalledWith({ serverName: "filesystem", enabled: false });
@@ -160,9 +163,9 @@ describe("TenantAdminToolsPage", () => {
       expect(hooks.deleteTenantTool).toHaveBeenCalledWith({ name: "tenant-tool" });
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "接入新 MCP 工具" }));
-    fireEvent.change(screen.getByLabelText("名称"), { target: { value: "new-tenant-tool" } });
-    fireEvent.change(screen.getByLabelText("Command"), { target: { value: "npx" } });
+    fireEvent.click(screen.getByRole("button", { name: "注册工具" }));
+    fireEvent.change(screen.getByLabelText("工具名称"), { target: { value: "new-tenant-tool" } });
+    fireEvent.change(screen.getByLabelText("启动命令"), { target: { value: "npx" } });
     fireEvent.click(screen.getByRole("button", { name: "保存" }));
 
     await waitFor(() => {

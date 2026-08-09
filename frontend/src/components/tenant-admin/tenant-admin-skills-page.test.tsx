@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import { TenantAdminSkillsPage } from "./tenant-admin-skills-page";
@@ -82,12 +82,12 @@ describe("TenantAdminSkillsPage", () => {
 
     expect(screen.getByRole("heading", { name: "技能管理" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /系统内置/ })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /自定义技能/ })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /团队技能/ })).toBeInTheDocument();
     expect(screen.getByText("builtin-skill")).toBeInTheDocument();
 
-    activateTab("自定义技能 (1)");
+    activateTab("团队技能 (1)");
 
-    expect(screen.getByText("仅展示工作空间创建的技能，可编辑、删除，或通过上传技能包导入。")).toBeInTheDocument();
+    expect(screen.getByText("custom-skill-a")).toBeInTheDocument();
   });
 
   it("creates a manual tenant skill with description and instructions", async () => {
@@ -97,8 +97,8 @@ describe("TenantAdminSkillsPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "新建 / 导入" }));
     fireEvent.change(screen.getByLabelText(/名称/), { target: { value: "jira-analyst" } });
     fireEvent.change(screen.getByLabelText(/描述/), { target: { value: "Analyze jira issues" } });
-    fireEvent.change(screen.getByLabelText("技能说明"), { target: { value: "Review tickets and summarize blockers" } });
-    fireEvent.change(screen.getByLabelText("绑定工具（逗号分隔）"), { target: { value: "jira, confluence" } });
+    fireEvent.change(screen.getByLabelText("指令"), { target: { value: "Review tickets and summarize blockers" } });
+    fireEvent.change(screen.getByLabelText("绑定工具"), { target: { value: "jira, confluence" } });
     fireEvent.click(screen.getByRole("button", { name: "保存" }));
 
     expect(createSkill).toHaveBeenCalledWith({
@@ -117,7 +117,7 @@ describe("TenantAdminSkillsPage", () => {
     renderPage();
 
     fireEvent.click(screen.getByRole("button", { name: "新建 / 导入" }));
-    activateTab("上传导入");
+    activateTab("导入");
 
     const file = new File(["zip-content"], "demo-skill.zip", { type: "application/zip" });
     const input = document.querySelector('input[type="file"]');
@@ -134,7 +134,7 @@ describe("TenantAdminSkillsPage", () => {
     renderPage();
 
     fireEvent.click(screen.getByRole("button", { name: "新建 / 导入" }));
-    activateTab("上传导入");
+    activateTab("导入");
 
     expect(screen.getByRole("button", { name: "导入" })).toBeDisabled();
 

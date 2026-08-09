@@ -74,4 +74,36 @@ Failure inventory and ownership:
 ## Review record
 
 - Task 1 is locally reviewed for reproducibility, artifact completeness, protected-file boundaries, and exact exit-code recording.
+- Task 2 is locally reviewed for the diagnosed type/build contracts and protected-file boundaries; `pnpm typecheck` and the approved escalated `pnpm build` both exited `0`.
+
+## Task 3: complete
+
+Root causes confirmed from focused Vitest failures:
+
+- Test consumers were rendered without the production `I18nProvider` and React Query provider boundaries.
+- Partial module mocks omitted newly consumed hooks and router exports.
+- Several assertions encoded removed UI labels or layout structure instead of the current component contract.
+- `BackofficeShellLayout` accepted `bottomItems` but discarded them, which was a real production navigation regression exposed by the shell test.
+
+Changes:
+
+- Added `frontend/src/test/utils.tsx` with a real `I18nProvider`, isolated non-retrying `QueryClientProvider`, and the shared `render` wrapper.
+- Migrated the affected unit tests to the shared provider boundary and completed their hook/router mocks.
+- Updated stale assertions to current overview, skills, tools, admin navigation, and shell layout contracts.
+- Restored rendering of `bottomItems` in `BackofficeShellLayout`, preserving active state and collapsed-sidebar behavior.
+
+Verification evidence:
+
+- Focused affected cluster: `7` test files, `12` tests passed; exit `0`.
+- Full frontend unit suite: `35` test files, `86` tests passed; exit `0`.
+- `git diff --check`: exit `0`.
+- No `any`, `@ts-ignore`, or `@ts-expect-error` added in the Task 3 scope.
+
+Task 3 is committed independently as `test: restore frontend provider and fixture contracts`.
+
+## Review record
+
+- Task 1 is locally reviewed for reproducibility, artifact completeness, protected-file boundaries, and exact exit-code recording.
+- Task 2 is locally reviewed for the diagnosed type/build contracts and protected-file boundaries; `pnpm typecheck` and the approved escalated `pnpm build` both exited `0`.
+- Task 3 is locally reviewed for provider boundaries, mock completeness, assertion intent, and the `bottomItems` production fix; focused and full unit verification exited `0`.
 - No task is marked complete without fresh command evidence in this ledger.

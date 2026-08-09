@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import { ModelLifecycleSettingsPage } from "./model-lifecycle-settings-page";
@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   useDeleteModel: vi.fn(),
   useDeleteTenantModel: vi.fn(),
   useUpdateTenantModel: vi.fn(),
+  useTestModelConnection: vi.fn(),
   getDisabledModelsStore: vi.fn(),
   setDisabledModelsStore: vi.fn(),
   useAvailableMcpConfig: vi.fn(),
@@ -44,6 +45,7 @@ vi.mock("@/core/models/hooks", () => ({
   useDeleteModel: mocks.useDeleteModel,
   useDeleteTenantModel: mocks.useDeleteTenantModel,
   useUpdateTenantModel: mocks.useUpdateTenantModel,
+  useTestModelConnection: mocks.useTestModelConnection,
   getDisabledModelsStore: mocks.getDisabledModelsStore,
   setDisabledModelsStore: mocks.setDisabledModelsStore,
 }));
@@ -118,6 +120,7 @@ describe("Resource settings permission UI", () => {
     mocks.useDeleteModel.mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
     mocks.useDeleteTenantModel.mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
     mocks.useUpdateTenantModel.mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
+    mocks.useTestModelConnection.mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
     mocks.getDisabledModelsStore.mockReturnValue([]);
     mocks.setDisabledModelsStore.mockReturnValue(undefined);
 

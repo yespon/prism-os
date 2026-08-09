@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import { TenantAdminMembersPage } from "./tenant-admin-members-page";
@@ -68,7 +68,7 @@ describe("TenantAdminMembersPage", () => {
 
     render(<TenantAdminMembersPage />);
 
-    expect(screen.getByText("当前工作空间成员")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "用户管理" })).toBeInTheDocument();
     
   });
 });

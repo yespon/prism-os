@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import type { UploadedFileInfo } from "@/core/uploads";
@@ -126,7 +126,8 @@ describe("ThreadAttachmentsPanel", () => {
     );
 
     fireEvent.click(screen.getByText("折叠"));
-    expect(screen.getByText(/已折叠/)).toBeInTheDocument();
+    expect(screen.queryByText("本轮已引用")).not.toBeInTheDocument();
+    expect(screen.queryByText("线程历史附件")).not.toBeInTheDocument();
     expect(screen.getByText("展开")).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("展开"));
