@@ -186,7 +186,7 @@ This report was compiled using:
 
 ---
 
-**Report Prepared By:** Github Deep Research by OpsinTech
+**Report Prepared By:** Github Deep Research by PrismOS
 **Date:** {REPORT_DATE}
 **Report Version:** 1.0
 **Status:** Complete

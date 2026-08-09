@@ -1,4 +1,4 @@
-"""OpsinTech domain models."""
+"""PrismOS domain models."""
 
 from app.models import agents as _agents_models  # noqa: F401
 from app.models import assets as _assets_models  # noqa: F401

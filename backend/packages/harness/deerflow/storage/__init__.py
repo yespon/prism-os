@@ -1,4 +1,4 @@
-"""Storage abstraction layer for OpsinTech file management.
+"""Storage abstraction layer for PrismOS file management.
 
 Provides a unified interface for file storage operations, allowing
 the platform to switch between local filesystem storage (dev/container),

@@ -2573,69 +2573,6 @@ wheels = [
 ]
 
 [[package]]
-name = "prismos"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "aiosqlite" },
-    { name = "alembic" },
-    { name = "asyncpg" },
-    { name = "bcrypt" },
-    { name = "deerflow-harness" },
-    { name = "fastapi" },
-    { name = "greenlet" },
-    { name = "httpx" },
-    { name = "langchain-ollama" },
-    { name = "langgraph-checkpoint-postgres" },
-    { name = "langgraph-sdk" },
-    { name = "lark-oapi" },
-    { name = "markdown-to-mrkdwn" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "python-multipart" },
-    { name = "python-telegram-bot" },
-    { name = "slack-sdk" },
-    { name = "sqlmodel" },
-    { name = "sse-starlette" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aiosqlite", specifier = ">=0.22.1" },
-    { name = "alembic", specifier = ">=1.18.4" },
-    { name = "asyncpg", specifier = ">=0.31.0" },
-    { name = "bcrypt", specifier = ">=5.0.0" },
-    { name = "deerflow-harness", editable = "packages/harness" },
-    { name = "fastapi", specifier = ">=0.115.0" },
-    { name = "greenlet", specifier = ">=3.3.2" },
-    { name = "httpx", specifier = ">=0.28.0" },
-    { name = "langchain-ollama", specifier = ">=1.1.0" },
-    { name = "langgraph-checkpoint-postgres", specifier = ">=2.1" },
-    { name = "langgraph-sdk", specifier = ">=0.1.51" },
-    { name = "lark-oapi", specifier = ">=1.4.0" },
-    { name = "markdown-to-mrkdwn", specifier = ">=0.3.1" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
-    { name = "python-multipart", specifier = ">=0.0.20" },
-    { name = "python-telegram-bot", specifier = ">=21.0" },
-    { name = "slack-sdk", specifier = ">=3.33.0" },
-    { name = "sqlmodel", specifier = ">=0.0.37" },
-    { name = "sse-starlette", specifier = ">=2.1.0" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.0.0" },
-    { name = "ruff", specifier = ">=0.14.11" },
-]
-
-[[package]]
 name = "orjson"
 version = "3.11.6"
 source = { registry = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/" }
@@ -2906,6 +2843,69 @@ wheels = [
     { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ac/96/84078e09f16a1dad208f2fe0f8a81be2cf36e024675b0f9eec0c2f6e2182/primp-0.15.0-cp38-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:592f6079646bdf5abbbfc3b0a28dac8de943f8907a250ce09398cda5eaebd260", size = 3418567 },
     { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6c/80/8a7a9587d3eb85be3d0b64319f2f690c90eb7953e3f73a9ddd9e46c8dc42/primp-0.15.0-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:5a728e5a05f37db6189eb413d22c78bd143fa59dd6a8a26dacd43332b3971fe8", size = 3606279 },
     { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0c/dd/f0183ed0145e58cf9d286c1b2c14f63ccee987a4ff79ac85acc31b5d86bd/primp-0.15.0-cp38-abi3-win_amd64.whl", hash = "sha256:aeb6bd20b06dfc92cfe4436939c18de88a58c640752cf7f30d9e4ae893cdec32", size = 3149967 },
+]
+
+[[package]]
+name = "prismos"
+version = "0.2.0a1"
+source = { virtual = "." }
+dependencies = [
+    { name = "aiosqlite" },
+    { name = "alembic" },
+    { name = "asyncpg" },
+    { name = "bcrypt" },
+    { name = "deerflow-harness" },
+    { name = "fastapi" },
+    { name = "greenlet" },
+    { name = "httpx" },
+    { name = "langchain-ollama" },
+    { name = "langgraph-checkpoint-postgres" },
+    { name = "langgraph-sdk" },
+    { name = "lark-oapi" },
+    { name = "markdown-to-mrkdwn" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "python-multipart" },
+    { name = "python-telegram-bot" },
+    { name = "slack-sdk" },
+    { name = "sqlmodel" },
+    { name = "sse-starlette" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiosqlite", specifier = ">=0.22.1" },
+    { name = "alembic", specifier = ">=1.18.4" },
+    { name = "asyncpg", specifier = ">=0.31.0" },
+    { name = "bcrypt", specifier = ">=5.0.0" },
+    { name = "deerflow-harness", editable = "packages/harness" },
+    { name = "fastapi", specifier = ">=0.115.0" },
+    { name = "greenlet", specifier = ">=3.3.2" },
+    { name = "httpx", specifier = ">=0.28.0" },
+    { name = "langchain-ollama", specifier = ">=1.1.0" },
+    { name = "langgraph-checkpoint-postgres", specifier = ">=2.1" },
+    { name = "langgraph-sdk", specifier = ">=0.1.51" },
+    { name = "lark-oapi", specifier = ">=1.4.0" },
+    { name = "markdown-to-mrkdwn", specifier = ">=0.3.1" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
+    { name = "python-multipart", specifier = ">=0.0.20" },
+    { name = "python-telegram-bot", specifier = ">=21.0" },
+    { name = "slack-sdk", specifier = ">=3.33.0" },
+    { name = "sqlmodel", specifier = ">=0.0.37" },
+    { name = "sse-starlette", specifier = ">=2.1.0" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "ruff", specifier = ">=0.14.11" },
 ]
 
 [[package]]

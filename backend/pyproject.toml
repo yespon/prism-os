@@ -1,6 +1,6 @@
 [project]
 name = "prismos"
-version = "0.1.0"
+version = "0.2.0a1"
 description = "PrismOS governed Agent operating system with multi-tenant controls, sandbox execution, and extensible runtime foundations"
 readme = "README.md"
 requires-python = ">=3.12"

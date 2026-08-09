@@ -18,9 +18,8 @@ class MemoryConfig(BaseModel):
             "Absolute paths are used as-is. "
             "Relative paths are resolved against `Paths.base_dir` "
             "(not the backend working directory). "
-            "Note: if you previously set this to `.opsintech/memory.json`, "
-            "the file remains an explicit legacy path; new installations use `{base_dir}/memory.json`; "
-            "migrate existing data or use an absolute path to preserve the old location."
+            "Existing installations should follow the PrismOS brand migration guide "
+            "before changing an explicit storage path; new installations use `{base_dir}/memory.json`."
         ),
     )
     debounce_seconds: int = Field(
