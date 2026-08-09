@@ -113,6 +113,8 @@ services:
       args:
         PNPM_STORE_PATH: ${PNPM_STORE_PATH:-/root/.local/share/pnpm/store}
         NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
+        NEXT_PUBLIC_BACKEND_BASE_URL: ${NEXT_PUBLIC_BACKEND_BASE_URL:-}
+        NEXT_PUBLIC_LANGGRAPH_BASE_URL: ${NEXT_PUBLIC_LANGGRAPH_BASE_URL:-}
     image: prismos-frontend:latest
     container_name: prismos-frontend
     volumes:
@@ -157,7 +159,7 @@ services:
       - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
       - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
       - OPSINTECH_SANDBOX_HOST=host.docker.internal
-      - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
+      - CORS_ORIGINS=http://localhost:${PORT:-2026},http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -205,7 +207,7 @@ services:
       - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
       - OPSINTECH_SANDBOX_HOST=host.docker.internal
       - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
-      - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
+      - CORS_ORIGINS=http://localhost:${PORT:-2026},http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
     extra_hosts:
       - "host.docker.internal:host-gateway"
