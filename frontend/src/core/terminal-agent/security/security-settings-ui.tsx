@@ -108,7 +108,7 @@ export function SecuritySettingsPanel({ open, onClose }: SecuritySettingsPanelPr
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'opsintech-security-config.json';
+    a.download = 'prismos-security-config.json';
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -68,7 +68,7 @@ function artifactDisplayPath(filepath: string) {
   pathStr = pathStr.replace(/^.*\/issuepilot-api\//i, "issuepilot-api/");
   pathStr = pathStr.replace(/^.*\/issuepilot-app\//i, "issuepilot-app/");
   pathStr = pathStr.replace(/^.*\/ConstructingOperating\//i, "ConstructingOperating/");
-  pathStr = pathStr.replace(/^.*\/opsintech-platform\//i, "opsintech-platform/");
+  pathStr = pathStr.replace(/^.*\/prism-os\//i, "prism-os/");
 
   return pathStr
     .replace(/^\/?mnt\/user-data\/(outputs|workspace)\//, "")

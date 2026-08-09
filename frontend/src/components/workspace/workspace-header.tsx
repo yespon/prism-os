@@ -16,7 +16,7 @@ function PrismOSMark({ className }: { className?: string }) {
       aria-label="PrismOS"
     >
         <img
-        src="/images/opsintech.svg"
+        src="/images/prismos.svg"
         alt="PrismOS Logo"
         className="h-full w-full object-contain"
       />

@@ -289,10 +289,9 @@ Recent breakthroughs in language models have also accelerated progress
 ```markdown
 ## Executive Summary
 
-OpsinTech is an open-source AI agent platform that leverages LLMs and tool integrations for deep research tasks
-[citation:GitHub Repository](https://github.com/opsintech/opsintech-platform). The project focuses on
-providing a production-ready agent system with sandbox execution and memory management
-[citation:Official Documentation](https://opsintech.dev/docs).
+PrismOS is an open-source governed agent platform that provides multi-tenant execution,
+auditable workflows, and extensible skills. Do not invent repository or website citations
+for PrismOS; cite only sources supplied by the user or retrieved during the current task.
 
 ## Key Analysis
 
@@ -304,8 +303,7 @@ combined with a FastAPI gateway for REST API access [citation:FastAPI](https://f
 ## Sources
 
 ### Primary Sources
-- [GitHub Repository](https://github.com/opsintech/opsintech-platform) - Official source code and documentation
-- [Official Documentation](https://opsintech.dev/docs) - Technical specifications
+- PrismOS repository and documentation sources - cite only when a current, verified source is available
 
 ### Media Coverage
 - [AI Trends 2026](https://techcrunch.com/ai-trends) - Industry analysis
@@ -317,7 +315,7 @@ combined with a FastAPI gateway for REST API access [citation:FastAPI](https://f
 - The `[citation:Title](URL)` format is ONLY for inline citations within the report body
 - ❌ WRONG: `GitHub 仓库 - 官方源代码和文档` (no URL!)
 - ❌ WRONG in Sources: `[citation:GitHub Repository](url)` (citation prefix is for inline only!)
-- ✅ RIGHT in Sources: `[GitHub Repository](https://github.com/opsintech/opsintech-platform) - 官方源代码和文档`
+- ✅ RIGHT in Sources: use a current, verified URL and describe exactly what it supports
 
 **WORKFLOW for Research Tasks:**
 1. Use web_search to find sources → Extract {{title, url, snippet}} from results
@@ -608,7 +606,7 @@ def apply_prompt_template(
 
     # Format the prompt with dynamic skills and memory
     prompt = SYSTEM_PROMPT_TEMPLATE.format(
-        agent_name=agent_name or "OpsinTech",
+        agent_name=agent_name or "PrismOS",
         soul=get_agent_soul(agent_name, user_id=user_id),
         skills_section=skills_section,
         deferred_tools_section=deferred_tools_section,

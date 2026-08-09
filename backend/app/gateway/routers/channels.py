@@ -75,7 +75,7 @@ async def test_channel_notification(body: TestNotificationRequest) -> TestNotifi
         raise HTTPException(status_code=503, detail="Channel service is not running")
 
     text = (
-        "🔔 **OpsInTech 告警通道连通性测试**\n\n"
+        "🔔 **PrismOS 告警通道连通性测试**\n\n"
         "这是一条自动生成的通道连通性测试消息。\n"
         "**测试状态**: 成功 ✅\n"
         f"**测试渠道**: {body.channel_name}\n"

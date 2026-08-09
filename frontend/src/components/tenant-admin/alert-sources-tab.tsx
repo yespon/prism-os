@@ -149,7 +149,7 @@ export function AlertSourcesTab() {
       case "alertmanager":
         return {
           instructions: "在 Prometheus Alertmanager 的 alertmanager.yml 配置文件中添加一个 webhook_configs 接收器，指向下方推送地址。系统内置的 AlertmanagerProvider 会自动映射标准化警报字段。",
-          yaml: `receivers:\n  - name: 'opsintech-receiver'\n    webhook_configs:\n      - url: '${url}'\n        send_resolved: true`,
+          yaml: `receivers:\n  - name: 'prismos-receiver'\n    webhook_configs:\n      - url: '${url}'\n        send_resolved: true`,
           curl: `curl -X POST "${url}" \\\n  -H "Content-Type: application/json"${authLine} \\\n  -d '{\n    "status": "firing",\n    "alerts": [\n      {\n        "status": "firing",\n        "labels": {\n          "alertname": "InstanceDown",\n          "service": "api-gateway",\n          "environment": "production",\n          "severity": "critical"\n        },\n        "annotations": {\n          "summary": "Instance is down",\n          "description": "The api-gateway instance has been down for > 5 minutes"\n        },\n        "fingerprint": "12345abcdef"\n      }\n    ],\n    "externalURL": "http://alertmanager.local"\n  }'`
         };
       case "cloudwatch":

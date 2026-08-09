@@ -192,7 +192,7 @@ export function TerminalAgentUI({ activeAsset }: { activeAsset: any }) {
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center mb-4 shadow-sm shadow-blue-500/20 text-white">
               <Sparkles className="w-6 h-6" />
             </div>
-            <p className="text-sm font-medium text-zinc-700 mb-1">OpsinTech Assistant</p>
+            <p className="text-sm font-medium text-zinc-700 mb-1">PrismOS Assistant</p>
             <p className="text-xs text-zinc-500">I can analyze logs, run commands, and debug your servers.</p>
           </div>
         ) : (

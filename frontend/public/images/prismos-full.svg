@@ -39,14 +39,12 @@
       letter-spacing: -3px;
     }
     
-    .text-ops { fill: #1E293B; } 
-    .text-in { fill: #06B6D4; } 
-    .text-tech { fill: #7C3AED; } 
+    .text-brand { fill: currentColor; }
+
+
     
     /* Support for rendering perfectly inside dark-mode containers like GitHub/Next.js root */
-    @media (prefers-color-scheme: dark) {
-      .text-ops { fill: #F8FAFC; }
-    }
+
   </style>
 
   <!-- Transparent padding -->
@@ -67,8 +65,6 @@
 
   <!-- ==================== TEXT PART ==================== -->
   <g transform="translate(460, 275)">
-    <text class="logo-text">
-      <tspan class="text-ops">Ops</tspan><tspan class="text-in">In</tspan><tspan class="text-tech">Tech</tspan>
-    </text>
+    <text class="logo-text text-brand" aria-label="PrismOS">PrismOS</text>
   </g>
 </svg>

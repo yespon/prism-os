@@ -500,7 +500,7 @@ export function AlertSourcesPanel() {
                 <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">字段映射 (Field Mapping)</span>
               </div>
               <p className="text-[10px] text-muted-foreground">
-                使用 JSONPath 表达式将外部 payload 字段映射到 OpsInTech 告警字段
+                使用 JSONPath 表达式将外部 payload 字段映射到 PrismOS 告警字段
               </p>
               <div className="space-y-2">
                 {fieldMappings.map(entry => (

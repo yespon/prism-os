@@ -229,14 +229,14 @@ export default function SignInPage() {
             style={{ transform: `translateY(${floatY}px)` }}
           >
             <img
-              src="/images/opsintech.svg"
+              src="/images/prismos.svg"
               alt="PrismOS"
               className="h-36 w-36 xl:h-44 xl:w-44 drop-shadow-[0_0_40px_rgba(6,182,212,0.3)]"
             />
             {/* 图标光晕 */}
             <div className="absolute inset-0 -z-10 blur-2xl">
               <img
-                src="/images/opsintech.svg"
+                src="/images/prismos.svg"
                 alt=""
                 className="h-36 w-36 xl:h-44 xl:w-44 opacity-30"
               />
@@ -290,7 +290,7 @@ export default function SignInPage() {
           {/* 移动端 Logo */}
           <div className="flex flex-col items-center mb-10 lg:hidden">
             <img
-              src="/images/opsintech.svg"
+              src="/images/prismos.svg"
               alt="PrismOS"
               className="h-16 w-16"
             />

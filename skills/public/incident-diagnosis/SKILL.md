@@ -12,7 +12,7 @@ This skill guides the Agent to act as a senior SRE (Site Reliability Engineer) o
 2. **Execute step-by-step**: Investigate target systems (such as checking Pod states, reading logs, searching for git diffs or deployment histories). Update the step statuses (`in_progress`, `completed`) via `write_todos` as the execution proceeds.
 3. **Synthesize report**: Output a structured incident analysis report detailing the root cause, evidence chain, and actionable self-healing or mitigation recommendations.
 
-The output report, plan steps, thinking transitions, and phase names (e.g., use "第一阶段", "第二阶段", "第三阶段" instead of "Phase 1", "Phase 2", "Phase 3") should be in professional SRE language, strictly matched to the user's locale (defaulting to Chinese zh_CN for opsintech-platform).
+The output report, plan steps, thinking transitions, and phase names (e.g., use "第一阶段", "第二阶段", "第三阶段" instead of "Phase 1", "Phase 2", "Phase 3") should be in professional SRE language, strictly matched to the user's locale (defaulting to Chinese zh_CN for prism-os).
 
 ---
 

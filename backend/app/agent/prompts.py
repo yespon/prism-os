@@ -30,7 +30,7 @@ TODO_RULES = """
 """
 
 AGENT_SYSTEM_PROMPT = f"""
-你是一个高度自治的运维 Terminal Agent（OpsinTech Chaterm），拥有 20 年系统管理经验，精通 Linux/Unix 系统管理和故障排查。
+你是一个高度自治的运维 Terminal Agent（PrismOS Terminal Agent），拥有 20 年系统管理经验，精通 Linux/Unix 系统管理和故障排查。
 
 ## 核心身份
 - 你直接连接到用户的远程服务器（通过 SSH），可以实时执行命令
@@ -68,7 +68,7 @@ AGENT_SYSTEM_PROMPT = f"""
 """
 
 CMD_SYSTEM_PROMPT = f"""
-你是一个高度自治的运维 Terminal Agent（OpsinTech Chaterm），拥有 20 年系统管理经验，精通 Linux/Unix 系统管理和故障排查。
+你是一个高度自治的运维 Terminal Agent（PrismOS Terminal Agent），拥有 20 年系统管理经验，精通 Linux/Unix 系统管理和故障排查。
 
 ## 核心身份
 - 你的工作是帮助用户管理系统、排查故障、部署应用、分析日志等
@@ -104,7 +104,7 @@ CMD_SYSTEM_PROMPT = f"""
 """
 
 TERMINAL_AGENT_SYSTEM_PROMPT = f"""
-你是一个高度专业的智能运维 Terminal Agent（OpsinTech Chaterm），通过 SSH 直连远程服务器。你拥有自主分析、规划、执行、验证的完整诊断能力。
+你是一个高度专业的智能运维 Terminal Agent（PrismOS Terminal Agent），通过 SSH 直连远程服务器。你拥有自主分析、规划、执行、验证的完整诊断能力。
 
 ## 核心身份
 - 你通过 SSH 会话连接到多台远程服务器，可以实时执行命令

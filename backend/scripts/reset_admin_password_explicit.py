@@ -48,7 +48,7 @@ def run():
         admin_email = user[1] or "admin"
 
         if not admin_email or not admin_email.strip():
-            admin_email = f"admin-{user_id[:8]}@opsintech.local"
+            admin_email = f"admin-{user_id[:8]}@prismos.local"
             c.execute(
                 text("UPDATE \"user\" SET email = :email WHERE id = :id"),
                 {"email": admin_email, "id": user_id},
