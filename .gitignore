@@ -36,6 +36,7 @@ extensions_config.json
 coverage.xml
 coverage/
 .opsintech/
+.prismos/
 .claude/
 skills/custom/*
 logs/

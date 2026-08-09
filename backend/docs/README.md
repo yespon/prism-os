@@ -18,7 +18,7 @@
 
 ## Getting Started
 
-1. **New to OpsinTech?** Start with [QUICKSTART.md](../../QUICKSTART.md)
+1. **New to PrismOS?** Start with [QUICKSTART.md](../../QUICKSTART.md)
 2. **Configuring the platform?** See [SETUP.md](SETUP.md)
 3. **Understanding the architecture?** Read [ARCHITECTURE.md](ARCHITECTURE.md)
 4. **Building integrations?** Check [API.md](API.md)

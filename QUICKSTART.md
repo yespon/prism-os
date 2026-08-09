@@ -26,10 +26,9 @@ make config
 `make config` creates local `config.yaml` and `frontend/.env` files only when
 they do not already exist. Do not commit either file after adding credentials.
 
-New deployments use `PRISMOS_*` variables and `backend/.prismos`. Legacy
-`OPSINTECH_*` variables remain accepted for existing installations. See the
-[configuration guide](./backend/docs/CONFIGURATION.md) before changing a data
-path.
+New deployments use `PRISMOS_*` variables and `backend/.prismos`. Existing
+installations should read the [brand migration guide](./docs/migrations/prismos-brand-migration.md)
+before changing a data path.
 
 ## 2. Start PrismOS
 
@@ -117,9 +116,8 @@ docker compose ps
 docker compose logs --tail=200 gateway langgraph nginx
 ```
 
-If configuration came from an old checkout, verify `PRISMOS_CONFIG_PATH` and
-the runtime data path. Do not remove `backend/.opsintech`; it may contain an
-existing installation's data.
+If configuration came from an earlier checkout, verify `PRISMOS_CONFIG_PATH`
+and the runtime data path. Use the migration guide before moving existing data.
 
 ### Model requests fail
 

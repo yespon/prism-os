@@ -89,16 +89,9 @@ curl http://localhost:2026/health
 
 ## 配置与兼容性
 
-新部署使用 `PRISMOS_*` 环境变量，默认运行时数据目录为 `backend/.prismos`。解析优先级为：
-
-```text
-PRISMOS_* → OPSINTECH_*（旧输入兼容）→ PrismOS 默认值
-```
-
-如果 `backend/.prismos` 不存在而 `backend/.opsintech` 存在，解析器可以原地继续使用旧目录；
-不会复制、重命名、删除或改写该目录。变更显式路径前必须先备份。
-
-旧的 `OPSINTECH_*` 名称和 `.opsintech` 路径属于兼容边界，不是公开产品身份。不要提交填充过的
+新部署使用 `PRISMOS_*` 环境变量，默认运行时数据目录为 `backend/.prismos`。
+已有安装在变更数据目录前，应先阅读
+[PrismOS 品牌迁移指南](./docs/migrations/prismos-brand-migration.md)。不要提交填充过的
 `config.yaml`、`.env`、API key、模型凭据或数据库密码。
 
 ## 安全与 alpha 限制

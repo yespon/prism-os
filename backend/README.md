@@ -1,4 +1,4 @@
-# OpsinTech Platform
+# PrismOS Platform
 
 [中文](./README_zh.md) | English
 
@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Built on DeerFlow](https://img.shields.io/badge/Built_on-DeerFlow-8A2BE2)](https://github.com/bytedance/deer-flow)
 
-OpsinTech is a **Governed Agent Platform** — the secure, multi-tenant foundation
+PrismOS is a **Governed Agent Platform** — the secure, multi-tenant foundation
 for building and deploying your organization's digital workforce. v1.0 is built
 on [DeerFlow](https://github.com/bytedance/deer-flow)'s Agent runtime (ByteDance,
 GitHub Trending #1), with multi-tenancy, RBAC, audit logging, visual admin
@@ -19,7 +19,7 @@ dashboards, and database-driven configuration layered on top.
 ## Table of Contents
 
 - [Platform Features](#platform-features)
-- [Why OpsinTech Exists](#why-opsintech-exists)
+- [Why PrismOS Exists](#why-prismos-exists)
 - [v1.0 — What We Built](#v10--what-we-built)
 - [Our Vision](#our-vision)
 - [Roadmap](#roadmap)
@@ -33,7 +33,7 @@ dashboards, and database-driven configuration layered on top.
 
 ## Platform Features
 
-OpsinTech transforms AI Agents into a governed production platform with the following capabilities:
+PrismOS transforms AI Agents into a governed production platform with the following capabilities:
 
 ### 🏠 Multi-Tenancy Workspace
 A unified workspace with three-tier resource isolation (`user → tenant → global`). Each user gets a personal tenant on registration, and tenant admins manage members, models, tools, and skills independently.
@@ -77,7 +77,7 @@ A unified workspace with three-tier resource isolation (`user → tenant → glo
 
 ---
 
-## Why OpsinTech Exists
+## Why PrismOS Exists
 
 ### The Agent Gap
 
@@ -88,9 +88,9 @@ auditability, and lifecycle management.
 
 ### What We Built
 
-OpsinTech fills that gap. We layer governance on top of a proven Agent runtime:
+PrismOS fills that gap. We layer governance on top of a proven Agent runtime:
 
-| Concern | Without OpsinTech | With OpsinTech |
+| Concern | Without PrismOS | With PrismOS |
 |---|---|---|
 | **Team Collaboration** | Single-user mode | Multi-tenancy with `user → tenant → global` isolation |
 | **Access Control** | No role-based permissions | RBAC with `platform_admin` / `tenant_admin` / `tenant_member` |
@@ -147,7 +147,7 @@ optional plugins. Enable what you need, hide what you don't.
 
 ## Our Vision
 
-OpsinTech is not "DeerFlow with a dashboard." We're building a **secure, governed platform for your organization's digital workforce**.
+PrismOS is not "DeerFlow with a dashboard." We're building a **secure, governed platform for your organization's digital workforce**.
 
 On this platform, Agents don't just chat and generate code — they operate within boundaries: permission controls, audit records, execution approvals. Starting from Agent conversations, progressively extending into workflows, integrations, and observability, ultimately forming a complete chain:
 
@@ -155,7 +155,7 @@ On this platform, Agents don't just chat and generate code — they operate with
 
 This space is almost entirely vacant in open source. That's why we need community voices.
 
-**Who we're looking for**: If you work in engineering, security, compliance, or platform teams, and you're excited by AI Agents but can't use them in production because of missing governance and security — you're exactly who we're building for. Your pain points and suggestions are OpsinTech's roadmap.
+**Who we're looking for**: If you work in engineering, security, compliance, or platform teams, and you're excited by AI Agents but can't use them in production because of missing governance and security — you're exactly who we're building for. Your pain points and suggestions are PrismOS's roadmap.
 
 ## Roadmap
 
@@ -209,8 +209,8 @@ This space is almost entirely vacant in open source. That's why we need communit
 1. **Clone and configure**
 
    ```bash
-   git clone https://github.com/opsintech/opsintech-platform.git
-   cd opsintech-platform
+   git clone https://github.com/yespon/prism-os.git
+   cd prism-os
    make config
    ```
 
@@ -239,7 +239,7 @@ This space is almost entirely vacant in open source. That's why we need communit
 make up              # Build images and start all services (recommended for first deploy)
 make up-nobuild      # Start services without rebuilding images
 make down            # Stop and remove containers
-make rebuild-images  # Remove all OpsinTech images and rebuild from scratch
+make rebuild-images  # Remove all PrismOS images and rebuild from scratch
 ```
 
 **Local development**:
@@ -324,7 +324,7 @@ MIT License. See [LICENSE](./LICENSE).
 
 v1.0 is built on [DeerFlow](https://github.com/bytedance/deer-flow) (by ByteDance). DeerFlow's Agent runtime — LangGraph orchestration, sub-agent parallelism, sandboxed execution, persistent memory — is one of the best Agent infrastructures in open source. Deep gratitude to the DeerFlow team and community.
 
-**Our relationship with DeerFlow**: In v1.x, we inherit DeerFlow's Agent runtime and add governance. As we evolve, we'll gradually replace internal dependencies and form our own architecture. OpsinTech's long-term identity is not a DeerFlow fork — it's an independent, governed agent platform.
+**Our relationship with DeerFlow**: In v1.x, we inherit DeerFlow's Agent runtime and add governance. As we evolve, we'll gradually replace internal dependencies and form our own architecture. PrismOS's long-term identity is not a DeerFlow fork — it's an independent, governed agent platform.
 
 ### Open-Source Community
 

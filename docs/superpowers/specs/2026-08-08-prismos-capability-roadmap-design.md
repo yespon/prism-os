@@ -2,7 +2,7 @@
 
 **日期：** 2026-08-08
 **状态：** Approved
-**适用项目：** PrismOS (`prism-platform`)
+**适用项目：** PrismOS (`prism-os`)
 **项目基线：** `main` @ `a58d461`，`v0.1.0-alpha.2`
 **规划基线：** 未来 12 个月由 1–2 名核心开发者持续投入；M1 已批准采用 4–5 名核心贡献者的加速情景
 **战略依据：** AgentOS 白皮书及其与 PrismOS 的双向校验报告
@@ -65,7 +65,7 @@ Roadmap 默认保留：
 - `deerflow` Python import 路径；
 - 已有 API 路由和客户端行为；
 - 已有数据库表、Alembic migrations 和历史数据；
-- `.opsintech` 与 `OPSINTECH_*` 兼容输入边界；
+- PrismOS canonical `.prismos` 与 `PRISMOS_*` 配置；旧输入仅按[有界品牌迁移指南](../../migrations/prismos-brand-migration.md)在 `0.2.x` 迁移舱中读取，运行时兼容于 `0.3.0` 删除；
 - 当前 Skill、MCP、File、Sandbox 和模型配置能力。
 
 基础能力通过新增契约、Adapter、旁路事件、双写和渐进迁移建立，不通过一次性重写建立。

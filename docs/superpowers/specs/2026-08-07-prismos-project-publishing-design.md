@@ -1,5 +1,12 @@
 # PrismOS 项目品牌与发布一致性迁移设计
 
+> **Legacy / Historical:** This document records an earlier project state and may contain superseded product names or compatibility decisions.
+
+> **Superseded compatibility decision:** The indefinite compatibility decision in
+> this historical design is superseded by the bounded PrismOS brand-root
+> migration design. Runtime legacy inputs are retained only through `0.2.x` and
+> removed in `0.3.0`.
+
 ## 1. 背景
 
 GitHub 仓库已经从 `prism-platform` 脱离上游 Fork、改为私有，并重命名为 `prism-os`。但代码仓库仍存在大量 `OpsinTech`、`opsintech-platform` 和 `deer-flow-frontend` 标识，README、Quickstart、Contributing、Docker、Python/前端包元数据以及 GitHub 展示信息尚未形成统一的 PrismOS 项目身份。

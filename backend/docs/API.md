@@ -1,10 +1,10 @@
 # API Reference
 
-This document provides a complete reference for the OpsinTech backend APIs.
+This document provides a complete reference for the PrismOS backend APIs.
 
 ## Overview
 
-OpsinTech backend exposes two sets of APIs:
+PrismOS backend exposes two sets of APIs:
 
 1. **LangGraph API** - Agent interactions, threads, and streaming (`/api/langgraph/*`)
 2. **Gateway API** - Models, MCP, skills, uploads, and artifacts (`/api/*`)
@@ -407,11 +407,11 @@ Content-Type: multipart/form-data
     {
       "filename": "document.pdf",
       "size": 1234567,
-      "path": ".opsintech/threads/abc123/user-data/uploads/document.pdf",
+      "path": ".prismos/threads/abc123/user-data/uploads/document.pdf",
       "virtual_path": "/mnt/user-data/uploads/document.pdf",
       "artifact_url": "/api/threads/abc123/artifacts/mnt/user-data/uploads/document.pdf",
       "markdown_file": "document.md",
-      "markdown_path": ".opsintech/threads/abc123/user-data/uploads/document.md",
+      "markdown_path": ".prismos/threads/abc123/user-data/uploads/document.md",
       "markdown_virtual_path": "/mnt/user-data/uploads/document.md",
       "markdown_artifact_url": "/api/threads/abc123/artifacts/mnt/user-data/uploads/document.md"
     }
@@ -439,7 +439,7 @@ GET /api/threads/{thread_id}/uploads/list
     {
       "filename": "document.pdf",
       "size": 1234567,
-      "path": ".opsintech/threads/abc123/user-data/uploads/document.pdf",
+      "path": ".prismos/threads/abc123/user-data/uploads/document.pdf",
       "virtual_path": "/mnt/user-data/uploads/document.pdf",
       "artifact_url": "/api/threads/abc123/artifacts/mnt/user-data/uploads/document.pdf",
       "extension": ".pdf",
@@ -466,7 +466,7 @@ DELETE /api/threads/{thread_id}/uploads/{filename}
 
 ### Thread Cleanup
 
-Remove locally-managed thread files under `.opsintech/threads/{thread_id}` after the LangGraph thread itself has been deleted.
+Remove locally-managed thread files under `.prismos/threads/{thread_id}` after the LangGraph thread itself has been deleted.
 
 ```http
 DELETE /api/threads/{thread_id}

@@ -1,4 +1,4 @@
-# OpsinTech Frontend
+# PrismOS Frontend
 
 A minimalistic and easy-to-use web interface with a modern and flexible architecture.
 

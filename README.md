@@ -101,19 +101,10 @@ from the admin UI. See [configuration](./backend/docs/CONFIGURATION.md) and
 ## Configuration and compatibility
 
 New deployments use `PRISMOS_*` variables and default data under
-`backend/.prismos`. The resolver order is:
-
-```text
-PRISMOS_* → OPSINTECH_* (legacy input) → PrismOS default
-```
-
-If `backend/.prismos` does not exist and `backend/.opsintech` does, existing
-data can be used in place. The resolver does not copy, rename, delete, or
-rewrite that directory. Back up data before changing an explicit path.
-
-The legacy names and path are compatibility boundaries, not the public product
-identity. Never commit populated `config.yaml`, `.env`, API keys, credentials,
-or database passwords.
+`backend/.prismos`. Existing installations should follow the bounded
+[PrismOS brand migration guide](./docs/migrations/prismos-brand-migration.md)
+before changing their data path. Never commit populated `config.yaml`, `.env`,
+API keys, credentials, or database passwords.
 
 ## Security and alpha limitations
 

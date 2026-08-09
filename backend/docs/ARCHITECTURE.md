@@ -26,8 +26,8 @@
     │ Auth DB  │  │  Tenant DB    │  │  File / Object Storage   │
     │──────────│  │───────────────│  │──────────────────────────│
     │ Better   │  │  SQLModel     │  │  v1.0: Local FS          │
-    │ Auth     │  │  SQLAlchemy   │  │  .opsintech/threads/     │
-    │ ──────── │  │  + Alembic    │  │  .opsintech/data/        │
+    │ Auth     │  │  SQLAlchemy   │  │  .prismos/threads/     │
+    │ ──────── │  │  + Alembic    │  │  .prismos/data/        │
     │ user     │  │  ──────────   │  │                          │
     │ account  │  │  tenants      │  │  📋 v2.0: MinIO (S3)     │
     │ session  │  │  memberships  │  │  tn-{id}/ → per-tenant   │
@@ -134,7 +134,7 @@ This means the core Agent runtime code (model factory, tool loading) was never m
 ### v1.0: Local Filesystem (Current)
 
 ```
-.opsintech/
+.prismos/
 ├── threads/
 │   └── {thread_id}/
 │       └── user-data/
@@ -198,7 +198,7 @@ Agent generates artifact
 **Why MinIO:**
 
 - S3-compatible API — easy migration to AWS S3, GCS, or any S3 backend
-- Self-hosted — fits OpsinTech's on-prem / private deployment positioning
+- Self-hosted — fits PrismOS's on-prem / private deployment positioning
 - Per-tenant bucket isolation prevents cross-tenant data leakage at the storage layer (defense in depth, not just application-level)
 - Quota enforcement at the storage layer prevents a single tenant from starving others
 - Object versioning and lifecycle policies for compliance retention
@@ -309,7 +309,7 @@ Tool groups (`web`, `file:read`, `file:write`, `bash`) are used by custom agents
 
 ### Philosophy
 
-OpsinTech targets both quick onboarding and production-grade operations. We support dual deployment paths — not an either/or choice.
+PrismOS targets both quick onboarding and production-grade operations. We support dual deployment paths — not an either/or choice.
 
 | Environment                 | Deployment        | Target Audience                                  |
 | --------------------------- | ----------------- | ------------------------------------------------ |
@@ -317,7 +317,7 @@ OpsinTech targets both quick onboarding and production-grade operations. We supp
 | **PoC / Small team**        | Docker Compose    | Internal pilot, single-node deployment           |
 | **Production / Enterprise** | Helm + Kubernetes | HA, rolling updates, horizontal scaling          |
 
-**Docker Compose is the v1.0 default** because it minimizes friction: `docker compose up -d` gets you running. As OpsinTech matures toward v1.1, a Helm chart becomes the recommended production path.
+**Docker Compose is the v1.0 default** because it minimizes friction: `docker compose up -d` gets you running. As PrismOS matures toward v1.1, a Helm chart becomes the recommended production path.
 
 ### Configuration in Each Mode
 
@@ -331,7 +331,7 @@ OpsinTech targets both quick onboarding and production-grade operations. We supp
 
 ### Why Helm
 
-- OpsinTech comprises 5+ services (nginx, frontend, gateway, langgraph, db-init, optionally postgres, provisioner, MinIO). Helm templates make this manageable.
+- PrismOS comprises 5+ services (nginx, frontend, gateway, langgraph, db-init, optionally postgres, provisioner, MinIO). Helm templates make this manageable.
 - `values.yaml` maps naturally to the current `config.yaml` structure — migration is straightforward.
 - Enterprise buyers expect Helm. Offering it signals production readiness.
 - Helm's `--set` and values file overrides enable per-environment customization (staging vs prod) without config drift.

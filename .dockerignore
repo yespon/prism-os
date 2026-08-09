@@ -70,6 +70,7 @@ backend/.venv
 
 # Runtime data directories — never include in Docker builds
 **/.opsintech/
+**/.prismos/
 **/.langgraph_api/
 *.db
 *.db-journal

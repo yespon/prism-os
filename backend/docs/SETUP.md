@@ -8,8 +8,8 @@
 ## Quick Setup
 
 ```bash
-git clone https://github.com/opsintech/opsintech-platform.git
-cd opsintech-platform
+git clone https://github.com/yespon/prism-os.git
+cd prism-os
 make config
 docker compose up -d
 ```
@@ -28,11 +28,11 @@ make dev      # Start development servers at http://localhost:2026
 
 ## Where config.yaml Goes
 
-`config.yaml` should be in the project root directory (`opsintech-platform/config.yaml`). The backend searches in this order:
+`config.yaml` should be in the project root directory (`prism-os/config.yaml`). The backend searches in this order:
 
-1. `OPSINTECH_CONFIG_PATH` environment variable
+1. `PRISMOS_CONFIG_PATH` environment variable
 2. `backend/config.yaml`
-3. `opsintech-platform/config.yaml` (recommended)
+3. `prism-os/config.yaml` (recommended)
 
 > Models, MCP servers, and skills are managed through the admin UI and stored in the database. Do **not** put them in `config.yaml` for production use.
 

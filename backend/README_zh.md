@@ -1,4 +1,4 @@
-# OpsinTech Platform
+# PrismOS Platform
 
 [English](./README.md) | 中文
 
@@ -7,14 +7,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Built on DeerFlow](https://img.shields.io/badge/Built_on-DeerFlow-8A2BE2)](https://github.com/bytedance/deer-flow)
 
-OpsinTech 是一个 **Governed Agent Platform（可治理的 Agent 平台）**——为构建和部署组织的数字员工队伍提供安全、多租户的基础设施。当前 v1.0 基于 [DeerFlow](https://github.com/bytedance/deer-flow)（字节跳动开源，GitHub Trending #1）的 Agent 运行时构建，在其之上增加了多租户、RBAC 权限、审计日志、可视化管理后台和数据库驱动的配置管理。
+PrismOS 是一个 **Governed Agent Platform（可治理的 Agent 平台）**——为构建和部署组织的数字员工队伍提供安全、多租户的基础设施。当前 v1.0 基于 [DeerFlow](https://github.com/bytedance/deer-flow)（字节跳动开源，GitHub Trending #1）的 Agent 运行时构建，在其之上增加了多租户、RBAC 权限、审计日志、可视化管理后台和数据库驱动的配置管理。
 
 > **我们的使命：让每个组织都能安全地创建、部署和管理自己的 AI Agent——可治理、可审计、生产就绪。**
 
 ## 目录
 
 - [平台功能概览](#平台功能概览)
-- [为什么有 OpsinTech](#为什么有-opsintech)
+- [为什么有 PrismOS](#为什么有-prismos)
 - [v1.0 — 我们做了什么](#v10--我们做了什么)
 - [我们致力于什么](#我们致力于什么)
 - [产品路线图](#产品路线图)
@@ -28,7 +28,7 @@ OpsinTech 是一个 **Governed Agent Platform（可治理的 Agent 平台）**�
 
 ## 平台功能概览
 
-OpsinTech 将 AI Agent 转变为可治理的生产平台，具备以下能力：
+PrismOS 将 AI Agent 转变为可治理的生产平台，具备以下能力：
 
 ### 🏠 多租户工作台
 统一工作空间，实现三层资源隔离（`user → tenant → global`）。注册即自动创建个人租户，租户管理员可独立管理成员、模型、工具和 Skill。
@@ -72,7 +72,7 @@ OpsinTech 将 AI Agent 转变为可治理的生产平台，具备以下能力：
 
 ---
 
-## 为什么有 OpsinTech
+## 为什么有 PrismOS
 
 ### Agent 的鸿沟
 
@@ -80,9 +80,9 @@ AI Agent 已经能够规划、拆解任务、在隔离沙箱中执行代码，�
 
 ### 我们做了什么
 
-OpsinTech 填补了这道鸿沟。我们在经过验证的 Agent 运行时之上叠加了治理层：
+PrismOS 填补了这道鸿沟。我们在经过验证的 Agent 运行时之上叠加了治理层：
 
-| 维度 | 没有 OpsinTech | 有了 OpsinTech |
+| 维度 | 没有 PrismOS | 有了 PrismOS |
 |---|---|---|
 | **团队协作** | 单用户模式 | 多租户，`user → tenant → global` 三层隔离 |
 | **权限控制** | 无角色权限体系 | RBAC：`platform_admin` / `tenant_admin` / `tenant_member` |
@@ -137,7 +137,7 @@ OpsinTech 填补了这道鸿沟。我们在经过验证的 Agent 运行时之上
 
 ## 我们致力于什么
 
-OpsinTech 的目标不是做一个「有后台的 DeerFlow」。我们要做的是一个 **安全的、可治理的平台，为组织的数字员工队伍提供基础设施**。
+PrismOS 的目标不是做一个「有后台的 DeerFlow」。我们要做的是一个 **安全的、可治理的平台，为组织的数字员工队伍提供基础设施**。
 
 在这个平台上，Agent 不只是能聊天和生成代码——它会被放在一个受管控的环境里：有权限边界、有审计记录、有执行审批。从 Agent 对话开始，逐步延伸到工作流、集成、可观测性，最终形成一条完整的链路：
 
@@ -145,7 +145,7 @@ OpsinTech 的目标不是做一个「有后台的 DeerFlow」。我们要做的�
 
 这个市场在开源领域几乎是空白。这也是为什么我们需要社区的声音。
 
-**我们在找什么样的人**：如果你在工程、安全、合规、平台团队，被 AI Agent 的能力吸引，但又因为缺少治理和安全保障而不敢在生产环境使用——你就是我们要找的人。你的痛点和建议，就是 OpsinTech 的路线图。
+**我们在找什么样的人**：如果你在工程、安全、合规、平台团队，被 AI Agent 的能力吸引，但又因为缺少治理和安全保障而不敢在生产环境使用——你就是我们要找的人。你的痛点和建议，就是 PrismOS 的路线图。
 
 ## 产品路线图
 
@@ -201,8 +201,8 @@ OpsinTech 的目标不是做一个「有后台的 DeerFlow」。我们要做的�
 1. **克隆仓库**
 
    ```bash
-   git clone https://github.com/opsintech/opsintech-platform.git
-   cd opsintech-platform
+   git clone https://github.com/yespon/prism-os.git
+   cd prism-os
    ```
 
 2. **生成本地配置文件**
@@ -236,7 +236,7 @@ OpsinTech 的目标不是做一个「有后台的 DeerFlow」。我们要做的�
 make up              # 构建镜像并启动全部服务（首次部署推荐）
 make up-nobuild      # 使用已有镜像启动（不重新构建）
 make down            # 停止并移除容器
-make rebuild-images  # 删除所有 OpsinTech 镜像并重新构建
+make rebuild-images  # 删除所有 PrismOS 镜像并重新构建
 ```
 
 **本地开发**：
@@ -323,7 +323,7 @@ docker pull enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-
 
 本项目 v1.0 基于 [DeerFlow](https://github.com/bytedance/deer-flow)（by ByteDance）构建。DeerFlow 的 Agent 运行时——LangGraph 编排、Sub-Agent 并行、Sandbox 执行、持久化 Memory——是当前开源领域最出色的 Agent 基础设施之一。感谢 DeerFlow 团队和社区。
 
-**我们与 DeerFlow 的关系**：v1.0 阶段，我们继承 DeerFlow 的 Agent 运行时并补上治理层。随着版本演进，我们将逐步替换内部依赖，形成自己的架构体系。OpsinTech 的长期定位不是 DeerFlow 的 fork，而是一个独立的、可治理的 Agent 平台。
+**我们与 DeerFlow 的关系**：v1.0 阶段，我们继承 DeerFlow 的 Agent 运行时并补上治理层。随着版本演进，我们将逐步替换内部依赖，形成自己的架构体系。PrismOS 的长期定位不是 DeerFlow 的 fork，而是一个独立的、可治理的 Agent 平台。
 
 ### 开源社区
 

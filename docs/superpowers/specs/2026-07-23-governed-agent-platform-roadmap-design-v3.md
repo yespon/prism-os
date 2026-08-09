@@ -1,5 +1,7 @@
 # Governed Agent Platform — Roadmap Design (v3)
 
+> **Legacy / Historical:** This document records an earlier project state and may contain superseded product names or compatibility decisions.
+
 **Date**: 2026-07-23
 **Status**: Approved
 **Authors**: yespon, Claude

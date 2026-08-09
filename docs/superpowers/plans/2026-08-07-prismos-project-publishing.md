@@ -1,5 +1,7 @@
 # PrismOS Project Publishing Implementation Plan
 
+> **Legacy / Historical:** This document records an earlier project state and may contain superseded product names or compatibility decisions.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 将当前 `prism-platform` 一致地发布为 PrismOS：完成项目身份、文档、运行时兼容边界、Docker/CI、GHCR 首个预发布版本及 GitHub 项目元数据的闭环，并保持现有 DeerFlow/LangGraph 能力、API 路径、数据库迁移和已有用户数据可用。

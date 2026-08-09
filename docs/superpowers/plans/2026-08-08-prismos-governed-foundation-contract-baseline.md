@@ -1111,14 +1111,14 @@ database_path="$migration_dir/audit.db"
 trap 'rm -f "$config_path" "$database_path"; rmdir "$migration_dir" 2>/dev/null || true' EXIT
 sed "s#sqlite+aiosqlite:///.prismos/tenant.db#sqlite+aiosqlite:///$database_path#" \
   ../config.example.yaml > "$config_path"
-OPSINTECH_CONFIG_PATH="$config_path" uv run alembic upgrade head
-OPSINTECH_CONFIG_PATH="$config_path" uv run alembic downgrade g1a2b3c4d5e6
-OPSINTECH_CONFIG_PATH="$config_path" uv run alembic upgrade head
+PRISMOS_CONFIG_PATH="$config_path" uv run alembic upgrade head
+PRISMOS_CONFIG_PATH="$config_path" uv run alembic downgrade g1a2b3c4d5e6
+PRISMOS_CONFIG_PATH="$config_path" uv run alembic upgrade head
 P0_DATABASE_PATH="$database_path" uv run python -c \
   'import os, sqlite3; db = sqlite3.connect(os.environ["P0_DATABASE_PATH"]); assert db.execute("select name from sqlite_master where type=\"table\" and name=\"platform_audit_events\"").fetchone()'
 ```
 
-Expected: all four verification commands exit 0; the final temporary database contains `platform_audit_events`. Keep the existing `OPSINTECH_CONFIG_PATH` compatibility input because direct `AppConfig` loading does not resolve `PRISMOS_CONFIG_PATH`; do not point this verification at a user database.
+Expected: all four verification commands exit 0; the final temporary database contains `platform_audit_events`. Do not point this verification at a user database.
 
 - [ ] **Step 8: Commit persistence and its one migration**
 

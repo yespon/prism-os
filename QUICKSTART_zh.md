@@ -25,9 +25,8 @@ make config
 `make config` 只在文件不存在时创建本地 `config.yaml` 和 `frontend/.env`。
 加入凭据后不要提交这两个文件。
 
-新部署使用 `PRISMOS_*` 变量和 `backend/.prismos`。已有部署仍可使用
-`OPSINTECH_*` 兼容变量。修改数据目录前请阅读
-[配置指南](./backend/docs/CONFIGURATION.md)。
+新部署使用 `PRISMOS_*` 变量和 `backend/.prismos`。已有部署在修改数据目录前，
+请先阅读[品牌迁移指南](./docs/migrations/prismos-brand-migration.md)。
 
 ## 2. 启动 PrismOS
 
@@ -107,8 +106,8 @@ docker compose ps
 docker compose logs --tail=200 gateway langgraph nginx
 ```
 
-如果配置来自旧 checkout，请检查 `PRISMOS_CONFIG_PATH` 和运行时数据目录。不要为了
-修复启动问题删除 `backend/.opsintech`，其中可能包含已有安装的数据。
+如果配置来自较早的 checkout，请检查 `PRISMOS_CONFIG_PATH` 和运行时数据目录，
+并按照迁移指南操作，不要直接删除已有运行数据。
 
 ### 模型请求失败
 
