@@ -1,4 +1,7 @@
 import { useCallback, useState, useRef } from 'react';
+
+import { asJsonObject, asTerminalAssets, errorMessage } from './message-types';
+import type { TerminalMessage, TerminalMessagePart } from './message-types';
 import type { InteractionRequest, InteractionResponse } from './types';
 
 export interface TerminalAgentOptions {
@@ -30,7 +33,7 @@ export function useTerminalAgent({
   terminalSessionId,
   modelName = 'gpt-4o',
   assetId,
-  assetIp,
+  assetIp: _assetIp,
   selectedAssets,
   mode,
   onExecuteCommand,
@@ -39,7 +42,7 @@ export function useTerminalAgent({
   skillInstructions,
 }: TerminalAgentOptions) {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<TerminalMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Current interaction state (e.g., clarify question from agent)
@@ -49,7 +52,7 @@ export function useTerminalAgent({
   const [isCommandRunning, setIsCommandRunning] = useState(false);
 
   // Dangerous command pending user confirmation
-  const [pendingDangerousTool, setPendingDangerousTool] = useState<{
+  const [pendingDangerousTool] = useState<{
     toolCallId: string;
     command: string;
     reason?: string;
@@ -79,7 +82,7 @@ export function useTerminalAgent({
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
+      buffer = lines.pop() ?? '';
 
       for (const line of lines) {
         if (line.startsWith('data: ')) {
@@ -134,7 +137,10 @@ export function useTerminalAgent({
                 setMessages(prev => {
                   const updated = prev.map(m =>
                     m.id === data.messageId
-                      ? { ...m, content: m.content + (data.delta || '') }
+                      ? {
+                          ...m,
+                          content: `${typeof m.content === 'string' ? m.content : ''}${data.delta ?? ''}`,
+                        }
                       : m
                   );
                   return updated;
@@ -160,9 +166,9 @@ export function useTerminalAgent({
                 setMessages(prev => {
                   const last = prev[prev.length - 1];
                   if (!last) return prev;
-                  const newParts = last.parts?.map((p: any) => {
+                  const newParts = last.parts?.map((p: TerminalMessagePart) => {
                     if (p.type === 'reasoning' && p.id === data.messageId) {
-                      return { ...p, text: (p.text || '') + (data.delta || '') };
+                      return { ...p, text: `${p.text ?? ''}${data.delta ?? ''}` };
                     }
                     return p;
                   });
@@ -199,7 +205,7 @@ export function useTerminalAgent({
                   if (targetIdx < 0) return prev;
                   const last = prev[targetIdx];
                   if (!last) return prev;
-                  const newParts = last.parts?.map((p: any) => {
+                  const newParts = last.parts?.map((p: TerminalMessagePart) => {
                     if (p.type === 'step' && p.stepName === data.stepName) {
                       return { ...p, state: 'completed' };
                     }
@@ -241,9 +247,9 @@ export function useTerminalAgent({
                   if (targetIdx < 0) return prev;
                   const last = prev[targetIdx];
                   if (!last) return prev;
-                  const newParts = last.parts?.map((p: any) => {
+                  const newParts = last.parts?.map((p: TerminalMessagePart) => {
                     if (p.toolCallId === data.toolCallId) {
-                      return { ...p, _rawArgs: (p._rawArgs || '') + (data.delta || '') };
+                      return { ...p, _rawArgs: `${p._rawArgs ?? ''}${data.delta ?? ''}` };
                     }
                     return p;
                   });
@@ -260,12 +266,12 @@ export function useTerminalAgent({
                   if (targetIdx < 0) return prev;
                   const last = prev[targetIdx];
                   if (!last) return prev;
-                  const newParts = last.parts?.map((p: any) => {
+                  const newParts = last.parts?.map((p: TerminalMessagePart) => {
                     if (p.toolCallId === data.toolCallId) {
-                      let finalInput = p.input || {};
+                      let finalInput = p.input ?? {};
                       if (p._rawArgs) {
                         try {
-                          finalInput = JSON.parse(p._rawArgs);
+                          finalInput = asJsonObject(JSON.parse(p._rawArgs));
                         } catch (e) {
                           console.error('Failed to parse tool args', e, p._rawArgs);
                         }
@@ -287,7 +293,7 @@ export function useTerminalAgent({
                   const updated = prev.map(m => {
                     if (!m.parts) return m;
                     let modified = false;
-                    const newParts = m.parts.map((p: any) => {
+                    const newParts = m.parts.map((p: TerminalMessagePart) => {
                       if (p.toolCallId === data.toolCallId) {
                         found = true;
                         modified = true;
@@ -330,9 +336,9 @@ export function useTerminalAgent({
                   commandId: data.messageId,
                   interactionType: 'freeform',
                   promptHint: data.question,
-                  options: data.options || [],
-                  optionValues: data.options || [],
-                } as any);
+                  options: data.options ?? [],
+                  optionValues: data.options ?? [],
+                });
                 break;
 
               case 'CLARIFICATION_RESPONSE':
@@ -342,14 +348,21 @@ export function useTerminalAgent({
               // --- Agent Mode: Tool Approval Required ---
               case 'TOOL_APPROVAL_REQUIRED':
                 // Switch matching tool calls from 'auto-executing' to 'input-available'
-                if (data.toolCalls && Array.isArray(data.toolCalls)) {
-                  setMessages(prev =>
+                  if (data.toolCalls && Array.isArray(data.toolCalls)) {
+                    const toolCalls = data.toolCalls as Array<{
+                      toolCallId?: string;
+                      security?: {
+                        reason?: string;
+                        risk_level?: string;
+                        is_state_changing?: boolean;
+                      target_assets?: unknown;
+                      };
+                    }>;
+                    setMessages(prev =>
                     prev.map(m => {
                       if (!m.parts) return m;
-                      const newParts = m.parts.map((p: any) => {
-                        const match = data.toolCalls.find(
-                          (tc: any) => tc.toolCallId === p.toolCallId
-                        );
+                      const newParts = m.parts.map((p: TerminalMessagePart) => {
+                        const match = toolCalls.find((tc) => tc.toolCallId === p.toolCallId);
                         if (match) {
                           return {
                             ...p,
@@ -358,7 +371,7 @@ export function useTerminalAgent({
                               reason: match.security?.reason,
                               riskLevel: match.security?.risk_level,
                               isStateChanging: match.security?.is_state_changing,
-                              targetAssets: match.security?.target_assets || [],
+                              targetAssets: asTerminalAssets(match.security?.target_assets),
                             },
                           };
                         }
@@ -374,7 +387,7 @@ export function useTerminalAgent({
                 // Unknown event type — log for debugging
                 console.debug('[useTerminalAgent] Unknown event:', data.type, data);
             }
-          } catch (e) {
+          } catch {
             // Ignore parse errors for non-JSON lines
           }
         }
@@ -420,13 +433,13 @@ export function useTerminalAgent({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             session_id: taskId,
-            terminal_session_id: mode === 'agent' ? '' : (terminalSessionId || ''),
+            terminal_session_id: mode === 'agent' ? '' : (terminalSessionId ?? ''),
             model_name: modelName,
-            asset_id: assetId || '',
-            selected_assets: selectedAssets || [],
+            asset_id: assetId ?? '',
+            selected_assets: selectedAssets ?? [],
             mode,
             user_input: msg.text,
-            skill_instructions: skillInstructions || "",
+            skill_instructions: skillInstructions ?? "",
           }),
           signal: abortControllerRef.current.signal,
         });
@@ -456,8 +469,8 @@ export function useTerminalAgent({
         }
 
         await processStream(res);
-      } catch (error: any) {
-        if (error.name === 'AbortError') {
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name === 'AbortError') {
           console.log('[useTerminalAgent] Request cancelled');
         } else {
           console.error('[useTerminalAgent] sendMessage error:', error);
@@ -465,7 +478,7 @@ export function useTerminalAgent({
             if (prev.some(m => m.id === `msg-${taskId}`)) {
               return prev.map(m =>
                 m.id === `msg-${taskId}`
-                  ? { ...m, content: `❌ Network error: ${error.message}` }
+                  ? { ...m, content: `❌ Network error: ${errorMessage(error)}` }
                   : m
               );
             }
@@ -473,7 +486,7 @@ export function useTerminalAgent({
               ...prev,
               {
                 role: 'assistant',
-                content: `❌ Network error: ${error.message}`,
+                content: `❌ Network error: ${errorMessage(error)}`,
                 id: `err-${Date.now()}`,
                 parts: [],
               },
@@ -513,7 +526,7 @@ export function useTerminalAgent({
           setMessages(prev =>
             prev.map(m => {
               if (!m.parts) return m;
-              const newParts = m.parts.map((p: any) => {
+              const newParts = m.parts.map((p: TerminalMessagePart) => {
                 if (p.toolCallId === toolCallId) {
                   return {
                     ...p,
@@ -538,7 +551,7 @@ export function useTerminalAgent({
         setMessages(prev =>
           prev.map(m => {
             if (!m.parts) return m;
-            const newParts = m.parts.map((p: any) => {
+            const newParts = m.parts.map((p: TerminalMessagePart) => {
               if (p.toolCallId === toolCallId) {
                 return { ...p, state: 'auto-executing' };
               }
@@ -549,23 +562,23 @@ export function useTerminalAgent({
         );
         
         await processStream(res);
-      } catch (error: any) {
-        console.error('[useTerminalAgent] approveToolCall error:', error);
+      } catch (error: unknown) {
+        console.error('[useTerminalAgent] approveToolCall error:', errorMessage(error));
       }
     },
     [taskId, processStream]
   );
 
   const executePendingCommand = useCallback(
-    (toolCallId: string, toolName: string, command: string) => {
-      approveToolCall(toolCallId, true);
+    (toolCallId: string, _toolName: string, _command: string) => {
+      void approveToolCall(toolCallId, true);
     },
     [approveToolCall]
   );
 
   const rejectPendingCommand = useCallback(
-    (toolCallId: string, toolName: string) => {
-      approveToolCall(toolCallId, false);
+    (toolCallId: string, _toolName: string) => {
+      void approveToolCall(toolCallId, false);
     },
     [approveToolCall]
   );
@@ -605,7 +618,7 @@ export function useTerminalAgent({
   // ------------------------------------------------------------------
 
   const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setInput(e.target.value);
     },
     []
@@ -615,7 +628,7 @@ export function useTerminalAgent({
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!input.trim() || isLoading) return;
-      sendMessage({ text: input });
+      void sendMessage({ text: input });
       setInput('');
     },
     [input, isLoading, sendMessage]
@@ -633,7 +646,7 @@ export function useTerminalAgent({
     isLoading,
     isDetectingInteraction: false, // No longer needed — backend handles this
     sendMessage,
-    addToolResult: useCallback(() => {}, []), // Placeholder for future use
+    addToolResult: useCallback(() => undefined, []), // Placeholder for future use
     todos: [], // Managed by backend graph state
     focusChain: null, // Managed by backend
     currentInteraction,
@@ -647,8 +660,8 @@ export function useTerminalAgent({
     executePendingCommand,
     rejectPendingCommand,
     pendingDangerousTool,
-    confirmDangerousCommand: () => {}, // Placeholder
-    rejectDangerousCommand: () => {}, // Placeholder
+    confirmDangerousCommand: () => undefined, // Placeholder
+    rejectDangerousCommand: () => undefined, // Placeholder
     detectInteraction: async () => null, // No longer needed — backend handles this
     hydrateMessages: setMessages,
   };

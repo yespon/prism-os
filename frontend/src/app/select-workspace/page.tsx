@@ -4,6 +4,7 @@ import { Building2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,9 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useTenantList, useSwitchTenant } from "@/core/tenants/hooks";
 import { useI18n } from "@/core/i18n/hooks";
-import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
+import { useTenantList, useSwitchTenant } from "@/core/tenants/hooks";
 
 export default function SelectWorkspacePage() {
   const { t } = useI18n();

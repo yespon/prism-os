@@ -1,10 +1,10 @@
 import { useState } from "react";
 
+import { getAuthToken } from "@/core/auth/auth-api";
 import { getBackendBaseURL } from "@/core/config";
 import { useI18n } from "@/core/i18n/hooks";
 import type { UploadedFileInfo } from "@/core/uploads";
 import { cn } from "@/lib/utils";
-import { getAuthToken } from "@/core/auth/auth-api";
 
 export function ThreadAttachmentsPanel({
   attachments,

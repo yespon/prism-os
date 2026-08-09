@@ -23,7 +23,6 @@ import { useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +37,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useI18n } from "@/core/i18n/hooks";
+import { Input } from "@/components/ui/input";
+import { FilePreviewSheet } from "@/components/workspace/files/file-preview-sheet";
+import { getDownloadUrl } from "@/core/files/api";
 import {
   useFolders,
   useFiles,
@@ -47,8 +48,6 @@ import {
   useUploadFile,
   useDeleteFile,
 } from "@/core/files/hooks";
-import { getDownloadUrl } from "@/core/files/api";
-import { FilePreviewSheet } from "@/components/workspace/files/file-preview-sheet";
 import {
   formatFileSize,
   getFileTypeIcon,
@@ -56,6 +55,7 @@ import {
   getSourceTypeLabel,
 } from "@/core/files/types";
 import type { FileFolder, FileObject } from "@/core/files/types";
+import { useI18n } from "@/core/i18n/hooks";
 import { cn } from "@/lib/utils";
 
 export default function FileCenterPage() {
@@ -304,7 +304,7 @@ export default function FileCenterPage() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5 h-9">
                 <Filter className="size-3.5" />
-                {sourceFilter === "all" ? t.fileCenter.allTypes : (t.fileCenter.sourceTypes[sourceFilter] || getSourceTypeLabel(sourceFilter))}
+                {sourceFilter === "all" ? t.fileCenter.allTypes : (t.fileCenter.sourceTypes[sourceFilter] ?? getSourceTypeLabel(sourceFilter))}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -444,7 +444,7 @@ export default function FileCenterPage() {
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") handleCreateFolder();
+                if (e.key === "Enter") void handleCreateFolder();
               }}
               autoFocus
             />

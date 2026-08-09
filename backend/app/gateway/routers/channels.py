@@ -4,8 +4,15 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.gateway.authorization import require_tenant_admin, require_tenant_context
+from deerflow.database.models import UserConfig
+from deerflow.database.session import get_session
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +74,9 @@ async def restart_channel(name: str) -> ChannelRestartResponse:
 async def test_channel_notification(body: TestNotificationRequest) -> TestNotificationResponse:
     """Send a test notification to a specific IM channel and chat ID."""
     from datetime import datetime
-    from app.channels.service import get_channel_service
+
     from app.channels.message_bus import OutboundMessage
+    from app.channels.service import get_channel_service
 
     service = get_channel_service()
     if service is None or not service.bus:
@@ -101,15 +109,6 @@ async def test_channel_notification(body: TestNotificationRequest) -> TestNotifi
 # ---------------------------------------------------------------------------
 # Tenant IM Settings
 # ---------------------------------------------------------------------------
-
-from fastapi import Depends, Request
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.gateway.authorization import require_tenant_admin, require_tenant_context
-from deerflow.database.models import UserConfig
-from deerflow.database.session import get_session
 
 im_settings_router = APIRouter(prefix="/api/tenant-im", tags=["tenant-im"])
 
@@ -256,4 +255,3 @@ async def update_im_settings(
         channels=body.channels,
         chat_ids=body.chat_ids,
     )
-

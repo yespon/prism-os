@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+
 import { fetchPlugins, type PluginInfo } from "./api";
 
 export function usePlugins() {

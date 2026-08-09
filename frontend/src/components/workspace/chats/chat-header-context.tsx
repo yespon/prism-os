@@ -3,8 +3,8 @@
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
-import type { useAvailableModels } from "@/core/models/hooks";
 import type { useI18n } from "@/core/i18n/hooks";
+import type { useAvailableModels } from "@/core/models/hooks";
 import type { AgentThread } from "@/core/threads";
 
 export interface ChatHeaderContextType {

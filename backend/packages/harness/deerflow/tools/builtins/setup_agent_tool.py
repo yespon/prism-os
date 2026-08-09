@@ -1,7 +1,4 @@
-import asyncio
-import concurrent.futures
 import logging
-import uuid
 
 from langchain_core.messages import ToolMessage
 from langchain_core.tools import tool
@@ -9,19 +6,9 @@ from langgraph.prebuilt import ToolRuntime
 from langgraph.types import Command
 
 from deerflow.config.paths import get_paths
-from deerflow.database.session import get_session_factory
+from deerflow.runtime import get_agent_persistence_provider
 
 logger = logging.getLogger(__name__)
-
-
-def _run_async(coro):
-    """Run an async coroutine from sync code, handling both event-loop and no-loop cases."""
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        return asyncio.run(coro)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
-        return ex.submit(asyncio.run, coro).result()
 
 
 def _create_agent_in_db(
@@ -31,26 +18,17 @@ def _create_agent_in_db(
     user_id: str,
     tenant_id: str | None,
 ) -> None:
-    """Create a custom agent row in the database."""
-    from app.models.agents import CustomAgent
-
-    async def _do_create():
-        session_factory = get_session_factory()
-        async with session_factory() as session:
-            agent = CustomAgent(
-                id=str(uuid.uuid4()),
-                tenant_id=tenant_id,
-                user_id=user_id,
-                name=agent_name,
-                description=description,
-                system_prompt=soul,
-                enabled=True,
-                created_by=user_id,
-            )
-            session.add(agent)
-            await session.commit()
-
-    _run_async(_do_create())
+    """Create a custom agent through the host application's provider."""
+    persister = get_agent_persistence_provider()
+    if persister is None:
+        raise RuntimeError("Custom-agent persistence is not configured by the host application")
+    persister(
+        agent_name=agent_name,
+        soul=soul,
+        description=description,
+        user_id=user_id,
+        tenant_id=tenant_id,
+    )
 
 
 @tool

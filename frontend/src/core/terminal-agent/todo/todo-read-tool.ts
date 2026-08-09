@@ -16,7 +16,7 @@ export class TodoReadTool {
    * Execute todo_read — read current todo list for the given task.
    */
   execute(_params: {}, taskId: string): string {
-    const todos = todoStore.get(taskId) || [];
+    const todos = todoStore.get(taskId) ?? [];
 
     if (todos.length === 0) {
       return '当前没有待办任务。如果需要管理复杂任务，可以使用 todo_write 创建一个任务清单。';
@@ -35,7 +35,7 @@ export class TodoReadTool {
    * Get raw todos for a given taskId.
    */
   getTodos(taskId: string): TodoItem[] {
-    return todoStore.get(taskId) || [];
+    return todoStore.get(taskId) ?? [];
   }
 
   /**

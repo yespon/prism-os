@@ -13,8 +13,8 @@ from deerflow.agents.memory.prompt import (
     format_conversation_for_update,
 )
 from deerflow.config.memory_config import get_memory_config
-from deerflow.config.tenant_context import get_current_tenant_id, get_current_user_id
 from deerflow.config.paths import get_paths
+from deerflow.config.tenant_context import get_current_tenant_id, get_current_user_id
 from deerflow.models import create_chat_model
 
 logger = logging.getLogger(__name__)

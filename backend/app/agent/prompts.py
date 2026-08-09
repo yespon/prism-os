@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 
 CMD_RULES = """
 ## 命令执行注意事项 (CRITICAL)
@@ -132,7 +132,7 @@ TERMINAL_AGENT_SYSTEM_PROMPT = f"""
 当前模式：Agent 模式 — 命令后台执行，除非危险命令需要确认。拥有完整的 ReAct 循环能力。
 """
 
-def build_dynamic_prompt(mode: str, asset_ip: str = "", todos: List[Dict[str, Any]] = None, skill_instructions: str = "") -> str:
+def build_dynamic_prompt(mode: str, asset_ip: str = "", todos: list[dict[str, Any]] = None, skill_instructions: str = "") -> str:
     todos = todos or []
     
     if mode == "cmd":

@@ -7,13 +7,13 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SummarizationSettingsPage } from "@/components/workspace/settings/summarization-settings-page";
 import { useAgents } from "@/core/agents";
 import { useI18n } from "@/core/i18n/hooks";
 
 import { AgentCard } from "./agent-card";
 import { CreateAgentDialog } from "./create-agent-dialog";
 import { EditAgentDialog } from "./edit-agent-dialog";
-import { SummarizationSettingsPage } from "@/components/workspace/settings/summarization-settings-page";
 
 export function AgentGallery() {
   const { t } = useI18n();

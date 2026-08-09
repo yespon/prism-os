@@ -201,6 +201,7 @@ services:
       - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
       - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
       - PRISMOS_SANDBOX_HOST=host.docker.internal
+      - PRISMOS_RUNTIME_ADAPTER_MODULE=${PRISMOS_RUNTIME_ADAPTER_MODULE:-app.runtime_adapters}
     env_file:
       - ../.env
     extra_hosts:

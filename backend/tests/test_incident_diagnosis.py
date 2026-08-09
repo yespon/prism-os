@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 import asyncio
-import uuid
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.models.agents import CustomAgent
-from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+from app.models.alerting import AlertSource, Incident, IncidentSignalLink, RawAlert, Signal
 
 # ---------------------------------------------------------------------------
 # Engine & Session Fixtures
@@ -27,8 +27,6 @@ def _make_test_engine() -> AsyncEngine:
 
 async def _create_tables(engine: AsyncEngine) -> None:
     # Ensure all tables are registered
-    from app.models.agents import CustomAgent
-    from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
 
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
@@ -56,6 +54,7 @@ def test_session_factory():
 
 def _make_test_app(session_factory, default_user_id: str | None = "user-a"):
     from fastapi import FastAPI, Request
+
     from app.gateway.routers.alerts import router
 
     app = FastAPI()

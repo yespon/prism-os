@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   PlusIcon,
   CopyIcon,
@@ -14,12 +13,11 @@ import {
   BookOpenIcon,
   TerminalIcon
 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +25,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useAgents } from "@/core/agents";
 import {
   useAlertSources,
   useCreateAlertSource,
@@ -36,7 +37,6 @@ import {
   type AlertSourceUpdate,
 } from "@/core/alerting";
 import { useAvailableModels } from "@/core/models/hooks";
-import { useAgents } from "@/core/agents";
 
 // 定义预设映射的类型
 type PresetType = "generic" | "grafana" | "prometheus";
@@ -210,12 +210,12 @@ export function AlertSourcesTab() {
     // Populate AI analysis fields
     setAiAnalysisEnabled(source.ai_analysis_enabled);
     setAiAnalysisSeverities(source.ai_analysis_severities?.length ? source.ai_analysis_severities : ["critical", "major"]);
-    setAiAnalysisModel(source.ai_analysis_model || "");
-    setDiagnosisAgentId(source.diagnosis_agent_id || "");
+    setAiAnalysisModel(source.ai_analysis_model ?? "");
+    setDiagnosisAgentId(source.diagnosis_agent_id ?? "");
 
     // Populate field mapping
     const fieldMapping = source.config_json?.field_mapping as MappingTemplate | undefined;
-    if (fieldMapping && fieldMapping.title) {
+    if (fieldMapping?.title) {
       setMapping(fieldMapping);
       setSelectedPreset("generic"); // custom mapping
     } else {
@@ -469,7 +469,7 @@ export function AlertSourcesTab() {
                       className="h-8 w-8 p-0 text-zinc-400 hover:text-rose-500"
                       onClick={() => {
                         if (confirm(`确定删除告警源「${source.name}」？`)) {
-                          deleteSource(source.id);
+                          void deleteSource(source.id);
                         }
                       }}
                       disabled={deleting}

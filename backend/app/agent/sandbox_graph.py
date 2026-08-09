@@ -1,12 +1,14 @@
-import json
 import logging
-from typing import Annotated, Any, Literal, TypedDict
-from langchain_core.messages import AnyMessage, HumanMessage, SystemMessage, ToolMessage, AIMessage
+from typing import Annotated, Literal, TypedDict
+
+from langchain_core.messages import AnyMessage, SystemMessage
 from langchain_core.tools import tool
-from langgraph.graph import StateGraph, START, END
-from langgraph.graph.message import add_messages
-from deerflow.models.factory import create_chat_model
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
+from langgraph.prebuilt import ToolNode
+
+from deerflow.models.factory import create_chat_model
 
 logger = logging.getLogger(__name__)
 
@@ -73,8 +75,6 @@ async def intent_node(state: SandboxState) -> dict:
     
     return {"messages": [response]}
         
-from langgraph.prebuilt import ToolNode
-
 execute_node = ToolNode(sandbox_tools)
 
 # ---------------------------------------------------------------------------

@@ -8,11 +8,10 @@ import re
 
 import yaml
 from pydantic import BaseModel
-from sqlmodel import select
 
 from deerflow.config.paths import get_paths
 from deerflow.config.tenant_context import get_current_tenant_id, get_current_user_id
-from deerflow.database.session import get_session_factory
+from deerflow.runtime import get_agent_config_provider
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ def _run_async(coro):
     (called from within an already-running event loop, e.g. during tests).
     """
     try:
-        loop = asyncio.get_running_loop()
+        asyncio.get_running_loop()
     except RuntimeError:
         return asyncio.run(coro)
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
@@ -35,7 +34,7 @@ def _run_async(coro):
 
 
 def _db_agent_to_config(agent) -> "AgentConfig":
-    """Convert a CustomAgent DB row to an AgentConfig."""
+    """Convert a host-owned agent record to an AgentConfig."""
     return AgentConfig(
         id=agent.id,
         name=agent.name,
@@ -65,39 +64,20 @@ class AgentConfig(BaseModel):
 
 
 async def _query_agent_config(name: str, user_id: str, tenant_id: str | None):
-    """Async helper: query CustomAgent from DB."""
-    from app.models.agents import CustomAgent
-
-    session_factory = get_session_factory()
-    async with session_factory() as session:
-        stmt = select(CustomAgent).where(
-            CustomAgent.tenant_id == tenant_id,
-            CustomAgent.user_id.in_([user_id, "tenant-shared"]),
-            CustomAgent.name == name,
-        )
-        result = await session.exec(stmt)
-        agents = result.all()
-        if not agents:
-            return None
-        for a in agents:
-            if a.user_id == user_id:
-                return a
-        return agents[0]
+    """Compatibility seam for callers that used the old async helper."""
+    loader, _ = get_agent_config_provider()
+    if loader is None:
+        return None
+    return loader(name, user_id, tenant_id)
 
 
 
 async def _query_agent_list(user_id: str, tenant_id: str | None):
-    """Async helper: query all CustomAgent rows for a user in a tenant."""
-    from app.models.agents import CustomAgent
-
-    session_factory = get_session_factory()
-    async with session_factory() as session:
-        stmt = select(CustomAgent).where(
-            CustomAgent.tenant_id == tenant_id,
-            CustomAgent.user_id == user_id,
-        ).order_by(CustomAgent.name)
-        result = await session.exec(stmt)
-        return result.all()
+    """Compatibility seam for callers that used the old async helper."""
+    _, lister = get_agent_config_provider()
+    if lister is None:
+        return []
+    return lister(user_id, tenant_id)
 
 
 @functools.lru_cache(maxsize=128)
@@ -134,7 +114,7 @@ def load_agent_config(
         else (get_current_tenant_id() if resolved_user_id is not None else None)
     )
 
-    # Try DB first
+    # Try the host application's provider first.
     try:
         agent = _run_async(
             _query_agent_config(name, resolved_user_id, resolved_tenant_id)
@@ -228,7 +208,7 @@ def list_custom_agents(
         else (get_current_tenant_id() if resolved_user_id is not None else None)
     )
 
-    # Try DB first
+    # Try the host application's provider first.
     try:
         agents = _run_async(
             _query_agent_list(resolved_user_id, resolved_tenant_id)
@@ -295,7 +275,7 @@ def _list_custom_agents_from_filesystem(
     if not agents_dir.exists():
         return []
 
-    agents: list["AgentConfig"] = []
+    agents: list[AgentConfig] = []
 
     for entry in sorted(agents_dir.iterdir()):
         if not entry.is_dir():

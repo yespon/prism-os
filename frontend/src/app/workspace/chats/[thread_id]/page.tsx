@@ -12,8 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useChatTabs } from "@/components/workspace/chats/chat-tabs-context";
 import { ChatHeaderProvider } from "@/components/workspace/chats/chat-header-context";
+import { useChatTabs } from "@/components/workspace/chats/chat-tabs-context";
 import { useI18n } from "@/core/i18n/hooks";
 import { useAvailableModels } from "@/core/models/hooks";
 import { useLocalSettings } from "@/core/settings";

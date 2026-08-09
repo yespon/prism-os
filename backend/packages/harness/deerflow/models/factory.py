@@ -1,5 +1,6 @@
-import logging
 import functools
+import inspect
+import logging
 
 import httpx
 from langchain.chat_models import BaseChatModel
@@ -66,8 +67,8 @@ def _maybe_patch_openai_model_class(use_path: str, model_class: type[BaseChatMod
     try:
         from langchain_openai import ChatOpenAI
 
-        from deerflow.models.patched_openai import PatchedChatOpenAI
         from deerflow.models.patched_minimax import PatchedChatMiniMax
+        from deerflow.models.patched_openai import PatchedChatOpenAI
     except Exception as exc:  # pragma: no cover - defensive fallback
         logger.debug("Failed to load PatchedChatOpenAI, using model class as-is: %s", exc)
         return model_class
@@ -243,8 +244,11 @@ def create_chat_model(name: str | None = None, thinking_enabled: bool = False, *
 
     verify_ssl = model_settings_from_config.pop("verify_ssl", False)
     if not verify_ssl:
-        kwargs.setdefault("http_client", httpx.Client(verify=False, trust_env=False))
-        kwargs.setdefault("http_async_client", httpx.AsyncClient(verify=False, trust_env=False))
+        model_parameters = inspect.signature(model_class).parameters
+        if "http_client" in model_parameters:
+            kwargs.setdefault("http_client", httpx.Client(verify=False, trust_env=False))
+        if "http_async_client" in model_parameters:
+            kwargs.setdefault("http_async_client", httpx.AsyncClient(verify=False, trust_env=False))
     # Internal/custom endpoints may not require API keys — provide a dummy placeholder
     if not model_settings_from_config.get("api_key") and not model_settings_from_config.get("openai_api_key"):
         model_settings_from_config["api_key"] = "not-needed"

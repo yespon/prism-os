@@ -11,28 +11,27 @@ Two modes:
 
 import asyncio
 import logging
-import operator
-import uuid
 import shlex
+import uuid
 from typing import Annotated, Any, Literal, TypedDict
 
-from langchain_core.messages import AnyMessage, AIMessage, HumanMessage, SystemMessage, ToolMessage
+from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolMessage
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.types import interrupt
+from sqlalchemy import select as sa_select
 
 from app.agent.terminal_tools import (
     _build_web_fetch_command,
     _build_write_file_command,
     terminal_tools_list,
 )
-from app.services.terminal.security import CommandSecurityResult, security_service
-from app.services.terminal.session import build_ssh_command, session_manager
-from deerflow.models.factory import create_chat_model
-from sqlalchemy import select as sa_select
 from app.models.assets import Keychain, LocalAsset
+from app.services.terminal.security import security_service
+from app.services.terminal.session import build_ssh_command, session_manager
 from deerflow.database.session import get_session_factory
+from deerflow.models.factory import create_chat_model
 
 logger = logging.getLogger(__name__)
 
@@ -375,7 +374,7 @@ class TerminalAgentNodes:
 
         # Load user security settings from database
         from app.models.terminal import TerminalSecuritySettings
-        from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL
+        from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG
 
         security_config = DEFAULT_SECURITY_CONFIG
         auto_approval = DEFAULT_AUTO_APPROVAL
@@ -866,7 +865,7 @@ def _route_after_observation(state: TerminalState) -> str:
             break  # Only check the most recent AIMessage
 
     if not last_ai_with_tools:
-        logger.info(f"[_route_after_observation] AGENT mode → END (final summary, no tool calls)")
+        logger.info("[_route_after_observation] AGENT mode → END (final summary, no tool calls)")
         return END
 
     # Agent mode: loop back to intent for LLM analysis and potential further actions

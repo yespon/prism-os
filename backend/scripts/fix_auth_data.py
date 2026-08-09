@@ -17,8 +17,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from sqlalchemy import create_engine, text
 
-from app.gateway.auth_db import _resolve_auth_db_url
 from app.gateway.auth_crypto import hash_password
+from app.gateway.auth_db import _resolve_auth_db_url
 
 
 def generate_random_password(length=8):
@@ -28,7 +28,7 @@ def generate_random_password(length=8):
 
 def run_fix():
     db_url = _resolve_auth_db_url()
-    print(f"Connecting to database...")
+    print("Connecting to database...")
 
     engine = create_engine(db_url)
     fixed_count = 0

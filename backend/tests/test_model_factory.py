@@ -142,6 +142,26 @@ def test_thinking_enabled_merges_when_thinking_enabled_settings(monkeypatch):
     assert FakeChatModel.captured_kwargs.get("max_tokens") == 16000
 
 
+def test_does_not_inject_http_clients_into_model_without_explicit_fields(monkeypatch):
+    """SSL transport clients belong only on providers that explicitly support them."""
+    cfg = _make_app_config([_make_model("custom-model")])
+    _patch_factory(monkeypatch, cfg)
+
+    captured: dict = {}
+
+    class CapturingModel(FakeChatModel):
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+            BaseChatModel.__init__(self, **kwargs)
+
+    monkeypatch.setattr(factory_module, "resolve_class", lambda path, base: CapturingModel)
+
+    factory_module.create_chat_model(name="custom-model")
+
+    assert "http_client" not in captured
+    assert "http_async_client" not in captured
+
+
 # ---------------------------------------------------------------------------
 # thinking_enabled=False — disable logic
 # ---------------------------------------------------------------------------

@@ -7,9 +7,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
 from app.gateway.auth_db import (
+    _row_to_dict,
     auth_connection,
     column_exists,
-    _row_to_dict,
 )
 from deerflow.config.tenant_context import reset_tenant_context, set_tenant_context
 from deerflow.database.tenant_service import ensure_default_tenant_for_user, get_membership, list_user_tenants, normalize_tenant_role
@@ -123,25 +123,36 @@ async def _resolve_tenant_id(user_id: str, requested_tenant_id: str | None) -> s
     When tenant tables are not yet migrated in a running environment, fallback to
     a deterministic personal tenant id to avoid hard downtime during rollout.
     """
-    if requested_tenant_id:
-        membership = await get_membership(user_id=user_id, tenant_id=requested_tenant_id)
-        if membership is None:
-            raise PermissionError("User is not a member of the requested tenant")
-        return requested_tenant_id
+    try:
+        if requested_tenant_id:
+            membership = await get_membership(user_id=user_id, tenant_id=requested_tenant_id)
+            if membership is None:
+                raise PermissionError("User is not a member of the requested tenant")
+            return requested_tenant_id
 
-    persisted_tenant_id = await get_current_tenant_id(user_id)
-    if persisted_tenant_id:
-        membership = await get_membership(user_id=user_id, tenant_id=persisted_tenant_id)
-        if membership is not None:
-            return persisted_tenant_id
+        persisted_tenant_id = await get_current_tenant_id(user_id)
+        if persisted_tenant_id:
+            membership = await get_membership(user_id=user_id, tenant_id=persisted_tenant_id)
+            if membership is not None:
+                return persisted_tenant_id
 
-    rows = await list_user_tenants(user_id)
-    if not rows:
-        raise PermissionError("NO_TENANT_ASSIGNED")
+        try:
+            rows = await list_user_tenants(user_id)
+        except Exception:
+            rows = []
+        if not rows:
+            membership = await ensure_default_tenant_for_user(user_id)
+            tenant_id = membership.tenant_id
+        else:
+            tenant_id = rows[0][0].id
 
-    tenant_id = rows[0][0].id
-    await set_current_tenant_id(user_id, tenant_id)
-    return tenant_id
+        await set_current_tenant_id(user_id, tenant_id)
+        return tenant_id
+    except PermissionError:
+        raise
+    except Exception as exc:
+        logger.warning("Tenant storage unavailable while resolving user %s: %s", user_id, exc)
+        raise PermissionError("TENANT_STORAGE_UNAVAILABLE") from exc
 
 
 async def _resolve_tenant_role(user_id: str, tenant_id: str) -> str | None:
@@ -243,6 +254,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 normalized_user_role = str(user_role or "").strip().lower()
                 is_platform_admin_user = normalized_user_role in {"admin", "platform_admin"}
                 if is_platform_admin_route and is_platform_admin_user:
+                    request.state.tenant_id = None
+                elif str(exc) == "TENANT_STORAGE_UNAVAILABLE":
                     request.state.tenant_id = None
                 else:
                     detail = str(exc)

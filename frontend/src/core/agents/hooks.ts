@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSyncExternalStore } from "react";
 
+import { getCurrentTenantId, subscribeTenantChange } from "@/core/tenants/store";
+
 import {
   createAgent,
   deleteAgent,
@@ -10,7 +12,6 @@ import {
   updateAgent,
 } from "./api";
 import type { CreateAgentRequest, UpdateAgentRequest } from "./types";
-import { getCurrentTenantId, subscribeTenantChange } from "@/core/tenants/store";
 
 function useTenantKey() {
   return useSyncExternalStore(subscribeTenantChange, () => getCurrentTenantId() ?? "_");

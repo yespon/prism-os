@@ -78,7 +78,7 @@ export function EditTenantDialog({
       setName(tenant.name);
       setSlug(tenant.slug);
       setStatus(tenant.status === "active" ? "active" : "inactive");
-      const currentType = tenant.tenant_type || "general";
+      const currentType = tenant.tenant_type ?? "general";
       if (currentType !== "ops" && currentType !== "product" && currentType !== "rd" && currentType !== "general") {
         setTenantType(currentType);
         setIsCustomType(true);

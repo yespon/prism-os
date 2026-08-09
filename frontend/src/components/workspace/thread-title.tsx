@@ -5,8 +5,8 @@ import { Pencil } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/core/i18n/hooks";
-import { useRenameThread } from "@/core/threads/hooks";
 import type { AgentThreadState } from "@/core/threads";
+import { useRenameThread } from "@/core/threads/hooks";
 import { cn } from "@/lib/utils";
 
 import { useThreadChat } from "./chats";

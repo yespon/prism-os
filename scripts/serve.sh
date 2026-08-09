@@ -163,6 +163,7 @@ fi
 
 # Ensure LangGraph URL matches the port used by serve.sh (2025)
 export LANGGRAPH_API_URL="${LANGGRAPH_API_URL:-http://localhost:2025}"
+export PRISMOS_RUNTIME_ADAPTER_MODULE="${PRISMOS_RUNTIME_ADAPTER_MODULE:-app.runtime_adapters}"
 
 echo "Starting LangGraph server..."
 # Read log_level from config.yaml, fallback to env var, then to "info"

@@ -195,7 +195,7 @@ export default function AdminTenantsPage() {
                          tenant.tenant_type === 'rd' ? t.admin.tenants.types.rd :
                          tenant.tenant_type === 'ops' ? t.admin.tenants.types.ops :
                          tenant.tenant_type === 'general' ? t.admin.tenants.types.general :
-                         tenant.tenant_type || "未知"}
+                         tenant.tenant_type ?? "未知"}
                       </span>
                     </td>
                     <td className="px-6 py-4">

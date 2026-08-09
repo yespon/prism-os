@@ -4,10 +4,10 @@ Pure business logic — no FastAPI/HTTP dependencies.
 Both Gateway and Client delegate to these functions.
 """
 
-import os
-import re
 import hashlib
 import mimetypes
+import os
+import re
 from pathlib import Path
 from urllib.parse import quote
 
@@ -202,7 +202,7 @@ def upload_virtual_path(filename: str) -> str:
 
 def upload_attachment_id(thread_id: str, filename: str) -> str:
     """Build a stable attachment id for a file in a thread uploads directory."""
-    digest = hashlib.sha1(f"{thread_id}:{filename}".encode("utf-8")).hexdigest()[:16]
+    digest = hashlib.sha1(f"{thread_id}:{filename}".encode()).hexdigest()[:16]
     return f"att-{digest}"
 
 

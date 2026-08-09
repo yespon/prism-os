@@ -11,7 +11,7 @@ import os
 import secrets
 import string
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -29,7 +29,7 @@ def run():
     from app.gateway.auth_crypto import hash_password
 
     db_url = _resolve_auth_db_url()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     engine = create_engine(db_url)
     new_password = generate_password()

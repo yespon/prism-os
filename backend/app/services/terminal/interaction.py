@@ -1,5 +1,6 @@
 import re
 
+
 class InteractionDetector:
     def __init__(self):
         # Basic patterns for password, sudo, yes/no

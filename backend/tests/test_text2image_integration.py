@@ -1,14 +1,14 @@
-import pytest
 from pathlib import Path
+
+import pytest
+from langgraph.checkpoint.memory import InMemorySaver
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import SQLModel
-from unittest.mock import patch, MagicMock
 
-from langgraph.checkpoint.memory import InMemorySaver
 from deerflow.database.models import TenantModelConfig
 from deerflow.database.secrets_crypto import encrypt_model_settings
 from deerflow.database.user_config_service import PLATFORM_MODEL_OWNER_ID
-from deerflow.sandbox.tools import _get_selected_image_model, _get_text2image_env, _run_async
+from deerflow.sandbox.tools import _get_selected_image_model, _get_text2image_env
 
 
 @pytest.fixture()
@@ -21,8 +21,8 @@ async def t2i_test_db(monkeypatch, tmp_path: Path):
 
     factory = async_sessionmaker(engine, expire_on_commit=False)
 
-    import deerflow.database.user_config_service as user_config_service
     import deerflow.database.session as session_module
+    import deerflow.database.user_config_service as user_config_service
 
     monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
     monkeypatch.setattr(session_module, "get_session_factory", lambda: factory)

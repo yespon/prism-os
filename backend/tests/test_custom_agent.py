@@ -204,9 +204,9 @@ class TestAgentConfig:
 
 class TestCustomAgentModel:
     def test_create_and_query(self, test_session_factory):
-        from app.models.agents import CustomAgent
-
         from sqlmodel import select
+
+        from app.models.agents import CustomAgent
 
         async def _run():
             agent_id = str(uuid.uuid4())

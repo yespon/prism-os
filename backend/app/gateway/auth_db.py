@@ -9,12 +9,11 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-logger = logging.getLogger(__name__)
-
 from sqlalchemy import Connection, Engine, create_engine, text
-from sqlalchemy.exc import OperationalError
 
 from deerflow.config import get_app_config
+
+logger = logging.getLogger(__name__)
 
 
 def _resolve_auth_db_url() -> str:

@@ -1,6 +1,5 @@
 import re
-import shlex
-from typing import Literal, Any, List, Dict
+from typing import Literal
 
 SecurityResult = Literal["allow", "ask", "block"]
 
@@ -130,7 +129,7 @@ READONLY_COMMANDS = [
     'systemctl status', 'systemctl list-units',
 ]
 
-def split_compound_command(command: str) -> List[str]:
+def split_compound_command(command: str) -> list[str]:
     parts = []
     current = []
     in_single = False

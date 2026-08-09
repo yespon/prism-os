@@ -10,14 +10,15 @@ from deerflow.agents.middlewares.title_middleware import TitleMiddleware
 from deerflow.agents.middlewares.todo_middleware import TodoMiddleware
 from deerflow.agents.middlewares.tool_error_handling_middleware import build_lead_runtime_middlewares
 from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
-from deerflow.config.summarization_config import get_summarization_config
-from deerflow.config.title_config import get_title_config
 from deerflow.agents.thread_state import ThreadState
 from deerflow.config import get_app_config
 from deerflow.config.agents_config import load_agent_config
+from deerflow.config.summarization_config import get_summarization_config
 from deerflow.config.tenant_context import tenant_context
+from deerflow.config.title_config import get_title_config
 from deerflow.database.user_config_store import load_enabled_tenant_model_names
 from deerflow.models.factory import create_chat_model
+from deerflow.runtime import get_terminal_agent_provider, load_runtime_adapters
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,7 @@ def _resolve_model_name(requested_model_name: str | None, *, allowed_model_names
 
 
 def make_lead_agent(config):
+    load_runtime_adapters()
     from deerflow.tools import get_available_tools
     from deerflow.tools.builtins import setup_agent
 
@@ -205,8 +207,9 @@ def _make_terminal_agent(config: dict):
     Injects terminal-specific tools (execute_command, read_file, write_file,
     grep_search, web_fetch) and the terminal system prompt.
     """
-    from app.agent.terminal_tools import get_terminal_tools, set_terminal_context
-    from app.agent.prompts import TERMINAL_AGENT_SYSTEM_PROMPT
+    provider = get_terminal_agent_provider()
+    if provider is None:
+        raise RuntimeError("Terminal-agent tools are not configured by the host application")
 
     cfg = config.get("configurable", {})
     runtime_context = config.get("context", {}) or cfg  # LangGraph SDK puts context values into configurable
@@ -222,7 +225,7 @@ def _make_terminal_agent(config: dict):
         "user_id": runtime_context.get("user_id", "unknown"),
     }
     logger.info(f"[_make_terminal_agent] selected_assets: {len(terminal_context['selected_assets'])}, mode: {terminal_context['mode']}")
-    set_terminal_context(terminal_context)
+    provider["set_context"](terminal_context)
 
     # Resolve model
     requested_model_name = (
@@ -236,7 +239,7 @@ def _make_terminal_agent(config: dict):
     # Build the agent
     from deerflow.tools.builtins import setup_agent
 
-    tools = get_terminal_tools()
+    tools = provider["get_tools"]()
     if is_bootstrap:
         tools = tools + [setup_agent]
 
@@ -244,6 +247,6 @@ def _make_terminal_agent(config: dict):
         model=create_chat_model(name=model_name),
         tools=tools,
         middleware=[],
-        system_prompt=TERMINAL_AGENT_SYSTEM_PROMPT,
+        system_prompt=provider["system_prompt"],
         state_schema=ThreadState,
     )

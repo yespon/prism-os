@@ -62,14 +62,14 @@ export function SkillCommandMenu({
     return availableSkills.filter(
       (s) =>
         s.name.toLowerCase().includes(lowerSearch) ||
-        (s.description && s.description.toLowerCase().includes(lowerSearch)),
+        s.description?.toLowerCase().includes(lowerSearch),
     );
   }, [skills, search, t.inputBox.suggestions]);
 
   const groupedSkills = useMemo(() => {
     const groups: Record<string, AvailableSkillResponse[]> = {};
     for (const skill of filteredSkills) {
-      const category = skill.category || "default";
+      const category = skill.category ?? "default";
       groups[category] ??= [];
       groups[category].push(skill);
     }

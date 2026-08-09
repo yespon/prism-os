@@ -1,8 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import {
   Shield,
   Settings2,
@@ -12,16 +9,21 @@ import {
   RotateCcw,
   AlertTriangle,
 } from 'lucide-react';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { fetchAuthApi } from '@/core/api/auth-client';
-import {
-  DEFAULT_SECURITY_CONFIG,
-  type SecurityConfig,
-} from './security-config';
+
 import {
   DEFAULT_AUTO_APPROVAL,
   type AutoApprovalSettings,
 } from './auto-approval-settings';
+import {
+  DEFAULT_SECURITY_CONFIG,
+  type SecurityConfig,
+} from './security-config';
 
 interface SecuritySettingsPanelProps {
   open: boolean;
@@ -83,7 +85,7 @@ export function SecuritySettingsPanel({ open, onClose }: SecuritySettingsPanelPr
           ? { ...prev.securityPolicy, ...updates.securityPolicy }
           : prev.securityPolicy,
       };
-      saveSettings(next, autoSettings);
+      void saveSettings(next, autoSettings);
       return next;
     });
   };
@@ -97,7 +99,7 @@ export function SecuritySettingsPanel({ open, onClose }: SecuritySettingsPanelPr
           ? { ...prev.actions, ...updates.actions }
           : prev.actions,
       };
-      saveSettings(securityConfig, next);
+      void saveSettings(securityConfig, next);
       return next;
     });
   };
@@ -117,8 +119,8 @@ export function SecuritySettingsPanel({ open, onClose }: SecuritySettingsPanelPr
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    input.onchange = (e: any) => {
-      const file = e.target?.files?.[0];
+    input.onchange = (e: Event) => {
+      const file = (e.target as HTMLInputElement | null)?.files?.[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = async () => {

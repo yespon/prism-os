@@ -55,6 +55,11 @@ def _delete_thread_data(
     path_manager = paths or get_paths()
     try:
         path_manager.delete_thread_dir(user_id, thread_id, tenant_id=tenant_id)
+        # Threads created before tenant-scoped storage was introduced live under
+        # the user-only root. Clean that legacy location as part of the same
+        # authenticated, user-scoped deletion request.
+        if tenant_id is not None:
+            path_manager.delete_thread_dir(user_id, thread_id, tenant_id=None)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useRef, useState } from "react";
+
 import type { WebTerminalRef } from "@/components/workspace/terminal/web-terminal";
 
 interface TerminalContextValue {

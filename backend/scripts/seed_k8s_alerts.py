@@ -11,8 +11,6 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import hashlib
-import json
 import sys
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -20,7 +18,6 @@ from datetime import UTC, datetime, timedelta
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[1]))
 
 from sqlalchemy import select
-from sqlmodel import Session
 
 from app.alerting.dedup import compute_fingerprint, compute_payload_hash
 from app.models.alerting import AlertSource, Incident, IncidentSignalLink, RawAlert, Signal

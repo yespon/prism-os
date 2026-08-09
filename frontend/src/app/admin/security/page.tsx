@@ -8,11 +8,11 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { fetchAuthApi } from "@/core/api/auth-client";
+import { logout } from "@/core/auth/auth-api";
 import { useSession } from "@/core/auth/hooks";
 import { useI18n } from "@/core/i18n/hooks";
 import { canAccessAdminPage } from "@/core/permissions/roles";
 import { clearTenantId } from "@/core/tenants";
-import { logout } from "@/core/auth/auth-api";
 
 interface BootstrapStatusResponse {
   is_bootstrap_admin: boolean;

@@ -162,7 +162,7 @@ function formatPromptWithSkillSettings(
       bcg: "BCG Matrix",
       "3c": "3C Model",
     };
-    const mappedFrameworks = ca.frameworks.map((f) => frameworkMap[f] || f);
+    const mappedFrameworks = ca.frameworks.map((f) => frameworkMap[f] ?? f);
     systemContext = `[SYSTEM CONTEXT: consulting-analysis]
 - report_type: ${ca.reportType}
 - frameworks: ${mappedFrameworks.join(", ")}
@@ -1149,5 +1149,4 @@ export function InputBox({
     </div>
   );
 }
-
 

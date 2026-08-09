@@ -1,7 +1,10 @@
 from datetime import UTC, datetime, timedelta
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource, ChangeEvent
+
+from app.models.alerting import AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
+
 
 def extract_diagnosis_agent_id_from_config(config_json: dict | None) -> str | None:
     """Extract diagnosis_agent_id from AlertSource.config_json."""
@@ -23,7 +26,7 @@ async def get_diagnosis_agent_id_for_incident(
             IncidentSignalLink.tenant_id == tenant_id,
         )
     )
-    signal_ids = [l.signal_id for l in links_result.scalars().all()]
+    signal_ids = [link.signal_id for link in links_result.scalars().all()]
     if not signal_ids:
         return None
 
@@ -82,7 +85,7 @@ async def build_incident_diagnosis_prompt(
             IncidentSignalLink.tenant_id == tenant_id,
         )
     )
-    sig_ids = [l.signal_id for l in links_result.scalars().all()]
+    sig_ids = [link.signal_id for link in links_result.scalars().all()]
 
     signal_summaries = []
     if sig_ids:
@@ -128,7 +131,7 @@ async def build_incident_diagnosis_prompt(
                 f"(by={ch.changed_by or 'unknown'}, at={ch.changed_at.isoformat() if ch.changed_at else '?'})"
             )
 
-    prompt = f"""## Incident Diagnosis Request
+    prompt = """## Incident Diagnosis Request
 
 ### Agent Role
 You are acting as a diagnostic agent with the following configuration:

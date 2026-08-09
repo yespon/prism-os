@@ -1,14 +1,12 @@
-import pytest
-from app.services.terminal.security import (
-    CommandSecurityService,
-    split_compound_command,
-    extract_executable,
-    matches_pattern,
-    DEFAULT_SECURITY_CONFIG,
-    DEFAULT_AUTO_APPROVAL,
-)
+
 from app.agent.terminal_tools import _build_web_fetch_command, _build_write_file_command
 from app.gateway.routers.terminal import _build_web_fetch_argv
+from app.services.terminal.security import (
+    CommandSecurityService,
+    extract_executable,
+    matches_pattern,
+    split_compound_command,
+)
 
 
 def test_write_file_command_uses_prismos_heredoc() -> None:

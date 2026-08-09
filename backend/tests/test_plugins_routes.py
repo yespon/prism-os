@@ -1,13 +1,13 @@
 """Test /api/plugins endpoint."""
-import pytest
 from fastapi.testclient import TestClient
 
 
 def test_plugins_list_returns_all_definitions():
     """GET /api/plugins should return all plugin definitions with enabled state."""
-    from app.plugins.registry import PLUGIN_DEFINITIONS
-    from app.gateway.routers.plugins import router
     from fastapi import FastAPI
+
+    from app.gateway.routers.plugins import router
+    from app.plugins.registry import PLUGIN_DEFINITIONS
 
     app = FastAPI()
     app.include_router(router)
@@ -28,14 +28,14 @@ def test_plugins_list_returns_all_definitions():
 
 def test_plugins_respect_config():
     """When plugin is disabled, enabled should be false."""
-    from app.plugins.registry import load_plugin_config
-    from app.gateway.config import set_gateway_config, GatewayConfig
+    from app.gateway.config import GatewayConfig, set_gateway_config
 
     cfg = GatewayConfig(plugins={"ops-alerting": {"enabled": False}})
     set_gateway_config(cfg)
 
-    from app.gateway.routers.plugins import router
     from fastapi import FastAPI
+
+    from app.gateway.routers.plugins import router
 
     app = FastAPI()
     app.include_router(router)

@@ -232,7 +232,7 @@ export function IncidentHeader({
             导出诊断报告
           </Button>
 
-          {incident.status === "firing" && (incident.ai_summary || incident.ai_suggestion) && (
+          {incident.status === "firing" && (incident.ai_summary ?? incident.ai_suggestion) && (
             <Button
               size="sm"
               className="gap-1.5 h-9 bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-sm shadow-emerald-500/20"

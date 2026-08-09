@@ -36,11 +36,17 @@ class GrafanaProvider(BaseAlertProvider):
 
         if alerts:
             # Grafana v9+ embedded Alertmanager format
-            return self._normalize_v9(payload, alerts, common_labels)
+            return self._normalize_v9(raw_alert, payload, alerts, common_labels)
         # Legacy Grafana format
         return self._normalize_legacy(raw_alert, payload)
 
-    def _normalize_v9(self, payload: dict, alerts: list, common_labels: dict) -> Signal:
+    def _normalize_v9(
+        self,
+        raw_alert: RawAlert,
+        payload: dict,
+        alerts: list,
+        common_labels: dict,
+    ) -> Signal:
         first = alerts[0] if alerts else {}
         annotations = first.get("annotations", {})
         labels = {**common_labels, **first.get("labels", {})}

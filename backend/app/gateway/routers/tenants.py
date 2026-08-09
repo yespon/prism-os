@@ -9,6 +9,7 @@ from app.gateway.authorization import require_tenant_admin
 from deerflow.database.tenant_service import (
     add_tenant_member,
     get_membership,
+    get_tenant,
     list_tenant_members,
     list_user_tenants,
     normalize_tenant_role,
@@ -109,9 +110,7 @@ async def switch_tenant(request: Request, body: SwitchTenantRequest) -> CurrentT
     await set_current_tenant_id(user_id, tenant_id)
     request.state.tenant_id = tenant_id
 
-    # Fetch tenant to get tenant_type
-    rows = await list_user_tenants(user_id)
-    tenant = next((t for t, _ in rows if t.id == tenant_id), None)
+    tenant = await get_tenant(tenant_id)
     tenant_type = getattr(tenant, "tenant_type", "general") or "general" if tenant else "general"
 
     return CurrentTenantResponse(

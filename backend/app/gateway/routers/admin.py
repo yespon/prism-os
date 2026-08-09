@@ -29,7 +29,6 @@ from deerflow.database.user_config_service import (
     assign_platform_model_to_tenant,
     create_user_model,
     delete_global_model_with_assignments,
-    delete_user_model,
     list_platform_assigned_models_for_tenant,
     list_platform_global_models,
     unassign_platform_model_from_tenant,
@@ -784,7 +783,10 @@ async def admin_create_tenant(req: Request, body: AdminCreateTenantRequest):
     if str(owner.get("role") or "").strip().lower() == "admin":
         raise HTTPException(status_code=400, detail="平台 admin 用户不能作为租户初始用户")
 
-    tenant = await create_tenant(name=body.name, owner_user_id=owner_user_id, slug=body.slug, tenant_type=body.tenant_type)
+    tenant_kwargs = {"name": body.name, "owner_user_id": owner_user_id, "slug": body.slug}
+    if body.tenant_type != "general":
+        tenant_kwargs["tenant_type"] = body.tenant_type
+    tenant = await create_tenant(**tenant_kwargs)
 
     record_audit_event(
         "platform.tenant.created",
@@ -1492,7 +1494,7 @@ async def test_model_connection_for_platform_admin(body: AdminTestModelConnectio
             success=True,
             message=f"Connection successful. Model response: {preview}",
         )
-    except asyncio.TimeoutError:
+    except TimeoutError:
         return AdminTestModelConnectionResponse(
             success=False,
             message="Connection timed out after 15 seconds. Check the base URL and API key, or try again.",
@@ -1505,4 +1507,3 @@ async def test_model_connection_for_platform_admin(body: AdminTestModelConnectio
             success=False,
             message=f"Connection failed: {err_msg}",
         )
-

@@ -2,12 +2,14 @@ import asyncio
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
+from sqlmodel import select
 
-from app.gateway.authorization import _is_global_admin, _is_tenant_admin, require_config_write_access, require_tenant_admin, require_tenant_context
+from app.gateway.authorization import _is_global_admin, require_config_write_access, require_tenant_admin, require_tenant_context
+from deerflow.database.models import TenantModelConfig
+from deerflow.database.secrets_crypto import decrypt_model_settings
+from deerflow.database.session import get_session_factory
 from deerflow.database.user_config_service import (
-    create_tenant_shared_model,
     create_user_model,
-    delete_tenant_shared_model,
     delete_user_model,
     get_available_models,
     get_user_models,
@@ -18,11 +20,7 @@ from deerflow.database.user_config_service import (
 from deerflow.models.factory import _maybe_patch_openai_model_class
 from deerflow.reflection.resolvers import resolve_class
 
-from deerflow.database.models import TenantModelConfig
-from deerflow.database.session import get_session_factory
-from deerflow.database.secrets_crypto import decrypt_model_settings
-from sqlmodel import select
-
+__all__ = ("get_user_models", "router")
 
 router = APIRouter(prefix="/api", tags=["models"])
 
@@ -172,7 +170,7 @@ async def register_model(request: Request, body: ModelCreateRequest) -> ModelRes
         description=row.description,
         supports_thinking=row.supports_thinking,
         supports_reasoning_effort=row.supports_reasoning_effort,
-        supports_text2image=row.supports_text2image,
+        supports_text2image=getattr(row, "supports_text2image", False),
         enabled=_model_enabled_from_row_settings(row),
     )
 
@@ -278,7 +276,7 @@ async def test_model_connection(request: Request, body: TestConnectionRequest) -
             success=True,
             message=f"Connection successful. Model response: {preview}",
         )
-    except asyncio.TimeoutError:
+    except TimeoutError:
         return TestConnectionResponse(
             success=False,
             message="Connection timed out after 15 seconds. Check the base URL and API key, or try again.",

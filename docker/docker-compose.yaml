@@ -196,6 +196,7 @@ services:
       - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
       - PRISMOS_SANDBOX_HOST=host.docker.internal
       - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
+      - PRISMOS_RUNTIME_ADAPTER_MODULE=${PRISMOS_RUNTIME_ADAPTER_MODULE:-app.runtime_adapters}
       - CORS_ORIGINS=http://localhost:2026,http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
     extra_hosts:

@@ -18,7 +18,7 @@ import {
   ArtifactFileDetail,
   useArtifacts,
 } from "../artifacts";
-import { useThread, ThreadContext } from "../messages/context";
+import { ThreadContext } from "../messages/context";
 
 const CLOSE_MODE = { chat: 100, artifacts: 0 };
 const OPEN_MODE = { chat: 60, artifacts: 40 };
@@ -42,6 +42,22 @@ const ChatBox: React.FC<{ children: React.ReactNode; threadId: string }> = ({
   if (!threadContextVal) {
     return <div className="flex size-full min-h-0 flex-col bg-background" />;
   }
+  return (
+    <ChatBoxContent threadId={threadId} threadContextVal={threadContextVal}>
+      {children}
+    </ChatBoxContent>
+  );
+};
+
+function ChatBoxContent({
+  children,
+  threadId,
+  threadContextVal,
+}: {
+  children: React.ReactNode;
+  threadId: string;
+  threadContextVal: NonNullable<React.ContextType<typeof ThreadContext>>;
+}) {
   const { thread } = threadContextVal;
   const pathname = usePathname();
   const threadIdRef = useRef(threadId);
@@ -232,6 +248,6 @@ const ChatBox: React.FC<{ children: React.ReactNode; threadId: string }> = ({
       </ResizablePanel>
     </ResizablePanelGroup>
   );
-};
+}
 
 export { ChatBox };

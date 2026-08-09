@@ -1,10 +1,11 @@
 "use client";
 
 import { BookmarkIcon, Loader2Icon, SparklesIcon, FileTextIcon, GitCompareIcon, CheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,16 +17,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
 import { summarizeDiagnosis, createPersonalSkill } from "@/core/skills/api";
 import type { ToolCallSummary } from "@/core/skills/type";
+import type { TerminalMessage } from "@/core/terminal-agent/message-types";
 
 /**
  * Extracts terminal session context into a format suitable for Skill summarization.
  * Converts message history + tool calls into a plain-text diagnosis narrative.
  */
-export function extractTerminalSession(messages: any[]): {
+export function extractTerminalSession(messages: TerminalMessage[]): {
   title: string;
   diagnosisText: string;
   diagnosisSteps: string[];
@@ -36,7 +37,7 @@ export function extractTerminalSession(messages: any[]): {
   const parts: string[] = [];
 
   for (const m of messages) {
-    const role = m.role || m.type;
+    const role = m.role ?? m.type;
     const content = typeof m.content === 'string' ? m.content : '';
 
     // Collect AI reasoning text
@@ -52,11 +53,12 @@ export function extractTerminalSession(messages: any[]): {
     // Collect tool call summaries from parts
     if (m.parts && Array.isArray(m.parts)) {
       for (const p of m.parts) {
-        if (p.toolName === 'execute_command' && p.input?.command) {
-          steps.push(`执行命令: ${p.input.command}`);
+        const command = p.input?.command;
+        if (p.toolName === 'execute_command' && typeof command === 'string') {
+          steps.push(`执行命令: ${command}`);
           toolSummaries.push({
             tool: 'execute_command',
-            description: p.input.command.slice(0, 80),
+            description: command.slice(0, 80),
           });
         } else if (p.toolName && p.toolName !== 'execute_command') {
           steps.push(`工具调用: ${p.toolName}`);
@@ -70,7 +72,7 @@ export function extractTerminalSession(messages: any[]): {
   }
 
   // Derive a title from the first user message
-  const firstUserMsg = messages.find(m => (m.role || m.type) === 'user');
+  const firstUserMsg = messages.find(m => (m.role ?? m.type) === 'user');
   const title = firstUserMsg
     ? (typeof firstUserMsg.content === 'string' ? firstUserMsg.content : '').slice(0, 60).replace(/\\n/g, ' ')
     : '终端排查会话';

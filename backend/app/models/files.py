@@ -12,7 +12,7 @@ These models power the platform's unified File Center, which serves:
 
 from datetime import UTC, datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import Column, DateTime, Text, UniqueConstraint, func
 from sqlmodel import Field, SQLModel
 
 

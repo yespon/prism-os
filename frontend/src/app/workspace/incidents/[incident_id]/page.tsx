@@ -52,9 +52,9 @@ import {
   AGUI_STEP_FINISHED,
   AGUI_CLARIFICATION_REQUEST,
 } from "@/core/alerting/diagnosis-types";
+import { useWorkspaceTypeGuard } from "@/core/tenants/use-workspace-type-guard";
 import { pathOfThread } from "@/core/threads/utils";
 import { cn } from "@/lib/utils";
-import { useWorkspaceTypeGuard } from "@/core/tenants/use-workspace-type-guard";
 
 // 定义页面接收的 params 动态属性
 interface PageProps {
@@ -103,8 +103,8 @@ export default function WorkspaceIncidentDetailPage({ params }: PageProps) {
   useEffect(() => {
     if (!incidentId) return;
     setTimelineLoading(true);
-    import("@/core/alerting/api").then(({ getIncidentTimeline }) => {
-      getIncidentTimeline(incidentId)
+    void import("@/core/alerting/api").then(({ getIncidentTimeline }) => {
+      return getIncidentTimeline(incidentId)
         .then((data) => setTimeline(data as TimelineEvent[]))
         .catch(() => setTimeline(null))
         .finally(() => setTimelineLoading(false));

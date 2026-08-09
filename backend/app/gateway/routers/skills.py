@@ -1,4 +1,3 @@
-import json as _json
 import logging
 import re
 import shutil
@@ -12,18 +11,18 @@ from pydantic import BaseModel, Field
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.gateway.path_utils import resolve_thread_virtual_path
 from deerflow.database.user_config_service import (
-    create_tenant_shared_skill,
     create_tenant_personal_skill,
+    create_tenant_shared_skill,
+    delete_tenant_personal_skill,
     delete_tenant_shared_skill,
     get_available_skills,
     get_tenant_shared_skill_settings,
     list_tenant_shared_skills,
     set_tenant_shared_skill_enabled,
-    update_tenant_shared_skill,
     update_tenant_personal_skill,
-    update_tenant_shared_skill_settings,
     update_tenant_personal_skill_settings,
-    delete_tenant_personal_skill,
+    update_tenant_shared_skill,
+    update_tenant_shared_skill_settings,
 )
 from deerflow.skills import Skill, get_skills_root_path, load_skills
 from deerflow.skills.installer import SkillAlreadyExistsError, install_skill_from_archive
@@ -1055,8 +1054,9 @@ async def generate_skill_instructions(
 ) -> GenerateInstructionsResponse:
     require_tenant_context(request)
     try:
+        from langchain_core.messages import HumanMessage, SystemMessage
+
         from deerflow.models.factory import create_chat_model
-        from langchain_core.messages import SystemMessage, HumanMessage
 
         llm = create_chat_model(body.model_name or "gpt-4o")
         
@@ -1098,8 +1098,9 @@ async def summarize_diagnosis(
     require_tenant_context(request)
     try:
         import json as _json
-        from deerflow.models import create_chat_model
+
         from deerflow.database.user_config_store import load_enabled_tenant_model_names
+        from deerflow.models import create_chat_model
 
         tenant_id = getattr(request.state, "tenant_id", "")
         enabled_models = load_enabled_tenant_model_names(tenant_id) if tenant_id else []

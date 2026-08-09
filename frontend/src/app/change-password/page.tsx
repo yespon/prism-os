@@ -4,14 +4,14 @@ import { AlertCircleIcon, ShieldCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { fetchAuthApi } from "@/core/api/auth-client";
-import { useSession } from "@/core/auth/hooks";
 import { login, type Session } from "@/core/auth/auth-api";
+import { useSession } from "@/core/auth/hooks";
 import { useI18n } from "@/core/i18n/hooks";
-import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 
 export default function ChangePasswordPage() {
   const { t } = useI18n();

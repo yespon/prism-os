@@ -38,13 +38,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SettingsDialog } from "@/components/workspace/settings";
+import { logout } from "@/core/auth/auth-api";
 import { useSession } from "@/core/auth/hooks";
 import { enUS, zhCN, ja, ko, type Locale } from "@/core/i18n";
 import { useI18n } from "@/core/i18n/hooks";
 import { canAccessAdminPage } from "@/core/permissions/roles";
 import { clearTenantId, useCurrentTenant, useTenantList } from "@/core/tenants";
 import { cn } from "@/lib/utils";
-import { logout } from "@/core/auth/auth-api";
 
 export function WorkspaceNavMenu() {
   const { data: session } = useSession();

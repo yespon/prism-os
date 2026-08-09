@@ -2,7 +2,6 @@ import importlib.util
 import sys
 from pathlib import Path
 
-
 SCRIPT = Path(__file__).parents[2] / "scripts" / "check_brand_identity.py"
 SPEC = importlib.util.spec_from_file_location("brand_gate", SCRIPT)
 assert SPEC and SPEC.loader

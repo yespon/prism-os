@@ -7,16 +7,14 @@ They share the same TerminalSessionManager singleton for SSH PTY connections.
 
 import asyncio
 import logging
-import time
-from typing import Optional
 
 from langchain_core.tools import tool
 from langgraph.types import interrupt
-
-from app.services.terminal.session import session_manager
-from app.models.assets import Keychain, LocalAsset
-from deerflow.database.session import get_session_factory
 from sqlalchemy import select as sa_select
+
+from app.models.assets import Keychain, LocalAsset
+from app.services.terminal.session import session_manager
+from deerflow.database.session import get_session_factory
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +113,7 @@ async def _execute_cmd_raw(command: str, session) -> dict:
     except Exception as e:
         err_msg = str(e)
         if "already executing" in err_msg and session.command_future:
-            logger.info(f"[terminal_tool] Waiting for previous command to finish...")
+            logger.info("[terminal_tool] Waiting for previous command to finish...")
             try:
                 await asyncio.wait_for(session.command_future, timeout=25.0)
                 return await session.execute_command(command, broadcast=broadcast)
@@ -247,7 +245,7 @@ async def execute_command(command: str, host_index: int = -1) -> str:
     mode = _get_mode()
 
     from app.models.terminal import TerminalSecuritySettings
-    from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL, security_service
+    from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG, security_service
 
     security_config = DEFAULT_SECURITY_CONFIG
     auto_approval = DEFAULT_AUTO_APPROVAL
@@ -317,7 +315,6 @@ async def read_file(path: str, max_lines: int = 200, host_index: int = -1) -> st
         max_lines: Maximum number of lines to read (default 200).
         host_index: Index of the host (0-based) from the connected assets list. Default -1 (targets ALL connected hosts).
     """
-    import shlex
     cmd = f"cat '{path}' 2>/dev/null | head -n {max_lines}"
     
     async def op(session):
@@ -361,7 +358,6 @@ async def grep_search(pattern: str, path: str = ".", max_results: int = 50, max_
         max_size_mb: Maximum file size in MB to search (default 10). Skips files larger than this.
         host_index: Index of the host (0-based) from the connected assets list. Default -1 (targets ALL connected hosts).
     """
-    import shlex
     max_size_bytes = max_size_mb * 1024 * 1024
     cmd = f"find '{path}' -type f -size -{max_size_bytes}c -exec grep -rn --color=never '{pattern}' {{}} + 2>/dev/null | head -n {max_results}"
     

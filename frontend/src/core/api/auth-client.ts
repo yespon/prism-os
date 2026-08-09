@@ -1,8 +1,8 @@
 "use client";
 
+import { getAuthToken } from "@/core/auth/auth-api";
 import { getBackendBaseURL } from "@/core/config";
 import { getCurrentTenantId } from "@/core/tenants";
-import { getAuthToken } from "@/core/auth/auth-api";
 
 /**
  * Fetch wrapper that attaches the Auth session token and base URL

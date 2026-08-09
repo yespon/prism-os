@@ -348,7 +348,7 @@ def test_resolve_tenant_id_falls_back_to_default_and_persists(monkeypatch):
     monkeypatch.setattr(auth_module, "set_current_tenant_id", _fake_set_current_tenant_id)
 
     tenant_id = asyncio.run(auth_module._resolve_tenant_id("u-1", None))
-    assert tenant_id.startswith("t-")
+    assert tenant_id == "tenant-default"
     assert tenant_id == calls.get("tenant_id")
 
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useLocalSettings } from '@/core/settings';
 import { useSearchParams } from 'next/navigation';
+
+import { useLocalSettings } from '@/core/settings';
 
 export default function TerminalPage() {
   // This page is intentionally left mostly empty.

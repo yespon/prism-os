@@ -6,7 +6,7 @@ All tables carry tenant_id for multi-tenant isolation.
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import Column, DateTime, String, JSON, Text, func
+from sqlalchemy import JSON, Column, DateTime, Text, func
 from sqlmodel import Field, SQLModel
 
 

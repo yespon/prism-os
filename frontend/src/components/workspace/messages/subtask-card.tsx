@@ -60,7 +60,7 @@ export function SubtaskCard({
 
   // Live timer for running tasks
   useEffect(() => {
-    if (!task || task.status !== "in_progress") return;
+    if (task?.status !== "in_progress") return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, [task?.status]);
@@ -209,7 +209,7 @@ export function SubtaskCard({
           )}
           {task.status === "timed_out" && (
             <ChainOfThoughtStep
-              label={<div className="text-amber-500">{task.error || t.subtasks.timed_out}</div>}
+              label={<div className="text-amber-500">{task.error ?? t.subtasks.timed_out}</div>}
               icon={<TimerOffIcon className="size-4 text-amber-500" />}
             ></ChainOfThoughtStep>
           )}

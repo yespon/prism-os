@@ -126,7 +126,7 @@ export default function SkillsCenterPage() {
       {/* Header */}
       <div className="flex shrink-0 items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">{(t.sidebarNav as any).skillsPlaza || 'Skills Plaza'}</h1>
+          <h1 className="text-xl font-semibold">{(t.sidebarNav as Record<string, string>).skillsPlaza ?? 'Skills Plaza'}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             浏览和使用前人沉淀的诊断 SOP，或分享你提炼的经验
           </p>

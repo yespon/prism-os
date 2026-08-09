@@ -1,43 +1,49 @@
+import { Search, Monitor, Plus, ChevronRight, ChevronDown, MoreVertical, TerminalSquare, PanelLeftCloseIcon } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Search, Monitor, KeyRound, Plus, Folder, FolderOpen, ChevronRight, ChevronDown, MoreVertical, TerminalSquare, PanelLeftCloseIcon } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { AddHostDialog } from './add-host-dialog';
+import { Input } from '@/components/ui/input';
+import type { TerminalAsset, TerminalAssetGroup, TerminalAssetInput, TerminalCredential } from '@/core/terminal-agent/message-types';
+
 import { AddCredentialDialog } from './add-credential-dialog';
+import { AddHostDialog } from './add-host-dialog';
 
 export function AssetSidebar({ 
   onSelectAsset,
   isCollapsed = false,
-  onToggleCollapse = () => {},
+  onToggleCollapse,
   assets = [],
   credentials = [],
   groups = [],
   onDataChanged,
 }: { 
-  onSelectAsset: (asset: any) => void;
+  onSelectAsset: (asset: TerminalAsset) => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
-  assets?: any[];
-  credentials?: any[];
-  groups?: any[];
+  assets?: TerminalAsset[];
+  credentials?: TerminalCredential[];
+  groups?: TerminalAssetGroup[];
   onDataChanged?: () => void;
 }) {
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
   const [showAddHost, setShowAddHost] = useState(false);
-  const [editAsset, setEditAsset] = useState<any>(null);
+  const [editAsset, setEditAsset] = useState<TerminalAsset | null>(null);
   const [showAddCredential, setShowAddCredential] = useState(false);
   const [search, setSearch] = useState('');
 
   // Expand all groups by default when groups change
   useEffect(() => {
-    const initialExpanded = groups.reduce((acc: any, g: any) => ({ ...acc, [g.id]: true }), {});
-    initialExpanded['ungrouped'] = true;
+    const initialExpanded = groups.reduce<Record<string, boolean>>((acc, group) => {
+      acc[group.id] = true;
+      return acc;
+    }, {});
+    initialExpanded.ungrouped = true;
     setExpandedGroups(initialExpanded);
   }, [groups]);
 
-  const handleAddHost = async (host: any) => {
+  const handleAddHost = async (host: TerminalAssetInput) => {
     try {
       await fetch('/api/v1/assets/local', {
         method: 'POST',
@@ -50,7 +56,7 @@ export function AssetSidebar({
     }
   };
 
-  const handleEditHost = async (id: string, host: any) => {
+  const handleEditHost = async (id: string, host: TerminalAssetInput) => {
     try {
       await fetch(`/api/v1/assets/local/${id}`, {
         method: 'PUT',
@@ -76,7 +82,7 @@ export function AssetSidebar({
     }
   };
 
-  const handleAddCredential = async (cred: any) => {
+  const handleAddCredential = async (cred: Omit<TerminalCredential, 'id'> & { value: string }) => {
     try {
       await fetch('/api/v1/assets/keychains', {
         method: 'POST',
@@ -89,7 +95,7 @@ export function AssetSidebar({
     }
   };
 
-  const filteredAssets = assets.filter(a => a.name.includes(search) || a.ip.includes(search));
+  const filteredAssets = assets.filter(a => (a.name ?? '').includes(search) || a.ip.includes(search));
 
   const toggleGroup = (groupId: string) => {
     setExpandedGroups(prev => ({ ...prev, [groupId]: !prev[groupId] }));
@@ -157,7 +163,7 @@ export function AssetSidebar({
             </button>
             {expandedGroups[group.id] && (
               <div className="space-y-1">
-                {group.assets.map((asset: any) => (
+                {group.assets.map((asset) => (
                   <AssetItem 
                     key={asset.id} 
                     asset={asset} 
@@ -184,10 +190,10 @@ export function AssetSidebar({
                   未分组 <span className="opacity-70 ml-0.5">({ungroupedAssets.length})</span>
                 </span>
                 <div className="text-zinc-300 group-hover:text-zinc-500">
-                  {expandedGroups['ungrouped'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                  {expandedGroups.ungrouped ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </div>
               </button>
-            {expandedGroups['ungrouped'] && (
+            {expandedGroups.ungrouped && (
               <div className="space-y-1">
                 {ungroupedAssets.map(asset => (
                   <AssetItem 
@@ -242,8 +248,8 @@ function AssetItem({
   onEditClick, 
   onDeleteClick 
 }: { 
-  asset: any; 
-  onSelectAsset: (a: any) => void;
+  asset: TerminalAsset;
+  onSelectAsset: (a: TerminalAsset) => void;
   onEditClick: () => void;
   onDeleteClick: () => void;
 }) {

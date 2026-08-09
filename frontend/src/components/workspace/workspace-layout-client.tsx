@@ -7,12 +7,12 @@ import { toast, Toaster } from "sonner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ChatTabsProvider } from "@/components/workspace/chats/chat-tabs-context";
 import { CommandPalette } from "@/components/workspace/command-palette";
-import { WorkspaceSidebar } from "@/components/workspace/workspace-sidebar";
 import { PersistentTerminal } from "@/components/workspace/terminal/persistent-terminal";
+import { WorkspaceSidebar } from "@/components/workspace/workspace-sidebar";
+import { useI18n } from "@/core/i18n/hooks";
 import { getLocalSettings, useLocalSettings } from "@/core/settings";
 import { bootstrapTenantContext, useTenantList } from "@/core/tenants";
 import { isRateLimitLikeError } from "@/core/threads/hooks";
-import { useI18n } from "@/core/i18n/hooks";
 
 export function WorkspaceLayoutClient({
   children,

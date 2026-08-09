@@ -49,7 +49,6 @@ def _classify_model_error(exc: Exception) -> str:
     Returns a Chinese message because the primary user base is Chinese-speaking.
     """
     exc_type = type(exc).__name__
-    exc_module = type(exc).__module__
     exc_message = str(exc).strip()
 
     if exc_type == "RateLimitError" or "RateLimitError" in exc_type:

@@ -2,8 +2,8 @@ import { ChevronDown, HelpCircle, MessageSquarePlus, AlertTriangle, X } from "lu
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/core/i18n/hooks";
+import { cn } from "@/lib/utils";
 
 import { MarkdownContent } from "./markdown-content";
 
@@ -95,7 +95,8 @@ export function ClarificationBlock({
     : baseContent;
 
   const hasOptions = options.length > 0;
-  const canSubmit = selectedOption || (showCustomInput && customInput.trim());
+  const canSubmit =
+    Boolean(selectedOption) || Boolean(showCustomInput && customInput.trim());
 
   return (
     <div

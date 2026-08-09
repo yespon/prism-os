@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
-import '@xterm/xterm/css/xterm.css';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Terminal } from '@xterm/xterm';
 import { TerminalSquare, RefreshCw } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+
+import '@xterm/xterm/css/xterm.css';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
 import { PromptInterceptor } from './prompt-interceptor';
 
 export interface WebTerminalRef {
@@ -127,14 +129,14 @@ export const WebTerminal = forwardRef<WebTerminalRef, WebTerminalProps>(({ class
 
     // On Data from Xterm (User typed something)
     term.onData((data) => {
-      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      if (ws.current?.readyState === WebSocket.OPEN) {
         ws.current.send(data);
       }
     });
 
     const handleResize = () => {
       fit.fit();
-      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      if (ws.current?.readyState === WebSocket.OPEN) {
         // Send resize event to backend (e.g. JSON format or special command)
         // Adjust this depending on how the backend expects resize signals
         ws.current.send(JSON.stringify({
@@ -209,13 +211,13 @@ export const WebTerminal = forwardRef<WebTerminalRef, WebTerminalProps>(({ class
   // Expose methods to parent components
   useImperativeHandle(ref, () => ({
     injectCommand: (cmd: string) => {
-      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      if (ws.current?.readyState === WebSocket.OPEN) {
         ws.current.send(cmd + '\r');
       }
     },
-    executeAndCapture: (cmd: string, timeoutMs: number = 30000): Promise<string> => {
+    executeAndCapture: (cmd: string, timeoutMs = 30000): Promise<string> => {
       return new Promise((resolve, reject) => {
-        if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+        if (ws.current?.readyState !== WebSocket.OPEN) {
           reject(new Error('Terminal is not connected.'));
           return;
         }
@@ -247,3 +249,5 @@ export const WebTerminal = forwardRef<WebTerminalRef, WebTerminalProps>(({ class
     </div>
   );
 });
+
+WebTerminal.displayName = 'WebTerminal';

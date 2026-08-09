@@ -9,10 +9,11 @@ User rules override: when an aggregation_config is provided, its group_by
 and window_minutes replace the system defaults.
 """
 
+import logging
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import exists, func, select, update
+from sqlalchemy import exists, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.alerting.dedup import compute_fingerprint
@@ -27,6 +28,8 @@ from app.models.alerting import (
 # Time window (minutes) within which signals with the same correlation key
 # are merged into the same incident.
 DEFAULT_CORRELATION_WINDOW_MINUTES = 30
+
+logger = logging.getLogger(__name__)
 
 
 async def create_signal(

@@ -7,10 +7,7 @@ from typing import Any
 from sqlalchemy.exc import OperationalError
 from sqlmodel import delete, select
 
-from deerflow.config.app_config import AppConfig
-from deerflow.config.extensions_config import ExtensionsConfig
 from deerflow.database.models import TenantMcpServer, TenantModelConfig, TenantSkill, UserConfig
-from deerflow.database.user_config_store import _build_default_payloads
 from deerflow.database.secrets_crypto import (
     decrypt_app_payload,
     decrypt_extensions_payload,
@@ -22,6 +19,7 @@ from deerflow.database.secrets_crypto import (
     encrypt_model_settings,
 )
 from deerflow.database.session import get_session_factory
+from deerflow.database.user_config_store import _build_default_payloads
 from deerflow.skills import get_skills_root_path, load_skills
 
 
@@ -1012,7 +1010,12 @@ async def get_available_models(
     is_platform_admin: bool = False,
 ) -> list[dict[str, Any]]:
     """Return merged global/tenant/user model list with scope metadata."""
-    await ensure_user_config(user_id, tenant_id=tenant_id)
+    try:
+        await ensure_user_config(user_id, tenant_id=tenant_id)
+    except OperationalError as exc:
+        if _is_missing_user_configs_table_error(exc):
+            return []
+        raise
 
     session_factory = get_session_factory()
     async with session_factory() as session:
@@ -1116,14 +1119,14 @@ async def list_tenant_shared_models(tenant_id: str) -> list[TenantModelConfig]:
                 )
                 if global_model:
                     valid_rows.append(row)
-                    logger.info(f"[list_tenant_shared_models] Global model exists, keeping")
+                    logger.info("[list_tenant_shared_models] Global model exists, keeping")
                 else:
                     # Orphaned model - delete it
-                    logger.info(f"[list_tenant_shared_models] Global model NOT found, deleting orphaned model")
+                    logger.info("[list_tenant_shared_models] Global model NOT found, deleting orphaned model")
                     await session.delete(row)
             else:
                 # Not from global - keep it
-                logger.info(f"[list_tenant_shared_models] Not from global, keeping")
+                logger.info("[list_tenant_shared_models] Not from global, keeping")
                 valid_rows.append(row)
         
         if len(valid_rows) < len(rows):
@@ -1216,7 +1219,7 @@ async def cleanup_orphaned_tenant_models(tenant_id: str) -> list[str]:
             await session.commit()
             logger.info(f"[cleanup_orphaned_tenant_models] Cleaned up models: {cleaned_models}")
         else:
-            logger.info(f"[cleanup_orphaned_tenant_models] No orphaned models found")
+            logger.info("[cleanup_orphaned_tenant_models] No orphaned models found")
 
         return cleaned_models
 
@@ -1473,25 +1476,35 @@ def _normalize_tenant_skill_settings(raw: Any) -> dict[str, Any]:
 
 async def get_tenant_shared_skill_settings(tenant_id: str) -> dict[str, dict[str, Any]]:
     owner_id = _tenant_shared_skill_owner_id(tenant_id)
-    await ensure_user_config(owner_id, tenant_id=tenant_id)
+    try:
+        await ensure_user_config(owner_id, tenant_id=tenant_id)
+    except OperationalError as exc:
+        if _is_missing_user_configs_table_error(exc):
+            return {}
+        raise
 
     session_factory = get_session_factory()
-    async with session_factory() as session:
-        row = await _get_user_config_record(session, user_id=owner_id, tenant_id=tenant_id)
-        if row is None:
-            return {}
+    try:
+        async with session_factory() as session:
+            row = await _get_user_config_record(session, user_id=owner_id, tenant_id=tenant_id)
+            if row is None:
+                return {}
 
-        ext_payload = decrypt_extensions_payload(dict(row.extensions_config or {}))
-        raw_settings = ext_payload.get("tenant_skill_settings")
-        if not isinstance(raw_settings, dict):
-            return {}
+            ext_payload = decrypt_extensions_payload(dict(row.extensions_config or {}))
+            raw_settings = ext_payload.get("tenant_skill_settings")
+            if not isinstance(raw_settings, dict):
+                return {}
 
-        settings: dict[str, dict[str, Any]] = {}
-        for skill_name, value in raw_settings.items():
-            if not isinstance(skill_name, str) or not skill_name.strip():
-                continue
-            settings[skill_name] = _normalize_tenant_skill_settings(value)
-        return settings
+            settings: dict[str, dict[str, Any]] = {}
+            for skill_name, value in raw_settings.items():
+                if not isinstance(skill_name, str) or not skill_name.strip():
+                    continue
+                settings[skill_name] = _normalize_tenant_skill_settings(value)
+            return settings
+    except OperationalError as exc:
+        if _is_missing_user_configs_table_error(exc):
+            return {}
+        raise
 
 
 async def update_tenant_shared_skill_settings(

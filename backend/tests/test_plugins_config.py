@@ -1,10 +1,9 @@
 """Integration tests for plugin configuration system."""
-import pytest
 
 
 def test_load_plugin_config_defaults_all_enabled():
     """When no plugins config provided, all plugins default to enabled."""
-    from app.plugins.registry import load_plugin_config, PLUGIN_DEFINITIONS
+    from app.plugins.registry import PLUGIN_DEFINITIONS, load_plugin_config
 
     states = load_plugin_config(None)
     assert len(states) == len(PLUGIN_DEFINITIONS)

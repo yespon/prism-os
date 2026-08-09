@@ -1,6 +1,7 @@
-import pytest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+
 from app.agent.terminal_graph import _trim_message_history
+
 
 def test_trim_empty_messages():
     assert _trim_message_history([]) == []

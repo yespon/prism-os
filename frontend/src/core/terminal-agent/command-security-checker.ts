@@ -166,8 +166,8 @@ function extractExecutable(command: string): string {
   const pipeIndex = findPipeOutsideQuotes(stripped);
   const firstCommand = pipeIndex >= 0 ? stripped.slice(0, pipeIndex).trim() : stripped;
 
-  const match = firstCommand.match(/^([a-zA-Z0-9_][a-zA-Z0-9_.-]*)/);
-  return match ? (match[1] || '') : '';
+  const match = /^([a-zA-Z0-9_][a-zA-Z0-9_.-]*)/.exec(firstCommand);
+  return match ? (match[1] ?? '') : '';
 }
 
 /**

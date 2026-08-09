@@ -22,7 +22,6 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -107,7 +106,7 @@ async def run_analysis(
 
         logger.info("ai_analysis: completed for incident=%s", incident.incident_key)
 
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.error("ai_analysis: timed out after %ds for incident=%s", LLM_TIMEOUT_SECONDS, incident.incident_key)
         incident.ai_summary = "AI 解读超时，请稍后重试"
         session.add(incident)

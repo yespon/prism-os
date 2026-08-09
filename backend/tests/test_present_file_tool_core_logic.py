@@ -1,7 +1,7 @@
 """Core behavior tests for present_files path normalization."""
 
-import json
 import importlib
+import json
 from types import SimpleNamespace
 
 present_file_tool_module = importlib.import_module("deerflow.tools.builtins.present_file_tool")

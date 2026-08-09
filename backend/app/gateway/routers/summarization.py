@@ -5,12 +5,10 @@ from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_context
 from deerflow.config.summarization_config import (
-    ContextSize,
-    DEFAULT_ENABLED,
     DEFAULT_KEEP_MESSAGES,
     DEFAULT_TRIGGER_MESSAGES,
     DEFAULT_TRIGGER_TOKENS,
-    DEFAULT_TRIM_TOKENS_TO_SUMMARIZE,
+    ContextSize,
     SummarizationConfig,
     get_summarization_config,
     set_summarization_config,

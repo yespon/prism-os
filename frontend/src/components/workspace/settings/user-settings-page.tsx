@@ -14,10 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { logout } from "@/core/auth/auth-api";
 import { useSession } from "@/core/auth/hooks";
 import { useI18n } from "@/core/i18n/hooks";
 import { clearTenantId, useCurrentTenant, useSwitchTenant, useTenantList } from "@/core/tenants";
-import { logout } from "@/core/auth/auth-api";
 
 import { SettingsSection } from "./settings-section";
 
@@ -81,7 +81,7 @@ export function UserSettingsPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h3 className="font-medium text-zinc-900 dark:text-zinc-100 truncate">
-                    {user.name || user.email || user.id}
+                    {user.name ?? user.email ?? user.id}
                   </h3>
                   {user.role === "admin" && (
                     <span className="px-2 py-0.5 text-[10px] font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded-full">

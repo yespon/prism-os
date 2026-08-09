@@ -12,7 +12,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.authorization import require_tenant_context
 from app.models.assets import Keychain, LocalAsset
-from app.models.terminal import ChatSession, TerminalSecuritySettings, CommandAuditLog
+from app.models.terminal import ChatSession, CommandAuditLog, TerminalSecuritySettings
 from app.services.terminal.session import build_ssh_command, session_manager
 from deerflow.database.session import get_session
 
@@ -350,7 +350,7 @@ async def get_security_settings(request: Request, db: AsyncSession = Depends(get
     result = await db.execute(query)
     settings = result.scalars().first()
 
-    from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL
+    from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG
 
     if not settings:
         return {
@@ -426,7 +426,7 @@ async def reset_security_settings(request: Request, db: AsyncSession = Depends(g
         await db.delete(settings)
         await db.commit()
 
-    from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL
+    from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG
     return {
         "ok": True,
         "security_config": DEFAULT_SECURITY_CONFIG,
@@ -509,10 +509,11 @@ def _build_approval_payload(tool_calls: list[dict]) -> dict:
 @router.post("/invoke")
 async def agent_invoke(req: AgentInvokeRequest, request: Request):
     """Invoke the terminal agent graph and stream results via SSE."""
-    from app.agent.terminal_graph import terminal_graph
-    from app.agent.terminal_graph import TerminalState
-    from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
     import json as json_mod
+
+    from langchain_core.messages import HumanMessage
+
+    from app.agent.terminal_graph import TerminalState, terminal_graph
 
     tenant_id = require_tenant_context(request)
     user_id = getattr(request.state, "user_id", "system")
@@ -685,10 +686,12 @@ class AgentApproveRequest(BaseModel):
 @router.post("/approve")
 async def agent_approve(req: AgentApproveRequest, request: Request):
     """Resume the agent graph after user approves/rejects a tool call via Human-in-the-Loop."""
-    from app.agent.terminal_graph import terminal_graph
-    from langgraph.types import Command
     import json as json_mod
     import uuid
+
+    from langgraph.types import Command
+
+    from app.agent.terminal_graph import terminal_graph
 
     async def event_stream():
         try:
@@ -703,7 +706,6 @@ async def agent_approve(req: AgentApproveRequest, request: Request):
             seen_run_ids = set()
             # Generate a unified message bubble ID for the approval phases (execution + summary text)
             msg_id = f"msg-{uuid.uuid4()}"
-            first_content = False
             approved_tool_completed = False
 
             # Proactively start the text message bubble

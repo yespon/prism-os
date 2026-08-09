@@ -61,23 +61,23 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
   
   const publicCount = (agent.skills ?? []).filter((sName) => {
     const match = skills.find((s) => s.name === sName);
-    return match && match.category === "public";
+    return match?.category === "public";
   }).length;
 
   const customCount = (agent.skills ?? []).filter((sName) => {
     const match = skills.find((s) => s.name === sName);
-    return match && match.category === "custom";
+    return match?.category === "custom";
   }).length;
 
   // Tooltip name lists
   const mcpNames = agent.tool_groups ?? [];
   const publicNames = (agent.skills ?? []).filter((sName) => {
     const match = skills.find((s) => s.name === sName);
-    return match && match.category === "public";
+    return match?.category === "public";
   });
   const customNames = (agent.skills ?? []).filter((sName) => {
     const match = skills.find((s) => s.name === sName);
-    return match && match.category === "custom";
+    return match?.category === "custom";
   });
 
   async function handleDelete() {
@@ -100,7 +100,7 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
 
   const handleCopyPrompt = () => {
     if (agent.system_prompt) {
-      navigator.clipboard.writeText(agent.system_prompt);
+      void navigator.clipboard.writeText(agent.system_prompt);
       setCopied(true);
       toast.success("系统提示词已复制到剪贴板");
       setTimeout(() => setCopied(false), 2000);

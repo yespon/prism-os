@@ -548,7 +548,7 @@ def _run_async(coro):
     import asyncio
     import concurrent.futures
     try:
-        loop = asyncio.get_running_loop()
+        asyncio.get_running_loop()
     except RuntimeError:
         return asyncio.run(coro)
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
@@ -605,16 +605,17 @@ def _get_selected_image_model(thread_id: str) -> str | None:
 
 
 async def _fetch_model_config(user_id: str, tenant_id: str | None, model_name: str) -> dict[str, any] | None:
-    from typing import Any
+
     from sqlalchemy import select
-    from deerflow.database.session import get_session_factory
+
     from deerflow.database.models import TenantModelConfig
+    from deerflow.database.secrets_crypto import decrypt_model_settings
+    from deerflow.database.session import get_session_factory
     from deerflow.database.user_config_service import (
         PLATFORM_MODEL_OWNER_ID,
-        _tenant_shared_model_owner_id,
         _get_scoped_model_rows,
+        _tenant_shared_model_owner_id,
     )
-    from deerflow.database.secrets_crypto import decrypt_model_settings
 
     session_factory = get_session_factory()
     async with session_factory() as session:
@@ -689,7 +690,6 @@ def _apply_line_limit(content: str, start_line: int | None, end_line: int | None
 
 
 def _get_text2image_env(user_id: str, tenant_id: str | None, thread_id: str) -> dict[str, str]:
-    from typing import Any
     image_model_name = _get_selected_image_model(thread_id)
     if not image_model_name or image_model_name.lower() == "none":
         return {}

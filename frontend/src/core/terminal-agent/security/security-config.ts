@@ -93,7 +93,7 @@ export class SecurityConfigManager {
   private config: SecurityConfig;
 
   constructor() {
-    this.config = this.loadFromStorage() || { ...DEFAULT_SECURITY_CONFIG };
+    this.config = this.loadFromStorage() ?? { ...DEFAULT_SECURITY_CONFIG };
   }
 
   /**
@@ -147,7 +147,7 @@ export class SecurityConfigManager {
         ...parsed,
         securityPolicy: {
           ...DEFAULT_SECURITY_CONFIG.securityPolicy,
-          ...(parsed.securityPolicy || {}),
+          ...(parsed.securityPolicy ?? {}),
         },
       };
       this.saveToStorage();

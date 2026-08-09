@@ -1,5 +1,5 @@
-import pytest
-from app.agent.terminal_graph import _resolve_tool_targets, _target_assets
+
+from app.agent.terminal_graph import _resolve_tool_targets
 from app.services.terminal.session import _new_command_marker, _strip_command_markers, session_manager
 
 

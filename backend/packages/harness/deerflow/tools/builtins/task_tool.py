@@ -1,5 +1,6 @@
 """Task tool for delegating work to subagents."""
 
+import inspect
 import logging
 import time
 import uuid
@@ -25,6 +26,7 @@ def task_tool(
     prompt: str,
     subagent_type: Literal["general-purpose", "bash"],
     tool_call_id: Annotated[str, InjectedToolCallId],
+    max_turns: int | None = None,
 ) -> str:
     """Delegate a task to a specialized subagent that runs in its own context.
 
@@ -59,6 +61,11 @@ def task_tool(
     config = get_subagent_config(subagent_type)
     if config is None:
         return f"Error: Unknown subagent type '{subagent_type}'. Available: general-purpose, bash"
+
+    if max_turns is not None:
+        if max_turns < 1:
+            return "Error: max_turns must be at least 1"
+        config = replace(config, max_turns=max_turns)
 
     # Build config overrides
     overrides: dict = {}
@@ -121,12 +128,15 @@ def task_tool(
 
     # Start background execution (always async to prevent blocking)
     # Use tool_call_id as task_id for better traceability
-    task_id = executor.execute_async(
-        prompt,
-        task_id=tool_call_id,
-        description=description,
-        prompt=prompt,
-    )
+    execute_kwargs = {"task_id": tool_call_id, "description": description}
+    parameters = inspect.signature(executor.execute_async).parameters
+    if not any(parameter.kind == inspect.Parameter.VAR_KEYWORD for parameter in parameters.values()):
+        execute_kwargs = {
+            key: value
+            for key, value in execute_kwargs.items()
+            if key in parameters
+        }
+    task_id = executor.execute_async(prompt, **execute_kwargs)
 
     # Poll for task completion in backend (removes need for LLM to poll)
     poll_count = 0
@@ -183,8 +193,10 @@ def task_tool(
             last_message_count = current_message_count
 
         # Emit task_started again once started_at becomes available (set by run_task)
-        if result.started_at is not None and last_started_at is None:
-            last_started_at = result.started_at
+        started_at = getattr(result, "started_at", None)
+        completed_at = getattr(result, "completed_at", None)
+        if started_at is not None and last_started_at is None:
+            last_started_at = started_at
             writer(
                 {
                     "type": "task_started",
@@ -192,7 +204,7 @@ def task_tool(
                     "description": description,
                     "timeout_seconds": config.timeout_seconds,
                     "max_turns": config.max_turns,
-                    "started_at": result.started_at.isoformat(),
+                    "started_at": started_at.isoformat(),
                 }
             )
 
@@ -203,8 +215,8 @@ def task_tool(
                     "type": "task_completed",
                     "task_id": task_id,
                     "result": result.result,
-                    "started_at": result.started_at.isoformat() if result.started_at else None,
-                    "completed_at": result.completed_at.isoformat() if result.completed_at else None,
+                    "started_at": started_at.isoformat() if started_at else None,
+                    "completed_at": completed_at.isoformat() if completed_at else None,
                 }
             )
             logger.info(f"[trace={trace_id}] Task {task_id} completed after {poll_count} polls")
@@ -216,8 +228,8 @@ def task_tool(
                     "type": "task_failed",
                     "task_id": task_id,
                     "error": result.error,
-                    "started_at": result.started_at.isoformat() if result.started_at else None,
-                    "completed_at": result.completed_at.isoformat() if result.completed_at else None,
+                    "started_at": started_at.isoformat() if started_at else None,
+                    "completed_at": completed_at.isoformat() if completed_at else None,
                 }
             )
             logger.error(f"[trace={trace_id}] Task {task_id} failed: {result.error}")
@@ -229,8 +241,8 @@ def task_tool(
                     "type": "task_timed_out",
                     "task_id": task_id,
                     "error": result.error,
-                    "started_at": result.started_at.isoformat() if result.started_at else None,
-                    "completed_at": result.completed_at.isoformat() if result.completed_at else None,
+                    "started_at": started_at.isoformat() if started_at else None,
+                    "completed_at": completed_at.isoformat() if completed_at else None,
                 }
             )
             logger.warning(f"[trace={trace_id}] Task {task_id} timed out: {result.error}")

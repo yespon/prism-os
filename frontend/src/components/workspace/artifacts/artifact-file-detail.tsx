@@ -446,7 +446,7 @@ export function ArtifactFileDetail({
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">无法加载文件内容</p>
-                <p className="text-xs text-muted-foreground mt-1">{error?.message || "文件可能已不存在或无权访问"}</p>
+                <p className="text-xs text-muted-foreground mt-1">{error?.message ?? "文件可能已不存在或无权访问"}</p>
               </div>
               <Button variant="default" size="sm" onClick={handleDownloadArtifact}>
                 <DownloadIcon className="mr-2 size-4" />

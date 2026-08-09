@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { cache } from "react";
 
-import { getBackendBaseURL } from "@/core/config";
 import type { Session } from "@/core/auth/auth-api";
+import { getBackendBaseURL } from "@/core/config";
 
 const SESSION_COOKIE = "better-auth.session_token";
 

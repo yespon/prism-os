@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { fetchAuthApi } from "@/core/api/auth-client";
 
 import { 
   Select, 
@@ -26,8 +25,9 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { fetchAuthApi } from "@/core/api/auth-client";
 import { useAvailableModels } from "@/core/models/hooks";
+import { cn } from "@/lib/utils";
 
 export type PPTSettings = {
   pages: number;
@@ -550,7 +550,7 @@ export function SkillSettingsPanel({
     fetchAuthApi(`/api/templates?thread_id=${encodeURIComponent(threadId)}`)
       .then((res) => res.ok ? res.json() as Promise<Array<{ name: string; path: string; kind: string }>> : [])
       .then((data) => setUserTemplates(data))
-      .catch(() => {});
+      .catch(() => undefined);
   }, [skillName, threadId]);
 
   const handleUploadTemplate = useCallback(async () => {
@@ -972,7 +972,7 @@ export function SkillSettingsPanel({
                   <div className="flex flex-col gap-1.5">
                     <span className="text-[11px] font-medium text-muted-foreground">{t.ppt.imageModel}</span>
                     <Select
-                      value={settings["ppt-master"].imageModel || "none"}
+                      value={settings["ppt-master"].imageModel ?? "none"}
                       onValueChange={(val: string) => {
                         updateSetting("ppt-master", (prev) => ({ ...prev, imageModel: val }));
                       }}

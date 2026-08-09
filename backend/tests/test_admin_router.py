@@ -5,8 +5,8 @@ from types import SimpleNamespace
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
-from app.gateway.routers import admin
 from app.gateway import auth_db
+from app.gateway.routers import admin
 
 
 def _patch_auth_db(monkeypatch, db_path):
@@ -217,7 +217,8 @@ def test_admin_users_returns_users_for_admin(tmp_path, monkeypatch):
     with TestClient(app) as client:
         response = client.get("/api/admin/users", headers={"x-user-role": "admin"})
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     assert len(payload["users"]) == 1
     assert payload["users"][0]["id"] == "u-admin"
@@ -232,7 +233,8 @@ def test_admin_me_returns_current_admin_context():
             headers={"x-user-id": "u-admin", "x-user-role": "admin"},
         )
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     assert response.json() == {"user_id": "u-admin", "role": "admin"}
 
 
@@ -245,7 +247,8 @@ def test_admin_users_includes_status_when_column_exists(tmp_path, monkeypatch):
     with TestClient(app) as client:
         response = client.get("/api/admin/users", headers={"x-user-role": "admin"})
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     users = response.json()["users"]
     assert any(user["id"] == "u-user" and user["status"] == "active" for user in users)
 
@@ -266,7 +269,8 @@ def test_admin_update_user_status(tmp_path, monkeypatch):
             json={"status": "suspended"},
         )
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     assert payload["id"] == "u-user"
     assert payload["status"] == "suspended"
@@ -321,7 +325,8 @@ def test_admin_users_usage_returns_thread_and_upload_stats(tmp_path, monkeypatch
     with TestClient(app) as client:
         response = client.get("/api/admin/users/usage", headers={"x-user-role": "admin"})
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     rows = {row["user_id"]: row for row in payload["users"]}
 
@@ -349,7 +354,8 @@ def test_admin_users_usage_marks_soft_limit_overages(tmp_path, monkeypatch):
     with TestClient(app) as client:
         response = client.get("/api/admin/users/usage", headers={"x-user-role": "admin"})
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     rows = {row["user_id"]: row for row in payload["users"]}
 
@@ -375,7 +381,8 @@ def test_admin_users_usage_ignores_invalid_soft_limit_env(tmp_path, monkeypatch)
     with TestClient(app) as client:
         response = client.get("/api/admin/users/usage", headers={"x-user-role": "admin"})
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     rows = {row["user_id"]: row for row in payload["users"]}
     assert rows["u-user"]["thread_soft_limit"] is None
@@ -507,7 +514,8 @@ def test_admin_reset_target_user_password(tmp_path, monkeypatch):
             json={"new_password": "UserNewPassword123!", "must_change_password": True},
         )
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     assert calls and calls[0][0][0] == "admin.user.password.reset"
 
     with sqlite3.connect(db_path) as conn:
@@ -539,7 +547,8 @@ def test_admin_delete_user_cascades_auth_and_files(tmp_path, monkeypatch):
             headers={"x-user-role": "admin", "x-user-id": "u-admin"},
         )
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     assert payload["user_id"] == "u-user"
     assert payload["deleted_accounts"] == 1
@@ -583,7 +592,8 @@ def test_admin_audit_logs_returns_events(monkeypatch):
     with TestClient(app) as client:
         response = client.get("/api/admin/audit/logs?limit=10", headers={"x-user-role": "admin"})
 
-    print(response.json()); assert response.status_code == 200
+    print(response.json())
+    assert response.status_code == 200
     payload = response.json()
     assert len(payload["events"]) == 1
     assert payload["events"][0]["event_type"] == "upload.quota.blocked"

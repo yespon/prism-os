@@ -22,9 +22,9 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   /** Parts from AI SDK v6 format */
-  parts?: any[];
+  parts?: unknown[];
   /** Tool invocations */
-  toolInvocations?: any[];
+  toolInvocations?: unknown[];
   /** User feedback */
   feedback?: 'up' | 'down';
   timestamp: string;
@@ -87,13 +87,13 @@ export class ChatHistoryManager {
    */
   static loadSession(sessionId: string): ChatSession | null {
     const sessions = ChatHistoryManager.loadSessions();
-    return sessions.find((s) => s.id === sessionId) || null;
+    return sessions.find((s) => s.id === sessionId) ?? null;
   }
 
   /**
    * Get paginated sessions (for history list).
    */
-  static getSessionsPage(page: number = 1): ChatSession[] {
+  static getSessionsPage(page = 1): ChatSession[] {
     const sessions = ChatHistoryManager.loadSessions();
     const start = (page - 1) * PAGE_SIZE;
     return sessions.slice(start, start + PAGE_SIZE);
@@ -109,7 +109,7 @@ export class ChatHistoryManager {
       (s) =>
         s.title.toLowerCase().includes(lower) ||
         s.messages.some(
-          (m) => m.content && m.content.toLowerCase().includes(lower)
+          (m) => m.content?.toLowerCase().includes(lower) ?? false,
         )
     );
   }
@@ -124,7 +124,10 @@ export class ChatHistoryManager {
 
 function parseChatSessions(raw: string): ChatSession[] {
   const value: unknown = JSON.parse(raw);
-  if (!Array.isArray(value) || !value.every((item) => typeof item === "object" && item !== null && !Array.isArray(item))) {
+  if (
+    !Array.isArray(value) ||
+    !value.every((item) => item !== null && typeof item === "object" && !Array.isArray(item))
+  ) {
     throw new Error("Invalid chat session array");
   }
   return value as ChatSession[];

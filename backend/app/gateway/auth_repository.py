@@ -6,11 +6,10 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.gateway.auth_crypto import hash_password
 from app.gateway.auth_db import (
+    _row_to_dict,
     auth_connection,
     column_exists,
-    get_db_type,
     table_exists,
-    _row_to_dict,
 )
 
 

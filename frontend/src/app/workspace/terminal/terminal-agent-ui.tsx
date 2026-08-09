@@ -1,18 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useTerminalAgent } from '@/core/terminal-agent/useTerminalAgent';
-import { CommandInteractionInput } from '@/core/terminal-agent/command-interaction-input';
-import { useTerminalContext } from '@/app/workspace/terminal/context';
-import { SecuritySettingsPanel } from '@/core/terminal-agent/security/security-settings-ui';
-import { ChatHistoryManager, type ChatMessage } from '@/core/terminal-agent/chat-history';
 import {
-  Monitor, X, Plus, RotateCcw, MoreHorizontal, Pencil,
-  Mic, Image as ImageIcon, ArrowUp, ChevronDown,
-  TerminalSquare, Loader2, ShieldAlert, AlertTriangle,
-  ThumbsUp, ThumbsDown, Settings, History, Check, ChevronLeft, Bot,
-  Terminal as TerminalIcon, Sparkles, Play, StopCircle, CornerDownLeft
+  Monitor, X, Plus, RotateCcw, Pencil,
+  Image as ImageIcon, ArrowUp, ChevronDown,
+  Loader2, AlertTriangle, Settings, History, Check,
+  Terminal as TerminalIcon, Sparkles, CornerDownLeft
 } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { toast } from 'sonner';
+
+import { useTerminalContext } from '@/app/workspace/terminal/context';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAvailableModels } from '@/core/models/hooks';
 import { Input } from '@/components/ui/input';
 import {
   Tooltip,
@@ -28,47 +24,59 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { MarkdownContent } from '@/components/workspace/messages/markdown-content';
-import { toast } from 'sonner';
-import { type IncidentContext, renderContextPrompt } from '@/core/alerting/incident-context';
 import { SaveAsSkillDialog, extractTerminalSession } from '@/components/workspace/terminal/save-as-skill-dialog';
+import { type IncidentContext, renderContextPrompt } from '@/core/alerting/incident-context';
+import { useAvailableModels } from '@/core/models/hooks';
+import { ChatHistoryManager, type ChatSession } from '@/core/terminal-agent/chat-history';
+import { CommandInteractionInput } from '@/core/terminal-agent/command-interaction-input';
+import type { InteractionType as CommandInteractionType } from '@/core/terminal-agent/command-interaction-input';
+import type {
+  TerminalAsset,
+  TerminalMessage,
+  TerminalToolInvocation,
+} from '@/core/terminal-agent/message-types';
+import { isTerminalMessagePart } from '@/core/terminal-agent/message-types';
+import { SecuritySettingsPanel } from '@/core/terminal-agent/security/security-settings-ui';
+import { useTerminalAgent } from '@/core/terminal-agent/useTerminalAgent';
 
 // ------------------------------------------------------------------
 // Message Utility Functions
 // ------------------------------------------------------------------
 
-function getMessageText(msg: any): string {
+function getMessageText(msg: TerminalMessage): string {
   if (!msg) return '';
   let text = '';
   // LangGraph SDK format: message.content is string or [{type:'text', text:'...'}]
   if (typeof msg.content === 'string') text = msg.content;
   else if (Array.isArray(msg.content)) {
-    text = msg.content.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
+    text = msg.content.filter((p) => p.type === 'text').map((p) => p.text ?? '').join('\n');
   }
   // AI SDK v6 format: message.parts
   else if (Array.isArray(msg.parts)) {
-    text = msg.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
+    text = msg.parts.filter((p) => p.type === 'text').map((p) => p.text ?? '').join('\n');
   }
   // Replace escaped newlines with actual newlines
   return text.replace(/\\n/g, '\n');
 }
 
-function getReasoningText(msg: any): string {
+function getReasoningText(msg: TerminalMessage): string {
   // LangGraph SDK: reasoning is in additional_kwargs or content parts
-  if (msg?.additional_kwargs?.reasoning) return msg.additional_kwargs.reasoning;
-  const parts = msg?.content || msg?.parts;
+  const reasoning = msg.additional_kwargs?.reasoning;
+  if (typeof reasoning === 'string' && reasoning.length > 0) return reasoning;
+  const parts = Array.isArray(msg.content) ? msg.content : msg.parts;
   if (Array.isArray(parts)) {
-    return parts.filter((p: any) => p.type === 'reasoning').map((p: any) => p.text || p.reasoning).join('\n');
+    return parts.filter((p) => p.type === 'reasoning').map((p) => p.text ?? p.reasoning ?? '').join('\n');
   }
   return '';
 }
 
 /** Get the display role: 'user' | 'assistant'. LangGraph uses type='human'/'ai', AI SDK uses role='user'/'assistant'. */
-function getMessageRole(msg: any): 'user' | 'assistant' {
+function getMessageRole(msg: TerminalMessage): 'user' | 'assistant' {
   if (msg.role === 'user' || msg.type === 'human') return 'user';
   return 'assistant';
 }
 
-function getToolInvocations(msg: any): any[] {
+function getToolInvocations(msg: TerminalMessage): TerminalToolInvocation[] {
   if (!msg) return [];
   // LangGraph SDK: tool messages have type='tool'
   if (msg.type === 'tool') {
@@ -77,50 +85,48 @@ function getToolInvocations(msg: any): any[] {
       toolName: msg.name,
       state: 'output-available',    // tool has completed execution
       input: {},
+      args: {},
       output: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content),
-      get args() { return this.input; },
-      get result() { return this.output; },
     }];
   }
   // LangGraph SDK: AI message with tool_calls array (agent mode: auto-executed)
   if (Array.isArray(msg.tool_calls) && msg.tool_calls.length > 0) {
-    return msg.tool_calls.map((tc: any) => ({
+    return msg.tool_calls.map((tc) => ({
       toolCallId: tc.id,
       toolName: tc.name,
       state: 'output-available',    // in agent mode, tool is auto-executed
-      input: tc.args || {},
-      args: tc.args || {},
+      input: tc.args ?? {},
+      args: tc.args ?? {},
       output: undefined,
-      get result() { return this.output; },
     }));
   }
   // AI SDK v6 parts format (legacy cmd mode)
   if (Array.isArray(msg.parts)) {
     return msg.parts
-      .filter((p: any) => p.type?.startsWith('tool-') || p.type === 'dynamic-tool')
-      .map((p: any) => {
-        const toolName = p.toolName || (p.type && p.type.startsWith('tool-') ? p.type.slice(5) : p.type);
+      .filter((p) => p.type?.startsWith('tool-') ?? p.type === 'dynamic-tool')
+      .map((p) => {
+        const toolName = p.toolName ?? (p.type?.startsWith('tool-') ? p.type.slice(5) : p.type) ?? 'unknown';
         return {
           toolCallId: p.toolCallId,
           toolName,
           state: p.state,
-          input: p.input || {},
+          input: p.input ?? {},
+          args: p.input ?? {},
           output: p.output,
           errorText: p.errorText,
-          get args() { return this.input; },
-          get result() { return this.output; },
+          approval: p.approval,
         };
       });
   }
   return [];
 }
 
-function summarizeOutput(output: any): string {
+function summarizeOutput(output: unknown): string {
   const text = typeof output === 'string' ? output : JSON.stringify(output ?? '');
   const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
   if (lines.length === 0) return '命令已执行，无输出。';
   const errorLine = lines.find(line => /error|failed|denied|exception|not found/i.test(line));
-  const firstLine = errorLine || lines[0] || '';
+  const firstLine = errorLine ?? lines[0] ?? '';
   return firstLine.length > 160 ? `${firstLine.slice(0, 160)}...` : firstLine;
 }
 
@@ -131,15 +137,18 @@ function riskLabel(level?: string): string {
   return '低风险';
 }
 
-function assetLabel(asset: any): string {
-  return asset?.ip || asset?.hostname || asset?.name || asset?.id || '未知主机';
+function assetLabel(asset: TerminalAsset | null | undefined): string {
+  return asset?.ip ?? asset?.hostname ?? asset?.name ?? asset?.id ?? '未知主机';
 }
+
+const ignoreInteractionCommand = (_commandId: string): void => undefined;
+const ignoreTerminalFocus = (): void => undefined;
 
 // ------------------------------------------------------------------
 // TerminalAgentUI Component
 // ------------------------------------------------------------------
 
-export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset: any; injectedContext?: IncidentContext | null }) {
+export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset: TerminalAsset | null; injectedContext?: IncidentContext | null }) {
   const terminalContext = useTerminalContext();
   const { models } = useAvailableModels();
   const [selectedModel, setSelectedModel] = useState<string>('gpt-4o');
@@ -151,9 +160,9 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
   const [mode, setMode] = useState<'cmd' | 'agent'>(injectedContext ? 'agent' : 'cmd');
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [contextMenuSearch, setContextMenuSearch] = useState('');
-  const [assets, setAssets] = useState<any[]>([]);
+  const [assets, setAssets] = useState<TerminalAsset[]>([]);
   const [isRefreshingAssets, setIsRefreshingAssets] = useState(false);
-  const [selectedAgentAssets, setSelectedAgentAssets] = useState<any[]>([]);
+  const [selectedAgentAssets, setSelectedAgentAssets] = useState<TerminalAsset[]>([]);
   const [input, setInput] = useState('');
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editingSessionTitle, setEditingSessionTitle] = useState('');
@@ -199,7 +208,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
     modelName: selectedModel,
     assetId: mode === 'agent' ? undefined : activeAsset?.id,
     assetIp: mode === 'agent' ? undefined : activeAsset?.ip,
-    selectedAssets: targetAgentAssets.map(a => ({ id: a.id, ip: a.ip || a.hostname, name: a.name })),
+    selectedAssets: targetAgentAssets.map(a => ({ id: a.id, ip: a.ip ?? a.hostname ?? '', name: a.name })),
     onExecuteCommand: handleExecuteCommand,
     onSendInput: handleSendInput,
     onCancelCommand: handleCancelCommand,
@@ -216,7 +225,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
     // Wait a short tick for the agent to initialize
     const timer = setTimeout(() => {
       const prompt = renderContextPrompt(injectedContext);
-      agentSendMessage({ text: prompt });
+      void agentSendMessage({ text: prompt });
       contextInjectedRef.current = injectedContext.incident_id;
     }, 500);
     return () => clearTimeout(timer);
@@ -224,7 +233,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
 
   useEffect(() => {
     if (messages.length === 0) return;
-    const firstUser = messages.find((m: any) => getMessageRole(m) === 'user');
+    const firstUser = messages.find((m) => getMessageRole(m) === 'user');
     const title = firstUser ? getMessageText(firstUser).slice(0, 28) || '新会话' : sessionTitle;
     setSessionTitle(title);
     ChatHistoryManager.saveSession({
@@ -234,8 +243,8 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
       mode,
       assetId: activeAsset?.id,
       assetIp: activeAsset?.ip,
-      messages: messages.map((m: any) => ({
-        id: m.id || `${Date.now()}-${Math.random()}`,
+      messages: messages.map((m) => ({
+        id: m.id ?? `${Date.now()}-${Math.random()}`,
         role: getMessageRole(m),
         content: getMessageText(m),
         parts: m.parts,
@@ -247,15 +256,15 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
     });
   }, [activeAsset?.id, activeAsset?.ip, messages, mode, selectedModel, sessionId, sessionTitle]);
 
-  const restoreSession = useCallback((saved: any) => {
+  const restoreSession = useCallback((saved: ChatSession) => {
     setSessionId(saved.id);
-    setSessionTitle(saved.title || '未命名会话');
-    setMode(saved.mode || 'cmd');
-    hydrateMessages((saved.messages || []).map((m: any) => ({
+    setSessionTitle(saved.title ?? '未命名会话');
+    setMode(saved.mode ?? 'cmd');
+    hydrateMessages((saved.messages ?? []).map((m) => ({
       id: m.id,
       role: m.role,
       content: m.content,
-      parts: m.parts || [],
+      parts: Array.isArray(m.parts) ? m.parts.filter(isTerminalMessagePart) : [],
     })));
     setShowHistory(false);
   }, [hydrateMessages]);
@@ -277,28 +286,28 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
   }, []);
 
   useEffect(() => {
-    fetchAssets();
+    void fetchAssets();
   }, [fetchAssets]);
 
   useEffect(() => {
     if (showContextMenu) {
-      fetchAssets();
+      void fetchAssets();
     }
   }, [showContextMenu, fetchAssets]);
 
   useEffect(() => {
     if (models.length > 0 && !models.find((m) => m.name === selectedModel)) {
-      setSelectedModel(models[0]?.name || 'gpt-4o');
+        setSelectedModel(models[0]?.name ?? 'gpt-4o');
     }
   }, [models]);
 
   const filteredAssets = assets.filter(a =>
     !contextMenuSearch ||
-    (a.ip || a.hostname || '').toLowerCase().includes(contextMenuSearch.toLowerCase()) ||
-    (a.name || '').toLowerCase().includes(contextMenuSearch.toLowerCase())
+    (a.ip ?? a.hostname ?? '').toLowerCase().includes(contextMenuSearch.toLowerCase()) ||
+    (a.name ?? '').toLowerCase().includes(contextMenuSearch.toLowerCase())
   );
 
-  const toggleAssetSelection = (asset: any) => {
+  const toggleAssetSelection = (asset: TerminalAsset) => {
     setSelectedAgentAssets(prev => {
       const exists = prev.find(a => a.id === asset.id);
       if (exists) {
@@ -351,7 +360,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
       return;
     }
 
-    agentSendMessage({ text: text });
+    void agentSendMessage({ text: text });
     setInput('');
   }, [input, isLoading, mode, selectedAgentAssets, terminalContext, agentSendMessage, setInput]);
 
@@ -477,7 +486,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                 />
               ) : (
                 <button onClick={() => restoreSession(s)} className="min-w-0 flex-1 text-left px-1 py-2 text-xs text-zinc-600">
-                  <div className="font-medium truncate">{s.title || '未命名会话'}</div>
+                  <div className="font-medium truncate">{s.title ?? '未命名会话'}</div>
                   <div className="text-zinc-400 text-[10px] mt-0.5">{s.mode === 'agent' ? '自动模式' : '手动模式'} · {new Date(s.updatedAt).toLocaleDateString()}</div>
                 </button>
               )}
@@ -489,7 +498,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingSessionId(s.id);
-                      setEditingSessionTitle(s.title || '未命名会话');
+                      setEditingSessionTitle(s.title ?? '未命名会话');
                     }}
                     title="重命名"
                   >
@@ -545,9 +554,9 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
           </div>
         ) : (
           <div className="max-w-4xl mx-auto flex flex-col gap-6">
-            {messages.map((m: any) => {
+            {messages.map((m) => {
               let textContent = getMessageText(m);
-              let reasoningText = getReasoningText(m);
+              const reasoningText = getReasoningText(m);
               const toolInvocations = getToolInvocations(m);
 
               // Fallback: If model puts text in the tool's reason arg
@@ -558,7 +567,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                 }
               }
 
-              const isEmpty = !textContent && !reasoningText && toolInvocations.length === 0 && (!m.parts || m.parts.filter((p: any) => p.type === 'step').length === 0) && (!m.tool_calls || m.tool_calls.length === 0);
+              const isEmpty = !textContent && !reasoningText && toolInvocations.length === 0 && (!m.parts || m.parts.filter((p) => p.type === 'step').length === 0) && (!m.tool_calls || m.tool_calls.length === 0);
               if (isEmpty) return null;
 
               return (
@@ -597,11 +606,11 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                         )}
 
                         {/* Steps (Execution Plan) */}
-                        {m.parts?.filter((p: any) => p.type === 'step').length > 0 && (
+                        {(m.parts ?? []).filter((p) => p.type === 'step').length > 0 && (
                           <div className="relative pl-6 my-3 border-l border-zinc-200 space-y-4">
                             {(() => {
-                              const stepParts = m.parts.filter((p: any) => p.type === 'step');
-                              return stepParts.map((step: any, idx: number) => {
+                              const stepParts = m.parts?.filter((p) => p.type === 'step') ?? [];
+                              return stepParts.map((step, idx: number) => {
                                 const isCompleted = step.state === 'completed';
                                 return (
                                   <div key={idx} className="relative flex items-center gap-3 text-[13px] leading-none">
@@ -651,20 +660,26 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                             'auto-executing': '正在自动执行',
                           };
 
-                          return toolInvocations.map((tool: any) => {
+                          return toolInvocations.map((tool) => {
+                            const toolCallId = tool.toolCallId ?? '';
+                            const toolName = tool.toolName ?? 'unknown';
+                            const command: string = typeof tool.args.command === 'string' ? tool.args.command : '';
+                            const outputText: string = typeof tool.output === 'string'
+                              ? tool.output
+                              : JSON.stringify(tool.output, null, 2) ?? '';
                             const isCall = tool.state === 'input-available' || tool.state === 'input-streaming';
                             const isAutoExecuting = tool.state === 'auto-executing';
                             const isDone = tool.state === 'output-available';
                             const isError = tool.state === 'output-error';
                             
-                            if (tool.toolName === 'execute_command') {
+                            if (toolName === 'execute_command') {
                               // In agent mode, show target host IP from approval data
                               // Fallback: use selectedAgentAssets (agent mode) or activeAsset (cmd mode)
                               const targetIp = tool.approval?.targetAssets?.[0]?.ip
-                                || (mode === 'agent' ? selectedAgentAssets[0]?.ip : null)
-                                || activeAsset?.ip;
+                                ?? (mode === 'agent' ? selectedAgentAssets[0]?.ip : undefined)
+                                ?? activeAsset?.ip;
                               return (
-                                <div key={tool.toolCallId} className="w-full flex flex-col rounded-xl border border-zinc-200/80 bg-[#0d1117] shadow-sm my-1">
+                                <div key={toolCallId} className="w-full flex flex-col rounded-xl border border-zinc-200/80 bg-[#0d1117] shadow-sm my-1">
                                   {/* Command Header */}
                                   <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 bg-[#161b22] rounded-t-xl">
                                     <div className="flex items-center gap-2 text-[11px] font-medium text-zinc-400">
@@ -696,14 +711,14 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                           <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => rejectPendingCommand(tool.toolCallId, tool.toolName)}
+                                            onClick={() => rejectPendingCommand(toolCallId, toolName)}
                                             className="h-6 px-2 text-[10px] text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
                                           >
                                             拒绝
                                           </Button>
                                           <Button
                                             size="sm"
-                                            onClick={() => executePendingCommand(tool.toolCallId, tool.toolName, tool.args?.command || '')}
+                                            onClick={() => executePendingCommand(toolCallId, toolName, command)}
                                             className="h-6 px-3 text-[10px] bg-blue-600 hover:bg-blue-500 text-white"
                                           >
                                             执行 <CornerDownLeft className="w-3 h-3 ml-1"/>
@@ -722,12 +737,12 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                         需要确认 · {riskLabel(tool.approval.riskLevel)}
                                       </div>
                                       <div className="mt-2 text-amber-100/90">
-                                        {tool.approval.reason || '该操作需要你确认后才能继续执行。'}
+                                        {tool.approval.reason ?? '该操作需要你确认后才能继续执行。'}
                                       </div>
                                       <div className="mt-2 flex flex-wrap gap-1.5">
-                                        {(tool.approval.targetAssets || []).map((asset: any) => (
-                                          <span key={asset.id || asset.name} className="rounded bg-black/20 px-2 py-0.5 text-[10px] text-amber-50">
-                                            {asset.ip || asset.name || asset.id}
+                                        {(tool.approval.targetAssets ?? []).map((asset) => (
+                                          <span key={asset.id ?? asset.name} className="rounded bg-black/20 px-2 py-0.5 text-[10px] text-amber-50">
+                                            {asset.ip ?? asset.name ?? asset.id}
                                           </span>
                                         ))}
                                         {tool.approval.isStateChanging && (
@@ -740,15 +755,15 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                   )}
 
                                   {/* Command Text */}
-                                  {tool.args?.command ? (
+                                  {command ? (
                                     <div className="p-3 text-[13px] font-mono text-zinc-100 whitespace-pre-wrap break-all leading-relaxed">
                                       <span className="text-zinc-500 select-none mr-3">$</span>
-                                      {tool.args.command}
+                                      {command}
                                     </div>
-                                  ) : tool.output ? (
+                                  ) : outputText ? (
                                     /* Tool result (from tool message) — show output directly */
                                     <div className="p-3 text-[13px] font-mono whitespace-pre-wrap break-all leading-relaxed max-h-96 overflow-y-auto">
-                                      {typeof tool.output === 'string' ? tool.output : JSON.stringify(tool.output, null, 2)}
+                                      {outputText}
                                     </div>
                                   ) : (
                                     <div className="p-3 text-[13px] font-mono text-zinc-500 whitespace-pre-wrap">
@@ -757,10 +772,10 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                   )}
                                   
                                   {/* Command Output */}
-                                  {(isDone || isError) && tool.output && (
+                                  {(isDone || isError) && outputText.length > 0 && (
                                     <div className="border-t border-white/10 bg-[#0a0c10]">
                                       <div className="px-3 pt-3 text-[11px] text-zinc-300">
-                                        <span className="text-zinc-500">结果摘要：</span>{summarizeOutput(tool.output)}
+                                        <span className="text-zinc-500">结果摘要：</span>{summarizeOutput(outputText)}
                                       </div>
                                       <details className="group" open={isError}>
                                         <summary className="px-3 py-2 text-[10px] text-zinc-500 hover:text-zinc-300 font-mono cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center">
@@ -770,7 +785,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                         <div className={`px-3 pb-3 text-[11px] font-mono whitespace-pre-wrap break-all max-h-64 overflow-y-auto ${
                                           isError ? 'text-red-400' : 'text-zinc-400'
                                         }`}>
-                                          {typeof tool.output === 'string' ? tool.output : JSON.stringify(tool.output, null, 2)}
+                                          {outputText}
                                         </div>
                                       </details>
                                     </div>
@@ -780,11 +795,11 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                             }
 
                             // Other tools (read_file, write_file, grep_search, web_fetch, etc.)
-                            if (tool.toolName === 'ask_followup_question' && isCall) {
+                            if (toolName === 'ask_followup_question' && isCall) {
                               return (
-                                <div key={tool.toolCallId} className="w-full mt-1 p-3 rounded-xl border border-blue-200 bg-blue-50/50">
-                                  <p className="text-[13px] font-medium text-blue-800 mb-2">{tool.args?.question || '需要补充信息'}</p>
-                                  {tool.args?.options?.length > 0 && (
+                                <div key={toolCallId} className="w-full mt-1 p-3 rounded-xl border border-blue-200 bg-blue-50/50">
+                                  <p className="text-[13px] font-medium text-blue-800 mb-2">{tool.args.question ?? '需要补充信息'}</p>
+                                  {tool.args.options && tool.args.options.length > 0 && (
                                     <div className="flex flex-wrap gap-2">
                                       {tool.args.options.map((opt: string, i: number) => (
                                         <button
@@ -802,15 +817,15 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                             }
 
                             // Generic tool (read_file, write_file, grep_search, web_fetch)
-                            const isRemoteTool = ['read_file', 'write_file', 'grep_search', 'web_fetch'].includes(tool.toolName);
+                            const isRemoteTool = ['read_file', 'write_file', 'grep_search', 'web_fetch'].includes(toolName);
                             
                             if (isRemoteTool) {
                               return (
-                                <div key={tool.toolCallId} className="w-full rounded-xl overflow-hidden border border-zinc-200/80 bg-zinc-50 shadow-sm my-1">
+                                <div key={toolCallId} className="w-full rounded-xl overflow-hidden border border-zinc-200/80 bg-zinc-50 shadow-sm my-1">
                                   <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-200 bg-white">
                                     <div className="flex items-center gap-2 text-[11px] font-medium text-zinc-600">
                                       <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                                      {toolNameMap[tool.toolName] || tool.toolName}
+                                      {toolNameMap[toolName] ?? toolName}
                                     </div>
                                     <div className="flex items-center gap-2">
                                       {isError ? (
@@ -821,17 +836,17 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                         <span className="text-[10px] text-blue-400 flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin"/> 执行中</span>
                                       ) : isCall ? (
                                         <div className="flex items-center gap-1">
-                                          <Button variant="ghost" size="sm" onClick={() => rejectPendingCommand(tool.toolCallId, tool.toolName)} className="h-6 px-2 text-[10px] text-zinc-400 hover:text-red-400">拒绝</Button>
-                                          <Button size="sm" onClick={() => executePendingCommand(tool.toolCallId, tool.toolName, '')} className="h-6 px-3 text-[10px] bg-blue-600 hover:bg-blue-500 text-white">执行</Button>
+                                          <Button variant="ghost" size="sm" onClick={() => rejectPendingCommand(toolCallId, toolName)} className="h-6 px-2 text-[10px] text-zinc-400 hover:text-red-400">拒绝</Button>
+                                          <Button size="sm" onClick={() => executePendingCommand(toolCallId, toolName, '')} className="h-6 px-3 text-[10px] bg-blue-600 hover:bg-blue-500 text-white">执行</Button>
                                         </div>
                                       ) : (
                                         <span className="text-[10px] text-zinc-400">...</span>
                                       )}
                                     </div>
                                   </div>
-                                  {tool.output && (
+                                  {outputText && (
                                     <div className="p-3 text-[12px] font-mono text-zinc-600 whitespace-pre-wrap max-h-48 overflow-y-auto">
-                                      {typeof tool.output === 'string' ? tool.output : JSON.stringify(tool.output, null, 2)}
+                                      {outputText}
                                     </div>
                                   )}
                                 </div>
@@ -839,8 +854,8 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                             }
 
                             return (
-                              <div key={tool.toolCallId} className="w-full p-3 rounded-xl border border-zinc-200 bg-zinc-50 text-[11px] font-mono text-zinc-600">
-                                <span className="font-semibold text-zinc-800">{toolNameMap[tool.toolName] || tool.toolName}</span> {toolStateMap[tool.state] || tool.state}
+                                <div key={toolCallId} className="w-full p-3 rounded-xl border border-zinc-200 bg-zinc-50 text-[11px] font-mono text-zinc-600">
+                                <span className="font-semibold text-zinc-800">{toolNameMap[toolName] ?? toolName}</span> {toolStateMap[tool.state ?? ''] ?? tool.state}
                               </div>
                             );
                           });
@@ -854,7 +869,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
             })}
 
             {/* Loading indicator */}
-            {isLoading && !messages.find((m: any) => m.role === 'assistant' || m.type === 'ai' && !getMessageText(m)) && (
+            {isLoading && !messages.find((m) => (m.role === 'assistant' || m.type === 'ai') && !getMessageText(m)) && (
               <div className="flex items-center gap-2 text-zinc-400 text-xs mt-2">
                 <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
                 <span>Agent 正在分析...</span>
@@ -866,11 +881,17 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
               <CommandInteractionInput
                 state={{
                   commandId: currentInteraction.commandId,
-                  interactionType: (currentInteraction.interactionType as any) || 'freeform',
-                  promptHint: currentInteraction.promptHint || '',
-                  options: currentInteraction.options || [],
-                  optionValues: currentInteraction.optionValues || [],
-                  confirmValues: currentInteraction.confirmValues as any,
+                  interactionType: currentInteraction.interactionType as CommandInteractionType,
+                  promptHint: currentInteraction.promptHint ?? '',
+                  options: currentInteraction.options ?? [],
+                  optionValues: currentInteraction.optionValues ?? [],
+                  confirmValues: currentInteraction.confirmValues
+                    ? {
+                        yes: currentInteraction.confirmValues.yes,
+                        no: currentInteraction.confirmValues.no,
+                        default: currentInteraction.confirmValues.default !== undefined,
+                      }
+                    : undefined,
                   exitKey: currentInteraction.exitKey,
                   exitAppendNewline: currentInteraction.exitAppendNewline,
                   isSuppressed: false,
@@ -880,14 +901,14 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                   isSubmitting: false,
                 }}
                 onSubmit={({ commandId, input, appendNewline, interactionType }) => {
-                  submitInteraction({ commandId, input, appendNewline, interactionType: interactionType as any });
+                  submitInteraction({ commandId, input, appendNewline, interactionType });
                 }}
                 onCancel={() => cancelCommand()}
                 onDismiss={() => dismissInteraction()}
                 onSuppress={() => suppressInteraction()}
-                onUnsuppress={() => {}}
-                onFocusTerminal={() => {}}
-                onClearError={() => {}}
+                onUnsuppress={ignoreInteractionCommand}
+                onFocusTerminal={ignoreTerminalFocus}
+                onClearError={ignoreInteractionCommand}
               />
             )}
           </div>
@@ -1002,7 +1023,7 @@ export function TerminalAgentUI({ activeAsset, injectedContext }: { activeAsset:
                                     {/* Host Info */}
                                     <div className="flex-1 min-w-0">
                                       <div className="text-[12.5px] font-medium text-zinc-700 truncate group-hover:text-zinc-900">
-                                        {asset.name || asset.hostname}
+                                        {asset.name ?? asset.hostname}
                                       </div>
                                       <div className="text-[10.5px] text-zinc-400 font-mono truncate mt-0.5">
                                         {asset.username ? `${asset.username}@` : ''}{asset.ip}

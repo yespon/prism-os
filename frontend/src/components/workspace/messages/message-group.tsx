@@ -61,7 +61,7 @@ export function MessageGroup({
 
   // First reasoning step (initial thinking, appears before tool calls)
   const firstReasoningStep = useMemo(() => {
-    return steps.find((step) => step.type === "reasoning") as CoTReasoningStep | undefined;
+    return steps.find((step) => step.type === "reasoning");
   }, [steps]);
 
   const lastToolCallStep = useMemo(() => {
@@ -83,7 +83,7 @@ export function MessageGroup({
   const lastReasoningStep = useMemo(() => {
     if (!lastToolCallStep) return undefined;
     const index = steps.indexOf(lastToolCallStep);
-    const after = steps.slice(index + 1).find((step) => step.type === "reasoning") as CoTReasoningStep | undefined;
+    const after = steps.slice(index + 1).find((step) => step.type === "reasoning");
     if (after && after !== firstReasoningStep) return after;
     return undefined;
   }, [lastToolCallStep, steps, firstReasoningStep]);
@@ -98,9 +98,7 @@ export function MessageGroup({
   useEffect(() => {
     if (isLoading) {
       wasStreaming.current = true;
-      if (thinkStartTime.current === null) {
-        thinkStartTime.current = Date.now();
-      }
+      thinkStartTime.current ??= Date.now();
     } else if (wasStreaming.current) {
       wasStreaming.current = false;
       if (thinkStartTime.current !== null) {
@@ -122,7 +120,7 @@ export function MessageGroup({
       open={true}
     >
       {/* Initial thinking — appears first, before tool calls */}
-      {firstReasoningStep && firstReasoningStep.reasoning?.trim() && (
+      {firstReasoningStep?.reasoning?.trim() && (
         <div className="-ml-2">
           <button
             type="button"
@@ -209,7 +207,7 @@ export function MessageGroup({
       )}
 
       {/* Final thinking — after the last tool call, only if different from initial */}
-      {lastReasoningStep && lastReasoningStep.reasoning?.trim() && (
+      {lastReasoningStep?.reasoning?.trim() && (
         <div className="mt-1">
           <button
             type="button"

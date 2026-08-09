@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   AlertCircleIcon,
   ArrowRightIcon,
@@ -29,10 +27,11 @@ import {
   WifiIcon,
   XCircleIcon,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +40,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   useAlertSources,
   useCreateAlertSource,
@@ -135,7 +135,7 @@ export function AlertSourcesPanel() {
     const mappings = (config.field_mapping as Record<string, string>) || {};
     const entries: FieldMappingEntry[] = DEFAULT_FIELD_MAPPINGS.map(d => ({
       field: d.field,
-      jsonpath: (mappings[d.field] as string) || d.jsonpath,
+      jsonpath: (mappings[d.field]!) || d.jsonpath,
     }));
     setFieldMappings(entries);
     setDialogOpen(true);
@@ -252,7 +252,7 @@ export function AlertSourcesPanel() {
       if (response.ok) {
         setTestResult(JSON.stringify(json, null, 2));
       } else {
-        setTestError(json.detail || "测试发送失败");
+        setTestError(json.detail ?? "测试发送失败");
       }
     } catch (err) {
       setTestError(err instanceof Error ? err.message : "请求失败");
@@ -267,7 +267,7 @@ export function AlertSourcesPanel() {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => toast.success("已复制到剪贴板"));
+    void navigator.clipboard.writeText(text).then(() => toast.success("已复制到剪贴板"));
   };
 
   return (
@@ -506,7 +506,7 @@ export function AlertSourcesPanel() {
                 {fieldMappings.map(entry => (
                   <div key={entry.field} className="flex items-center gap-2">
                     <span className="w-24 shrink-0 text-[10px] font-semibold text-zinc-600 dark:text-zinc-400 text-right">
-                      {FIELD_LABELS[entry.field] || entry.field}
+                      {FIELD_LABELS[entry.field] ?? entry.field}
                     </span>
                     <ArrowRightIcon className="h-3 w-3 shrink-0 text-zinc-400" />
                     <Input

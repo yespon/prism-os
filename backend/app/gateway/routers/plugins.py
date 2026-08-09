@@ -3,8 +3,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from app.plugins.registry import PLUGIN_DEFINITIONS
 from app.gateway.config import get_plugin_states
+from app.plugins.registry import PLUGIN_DEFINITIONS
 
 router = APIRouter(prefix="/api", tags=["plugins"])
 

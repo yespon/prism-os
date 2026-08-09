@@ -23,6 +23,7 @@ if [ -f "$REPO_ROOT/.env" ]; then
     set +a
 fi
 source "$REPO_ROOT/scripts/prismos-env.sh"
+export PRISMOS_RUNTIME_ADAPTER_MODULE="${PRISMOS_RUNTIME_ADAPTER_MODULE:-app.runtime_adapters}"
 
 # ── Stop existing services ────────────────────────────────────────────────────
 

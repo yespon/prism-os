@@ -20,7 +20,7 @@ Action format varies by rule_type:
 import logging
 import operator
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 

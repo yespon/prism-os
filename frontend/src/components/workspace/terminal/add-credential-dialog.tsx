@@ -1,15 +1,17 @@
+import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Eye, EyeOff } from 'lucide-react';
+import type { TerminalCredential } from '@/core/terminal-agent/message-types';
 
 export interface AddCredentialDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddCredential?: (credential: any) => void;
+  onAddCredential?: (credential: Omit<TerminalCredential, 'id'> & { value: string }) => void;
 }
 
 export function AddCredentialDialog({ open, onOpenChange, onAddCredential }: AddCredentialDialogProps) {

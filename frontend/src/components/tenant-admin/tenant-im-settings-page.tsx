@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   SaveIcon,
   Loader2Icon,
@@ -17,11 +16,13 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { fetchAuthApi } from "@/core/api/auth-client";
 
 interface ImSettings {
@@ -50,7 +51,7 @@ async function saveImSettings(data: ImSettings): Promise<void> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!resp.ok) throw new Error(((await resp.json().catch(() => ({}))) as { detail?: string }).detail || "Failed to save");
+  if (!resp.ok) throw new Error(((await resp.json().catch(() => ({}))) as { detail?: string }).detail ?? "Failed to save");
 }
 
 async function testChannel(channelName: string, chatId: string): Promise<boolean> {
@@ -64,7 +65,7 @@ async function testChannel(channelName: string, chatId: string): Promise<boolean
 
 async function getChannelStatus(): Promise<Record<string, { enabled: boolean; running: boolean }>> {
   const resp = await fetchAuthApi("/api/channels/");
-  return ((await resp.json()).channels || {}) as Record<string, { enabled: boolean; running: boolean }>;
+  return ((await resp.json()).channels ?? {}) as Record<string, { enabled: boolean; running: boolean }>;
 }
 
 export function TenantImSettingsPage() {
@@ -117,7 +118,7 @@ export function TenantImSettingsPage() {
     }
 
     setTesting(channelKey);
-    const channelLabel = AVAILABLE_CHANNELS.find((c) => c.key === channelKey)?.label || channelKey;
+    const channelLabel = AVAILABLE_CHANNELS.find((c) => c.key === channelKey)?.label ?? channelKey;
     const targetIds = chatIdStr
       .split(",")
       .map((id) => id.trim())
@@ -272,7 +273,7 @@ export function TenantImSettingsPage() {
                     <li>创建一个目标 Telegram 群聊或频道，将您刚创建的机器人添加为该群组的管理员。</li>
                     <li>在群组中发送一条测试消息。</li>
                     <li>
-                      访问地址：<code className="px-1.5 py-0.5 rounded bg-zinc-150 dark:bg-zinc-800 font-mono text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">https://api.telegram.org/bot{"<YourBotToken>"}/getUpdates</code>，在返回的 JSON 中，在 <code className="font-mono">"chat"</code> 块中提取 <code className="font-mono">"id"</code> 字段。
+                      访问地址：<code className="px-1.5 py-0.5 rounded bg-zinc-150 dark:bg-zinc-800 font-mono text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">https://api.telegram.org/bot{"<YourBotToken>"}/getUpdates</code>，在返回的 JSON 中，在 <code className="font-mono">&quot;chat&quot;</code> 块中提取 <code className="font-mono">&quot;id&quot;</code> 字段。
                     </li>
                     <li className="text-rose-600 dark:text-rose-400 font-medium">
                       ⚠️ 注意事项：Telegram 群组 Chat ID 通常为负整数（例如：`-1001234567890`），请务必带上负号。
@@ -379,7 +380,7 @@ export function TenantImSettingsPage() {
                       </div>
                       <div className="flex gap-2">
                         <Input
-                          value={settings.chat_ids[ch] || ""}
+                          value={settings.chat_ids[ch] ?? ""}
                           onChange={(e) =>
                             setSettings({
                               ...settings,

@@ -35,9 +35,7 @@ const SESSION_COOKIE = "better-auth.session_token";
 
 function readSessionCookie(): string | null {
   if (typeof document === "undefined") return null;
-  const match = document.cookie.match(
-    new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]*)`),
-  );
+  const match = new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]*)`).exec(document.cookie);
   return match?.[1] ? decodeURIComponent(match[1]) : null;
 }
 
@@ -60,7 +58,7 @@ export async function login(
   });
   if (!res.ok) {
     const detail = await res.json().catch(() => ({}));
-    return { error: { message: (detail as any).detail ?? "Login failed" } };
+    return { error: { message: (detail).detail ?? "Login failed" } };
   }
   const data = (await res.json()) as Session;
   return { data };
@@ -76,7 +74,7 @@ export async function logout(): Promise<void> {
 export async function getSession(): Promise<Session | null> {
   const token = readSessionCookie();
   const headers: Record<string, string> = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`${baseUrl()}/api/auth/session`, {
     headers,
@@ -101,7 +99,7 @@ export async function signUp(
   });
   if (!res.ok) {
     const detail = await res.json().catch(() => ({}));
-    return { error: { message: (detail as any).detail ?? "Registration failed" } };
+    return { error: { message: (detail).detail ?? "Registration failed" } };
   }
   const data = (await res.json()) as Session;
   return { data };

@@ -18,7 +18,10 @@ Do NOT use for simple, single-step operations.""",
 <critical_stop_rule>
 This is the most important rule — violating it will cause a fatal error.
 
-You work in a fixed-turn loop. Once you have gathered enough information using tools, you MUST deliver your final answer as a plain text message with NO tool calls. A message that contains tool calls does NOT count as a final answer. You cannot call more tools after your final answer.
+You work in a fixed-turn loop. Once you have gathered enough information using
+tools, you MUST deliver your final answer as a plain text message with NO tool
+calls. A message that contains tool calls does NOT count as a final answer.
+You cannot call more tools after your final answer.
 
 Treat every response as possibly your last. If the information you need is already in the conversation, summarize immediately — do not call additional tools for verification.
 </critical_stop_rule>

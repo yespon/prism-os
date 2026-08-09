@@ -3,16 +3,16 @@
  * It listens to the xterm.js output stream and stops when it detects the terminal prompt.
  */
 export class PromptInterceptor {
-  private buffer: string = '';
-  private isCapturing: boolean = false;
-  private command: string = '';
+  private buffer = '';
+  private isCapturing = false;
+  private command = '';
   private onComplete: ((output: string) => void) | null = null;
   private timeoutId: NodeJS.Timeout | null = null;
 
   // Common prompt regex (e.g. user@host:~$ or root@host:/#)
   private readonly promptRegex = /[\w\-\.]+@[\w\-\.]+:[^\n\r]+[\$#]\s*$/;
 
-  startCapture(command: string, onComplete: (output: string) => void, timeoutMs: number = 30000) {
+  startCapture(command: string, onComplete: (output: string) => void, timeoutMs = 30000) {
     this.buffer = '';
     this.command = command;
     this.isCapturing = true;
@@ -76,7 +76,6 @@ export class PromptInterceptor {
   }
 
   private stripAnsi(str: string): string {
-    // eslint-disable-next-line no-control-regex
     const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
     return str.replace(ansiRegex, '');
   }

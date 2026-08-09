@@ -1,23 +1,35 @@
+import { Loader2, CheckCircle2, XCircle, Eye, EyeOff, X } from 'lucide-react';
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, CheckCircle2, XCircle, Eye, EyeOff, X } from 'lucide-react';
+import type { TerminalAsset, TerminalAssetGroup, TerminalAssetInput, TerminalCredential } from '@/core/terminal-agent/message-types';
+
+interface HostFormData {
+  name: string;
+  ip: string;
+  port: string;
+  username: string;
+  keychain_id: string;
+  group_id: string;
+  password: string;
+}
 
 export interface AddHostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddHost?: (host: any) => void;
-  onEditHost?: (id: string, host: any) => void;
-  editAsset?: any;
-  credentials?: any[];
-  groups?: any[];
+  onAddHost?: (host: TerminalAssetInput) => void;
+  onEditHost?: (id: string, host: TerminalAssetInput) => void;
+  editAsset?: TerminalAsset | null;
+  credentials?: TerminalCredential[];
+  groups?: TerminalAssetGroup[];
   onAddCredentialClick?: () => void;
 }
 
 export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editAsset, credentials = [], groups = [], onAddCredentialClick }: AddHostDialogProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<HostFormData>({
     name: '',
     ip: '',
     port: '22',
@@ -38,19 +50,19 @@ export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editA
     if (open) {
       if (editAsset) {
         setFormData({
-          name: editAsset.name || '',
-          ip: editAsset.ip || '',
-          port: String(editAsset.port || '22'),
-          username: editAsset.username || 'root',
-          keychain_id: editAsset.keychain_id || '',
-          group_id: editAsset.group_id || '',
+          name: editAsset.name ?? '',
+          ip: editAsset.ip ?? '',
+          port: String(editAsset.port ?? '22'),
+          username: editAsset.username ?? 'root',
+          keychain_id: editAsset.keychain_id ?? '',
+          group_id: editAsset.group_id ?? '',
           password: '' // Don't prefill password for security
         });
       } else {
         setFormData({
           name: '',
           ip: '',
-          port: '22',
+        port: '22',
           username: 'root',
           keychain_id: '',
           group_id: '',
@@ -89,20 +101,20 @@ export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editA
       if (!res.ok) {
         setTestStatus('error');
         const errDetail = data.detail ? (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)) : null;
-        setTestLog(data.message || errDetail || `HTTP Error ${res.status}: ${JSON.stringify(data)}`);
+        setTestLog(data.message ?? errDetail ?? `HTTP Error ${res.status}: ${JSON.stringify(data)}`);
         return;
       }
 
       if (data.status === 'ok') {
         setTestStatus('success');
-        setTestLog(data.message || '连接测试成功');
+        setTestLog(data.message ?? '连接测试成功');
       } else {
         setTestStatus('error');
-        setTestLog(data.message || JSON.stringify(data) || '连接测试失败');
+        setTestLog(data.message ?? JSON.stringify(data) ?? '连接测试失败');
       }
-    } catch (e: any) {
-      setTestStatus('error');
-      setTestLog(e.message || '网络请求失败');
+      } catch (e: unknown) {
+        setTestStatus('error');
+        setTestLog(e instanceof Error ? e.message : '网络请求失败');
     }
   };
 
@@ -122,20 +134,20 @@ export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editA
         } else {
           const err = await res.json().catch(() => ({}));
           setTestStatus('error');
-          setTestLog(`新建分组失败: ${err.message || res.statusText}`);
+          setTestLog(`新建分组失败: ${err.message ?? res.statusText}`);
           return;
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         setTestStatus('error');
-        setTestLog(`新建分组失败: ${e.message}`);
+        setTestLog(`新建分组失败: ${e instanceof Error ? e.message : String(e)}`);
         return;
       }
     }
 
-    const payload = {
+    const payload: TerminalAssetInput = {
       ...formData,
       port: parseInt(formData.port, 10) || 22,
-      group_id: finalGroupId || null
+      group_id: finalGroupId ?? null
     };
 
     if (editAsset && onEditHost) {

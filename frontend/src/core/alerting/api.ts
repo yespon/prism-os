@@ -214,7 +214,7 @@ export async function resolveIncident(incidentId: string, resolutionNote?: strin
   const response = await fetchAuthApi(`/api/incidents/${encodeURIComponent(incidentId)}/resolve`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ resolution_note: resolutionNote || null }),
+    body: JSON.stringify({ resolution_note: resolutionNote ?? null }),
   });
 
   let json: unknown = null;
@@ -529,4 +529,3 @@ export async function testNotification(data: TestNotificationRequest): Promise<T
 
   return json as TestNotificationResponse;
 }
-

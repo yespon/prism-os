@@ -176,6 +176,7 @@ services:
     environment:
       <<: *common-env
       PRISMOS_CONFIG_PATH: /app/config.yaml
+      PRISMOS_RUNTIME_ADAPTER_MODULE: ${PRISMOS_RUNTIME_ADAPTER_MODULE:-app.runtime_adapters}
       LANGCHAIN_TRACING_V2: ${LANGCHAIN_TRACING_V2:-false}
     extra_hosts:
       - "host.docker.internal:host-gateway"

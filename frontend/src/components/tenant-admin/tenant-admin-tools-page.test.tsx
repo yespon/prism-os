@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitFor } from "@/test/utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { AvailableMcpServerResponse } from "@/core/mcp/types";
+import { fireEvent, render, screen, waitFor } from "@/test/utils";
 
 import { TenantAdminToolsPage } from "./tenant-admin-tools-page";
 

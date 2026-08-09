@@ -1,7 +1,8 @@
 import type { Message } from "@langchain/langgraph-sdk";
-import { fireEvent, render, screen } from "@/test/utils";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
+
+import { fireEvent, render, screen } from "@/test/utils";
 
 const mocks = vi.hoisted(() => ({
   useParams: vi.fn(),

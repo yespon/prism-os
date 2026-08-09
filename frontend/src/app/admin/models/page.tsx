@@ -274,7 +274,7 @@ export default function AdminModelsPage() {
   const applyProviderTemplate = (providerId: string, isEdit: boolean) => {
     const template = getProviderById(providerId);
     if (!template) return;
-    const mt = template.defaultModelType || "chat";
+    const mt = template.defaultModelType ?? "chat";
     if (isEdit) {
       setEditUse(template.use);
       setEditBaseUrl(template.baseUrl);
@@ -456,7 +456,7 @@ export default function AdminModelsPage() {
     setEditSupportsVision(Boolean(model.supports_vision));
     setEditSupportsText2Image(Boolean(model.supports_text2image));
     setEditVerifySsl(model.verify_ssl !== false);
-    setEditModelType(model.model_type || "chat");
+    setEditModelType(model.model_type ?? "chat");
     // 尝试根据 use 值反推厂商模板
     const matchedProvider = PROVIDER_TEMPLATES.find(p =>
       model.use === p.use || model.use?.startsWith(p.id)

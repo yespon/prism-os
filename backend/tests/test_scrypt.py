@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from app.gateway import auth_db
 from app.gateway.app import app
 from app.gateway.auth_crypto import verify_password
-from app.gateway.routers import admin as admin_router
 
 
 def test_admin_create_user_writes_valid_scrypt_hash(tmp_path, monkeypatch):
@@ -42,9 +41,7 @@ def test_admin_create_user_writes_valid_scrypt_hash(tmp_path, monkeypatch):
         """)
         conn.commit()
 
-    import app.gateway.routers.admin as admin
     from app.gateway.authorization import require_platform_admin
-    from app.gateway.auth import AuthMiddleware
     
     # Have to mock require_platform_admin differently if it's used as dependency
     app.dependency_overrides[require_platform_admin] = lambda: None

@@ -1,5 +1,7 @@
 """Unit tests for the S3StorageDriver (uses moto for S3 mocking)."""
 
+import importlib.util
+
 import pytest
 
 from deerflow.storage.provider import StorageProviderConfig
@@ -7,13 +9,18 @@ from deerflow.storage.provider import StorageProviderConfig
 pytestmark = pytest.mark.anyio
 
 # aioboto3 is optional — skip all tests if not installed
+HAS_AIOBOTO3 = importlib.util.find_spec("aioboto3") is not None
 try:
-    import aioboto3
     from moto import mock_aws
 
-    HAS_DEPS = True
+    HAS_MOTO = True
 except ImportError:
-    HAS_DEPS = False
+    HAS_MOTO = False
+
+HAS_DEPS = HAS_AIOBOTO3 and HAS_MOTO
+
+if not HAS_MOTO:
+    mock_aws = None
 
 pytestmark = pytest.mark.skipif(
     not HAS_DEPS,

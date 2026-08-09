@@ -7,8 +7,8 @@ import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import { getAuthToken } from "@/core/auth/auth-api";
 import { resolveArtifactURL } from "@/core/artifacts/utils";
+import { getAuthToken } from "@/core/auth/auth-api";
 import { useI18n } from "@/core/i18n/hooks";
 import {
   extractContentFromMessage,
@@ -229,7 +229,7 @@ export function MessageList({
             return group.messages.map((msg) => {
               const hasFollowingSteps =
                 msg.type === "ai" &&
-                (hasToolCalls(msg) || hasReasoning(msg));
+                (hasToolCalls(msg) ? true : hasReasoning(msg));
               return (
                 <MessageListItem
                   key={`${group.id}/${msg.id}`}

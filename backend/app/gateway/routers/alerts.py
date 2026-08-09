@@ -5,15 +5,14 @@ import os
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select as sm_select
 
 from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
-from app.alerting.ingest import process_alert
 from app.alerting.incident_manager import suppress_incident
-from app.gateway.authorization import require_tenant_context, require_tenant_admin
-from app.models.alerting import AlertRule, AlertingSettings, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
+from app.alerting.ingest import process_alert
+from app.gateway.authorization import require_tenant_admin, require_tenant_context
+from app.models.alerting import AlertingSettings, AlertRule, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
 from deerflow.database.session import get_session, get_session_factory
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,6 @@ router = APIRouter(prefix="/api", tags=["alerting"])
 # Global manager for ongoing background diagnostic tasks
 class DiagnosisTaskManager:
     def __init__(self):
-        import asyncio
         self._tasks = {}         # incident_id -> asyncio.Task
         self._queues = {}        # incident_id -> Set[asyncio.Queue]
         self._stream_states = {} # incident_id -> StreamState
@@ -227,7 +225,7 @@ async def get_incident_stats(
     # 3. Top services
     services_res = await session.exec(
         select(Incident.service, func.count(Incident.id))
-        .where(Incident.tenant_id == tenant_id, Incident.service != None, Incident.service != "")
+        .where(Incident.tenant_id == tenant_id, Incident.service.is_not(None), Incident.service != "")
         .group_by(Incident.service)
         .order_by(func.count(Incident.id).desc())
         .limit(5)
@@ -404,7 +402,7 @@ async def get_incident(
         )
     )
     link_rows = links_result.scalars().all()
-    signal_ids = [l.signal_id for l in link_rows]
+    signal_ids = [link.signal_id for link in link_rows]
 
     signals: list[dict] = []
     if signal_ids:
@@ -595,7 +593,7 @@ async def get_incident_timeline(
             IncidentSignalLink.tenant_id == tenant_id,
         )
     )
-    signal_ids = [l.signal_id for l in links_result.scalars().all()]
+    signal_ids = [link.signal_id for link in links_result.scalars().all()]
     if signal_ids:
         sig_result = await session.exec(
             select(Signal).where(Signal.id.in_(signal_ids)).order_by(Signal.occurred_at.asc())
@@ -701,7 +699,7 @@ async def get_incident_timeline(
             type="status_change",
             timestamp=incident.resolved_at.isoformat(),
             title="告警已恢复",
-            detail=f"Incident 状态变更为 resolved",
+            detail="Incident 状态变更为 resolved",
             actor="system",
             metadata={"previous_status": "firing", "new_status": "resolved"},
         ))
@@ -771,6 +769,7 @@ async def unsuppress_incident_endpoint(
     session.add(incident)
 
     import uuid
+
     from app.models.alerting import IncidentAction
     action = IncidentAction(
         id=str(uuid.uuid4()),
@@ -818,6 +817,7 @@ async def claim_incident(
     session.add(incident)
 
     import uuid
+
     from app.models.alerting import IncidentAction
     action = IncidentAction(
         id=str(uuid.uuid4()),
@@ -868,6 +868,7 @@ async def assign_incident(
     session.add(incident)
 
     import uuid
+
     from app.models.alerting import IncidentAction
     action = IncidentAction(
         id=str(uuid.uuid4()),
@@ -916,7 +917,8 @@ async def resolve_incident_endpoint(
     if incident.status == "resolved":
         raise HTTPException(status_code=400, detail="Incident is already resolved")
 
-    from datetime import UTC, datetime as dt
+    from datetime import UTC
+    from datetime import datetime as dt
 
     incident.status = "resolved"
     incident.resolved_at = dt.now(UTC)
@@ -925,6 +927,7 @@ async def resolve_incident_endpoint(
     note = body.resolution_note if body else None
 
     import uuid
+
     from app.models.alerting import IncidentAction
     action = IncidentAction(
         id=str(uuid.uuid4()),
@@ -939,7 +942,9 @@ async def resolve_incident_endpoint(
 
     # Trigger IM notification for resolution if configured
     try:
-        from datetime import UTC, datetime as dt
+        from datetime import UTC
+        from datetime import datetime as dt
+
         from app.alerting.notify import send_incident_resolved
         now = dt.now(UTC)
         first_seen = incident.first_seen_at.replace(tzinfo=UTC) if incident.first_seen_at and incident.first_seen_at.tzinfo is None else incident.first_seen_at
@@ -994,7 +999,7 @@ async def create_incident_ticket(
             IncidentSignalLink.tenant_id == tenant_id,
         )
     )
-    signal_ids = [l.signal_id for l in links_result.scalars().all()]
+    signal_ids = [link.signal_id for link in links_result.scalars().all()]
 
     ticket_config = {}
     if signal_ids:
@@ -1055,6 +1060,7 @@ async def create_incident_ticket(
     session.add(incident)
 
     import uuid
+
     from app.models.alerting import IncidentAction
     action = IncidentAction(
         id=str(uuid.uuid4()),
@@ -1110,7 +1116,7 @@ async def analyze_incident(
             IncidentSignalLink.tenant_id == tenant_id,
         )
     )
-    chk_signal_ids = [l.signal_id for l in links_chk.scalars().all()]
+    chk_signal_ids = [link.signal_id for link in links_chk.scalars().all()]
     ai_enabled_for_incident = False
     if chk_signal_ids:
         raw_ids_result = await session.exec(
@@ -1156,7 +1162,7 @@ async def analyze_incident(
             IncidentSignalLink.tenant_id == tenant_id,
         )
     )
-    signal_ids = [l.signal_id for l in links_result.scalars().all()]
+    signal_ids = [link.signal_id for link in links_result.scalars().all()]
 
     signals_data: list[dict] = []
     raw_payload = None
@@ -1179,8 +1185,8 @@ async def analyze_incident(
 
     await session.commit()
 
-    from deerflow.config import get_app_config
     from app.alerting.ai_analysis import schedule_analysis
+    from deerflow.config import get_app_config
 
     if not get_app_config().models:
         raise HTTPException(status_code=503, detail="No AI models configured — please add a model in tenant admin settings first")
@@ -1230,12 +1236,16 @@ async def _run_diagnosis_background_task(
     import asyncio
     import logging
     import os
+
     from app.alerting.diagnosis_sse import (
-        parse_messages_tuple_event, parse_values_event,
-        msg_thread, msg_done, msg_error,
+        msg_done,
+        msg_error,
+        msg_thread,
+        parse_messages_tuple_event,
+        parse_values_event,
     )
-    from app.models.alerting import Incident
     from app.gateway.routers.alerts import _cancel_incident_diagnosis_run, logger
+    from app.models.alerting import Incident
     
     agui_logger = logging.getLogger("agui")
     db_factory = session_factory or get_session_factory()
@@ -1404,7 +1414,8 @@ async def diagnose_incident(
     session: AsyncSession = Depends(get_session),
 ):
     from starlette.responses import StreamingResponse
-    from app.alerting.diagnosis_helper import get_diagnosis_agent_id_for_incident, build_incident_diagnosis_prompt
+
+    from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt, get_diagnosis_agent_id_for_incident
     from app.models.agents import CustomAgent
 
     tenant_id = require_tenant_context(request)
@@ -1473,11 +1484,8 @@ async def diagnose_incident(
 
     async def event_stream():
         import asyncio
-        from app.alerting.diagnosis_sse import (
-            msg_thread, msg_done, msg_error,
-            _text_message_content, _step_started, _step_finished
-        )
-        import json
+
+        from app.alerting.diagnosis_sse import _step_finished, _step_started, _text_message_content, msg_done, msg_thread
 
         # Capture current length of text buffer
         stream_state = diagnosis_task_manager.get_stream_state(incident_id)
@@ -2344,7 +2352,8 @@ async def get_incident_stats_summary(
     request: Request,
     session: AsyncSession = Depends(get_session),
 ) -> IncidentStatsSummary:
-    from datetime import UTC, datetime as dt, timedelta
+    from datetime import UTC, timedelta
+    from datetime import datetime as dt
     tenant_id = require_tenant_context(request)
 
     now = dt.now(UTC)
@@ -2468,7 +2477,8 @@ async def get_source_health(
     request: Request,
     session: AsyncSession = Depends(get_session),
 ) -> list[SourceHealthItem]:
-    from datetime import UTC, datetime as dt, timedelta
+    from datetime import UTC, timedelta
+    from datetime import datetime as dt
     tenant_id = require_tenant_context(request)
 
     now = dt.now(UTC)

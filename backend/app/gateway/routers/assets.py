@@ -1,6 +1,9 @@
 """CRUD API for Asset Management (Keychains, Hosts, Groups)."""
 
+import asyncio
 import logging
+import os
+import subprocess
 import uuid
 from typing import Any
 
@@ -10,12 +13,9 @@ from sqlalchemy import select as sa_select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.authorization import require_tenant_context
-from app.models.assets import AssetGroup, Keychain, LocalAsset
 from app.gateway.routers.terminal import build_ssh_command
+from app.models.assets import AssetGroup, Keychain, LocalAsset
 from deerflow.database.session import get_session
-import asyncio
-import os
-import subprocess
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/assets", tags=["assets"])
@@ -443,7 +443,7 @@ async def test_connection(
             return {"status": "ok", "message": "Connection successful"}
         else:
             return {"status": "error", "message": stderr.decode('utf-8') or stdout.decode('utf-8') or "Connection failed"}
-    except asyncio.TimeoutError:
+    except TimeoutError:
         return {"status": "error", "message": "Connection timed out"}
     except Exception as e:
         return {"status": "error", "message": str(e)}

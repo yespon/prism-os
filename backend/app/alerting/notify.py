@@ -139,7 +139,7 @@ def _build_created_card(incident: Incident) -> str:
     ]
 
     if incident.ai_summary:
-        lines.append(f"")
+        lines.append("")
         lines.append(f"📋 *AI 解读:* {incident.ai_summary[:200]}")
 
     if incident.owner_team_id:

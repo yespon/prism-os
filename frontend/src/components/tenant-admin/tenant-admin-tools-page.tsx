@@ -304,7 +304,7 @@ export function TenantAdminToolsPage() {
     return visibleTools.filter((tool) => {
       const matchesSearch = searchTerm === "" ||
         tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (tool.description && tool.description.toLowerCase().includes(searchTerm.toLowerCase()));
+        tool.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesSource = sourceFilter === "all" ||
         (sourceFilter === "builtin" && tool.source === "platform_builtin") ||
@@ -676,7 +676,7 @@ export function TenantAdminToolsPage() {
           <div className="flex items-center gap-2 text-sm">
             <select
               value={sourceFilter}
-              onChange={(e) => setSourceFilter(e.target.value as any)}
+              onChange={(e) => setSourceFilter(e.target.value as "all" | "builtin" | "custom")}
               className="rounded border bg-background px-2 py-1 text-xs"
             >
               <option value="all">{t.tenantAdmin.tools.sourceAll}</option>
@@ -685,7 +685,7 @@ export function TenantAdminToolsPage() {
             </select>
             <select
               value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as any)}
+              onChange={(e) => setTypeFilter(e.target.value as "all" | "stdio" | "sse" | "http")}
               className="rounded border bg-background px-2 py-1 text-xs"
             >
               <option value="all">{t.tenantAdmin.tools.typeAll}</option>
@@ -695,7 +695,7 @@ export function TenantAdminToolsPage() {
             </select>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
+              onChange={(e) => setStatusFilter(e.target.value as "all" | "enabled" | "disabled")}
               className="rounded border bg-background px-2 py-1 text-xs"
             >
               <option value="all">{t.tenantAdmin.tools.statusAll}</option>

@@ -12,15 +12,14 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
-import { useAvailableModels } from "@/core/models/hooks";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useTerminalAgent } from "@/core/terminal-agent/useTerminalAgent";
-import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
 
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
+import { useAvailableModels } from "@/core/models/hooks";
 import {
   getSkillDetail,
   patchTenantSkill,
@@ -29,6 +28,8 @@ import {
   generateInstructions,
 } from "@/core/skills/api";
 import type { SkillDetail } from "@/core/skills/type";
+import type { TerminalMessagePart, TerminalToolCall } from "@/core/terminal-agent/message-types";
+import { useTerminalAgent } from "@/core/terminal-agent/useTerminalAgent";
 
 export default function SkillDetailPage() {
   const params = useParams();
@@ -104,10 +105,10 @@ export default function SkillDetailPage() {
     getSkillDetail(skillName)
       .then((data) => {
         setSkill(data);
-        setInstructions(data.instructions || "");
-        setDescription(data.description || "");
-        setBoundToolsText((data.bound_tools || []).join(", "));
-        setStrategy(data.strategy || "default");
+        setInstructions(data.instructions ?? "");
+        setDescription(data.description ?? "");
+        setBoundToolsText((data.bound_tools ?? []).join(", "));
+        setStrategy(data.strategy ?? "default");
       })
       .catch(() => toast.error("加载 Skill 详情失败"))
       .finally(() => setLoading(false));
@@ -195,7 +196,7 @@ export default function SkillDetailPage() {
   const handleTest = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!testInput.trim() || testLoading) return;
-    sendMessage({ text: testInput.trim() });
+    void sendMessage({ text: testInput.trim() });
   };
 
   if (loading) {
@@ -241,7 +242,7 @@ export default function SkillDetailPage() {
                     variant="secondary"
                     className="text-[10px]"
                   >
-                    v{skill.version || 1}
+                    v{skill.version ?? 1}
                   </Badge>
                   {skill.category && (
                     <span>{skill.category}</span>
@@ -400,12 +401,12 @@ export default function SkillDetailPage() {
               </div>
             )}
             {messages.map((msg, idx) => {
-              const role = msg.role || msg.type;
+              const role = msg.role ?? msg.type;
               const isUser = role === "user" || role === "human";
               let textContent = "";
               if (typeof msg.content === "string") textContent = msg.content;
               else if (Array.isArray(msg.content)) {
-                textContent = msg.content.filter((p: any) => p.type === "text").map((p: any) => p.text).join("\n");
+                textContent = msg.content.filter((p: TerminalMessagePart) => p.type === "text").map((p) => p.text ?? "").join("\n");
               }
 
               // Find tools if any
@@ -413,7 +414,7 @@ export default function SkillDetailPage() {
 
               return (
                 <div
-                  key={msg.id || idx}
+                  key={msg.id ?? idx}
                   className={`flex flex-col gap-1 ${isUser ? "items-end" : "items-start"
                     }`}
                 >
@@ -430,9 +431,9 @@ export default function SkillDetailPage() {
                           <MarkdownContent content={textContent} isLoading={false} rehypePlugins={null} />
                         </div>
                       )}
-                      {toolCalls.map((tc: any) => (
-                        <div key={tc.id} className="text-[11px] text-muted-foreground font-mono bg-muted px-2 py-1 rounded">
-                          $ {tc.name}(...)
+                      {toolCalls.map((tc: TerminalToolCall) => (
+                        <div key={tc.id ?? tc.name ?? "tool"} className="text-[11px] text-muted-foreground font-mono bg-muted px-2 py-1 rounded">
+                          $ {tc.name ?? "tool"}(...)
                         </div>
                       ))}
                     </div>
@@ -455,7 +456,7 @@ export default function SkillDetailPage() {
             <form onSubmit={handleTest} className="flex gap-2">
               <Input
                 value={testInput}
-                onChange={(e) => handleInputChange(e as any)}
+                onChange={handleInputChange}
                 placeholder='输入测试告警，例如："K8s Pod CPU 高"'
                 className="flex-1"
               />

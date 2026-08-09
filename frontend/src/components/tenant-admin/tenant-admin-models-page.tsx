@@ -26,7 +26,7 @@ export function TenantAdminModelsPage() {
     return tenantModels.filter((model) => {
       const matchesSearch = searchTerm === "" || 
         model.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (model.display_name && model.display_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        model.display_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         model.model.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesSource = sourceFilter === "all" || 
@@ -73,7 +73,7 @@ export function TenantAdminModelsPage() {
           <div className="flex items-center gap-2 text-sm">
             <select 
               value={sourceFilter}
-              onChange={(e) => setSourceFilter(e.target.value as any)}
+              onChange={(e) => setSourceFilter(e.target.value as "all" | "platform" | "tenant")}
               className="rounded border bg-background px-2 py-1 text-xs"
             >
               <option value="all">{t.tenantAdmin.models.sourceAll}</option>
@@ -82,7 +82,7 @@ export function TenantAdminModelsPage() {
             </select>
             <select 
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
+              onChange={(e) => setStatusFilter(e.target.value as "all" | "enabled" | "disabled")}
               className="rounded border bg-background px-2 py-1 text-xs"
             >
               <option value="all">{t.tenantAdmin.models.statusAll}</option>

@@ -3,11 +3,11 @@
 import { BotIcon, CheckCircle2Icon, XIcon, AlertCircleIcon, ChevronDown, SparklesIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -15,14 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useAgent, useSkills, useUpdateAgent } from "@/core/agents";
-import { useCurrentTenant } from "@/core/tenants/hooks";
-import { isTenantAdminRole } from "@/core/permissions/scope";
 import type { UpdateAgentRequest } from "@/core/agents";
 import { useI18n } from "@/core/i18n/hooks";
 import { useAvailableMcpConfig } from "@/core/mcp/hooks";
 import { useAvailableModels } from "@/core/models/hooks";
+import { isTenantAdminRole } from "@/core/permissions/scope";
+import { useCurrentTenant } from "@/core/tenants/hooks";
 import { cn } from "@/lib/utils";
 
 interface EditAgentDialogProps {
@@ -75,7 +76,7 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
   const skillsByCategory = skills.reduce(
     (acc, skill) => {
       const cat = skill.category || "other";
-      if (!acc[cat]) acc[cat] = [];
+      acc[cat] ??= [];
       acc[cat].push(skill);
       return acc;
     },
@@ -128,8 +129,8 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
 
   const getActiveList = () => {
     if (activeTab === "mcp") return availableMcps || [];
-    if (activeTab === "custom") return skillsByCategory["custom"] || [];
-    return skillsByCategory["public"] || [];
+    if (activeTab === "custom") return skillsByCategory.custom ?? [];
+    return skillsByCategory.public ?? [];
   };
 
   const activeList = getActiveList();
@@ -193,7 +194,7 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
         </label>
       ));
     } else if (activeTab === "custom") {
-      const customSkills = skillsByCategory["custom"] ?? [];
+      const customSkills = skillsByCategory.custom ?? [];
       if (customSkills.length === 0) {
         return <div className="text-xs text-muted-foreground py-8 text-center">暂无自定义技能 SOP</div>;
       }
@@ -217,7 +218,7 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
         </label>
       ));
     } else {
-      const publicSkills = skillsByCategory["public"] ?? [];
+      const publicSkills = skillsByCategory.public ?? [];
       if (publicSkills.length === 0) {
         return <div className="text-xs text-muted-foreground py-8 text-center">暂无内置技能 SOP</div>;
       }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   PlusIcon,
   Trash2Icon,
@@ -17,12 +16,11 @@ import {
   ChevronDownIcon,
   ChevronUpIcon
 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +29,8 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   useAlertRules,
   useCreateAlertRule,
@@ -86,6 +86,16 @@ interface ConditionInputRow {
   field: string;
   op: "eq" | "neq" | "in" | "not_in" | "contains" | "starts_with" | "regex" | "gt" | "lt";
   value: string;
+}
+
+interface AlertConditionJson {
+  conditions?: Array<Record<string, unknown>>;
+  logic?: string;
+  schedule?: Record<string, unknown>;
+}
+
+interface AlertActionJson {
+  action?: string;
 }
 
 export function AlertRulesTab() {
@@ -233,7 +243,7 @@ export function AlertRulesTab() {
     }
   };
 
-  const getConditionLabel = (item: any) => {
+  const getConditionLabel = (item: Record<string, unknown>) => {
     const opLabels: Record<string, string> = {
       eq: "等于",
       neq: "不等于",
@@ -248,7 +258,10 @@ export function AlertRulesTab() {
       severity: "严重度",
       title: "标题",
     };
-    return `${fieldLabels[item.field] || item.field} ${opLabels[item.op] || item.op} "${item.value}"`;
+    const field = typeof item.field === "string" ? item.field : "";
+    const op = typeof item.op === "string" ? item.op : "";
+    const value = typeof item.value === "string" || typeof item.value === "number" ? item.value : "";
+    return `${fieldLabels[field] ?? field} ${opLabels[op] ?? op} "${value}"`;
   };
 
   const filteredRules = rules.filter(rule =>
@@ -429,8 +442,10 @@ export function AlertRulesTab() {
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                 {filteredRules.map((rule) => {
-                  const conditionsList = ((rule.condition_json as Record<string, unknown> | null)?.conditions as Array<Record<string, unknown>> | null) || [];
-                  const ruleAction = (rule.action_json as any)?.action || "-";
+                  const conditionJson = rule.condition_json as AlertConditionJson;
+                  const actionJson = rule.action_json as AlertActionJson;
+                  const conditionsList = conditionJson.conditions ?? [];
+                  const ruleAction = actionJson.action ?? "-";
 
                   return (
                     <tr key={rule.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/10 transition-colors">
@@ -473,12 +488,12 @@ export function AlertRulesTab() {
                           )}
                           {conditionsList.length > 1 && (
                             <Badge variant="outline" className="px-1 py-0 text-[8px] leading-none uppercase font-bold bg-zinc-50 border border-zinc-200">
-                              {String((rule.condition_json as Record<string, unknown> | null)?.logic || "AND")}
+                              {conditionJson.logic ?? "AND"}
                             </Badge>
                           )}
-                          {(rule.condition_json as any)?.schedule && (
+                          {conditionJson.schedule && (
                             <Badge variant="outline" className="px-1 py-0 text-[8px] bg-amber-50 border-amber-100 text-amber-700 dark:bg-amber-950/20 dark:border-amber-900/50">
-                              {((rule.condition_json as any).schedule as Record<string, unknown>).start as string}-{((rule.condition_json as any).schedule as Record<string, unknown>).end as string}
+                              {typeof conditionJson.schedule.start === "string" ? conditionJson.schedule.start : ""}-{typeof conditionJson.schedule.end === "string" ? conditionJson.schedule.end : ""}
                             </Badge>
                           )}
                         </div>
@@ -548,7 +563,7 @@ export function AlertRulesTab() {
                 <select
                   aria-label="治理动作分类"
                   value={ruleType}
-                  onChange={(e) => setRuleType(e.target.value as any)}
+                  onChange={(e) => setRuleType(e.target.value === "aggregation" ? "aggregation" : "suppression")}
                   className="w-full h-9.5 px-3 text-xs rounded-md border border-zinc-200 dark:border-zinc-800 bg-background outline-none cursor-pointer"
                 >
                   <option value="suppression">自动静默 (Suppression)</option>

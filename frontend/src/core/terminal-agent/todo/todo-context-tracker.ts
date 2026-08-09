@@ -20,7 +20,7 @@ export interface ContextSuggestion {
 }
 
 export class TodoContextTracker {
-  private currentUsage: number = 0;
+  private currentUsage = 0;
   private activeTodoId: string | null = null;
 
   /**

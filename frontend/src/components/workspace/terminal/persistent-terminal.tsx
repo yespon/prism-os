@@ -1,9 +1,5 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { WebTerminal } from '@/components/workspace/terminal/web-terminal';
-import type { WebTerminalRef } from '@/components/workspace/terminal/web-terminal';
 import { 
   Monitor, 
   X, 
@@ -11,18 +7,24 @@ import {
   PanelLeftOpenIcon,
   Palette
 } from 'lucide-react';
-import { AssetSidebar } from '@/components/workspace/terminal/asset-sidebar';
-import { TerminalAgentUI } from '@/app/workspace/terminal/terminal-agent-ui';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { toast } from 'sonner';
+
 import { TerminalContext } from '@/app/workspace/terminal/context';
-import { ResizablePanel } from '@/components/ui/resizable-panel';
+import { TerminalAgentUI } from '@/app/workspace/terminal/terminal-agent-ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ResizablePanel } from '@/components/ui/resizable-panel';
+import { AssetSidebar } from '@/components/workspace/terminal/asset-sidebar';
+import { WebTerminal } from '@/components/workspace/terminal/web-terminal';
+import type { WebTerminalRef } from '@/components/workspace/terminal/web-terminal';
 import { decodeContextFromURL, type IncidentContext } from '@/core/alerting/incident-context';
-import { toast } from 'sonner';
+import type { TerminalAsset, TerminalAssetGroup, TerminalCredential } from '@/core/terminal-agent/message-types';
 import {
   loadHostSidebarCollapsed,
   loadTerminalTheme,
@@ -35,7 +37,7 @@ import {
  * Try to match an incident's service to an asset in the asset list.
  * Rules: exact name match → fuzzy name match → null.
  */
-function tryMatchAsset(ctx: IncidentContext, assets: any[]): any | null {
+function tryMatchAsset(ctx: IncidentContext, assets: TerminalAsset[]): TerminalAsset | null {
   if (!ctx.service || assets.length === 0) return null;
 
   const service = ctx.service.toLowerCase();
@@ -46,7 +48,7 @@ function tryMatchAsset(ctx: IncidentContext, assets: any[]): any | null {
 
   // 2. Fuzzy match: asset.name contains service, or service contains asset.name
   const fuzzy = assets.find(a => {
-    const name = (a.name || '').toLowerCase();
+    const name = (a.name ?? '').toLowerCase();
     return name.includes(service) || service.includes(name);
   });
   if (fuzzy) return fuzzy;
@@ -61,14 +63,14 @@ export function PersistentTerminal() {
   const isTerminalPage = pathname?.startsWith('/workspace/terminal');
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [openSessions, setOpenSessions] = useState<{sessionId: string, asset: any, title: string, status?: 'connecting' | 'connected' | 'disconnected' | 'error'}[]>([]);
+  const [openSessions, setOpenSessions] = useState<{sessionId: string, asset: TerminalAsset, title: string, status?: 'connecting' | 'connected' | 'disconnected' | 'error'}[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [isAgentOpen, setIsAgentOpen] = useState(false);
   const [terminalTheme, setTerminalTheme] = useState<'light' | 'dark' | 'hacker'>('light');
   const [incidentContext, setIncidentContext] = useState<IncidentContext | null>(null);
-  const [assets, setAssets] = useState<any[]>([]);
-  const [credentials, setCredentials] = useState<any[]>([]);
-  const [groups, setGroups] = useState<any[]>([]);
+  const [assets, setAssets] = useState<TerminalAsset[]>([]);
+  const [credentials, setCredentials] = useState<TerminalCredential[]>([]);
+  const [groups, setGroups] = useState<TerminalAssetGroup[]>([]);
 
   // Track the last consumed context to avoid duplicate processing
   const lastConsumedCtxRef = useRef<string | null>(null);
@@ -101,7 +103,7 @@ export function PersistentTerminal() {
       setTerminalTheme(savedTheme);
     }
 
-    fetchAssets();
+    void fetchAssets();
   }, []);
 
   // Handle incoming incident context from URL
@@ -158,11 +160,12 @@ export function PersistentTerminal() {
   const terminalRefs = useRef<Record<string, WebTerminalRef | null>>({});
   const sendMessageRef = useRef<((text: string) => void) | null>(null);
 
-  const handleSelectAsset = (asset: any) => {
+  const handleSelectAsset = (asset: TerminalAsset) => {
     const sessionId = 'sess_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9);
     setOpenSessions((prev) => {
       const existingCount = prev.filter((s) => s.asset.id === asset.id).length;
-      const title = existingCount > 0 ? `${asset.name} (${existingCount + 1})` : asset.name;
+      const baseTitle = asset.name ?? asset.ip;
+      const title = existingCount > 0 ? `${baseTitle} (${existingCount + 1})` : baseTitle;
       return [...prev, { sessionId, asset, title }];
     });
     setActiveSessionId(sessionId);
@@ -202,18 +205,18 @@ export function PersistentTerminal() {
     return {
       get current() {
         if (!activeSessionId) return null;
-        return terminalRefs.current[activeSessionId] || null;
+        return terminalRefs.current[activeSessionId] ?? null;
       }
     };
   }, [activeSessionId]);
 
   const activeAsset = useMemo(() => {
     const session = openSessions.find((s) => s.sessionId === activeSessionId);
-    return session ? session.asset : null;
+    return session?.asset ?? null;
   }, [openSessions, activeSessionId]);
 
   return (
-    <TerminalContext.Provider value={{ terminalRef: activeTerminalRef as any, executeCommand, sendMessageRef, activeSessionId }}>
+    <TerminalContext.Provider value={{ terminalRef: activeTerminalRef as React.RefObject<WebTerminalRef | null>, executeCommand, sendMessageRef, activeSessionId }}>
       <div className={`${isTerminalPage ? 'flex size-full bg-white text-zinc-800 overflow-hidden text-[13px]' : 'hidden'}`}>
         
         {/* 1. Left Panel: Asset Management */}

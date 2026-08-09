@@ -4,13 +4,13 @@ import { AlertCircleIcon, ArrowRightIcon, ShieldCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { fetchAuthApi } from "@/core/api/auth-client";
 import { login } from "@/core/auth/auth-api";
 import { useI18n } from "@/core/i18n/hooks";
-import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 
 interface BootstrapStatus {
   needs_setup: boolean;
@@ -45,7 +45,7 @@ export default function SetupPage() {
     e.preventDefault();
     setError(null);
 
-    if (!email || !email.includes("@")) {
+    if (!email?.includes("@")) {
       setError(t.auth.setup.errorInvalidEmail);
       return;
     }

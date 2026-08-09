@@ -1,7 +1,5 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import {
   LockKeyhole,
   Send,
@@ -24,6 +22,9 @@ import {
   CircleAlert,
   Loader2,
 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+
+import { Button } from '@/components/ui/button';
 
 export type InteractionType =
   | 'password'
@@ -124,7 +125,7 @@ export function CommandInteractionInput({
 
   // ------ Exit key logic (matching Chaterm) ------
   const ctrlCVariants = ['\\x03', 'ctrlc', 'ctrl+c', '^c'];
-  const normalizedExit = state.exitKey?.toLowerCase().replace(/[\s\-_]/g, '') || '';
+  const normalizedExit = state.exitKey?.toLowerCase().replace(/[\s\-_]/g, '') ?? '';
   const hasCustomExitKey =
     state.interactionType !== 'pager' &&
     !!state.exitKey &&
@@ -292,19 +293,19 @@ export function CommandInteractionInput({
               <Button
                 size="sm"
                 className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-md"
-                onClick={() => handleSubmit(state.confirmValues?.yes || 'y', true)}
+                onClick={() => handleSubmit(state.confirmValues?.yes ?? 'y', true)}
               >
                 <Check className="w-3 h-3 mr-1" />
-                Yes ({state.confirmValues?.yes || 'y'})
+                Yes ({state.confirmValues?.yes ?? 'y'})
               </Button>
               <Button
                 size="sm"
                 variant="outline"
                 className="h-7 text-xs rounded-md"
-                onClick={() => handleSubmit(state.confirmValues?.no || 'n', true)}
+                onClick={() => handleSubmit(state.confirmValues?.no ?? 'n', true)}
               >
                 <X className="w-3 h-3 mr-1" />
-                No ({state.confirmValues?.no || 'n'})
+                No ({state.confirmValues?.no ?? 'n'})
               </Button>
               {state.confirmValues?.default && (
                 <Button
@@ -339,7 +340,7 @@ export function CommandInteractionInput({
                   className="h-7 text-xs rounded-md hover:bg-blue-50 hover:border-blue-300"
                   onClick={() =>
                     handleSubmit(
-                      state.optionValues?.[i] || String(i + 1),
+                      state.optionValues?.[i] ?? String(i + 1),
                       true
                     )
                   }
@@ -548,7 +549,7 @@ export function CommandInteractionInput({
       {state.tuiDetected && (
         <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-md mt-2 text-xs text-amber-700">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-          <span className="flex-1">{state.tuiMessage || 'TUI program detected — use terminal directly for best experience.'}</span>
+          <span className="flex-1">{state.tuiMessage ?? 'TUI program detected — use terminal directly for best experience.'}</span>
           <Button
             variant="link"
             size="sm"

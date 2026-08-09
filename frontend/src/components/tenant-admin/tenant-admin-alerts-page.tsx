@@ -3,10 +3,11 @@
 import { ShieldAlertIcon, CableIcon, SlidersIcon, SettingsIcon, ActivityIcon } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertSourcesTab } from "./alert-sources-tab";
-import { AlertRulesTab } from "./alert-rules-tab";
-import { AlertingSettingsTab } from "./alerting-settings-tab";
 import { EscalationRulesPanel } from "@/components/workspace/incidents/escalation-rules-panel";
+
+import { AlertRulesTab } from "./alert-rules-tab";
+import { AlertSourcesTab } from "./alert-sources-tab";
+import { AlertingSettingsTab } from "./alerting-settings-tab";
 
 export function TenantAdminAlertsPage() {
   return (

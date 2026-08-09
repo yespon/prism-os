@@ -1,8 +1,8 @@
 "use client";
 
+import type { Message } from "@langchain/langgraph-sdk";
 import { AlertTriangle, ArrowRight, SquarePen } from "lucide-react";
 import { useMemo } from "react";
-import type { Message } from "@langchain/langgraph-sdk";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/core/i18n/hooks";

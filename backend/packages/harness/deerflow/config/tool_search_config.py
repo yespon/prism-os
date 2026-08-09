@@ -12,7 +12,7 @@ class ToolSearchConfig(BaseModel):
     """
 
     enabled: bool = Field(
-        default=True,
+        default=False,
         description="Defer tools and enable tool_search",
     )
 

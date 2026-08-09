@@ -232,7 +232,7 @@ export function parseSSELine(line: string): DiagnosisMessage | null {
 
 export class DiagnosisStreamState {
   steps: DiagnosisStep[] = [];
-  toolCalls: Map<string, DiagnosisToolCall> = new Map();
+  toolCalls = new Map<string, DiagnosisToolCall>();
   thinkingBlocks: DiagnosisThinkingBlock[] = [];
   clarifications: DiagnosisClarification[] = [];
   textBuffer = "";
@@ -245,7 +245,7 @@ export class DiagnosisStreamState {
   private thinkingIdCounter = 0;
   private stepIdCounter = 0;
   // Track which step names map to which IDs for lookup
-  private stepNameToId: Map<string, number> = new Map();
+  private stepNameToId = new Map<string, number>();
 
   processMessage(msg: DiagnosisMessage): void {
     switch (msg.type) {
@@ -325,9 +325,7 @@ export class DiagnosisStreamState {
         const tc = this.toolCalls.get(msg.toolCallId);
         if (tc) {
           tc.isComplete = true;
-          if (!tc.completedAt) {
-            tc.completedAt = Date.now();
-          }
+          tc.completedAt ??= Date.now();
         }
         break;
       }
@@ -336,11 +334,9 @@ export class DiagnosisStreamState {
         const tc = this.toolCalls.get(msg.toolCallId);
         if (tc) {
           tc.result = msg.content;
-          tc.isError = msg.isError || false;
+          tc.isError = msg.isError ?? false;
           tc.isComplete = true;
-          if (!tc.completedAt) {
-            tc.completedAt = Date.now();
-          }
+          tc.completedAt ??= Date.now();
         } else {
           // Result arrived before start — create a full entry
           this.toolCalls.set(msg.toolCallId, {
@@ -348,7 +344,7 @@ export class DiagnosisStreamState {
             toolName: "",
             toolArgs: {},
             result: msg.content,
-            isError: msg.isError || false,
+            isError: msg.isError ?? false,
             isComplete: true,
             completedAt: Date.now(),
           });
@@ -427,7 +423,7 @@ export class DiagnosisStreamState {
   }
 
   getPendingClarification(): DiagnosisClarification | null {
-    return this.clarifications.find((c) => !c.isAnswered) || null;
+    return this.clarifications.find((c) => !c.isAnswered) ?? null;
   }
 
   getTextContent(): string {

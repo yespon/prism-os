@@ -163,7 +163,7 @@ export class FocusChainService {
 
     return {
       completed: completedTodo,
-      nextFocused: nextTodo || null,
+      nextFocused: nextTodo ?? null,
       allCompleted: !nextTodo
     }
   }
@@ -176,7 +176,7 @@ export class FocusChainService {
     this.state.totalTodos = this.todos.length
     this.state.completedTodos = completed
     this.state.chainProgress = this.todos.length > 0 ? Math.round((completed / this.todos.length) * 100) : 0
-    this.state.focusedTodoId = focused?.id || inProgress?.id || null
+    this.state.focusedTodoId = focused?.id ?? inProgress?.id ?? null
   }
 
   generateHandoff(): FocusChainHandoff {

@@ -10,7 +10,6 @@ The script is idempotent — running it multiple times is safe.
 import asyncio
 import logging
 import uuid
-from pathlib import Path
 
 import yaml
 
@@ -74,9 +73,9 @@ def _scan_filesystem_agents():
 
 async def _backfill():
     """Main backfill logic."""
-    from app.models.agents import CustomAgent
-
     from sqlmodel import select
+
+    from app.models.agents import CustomAgent
 
     session_factory = get_session_factory()
     found = _scan_filesystem_agents()

@@ -189,7 +189,7 @@ async def process_alert(
                 _schedule_agent_diagnosis(incident, source.tenant_id, diagnosis_agent_id)
 
         # Schedule IM notification (delayed, waits for AI)
-        from app.alerting.notify import send_incident_created, schedule_notification
+        from app.alerting.notify import schedule_notification, send_incident_created
 
         schedule_notification(send_incident_created(incident))
 
@@ -214,7 +214,7 @@ def _schedule_escalation_evaluation(incident: Incident):
 
     async def _run():
         try:
-            from app.alerting.escalation import evaluate_escalation_rules, apply_escalation_actions
+            from app.alerting.escalation import apply_escalation_actions, evaluate_escalation_rules
 
             async with get_session_factory()() as session:
                 fresh_inc = await session.get(Incident, incident.id)
@@ -269,10 +269,11 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
 
     async def _run():
         try:
-            from app.models.agents import CustomAgent
-            from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt
             from langgraph_sdk import get_client
             from sqlmodel import select
+
+            from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt
+            from app.models.agents import CustomAgent
 
             async with get_session_factory()() as session:
                 # Set status to running immediately

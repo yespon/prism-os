@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
+
+import { fireEvent, render, screen } from "@/test/utils";
 
 import { WorkspaceHeader } from "./workspace-container";
 

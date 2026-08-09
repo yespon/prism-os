@@ -40,7 +40,7 @@ export class TodoWriteTool {
 
     // Preprocess: ensure each todo has id and timestamps
     const processed = params.todos.map((t): TodoItem => ({
-      id: t.id || uuidv4(),
+      id: t.id ?? uuidv4(),
       content: t.content,
       description: t.description,
       status: t.status,
@@ -89,7 +89,7 @@ export class TodoWriteTool {
       if (t.status === 'completed') {
         t.isFocused = false;
         t.focusedAt = undefined;
-        if (!t.completedAt) t.completedAt = now;
+        t.completedAt ??= now;
       }
     }
 

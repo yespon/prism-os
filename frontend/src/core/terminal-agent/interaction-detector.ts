@@ -35,7 +35,6 @@ export * from './types';
  * Simple ANSI string stripper (browser-compatible, no Node deps)
  */
 function stripAnsi(str: string): string {
-  // eslint-disable-next-line no-control-regex
   return str.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
 }
 
@@ -92,9 +91,9 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
 
   // Output buffering
   private outputBuffer: string[] = [];
-  private lineBuffer: string = '';
+  private lineBuffer = '';
   private pausedOutputBuffer: string[] = [];
-  private pausedOutputSize: number = 0;
+  private pausedOutputSize = 0;
 
   // State management
   private _isPaused = false;
@@ -111,8 +110,8 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
   private _isSuppressed = false;
 
   // Hash deduplication
-  private lastOutputHash: string = '';
-  private hashUnchangedCount: number = 0;
+  private lastOutputHash = '';
+  private hashUnchangedCount = 0;
   private lastHashChangeTime: number = Date.now();
 
   // Prompt debounce
@@ -279,7 +278,7 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
     super();
 
     this.command = command;
-    this.commandId = generateCommandId(taskId || 'terminal');
+    this.commandId = generateCommandId(taskId ?? 'terminal');
     this.taskId = taskId;
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.currentTimeout = this.config.initialTimeout;
@@ -442,7 +441,7 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
       const pausedData = this.pausedOutputBuffer.join('');
       this.lineBuffer += pausedData;
       const lines = this.lineBuffer.split('\n');
-      this.lineBuffer = lines.pop() || '';
+      this.lineBuffer = lines.pop() ?? '';
       for (const line of lines) {
         const trimmedLine = line.trim();
         if (trimmedLine) {
@@ -542,7 +541,7 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
   }
 
   private checkPagerOutput(output: string): boolean {
-    const lastLine = output.trim().split('\n').pop() || '';
+    const lastLine = output.trim().split('\n').pop() ?? '';
     if (this.PAGER_OUTPUT_PATTERNS.some(p => p.test(lastLine))) return true;
     return false;
   }
@@ -558,7 +557,7 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
       this.lineBuffer = this.lineBuffer.slice(-this.config.lineBufferMaxLength);
     }
     const lines = this.lineBuffer.split('\n');
-    this.lineBuffer = lines.pop() || '';
+    this.lineBuffer = lines.pop() ?? '';
     for (const line of lines) {
       const trimmedLine = line.trim();
       if (trimmedLine) {
@@ -603,12 +602,12 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
       enter: 'Press Enter to continue',
       freeform: 'Input required',
     };
-    return hints[type] || 'Input required';
+    return hints[type] ?? 'Input required';
   }
 
   private resetTimer(): void {
     if (this.timer) clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.onTimerExpired(), this.currentTimeout);
+    this.timer = setTimeout(() => void this.onTimerExpired(), this.currentTimeout);
   }
 
   private async onTimerExpired(): Promise<void> {
@@ -772,9 +771,9 @@ export class InteractionDetector extends TypedEventEmitter<InteractionDetectorEv
     }
   }
 
-  private debug(label: string, data?: any): void {
+  private debug(label: string, data?: unknown): void {
     if (this.debugEnabled) {
-      console.log(`[InteractionDetector:${this.commandId}] ${label}`, data || '');
+      console.log(`[InteractionDetector:${this.commandId}] ${label}`, data ?? '');
     }
   }
 }

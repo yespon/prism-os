@@ -7,12 +7,12 @@ from collections.abc import Mapping
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
+from langgraph_sdk import get_client
 from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_context
 from deerflow.database.user_config_store import load_enabled_tenant_model_names
 from deerflow.models import create_chat_model
-from langgraph_sdk import get_client
 
 logger = logging.getLogger(__name__)
 

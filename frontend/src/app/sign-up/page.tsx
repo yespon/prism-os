@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
+import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { logout, signUp } from "@/core/auth/auth-api";
 import { useI18n } from "@/core/i18n/hooks";
-import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 
 export default function SignUpPage() {
   const { t } = useI18n();

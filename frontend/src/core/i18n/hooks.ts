@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { useI18nContext } from "./context";
 import { getLocaleFromCookie, setLocaleInCookie } from "./cookies";
 import { enUS } from "./locales/en-US";
-import { zhCN } from "./locales/zh-CN";
 import { ja } from "./locales/ja";
 import { ko } from "./locales/ko";
+import { zhCN } from "./locales/zh-CN";
 
 import {
   DEFAULT_LOCALE,

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useTerminalContext } from "@/app/workspace/terminal/context";
 import { type PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { PromptInputProvider } from "@/components/ai-elements/prompt-input";
 import { Badge } from "@/components/ui/badge";
@@ -63,7 +64,6 @@ import {
   selectPreferredReferencesForAddedIds,
 } from "./attachment-selection";
 import { ThreadAttachmentsPanel } from "./thread-attachments-panel";
-import { useTerminalContext } from "@/app/workspace/terminal/context";
 
 interface ChatThreadContentProps {
   threadId: string;
@@ -329,7 +329,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                     </span>
                   </SelectTrigger>
                   <SelectContent align="start" className="w-[280px]" position="popper" side="bottom">
-                    {headerCtx.models.map((m: any) => (
+                    {headerCtx.models.map((m) => (
                       <SelectItem className="rounded-lg py-2" key={m.name} value={m.name}>
                         {headerCtx.resolveModelLabel(m) ?? m.model ?? m.name}
                       </SelectItem>
@@ -385,7 +385,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                         <div className="text-muted-foreground py-10 text-center text-sm">{headerCtx.t.chatHeader.noExecutionRecords}</div>
                       ) : (
                         <div className={cn("space-y-1 pt-3", headerCtx.isSelectMode && "pb-2")}>
-                          {headerCtx.recentThreads.map((item: any) => {
+                          {headerCtx.recentThreads.map((item) => {
                             const active = item.thread_id === headerCtx.activeThreadId;
                             const isSelected = headerCtx.selectedIds.has(item.thread_id);
                             return (

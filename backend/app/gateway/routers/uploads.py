@@ -18,12 +18,12 @@ from deerflow.uploads.manager import (
     delete_file_safe,
     enrich_file_listing,
     ensure_uploads_dir,
-    guess_content_type,
     get_uploads_dir,
+    guess_content_type,
     list_files_in_dir,
     normalize_filename,
-    upload_attachment_id,
     upload_artifact_url,
+    upload_attachment_id,
     upload_virtual_path,
 )
 from deerflow.utils.file_conversion import CONVERTIBLE_EXTENSIONS, convert_file_to_markdown
@@ -100,7 +100,10 @@ def _calculate_user_upload_bytes(user_id: str, tenant_id: str | None = None) -> 
 
 
 def _enforce_upload_quota(user_id: str, thread_id: str, incoming_bytes: int, tenant_id: str | None = None) -> None:
-    current_total = _calculate_user_upload_bytes(user_id, tenant_id=tenant_id)
+    if tenant_id is None:
+        current_total = _calculate_user_upload_bytes(user_id)
+    else:
+        current_total = _calculate_user_upload_bytes(user_id, tenant_id=tenant_id)
     projected = current_total + incoming_bytes
 
     hard_limit = _parse_positive_int_env("ADMIN_UPLOAD_BYTES_HARD_LIMIT")

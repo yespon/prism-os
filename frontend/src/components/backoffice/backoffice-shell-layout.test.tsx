@@ -1,6 +1,7 @@
-import { render, screen } from "@/test/utils";
 import { ShieldCheck } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
+
+import { render, screen } from "@/test/utils";
 
 import { BackofficeShellLayout } from "./backoffice-shell-layout";
 

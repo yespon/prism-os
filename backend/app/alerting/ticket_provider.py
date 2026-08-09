@@ -5,7 +5,6 @@ Supports:
   - Future: Jira, Feishu Bitable, DingTalk, etc.
 """
 
-import json
 import logging
 from dataclasses import dataclass
 from typing import Any

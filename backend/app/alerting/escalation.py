@@ -97,8 +97,9 @@ async def apply_escalation_actions(
     Returns a list of actions that were taken.
     """
     results: list[dict] = []
-    from app.models.alerting import IncidentAction
     import uuid
+
+    from app.models.alerting import IncidentAction
 
     for rule in matching_rules:
         actions = rule.action_json or {}

@@ -75,12 +75,12 @@ export function isReadOnlyCommand(command: string): boolean {
 
 export class AutoApprovalManager {
   private settings: AutoApprovalSettings;
-  private consecutiveApproved: number = 0;
+  private consecutiveApproved = 0;
   /** Once user approves one read-only command, auto-approve rest */
-  private readOnlyModeAutoApproved: boolean = false;
+  private readOnlyModeAutoApproved = false;
 
   constructor() {
-    this.settings = this.loadFromStorage() || { ...DEFAULT_AUTO_APPROVAL };
+    this.settings = this.loadFromStorage() ?? { ...DEFAULT_AUTO_APPROVAL };
   }
 
   getSettings(): AutoApprovalSettings {

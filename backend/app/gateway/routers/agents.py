@@ -4,16 +4,15 @@ import logging
 import re
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select as sa_select
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.gateway.authorization import require_tenant_context, _is_tenant_admin
+from app.gateway.authorization import _is_tenant_admin, require_tenant_context
 from app.gateway.config import get_plugin_states
 from app.models.agents import CustomAgent
-from deerflow.config.agents_config import AgentConfig
 from deerflow.config.paths import get_paths
 from deerflow.database.session import get_session
 from deerflow.skills import load_skills

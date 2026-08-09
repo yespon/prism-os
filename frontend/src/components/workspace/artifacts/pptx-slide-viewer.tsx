@@ -1,7 +1,7 @@
+import { PptxViewer, RECOMMENDED_ZIP_LIMITS } from "@aiden0z/pptx-renderer";
 import { DownloadIcon, LoaderIcon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 
-import { PptxViewer, RECOMMENDED_ZIP_LIMITS } from "@aiden0z/pptx-renderer";
 import { Button } from "@/components/ui/button";
 
 interface PptxSlideViewerProps {

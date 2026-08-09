@@ -5,8 +5,8 @@ from fastapi.testclient import TestClient
 
 from app.gateway import auth_db
 from app.gateway.auth_crypto import verify_password
-from app.gateway.routers import admin as admin_router
 from app.gateway.authorization import require_platform_admin
+from app.gateway.routers import admin as admin_router
 
 
 def _create_app():

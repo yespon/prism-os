@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useI18n } from "@/core/i18n/hooks";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +16,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { fetchAuthApi } from "@/core/api/auth-client";
-import { clearTenantId } from "@/core/tenants";
 import { logout } from "@/core/auth/auth-api";
+import { useI18n } from "@/core/i18n/hooks";
+import { clearTenantId } from "@/core/tenants";
 
 interface ChangePasswordDialogProps {
   open: boolean;
@@ -78,15 +78,17 @@ export function ChangePasswordDialog({
       setMessage(t.admin.security.changePassword.successMessage);
 
       // Sign out after delay and redirect to sign-in
-      setTimeout(async () => {
-        await logout();
+      setTimeout(() => {
+        void (async () => {
+          await logout();
 
-        clearTenantId();
-        await queryClient.cancelQueries();
-        queryClient.clear();
-        router.replace("/sign-in");
-        router.refresh();
-        window.location.assign("/sign-in");
+          clearTenantId();
+          await queryClient.cancelQueries();
+          queryClient.clear();
+          router.replace("/sign-in");
+          router.refresh();
+          window.location.assign("/sign-in");
+        })();
       }, 1500);
     } catch (error) {
       setError(

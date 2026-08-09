@@ -107,3 +107,21 @@ Task 3 is committed independently as `test: restore frontend provider and fixtur
 - Task 2 is locally reviewed for the diagnosed type/build contracts and protected-file boundaries; `pnpm typecheck` and the approved escalated `pnpm build` both exited `0`.
 - Task 3 is locally reviewed for provider boundaries, mock completeness, assertion intent, and the `bottomItems` production fix; focused and full unit verification exited `0`.
 - No task is marked complete without fresh command evidence in this ledger.
+
+## Verification debt cleanup progress (continued)
+
+- Model factory compatibility fix: only inject HTTP clients when the model signature explicitly declares them; focused verification `25 passed`.
+- Legacy `user_configs` compatibility: missing-table reads now return empty scoped config/model results while unrelated database errors still propagate; focused router/service verification passed.
+- Model registration response compatibility: `supports_text2image` uses a false default for minimal legacy row doubles while real ORM values remain intact; focused verification `1 passed`.
+- Tenant switching: added an active `get_tenant()` lookup and removed the redundant full membership list query from the switch route; focused verification `5 passed`.
+- Thread context: removed implicit tenant-context mutation from `ThreadDataMiddleware`, preserving strict explicit runtime/config resolution; focused verification `6 passed`.
+- Thread cleanup: authenticated deletion now removes both the current tenant-scoped path and the same-user legacy path; focused verification `9 passed`.
+- Tool search: restored the safe default `enabled=False`; focused verification `34 passed`.
+- Upload quota: legacy no-tenant calls retain the one-argument helper contract while tenant-scoped calls retain tenant isolation; focused verification `12 passed`.
+- Fresh backend full suite after all above fixes: `1192 passed, 18 skipped, 29 warnings`, exit `0`.
+- Post-Ruff regression rerun initially found one stale `models` router test seam (`get_user_models` import removed while the route now uses `get_available_models`); restoring the non-business compatibility export made the focused test pass (`1 passed`).
+- Ruff cleanup remains at `0` diagnostics; `compileall` and `git diff --check` pass.
+- Brand gate allowlist now explicitly records the tracked baseline/verification artifacts and active migration design documents that intentionally contain bounded legacy tokens; no broad path exclusion was added.
+- Final backend full suite after restoring the router test seam: `1192 passed, 18 skipped, 29 warnings` in `28.07s`, exit `0`.
+- Final frontend gates: `pnpm test:unit` `35 files / 86 tests passed`; `pnpm typecheck` exit `0`; `pnpm lint` exit `0` with `168` warnings and `0` errors; `pnpm build` exit `0`, compiled successfully and generated `42/42` pages.
+- Final brand gates: scanner passed with `13,112` tracked files and `488` allowlisted matches; environment and product identity checks passed. Compatibility warnings are expected for the bounded `OPSINTECH_*` bridge and detected `.opsintech` data.

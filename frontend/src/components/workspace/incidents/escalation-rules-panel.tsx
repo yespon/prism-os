@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   AlertTriangleIcon,
   ClockIcon,
@@ -15,10 +13,12 @@ import {
   UserPlusIcon,
   ZapIcon,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
   SheetContent,
@@ -71,14 +71,14 @@ export function EscalationRulesPanel() {
   const openEdit = (rule: AlertRule) => {
     setEditingRule(rule);
     setFormName(rule.name);
-    const conditions = (rule.condition_json || {}) as Record<string, unknown>;
+    const conditions = (rule.condition_json || {});
     setFormSeverity((conditions.severity as string[]) || []);
     setFormService((conditions.service as string) || "");
     setFormSource((conditions.source as string) || "");
     setFormMinDuration((conditions.min_duration_minutes as number) || 15);
-    const actions = (rule.action_json || {}) as Record<string, unknown>;
+    const actions = (rule.action_json || {});
     setFormAction((actions.action as string) || "escalate_severity");
-    setFormActionConfig((actions.user_id || actions.channel) as string || "");
+    setFormActionConfig((actions.user_id ?? actions.channel) as string ?? "");
     setSheetOpen(true);
   };
 
@@ -303,13 +303,13 @@ export function EscalationRulesPanel() {
           <div className="py-8 text-center rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800">
             <ShieldIcon className="h-8 w-8 mx-auto text-zinc-300 dark:text-zinc-600" />
             <p className="mt-2 text-sm text-muted-foreground">暂无升级规则</p>
-            <p className="text-xs text-muted-foreground mt-1">点击"添加规则"配置第一条告警升级策略</p>
+            <p className="text-xs text-muted-foreground mt-1">点击 &quot;添加规则&quot; 配置第一条告警升级策略</p>
           </div>
         ) : (
           <div className="space-y-2">
             {escalationRules.map(rule => {
-              const conditions = (rule.condition_json || {}) as Record<string, unknown>;
-              const actions = (rule.action_json || {}) as Record<string, unknown>;
+              const conditions = (rule.condition_json || {});
+              const actions = (rule.action_json || {});
               const actionLabel = ACTION_OPTIONS.find(o => o.value === (actions.action as string))?.label ?? (actions.action as string) ?? "unknown";
               return (
                 <div

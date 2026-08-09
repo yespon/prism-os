@@ -8,8 +8,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-import { useCurrentTenant, useTenantList } from "@/core/tenants";
 import { useI18n } from "@/core/i18n/hooks";
+import { useCurrentTenant, useTenantList } from "@/core/tenants";
 import { cn } from "@/lib/utils";
 
 type WorkspaceSwitcherProps = {

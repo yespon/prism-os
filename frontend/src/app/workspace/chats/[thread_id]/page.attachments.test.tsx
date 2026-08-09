@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitFor } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
 
 import type { UploadedFileInfo } from "@/core/uploads";
+import { fireEvent, render, screen, waitFor } from "@/test/utils";
 
 import { ThreadAttachmentsPanel } from "./thread-attachments-panel";
 

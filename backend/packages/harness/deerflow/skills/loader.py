@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from deerflow.config.extensions_config import get_extensions_config
 from deerflow.config.tenant_context import get_current_tenant_id
 from deerflow.database.user_config_store import load_user_skill_records
 
@@ -99,6 +100,14 @@ def load_skills(skills_path: Path | None = None, use_config: bool = True, enable
 
     skills = _load_public_skills(skills_path)
     current_tenant_id = get_current_tenant_id()
+
+    if use_config and not current_tenant_id:
+        # The standalone harness/client has no tenant database context.  In
+        # that mode the file-backed extensions config remains the source of
+        # truth for public skill enablement.
+        extensions_config = get_extensions_config()
+        for skill in skills:
+            skill.enabled = extensions_config.is_skill_enabled(skill.name, skill.category)
 
     if current_tenant_id:
         shared_owner_id = f"__tenant_shared_skill__:{current_tenant_id}"

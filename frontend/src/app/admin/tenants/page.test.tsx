@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
+
+import { render, screen, waitFor } from "@/test/utils";
 
 import AdminTenantsPage from "./page";
 

@@ -1,8 +1,8 @@
 "use client";
 
+import { Bot } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot } from "lucide-react";
 
 import {
   Sidebar,

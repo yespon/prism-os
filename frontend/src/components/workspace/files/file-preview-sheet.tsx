@@ -12,8 +12,8 @@ import {
 import { useEffect, useState, useMemo } from "react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -21,13 +21,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CodeEditor } from "@/components/workspace/code-editor";
+import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
 import { getAuthHeaders } from "@/core/api/auth-client";
 import { getPreviewUrl, getDownloadUrl } from "@/core/files/api";
 import { formatFileSize, getFileTypeIcon, getSourceTypeColor, getSourceTypeLabel } from "@/core/files/types";
 import type { FileObject } from "@/core/files/types";
-import { checkCodeFile, getFileExtensionDisplayName } from "@/core/utils/files";
-import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
 import { useI18n } from "@/core/i18n/hooks";
+import { checkCodeFile, getFileExtensionDisplayName } from "@/core/utils/files";
 import { cn } from "@/lib/utils";
 
 interface FilePreviewSheetProps {
@@ -49,7 +49,7 @@ export function FilePreviewSheet({
 
   const isSupportRawToggle = useMemo(() => {
     if (!file) return false;
-    const ext = file.display_name.toLowerCase().split(".").pop() || "";
+    const ext = file.display_name.toLowerCase().split(".").pop() ?? "";
     return ext === "md" || ext === "markdown" || ext === "html" || ext === "htm";
   }, [file]);
 
@@ -60,7 +60,7 @@ export function FilePreviewSheet({
   const fileType = useMemo(() => {
     if (!file) return { isCode: false, isMarkdown: false, isHtml: false, isBinary: false, extension: "" };
     const name = file.display_name.toLowerCase();
-    const ext = name.split(".").pop() || "";
+    const ext = name.split(".").pop() ?? "";
     
     const { isCodeFile } = checkCodeFile(file.display_name);
     const isMarkdown = ext === "md" || ext === "markdown";
@@ -268,7 +268,7 @@ export function FilePreviewSheet({
             </div>
           ) : fileType.isImage && binaryUrl ? (
             <div className="flex size-full items-center justify-center p-8 bg-zinc-100/30 dark:bg-zinc-900/10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              { }
               <img
                 src={binaryUrl}
                 alt={file.display_name}

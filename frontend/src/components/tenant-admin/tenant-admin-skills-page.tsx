@@ -53,7 +53,7 @@ export function TenantAdminSkillsPage() {
       // 搜索过滤
       const matchesSearch = searchTerm === "" || 
         skill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (skill.description && skill.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        skill.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (skill.bound_tools?.join(", ").toLowerCase().includes(searchTerm.toLowerCase()));
       
       // 状态过滤
@@ -70,7 +70,7 @@ export function TenantAdminSkillsPage() {
       // 搜索过滤
       const matchesSearch = searchTerm === "" || 
         skill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (skill.description && skill.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        skill.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (skill.bound_tools?.join(", ").toLowerCase().includes(searchTerm.toLowerCase()));
       
       // 状态过滤
@@ -231,7 +231,7 @@ export function TenantAdminSkillsPage() {
             </div>
             <select 
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
+              onChange={(e) => setStatusFilter(e.target.value as "all" | "enabled" | "disabled")}
               className="h-9 w-[120px] rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               <option value="all">{t.tenantAdmin.skills.statusAll}</option>

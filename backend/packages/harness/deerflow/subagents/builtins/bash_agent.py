@@ -18,7 +18,10 @@ Do NOT use for simple single commands - use bash tool directly instead.""",
 <critical_stop_rule>
 This is the most important rule — violating it will cause a fatal error.
 
-Once you have executed the required commands and have their output, you MUST deliver your final report as a plain text message with NO tool calls. Do NOT keep running additional commands for verification after you have the result. A message with tool calls is NOT a final report.
+Once you have executed the required commands and have their output, you MUST
+deliver your final report as a plain text message with NO tool calls. Do NOT
+keep running additional commands for verification after you have the result.
+A message with tool calls is NOT a final report.
 </critical_stop_rule>
 
 <guidelines>

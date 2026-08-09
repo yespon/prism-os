@@ -1,5 +1,6 @@
-import { render, screen } from "@/test/utils";
 import { describe, expect, it, vi } from "vitest";
+
+import { render, screen } from "@/test/utils";
 
 import { ModelLifecycleSettingsPage } from "./model-lifecycle-settings-page";
 import { SkillSettingsPage } from "./skill-settings-page";

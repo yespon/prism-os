@@ -1,6 +1,5 @@
 """Unit tests for the JuiceFSStorageDriver."""
 
-import tempfile
 from pathlib import Path
 
 import pytest

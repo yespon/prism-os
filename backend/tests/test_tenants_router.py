@@ -136,8 +136,16 @@ def test_switch_tenant_persists_and_returns_role(monkeypatch):
         calls["user_id"] = user_id
         calls["tenant_id"] = tenant_id
 
+    class _Tenant:
+        tenant_type = "general"
+
+    async def _fake_get_tenant(tenant_id: str):
+        assert tenant_id == "tenant-b"
+        return _Tenant()
+
     monkeypatch.setattr(tenants, "get_membership", _fake_get_membership)
     monkeypatch.setattr(tenants, "set_current_tenant_id", _fake_set_current_tenant_id)
+    monkeypatch.setattr(tenants, "get_tenant", _fake_get_tenant)
 
     with TestClient(app) as client:
         resp = client.post("/api/tenants/switch", json={"tenant_id": "tenant-b"})

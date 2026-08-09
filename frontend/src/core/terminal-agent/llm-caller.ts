@@ -171,7 +171,7 @@ function extractJSON(text: string): object | null {
   }
 
   // Try markdown code block
-  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/)
+  const codeBlockMatch = /```(?:json)?\s*([\s\S]*?)```/.exec(text)
   if (codeBlockMatch) {
     const content = codeBlockMatch[1]?.trim();
     if (content) {
@@ -184,7 +184,7 @@ function extractJSON(text: string): object | null {
   }
 
   // Try regex extraction
-  const jsonMatch = text.match(/\{[\s\S]*"needsInteraction"[\s\S]*\}/)
+  const jsonMatch = /\{[\s\S]*"needsInteraction"[\s\S]*\}/.exec(text)
   if (jsonMatch) {
     try {
       return JSON.parse(jsonMatch[0])

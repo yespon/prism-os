@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
+import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,10 +17,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { fetchAuthApi } from "@/core/api/auth-client";
-import type { TenantItem } from "@/core/tenants";
 import { login, logout } from "@/core/auth/auth-api";
 import { useI18n } from "@/core/i18n/hooks";
-import { AuthLocaleSwitcher } from "@/components/auth/locale-switcher";
+import type { TenantItem } from "@/core/tenants";
 
 // 浮动粒子背景组件
 function FloatingNodes() {

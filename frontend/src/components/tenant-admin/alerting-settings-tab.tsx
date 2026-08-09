@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import {
   SaveIcon,
   DatabaseIcon,
@@ -15,6 +13,9 @@ import {
   VolumeXIcon,
   ExternalLinkIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -60,14 +61,12 @@ export function AlertingSettingsTab() {
         : DEFAULT_NOTIFICATION;
 
       // Populate selected_chat_ids with all configured chat_ids by default if missing
-      if (!config.selected_chat_ids) {
-        config.selected_chat_ids = {};
-      }
+      config.selected_chat_ids ??= {};
       
       const chatIds = config.chat_ids || {};
       AVAILABLE_CHANNELS.forEach((ch) => {
         if (!config.selected_chat_ids![ch.key]) {
-          const rawIds = chatIds[ch.key] || "";
+          const rawIds = chatIds[ch.key] ?? "";
           config.selected_chat_ids![ch.key] = rawIds
             .split(",")
             .map((id) => id.trim())
@@ -129,7 +128,7 @@ export function AlertingSettingsTab() {
       // If enabling channel, select all registered IDs by default
       const selectedChatIds = { ...prev.selected_chat_ids };
       if (!isSelected && selectedChatIds[key]?.length === 0) {
-        const rawIds = prev.chat_ids[key] || "";
+        const rawIds = prev.chat_ids[key] ?? "";
         selectedChatIds[key] = rawIds
           .split(",")
           .map((id) => id.trim())
@@ -142,7 +141,7 @@ export function AlertingSettingsTab() {
 
   const toggleChatIdSelection = (channelKey: string, chatId: string) => {
     setNotif((prev) => {
-      const currentSelected = prev.selected_chat_ids?.[channelKey] || [];
+      const currentSelected = prev.selected_chat_ids?.[channelKey] ?? [];
       const nextSelected = currentSelected.includes(chatId)
         ? currentSelected.filter((id) => id !== chatId)
         : [...currentSelected, chatId];
@@ -329,7 +328,7 @@ export function AlertingSettingsTab() {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       {AVAILABLE_CHANNELS.map((ch) => {
-                        const chatIdVal = configuredChatIds[ch.key]?.trim() || "";
+                        const chatIdVal = configuredChatIds[ch.key]?.trim() ?? "";
                         const isConfigured = chatIdVal !== "";
                         const isChannelSelected = notif.channels.includes(ch.key) && isConfigured;
 
@@ -393,7 +392,7 @@ export function AlertingSettingsTab() {
                                   </span>
                                   <div className="max-h-24 overflow-y-auto space-y-1.5 pr-1">
                                     {chatIdsList.map((cid) => {
-                                      const isCidChecked = notif.selected_chat_ids?.[ch.key]?.includes(cid) || false;
+                                      const isCidChecked = notif.selected_chat_ids?.[ch.key]?.includes(cid) ?? false;
 
                                       return (
                                         <label
@@ -512,7 +511,7 @@ export function AlertingSettingsTab() {
                     </div>
                     <div className="pt-1">
                       <Switch
-                        checked={notif.quiet_hours?.enabled || false}
+                        checked={notif.quiet_hours?.enabled ?? false}
                         onCheckedChange={(v) =>
                           setNotif({
                             ...notif,
@@ -570,7 +569,7 @@ export function AlertingSettingsTab() {
                     </div>
                     <div className="pt-1">
                       <Switch
-                        checked={notif.digest?.enabled || false}
+                        checked={notif.digest?.enabled ?? false}
                         onCheckedChange={(v) =>
                           setNotif({
                             ...notif,

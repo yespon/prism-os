@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   ActivityIcon,
   BotIcon,
@@ -14,6 +13,7 @@ import {
   VolumeXIcon,
   WrenchIcon,
 } from "lucide-react";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate, getSeverityBadgeStyles } from "@/core/alerting";
@@ -32,6 +32,20 @@ interface IncidentTimelineProps {
   signals?: Signal[];
   timeline?: TimelineEvent[];
   isLoading?: boolean;
+}
+
+function displayMetadataValue(value: unknown, fallback = ""): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (value === null || value === undefined) return fallback;
+  return JSON.stringify(value);
+}
+
+function metadataKey(metadata: Record<string, unknown>, type: string, timestamp: string): string {
+  const signalId = metadata.signal_id;
+  return typeof signalId === "string" || typeof signalId === "number"
+    ? String(signalId)
+    : `${type}-${timestamp}`;
 }
 
 const eventTypeConfig: Record<string, { icon: React.ComponentType<{ className?: string }>; color: string; bgColor: string }> = {
@@ -70,7 +84,7 @@ export function IncidentTimeline({ signals, timeline, isLoading }: IncidentTimel
   const hasTimeline = timeline && timeline.length > 0;
   const hasSignals = signals && signals.length > 0;
 
-  const totalEvents = hasTimeline ? timeline!.length : hasSignals ? signals!.length : 0;
+  const totalEvents = hasTimeline ? timeline.length : hasSignals ? signals.length : 0;
 
   return (
     <div className="rounded-2xl border border-zinc-200/80 bg-background p-6 shadow-sm dark:border-zinc-800/80">
@@ -98,7 +112,7 @@ export function IncidentTimeline({ signals, timeline, isLoading }: IncidentTimel
         <div className="mt-6 relative pl-4 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-5 ml-2.5">
           {hasTimeline ? (
             // Unified timeline rendering
-            timeline!.map((event, idx) => {
+            timeline.map((event, idx) => {
               const config = eventTypeConfig[event.type];
               const bgColor = config?.bgColor ?? "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800";
               const color = config?.color ?? "text-rose-600 dark:text-rose-400";
@@ -138,16 +152,16 @@ export function IncidentTimeline({ signals, timeline, isLoading }: IncidentTimel
                     {event.type === "signal" && event.metadata && (
                       <>
                         <div className="mt-2 flex items-center gap-3 text-[10px] text-zinc-500">
-                          <span>来源: <span className="font-semibold text-zinc-700 dark:text-zinc-400 uppercase">{String(event.metadata.source || "")}</span></span>
+                          <span>来源: <span className="font-semibold text-zinc-700 dark:text-zinc-400 uppercase">{displayMetadataValue(event.metadata.source)}</span></span>
                           {Boolean(event.metadata.service) && <span>服务: <span className="font-medium">{String(event.metadata.service)}</span></span>}
-                          <Badge variant="outline" className={`${getSeverityBadgeStyles(String(event.metadata.severity || "warning"))} border text-[9px] px-1.5 rounded py-0`}>
-                            {String(event.metadata.severity)}
+                          <Badge variant="outline" className={`${getSeverityBadgeStyles(displayMetadataValue(event.metadata.severity, "warning"))} border text-[9px] px-1.5 rounded py-0`}>
+                            {displayMetadataValue(event.metadata.severity, "warning")}
                           </Badge>
                         </div>
 
                         {/* Labels JSON */}
                         {event.metadata.labels_json && typeof event.metadata.labels_json === "object" && Object.keys(event.metadata.labels_json as Record<string, unknown>).length > 0 && (() => {
-                          const labelsKey = String(event.metadata?.signal_id || `${event.type}-${event.timestamp}`);
+                          const labelsKey = metadataKey(event.metadata, event.type, event.timestamp);
                           const isExpanded = expandedLabels[labelsKey];
                           const labelCount = Object.keys(event.metadata.labels_json as Record<string, unknown>).length;
                           return (
@@ -184,13 +198,13 @@ export function IncidentTimeline({ signals, timeline, isLoading }: IncidentTimel
                           <div className="mt-3 pt-2.5 border-t border-dashed border-zinc-200/60 dark:border-zinc-800">
                             <button
                               type="button"
-                              onClick={() => togglePayload(String(event.metadata?.signal_id || `${event.type}-${event.timestamp}`))}
+                              onClick={() => togglePayload(metadataKey(event.metadata ?? {}, event.type, event.timestamp))}
                               className="flex items-center gap-1 text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold hover:text-indigo-500 transition-colors cursor-pointer"
                             >
-                              {expandedPayloads[String(event.metadata?.signal_id || `${event.type}-${event.timestamp}`)] ? "收起原始告警 Payload (Collapse)" : "查看原始告警 Payload (Expand)"}
+                              {expandedPayloads[metadataKey(event.metadata ?? {}, event.type, event.timestamp)] ? "收起原始告警 Payload (Collapse)" : "查看原始告警 Payload (Expand)"}
                             </button>
 
-                            {expandedPayloads[String(event.metadata?.signal_id || `${event.type}-${event.timestamp}`)] && (
+                            {expandedPayloads[metadataKey(event.metadata ?? {}, event.type, event.timestamp)] && (
                               <pre className="mt-2 p-3 rounded-lg bg-zinc-950 text-zinc-100 text-[10px] font-mono overflow-x-auto border border-zinc-800/80 shadow-inner select-all leading-normal max-h-60">
                                 {typeof event.metadata.raw_payload === "string" ? event.metadata.raw_payload : JSON.stringify(event.metadata.raw_payload, null, 2)}
                               </pre>
@@ -205,7 +219,7 @@ export function IncidentTimeline({ signals, timeline, isLoading }: IncidentTimel
             })
           ) : hasSignals ? (
             // Legacy signal-only rendering
-            signals!.map((sig, idx) => (
+            signals.map((sig, idx) => (
               <div key={sig.id} className="relative pl-5">
 
                 <span className={`absolute -left-[21.5px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full border bg-background ${

@@ -72,6 +72,16 @@ async def get_membership(user_id: str, tenant_id: str) -> TenantMembership | Non
         return row
 
 
+async def get_tenant(tenant_id: str) -> Tenant | None:
+    """Return an active tenant by id."""
+    session_factory = get_session_factory()
+    async with session_factory() as session:
+        tenant = await session.get(Tenant, tenant_id)
+        if tenant is None or tenant.status != "active":
+            return None
+        return tenant
+
+
 async def ensure_default_tenant_for_user(user_id: str, role: str = "member", tenant_type: str = "general") -> TenantMembership:
     """Ensure user has at least one active tenant membership.
 

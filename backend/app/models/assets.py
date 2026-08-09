@@ -5,9 +5,8 @@ conventions established in deerflow.database.models.
 """
 
 from datetime import UTC, datetime
-from typing import Any
 
-from sqlalchemy import Column, DateTime, String, UniqueConstraint, func
+from sqlalchemy import Column, DateTime, UniqueConstraint, func
 from sqlmodel import Field, SQLModel
 
 

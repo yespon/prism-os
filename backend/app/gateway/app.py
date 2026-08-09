@@ -2,7 +2,7 @@ import asyncio
 import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 
 from fastapi import FastAPI
 
@@ -13,7 +13,6 @@ from app.gateway.routers import (
     agents,
     announcements,
     artifacts,
-    auth as auth_routes,
     channels,
     files,
     mcp,
@@ -27,6 +26,9 @@ from app.gateway.routers import (
     tenants,
     threads,
     uploads,
+)
+from app.gateway.routers import (
+    auth as auth_routes,
 )
 from deerflow.config.app_config import get_app_config
 
@@ -372,16 +374,15 @@ async def _run_digest_scheduler() -> None:
 
             now = datetime.now(UTC)
             today = now.strftime("%Y%m%d")
-            current_utc_time = now.strftime("%H:%M")
-
             # Reset fired_dates when the day rolls over (UTC baseline)
             if today != _last_reset_date:
                 _last_reset_date = today
                 fired_dates = {}
 
+            from sqlalchemy import select
+
             from app.alerting.notify import send_daily_digest
             from app.models.alerting import AlertingSettings
-            from sqlalchemy import select
             from deerflow.database.session import get_session_factory
 
             async with get_session_factory()() as session:

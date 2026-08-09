@@ -5,18 +5,17 @@ marking for summary messages.
 """
 
 import logging
-from typing import Any, NotRequired, override
+from typing import Any, override
 
 from langchain.agents import AgentState
 from langchain.agents.middleware import AgentMiddleware
 from langchain.agents.middleware.summarization import SummarizationMiddleware
-from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langgraph.runtime import Runtime
 
+from deerflow.config import get_app_config
 from deerflow.config.summarization_config import get_summarization_config
 from deerflow.models.factory import create_chat_model
-from deerflow.config import get_app_config
 
 logger = logging.getLogger(__name__)
 
