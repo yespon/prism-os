@@ -1,0 +1,6 @@
+backend-collection=0
+frontend-unit=1
+frontend-lint=1
+backend-pytest=1
+backend-ruff=1
+frontend-build=1

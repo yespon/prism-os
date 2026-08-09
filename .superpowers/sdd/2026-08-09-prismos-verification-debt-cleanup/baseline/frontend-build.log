@@ -1,0 +1,55 @@
+
+> prismos-frontend@0.2.0-alpha.1 build /Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend
+> next build
+
+▲ Next.js 16.1.7 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to /var/folders/zv/rd_ykqf93wld_8mwr27n_f2w0000gn/T/next-panic-e3ea472860d1baf05f7903ab3b081a60.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20Failed%20to%20write%20app%20endpoint%20%2Fpage&body=Turbopack%20version%3A%20%6093c3993a%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20Failed%20to%20write%20app%20endpoint%20%2Fpage%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+
+> Build error occurred
+Error [TurbopackInternalError]: Failed to write app endpoint /page
+
+Caused by:
+- [project]/node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/katex.min.css [app-client] (css)
+- creating new process
+- binding to a port
+- Operation not permitted (os error 1)
+
+Debug info:
+- Execution of get_all_written_entrypoints_with_issues_operation failed
+- Execution of EntrypointsOperation::new failed
+- Execution of all_entrypoints_write_to_disk_operation failed
+- Execution of Project::emit_all_output_assets failed
+- Execution of *emit_assets failed
+- Execution of all_assets_from_entries_operation failed
+- Execution of *all_assets_from_entries failed
+- Execution of output_assets_operation failed
+- Execution of <AppEndpoint as Endpoint>::output failed
+- Failed to write app endpoint /page
+- Execution of AppEndpoint::output failed
+- Execution of whole_app_module_graph_operation failed
+- Execution of *ModuleGraph::from_single_graph failed
+- Execution of SingleModuleGraph::new_with_entries failed
+- [project]/node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/katex.min.css [app-client] (css)
+- Execution of primary_chunkable_referenced_modules failed
+- Execution of <CssModuleAsset as Module>::references failed
+- Execution of parse_css failed
+- Execution of <PostCssTransformedAsset as Asset>::content failed
+- Execution of PostCssTransformedAsset::process failed
+- Execution of evaluate_webpack_loader failed
+- creating new process
+- binding to a port
+- Operation not permitted (os error 1)
+    at <unknown> (TurbopackInternalError: Failed to write app endpoint /page) {
+  type: 'TurbopackInternalError',
+  location: undefined
+}
+ ELIFECYCLE  Command failed with exit code 1.

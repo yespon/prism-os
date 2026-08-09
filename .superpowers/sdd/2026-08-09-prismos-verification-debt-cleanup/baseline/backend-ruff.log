@@ -1,0 +1,3190 @@
+UP035 `typing.Dict` is deprecated, use `dict` instead
+ --> app/agent/prompts.py:1:1
+  |
+1 | from typing import Any, Dict, List
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2 |
+3 | CMD_RULES = """
+  |
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> app/agent/prompts.py:1:1
+  |
+1 | from typing import Any, Dict, List
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2 |
+3 | CMD_RULES = """
+  |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+   --> app/agent/prompts.py:135:64
+    |
+133 | """
+134 |
+135 | def build_dynamic_prompt(mode: str, asset_ip: str = "", todos: List[Dict[str, Any]] = None, skill_instructions: str = "") -> str:
+    |                                                                ^^^^
+136 |     todos = todos or []
+    |
+help: Replace with `list`
+
+UP006 [*] Use `dict` instead of `Dict` for type annotation
+   --> app/agent/prompts.py:135:69
+    |
+133 | """
+134 |
+135 | def build_dynamic_prompt(mode: str, asset_ip: str = "", todos: List[Dict[str, Any]] = None, skill_instructions: str = "") -> str:
+    |                                                                     ^^^^
+136 |     todos = todos or []
+    |
+help: Replace with `dict`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/agent/sandbox_graph.py:1:1
+   |
+ 1 | / import json
+ 2 | | import logging
+ 3 | | from typing import Annotated, Any, Literal, TypedDict
+ 4 | | from langchain_core.messages import AnyMessage, HumanMessage, SystemMessage, ToolMessage, AIMessage
+ 5 | | from langchain_core.tools import tool
+ 6 | | from langgraph.graph import StateGraph, START, END
+ 7 | | from langgraph.graph.message import add_messages
+ 8 | | from deerflow.models.factory import create_chat_model
+ 9 | | from langgraph.checkpoint.memory import MemorySaver
+   | |___________________________________________________^
+10 |
+11 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `json` imported but unused
+ --> app/agent/sandbox_graph.py:1:8
+  |
+1 | import json
+  |        ^^^^
+2 | import logging
+3 | from typing import Annotated, Any, Literal, TypedDict
+  |
+help: Remove unused import: `json`
+
+F401 [*] `typing.Any` imported but unused
+ --> app/agent/sandbox_graph.py:3:31
+  |
+1 | import json
+2 | import logging
+3 | from typing import Annotated, Any, Literal, TypedDict
+  |                               ^^^
+4 | from langchain_core.messages import AnyMessage, HumanMessage, SystemMessage, ToolMessage, AIMessage
+5 | from langchain_core.tools import tool
+  |
+help: Remove unused import: `typing.Any`
+
+F401 [*] `langchain_core.messages.HumanMessage` imported but unused
+ --> app/agent/sandbox_graph.py:4:49
+  |
+2 | import logging
+3 | from typing import Annotated, Any, Literal, TypedDict
+4 | from langchain_core.messages import AnyMessage, HumanMessage, SystemMessage, ToolMessage, AIMessage
+  |                                                 ^^^^^^^^^^^^
+5 | from langchain_core.tools import tool
+6 | from langgraph.graph import StateGraph, START, END
+  |
+help: Remove unused import
+
+F401 [*] `langchain_core.messages.ToolMessage` imported but unused
+ --> app/agent/sandbox_graph.py:4:78
+  |
+2 | import logging
+3 | from typing import Annotated, Any, Literal, TypedDict
+4 | from langchain_core.messages import AnyMessage, HumanMessage, SystemMessage, ToolMessage, AIMessage
+  |                                                                              ^^^^^^^^^^^
+5 | from langchain_core.tools import tool
+6 | from langgraph.graph import StateGraph, START, END
+  |
+help: Remove unused import
+
+F401 [*] `langchain_core.messages.AIMessage` imported but unused
+ --> app/agent/sandbox_graph.py:4:91
+  |
+2 | import logging
+3 | from typing import Annotated, Any, Literal, TypedDict
+4 | from langchain_core.messages import AnyMessage, HumanMessage, SystemMessage, ToolMessage, AIMessage
+  |                                                                                           ^^^^^^^^^
+5 | from langchain_core.tools import tool
+6 | from langgraph.graph import StateGraph, START, END
+  |
+help: Remove unused import
+
+E402 Module level import not at top of file
+  --> app/agent/sandbox_graph.py:76:1
+   |
+74 |     return {"messages": [response]}
+75 |         
+76 | from langgraph.prebuilt import ToolNode
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+77 |
+78 | execute_node = ToolNode(sandbox_tools)
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/agent/terminal_graph.py:12:1
+   |
+10 |   """
+11 |
+12 | / import asyncio
+13 | | import logging
+14 | | import operator
+15 | | import uuid
+16 | | import shlex
+17 | | from typing import Annotated, Any, Literal, TypedDict
+18 | |
+19 | | from langchain_core.messages import AnyMessage, AIMessage, HumanMessage, SystemMessage, ToolMessage
+20 | | from langgraph.checkpoint.memory import MemorySaver
+21 | | from langgraph.graph import END, START, StateGraph
+22 | | from langgraph.graph.message import add_messages
+23 | | from langgraph.types import interrupt
+24 | |
+25 | | from app.agent.terminal_tools import (
+26 | |     _build_web_fetch_command,
+27 | |     _build_write_file_command,
+28 | |     terminal_tools_list,
+29 | | )
+30 | | from app.services.terminal.security import CommandSecurityResult, security_service
+31 | | from app.services.terminal.session import build_ssh_command, session_manager
+32 | | from deerflow.models.factory import create_chat_model
+33 | | from sqlalchemy import select as sa_select
+34 | | from app.models.assets import Keychain, LocalAsset
+35 | | from deerflow.database.session import get_session_factory
+   | |_________________________________________________________^
+36 |
+37 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `operator` imported but unused
+  --> app/agent/terminal_graph.py:14:8
+   |
+12 | import asyncio
+13 | import logging
+14 | import operator
+   |        ^^^^^^^^
+15 | import uuid
+16 | import shlex
+   |
+help: Remove unused import: `operator`
+
+F401 [*] `app.services.terminal.security.CommandSecurityResult` imported but unused
+  --> app/agent/terminal_graph.py:30:44
+   |
+28 |     terminal_tools_list,
+29 | )
+30 | from app.services.terminal.security import CommandSecurityResult, security_service
+   |                                            ^^^^^^^^^^^^^^^^^^^^^
+31 | from app.services.terminal.session import build_ssh_command, session_manager
+32 | from deerflow.models.factory import create_chat_model
+   |
+help: Remove unused import: `app.services.terminal.security.CommandSecurityResult`
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/agent/terminal_graph.py:377:9
+    |
+376 |           # Load user security settings from database
+377 | /         from app.models.terminal import TerminalSecuritySettings
+378 | |         from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL
+    | |_________________________________________________________________________________________________^
+379 |
+380 |           security_config = DEFAULT_SECURITY_CONFIG
+    |
+help: Organize imports
+
+F541 [*] f-string without any placeholders
+   --> app/agent/terminal_graph.py:869:21
+    |
+868 |     if not last_ai_with_tools:
+869 |         logger.info(f"[_route_after_observation] AGENT mode → END (final summary, no tool calls)")
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+870 |         return END
+    |
+help: Remove extraneous `f` prefix
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/agent/terminal_tools.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / import asyncio
+ 9 | | import logging
+10 | | import time
+11 | | from typing import Optional
+12 | |
+13 | | from langchain_core.tools import tool
+14 | | from langgraph.types import interrupt
+15 | |
+16 | | from app.services.terminal.session import session_manager
+17 | | from app.models.assets import Keychain, LocalAsset
+18 | | from deerflow.database.session import get_session_factory
+19 | | from sqlalchemy import select as sa_select
+   | |__________________________________________^
+20 |
+21 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `time` imported but unused
+  --> app/agent/terminal_tools.py:10:8
+   |
+ 8 | import asyncio
+ 9 | import logging
+10 | import time
+   |        ^^^^
+11 | from typing import Optional
+   |
+help: Remove unused import: `time`
+
+F401 [*] `typing.Optional` imported but unused
+  --> app/agent/terminal_tools.py:11:20
+   |
+ 9 | import logging
+10 | import time
+11 | from typing import Optional
+   |                    ^^^^^^^^
+12 |
+13 | from langchain_core.tools import tool
+   |
+help: Remove unused import: `typing.Optional`
+
+F541 [*] f-string without any placeholders
+   --> app/agent/terminal_tools.py:118:25
+    |
+116 |         err_msg = str(e)
+117 |         if "already executing" in err_msg and session.command_future:
+118 |             logger.info(f"[terminal_tool] Waiting for previous command to finish...")
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+119 |             try:
+120 |                 await asyncio.wait_for(session.command_future, timeout=25.0)
+    |
+help: Remove extraneous `f` prefix
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/agent/terminal_tools.py:249:5
+    |
+247 |       mode = _get_mode()
+248 |
+249 | /     from app.models.terminal import TerminalSecuritySettings
+250 | |     from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL, security_service
+    | |_______________________________________________________________________________________________________________^
+251 |
+252 |       security_config = DEFAULT_SECURITY_CONFIG
+    |
+help: Organize imports
+
+F401 [*] `shlex` imported but unused
+   --> app/agent/terminal_tools.py:320:12
+    |
+318 |         host_index: Index of the host (0-based) from the connected assets list. Default -1 (targets ALL connected hosts).
+319 |     """
+320 |     import shlex
+    |            ^^^^^
+321 |     cmd = f"cat '{path}' 2>/dev/null | head -n {max_lines}"
+    |
+help: Remove unused import: `shlex`
+
+F401 [*] `shlex` imported but unused
+   --> app/agent/terminal_tools.py:364:12
+    |
+362 |         host_index: Index of the host (0-based) from the connected assets list. Default -1 (targets ALL connected hosts).
+363 |     """
+364 |     import shlex
+    |            ^^^^^
+365 |     max_size_bytes = max_size_mb * 1024 * 1024
+366 |     cmd = f"find '{path}' -type f -size -{max_size_bytes}c -exec grep -rn --color=never '{pattern}' {{}} + 2>/dev/null | head -n {max…
+    |
+help: Remove unused import: `shlex`
+
+F401 [*] `datetime.UTC` imported but unused
+  --> app/alerting/ai_analysis.py:25:22
+   |
+23 | import logging
+24 | import uuid
+25 | from datetime import UTC, datetime
+   |                      ^^^
+26 |
+27 | from sqlalchemy.ext.asyncio import AsyncSession
+   |
+help: Remove unused import
+
+F401 [*] `datetime.datetime` imported but unused
+  --> app/alerting/ai_analysis.py:25:27
+   |
+23 | import logging
+24 | import uuid
+25 | from datetime import UTC, datetime
+   |                           ^^^^^^^^
+26 |
+27 | from sqlalchemy.ext.asyncio import AsyncSession
+   |
+help: Remove unused import
+
+UP041 [*] Replace aliased errors with `TimeoutError`
+   --> app/alerting/ai_analysis.py:110:12
+    |
+108 |         logger.info("ai_analysis: completed for incident=%s", incident.incident_key)
+109 |
+110 |     except asyncio.TimeoutError:
+    |            ^^^^^^^^^^^^^^^^^^^^
+111 |         logger.error("ai_analysis: timed out after %ds for incident=%s", LLM_TIMEOUT_SECONDS, incident.incident_key)
+112 |         incident.ai_summary = "AI 解读超时，请稍后重试"
+    |
+help: Replace `asyncio.TimeoutError` with builtin `TimeoutError`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> app/alerting/diagnosis_helper.py:1:1
+  |
+1 | / from datetime import UTC, datetime, timedelta
+2 | | from sqlalchemy import select
+3 | | from sqlalchemy.ext.asyncio import AsyncSession
+4 | | from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource, ChangeEvent
+  | |________________________________________________________________________________________________________^
+5 |
+6 |   def extract_diagnosis_agent_id_from_config(config_json: dict | None) -> str | None:
+  |
+help: Organize imports
+
+E741 Ambiguous variable name: `l`
+  --> app/alerting/diagnosis_helper.py:26:35
+   |
+24 |         )
+25 |     )
+26 |     signal_ids = [l.signal_id for l in links_result.scalars().all()]
+   |                                   ^
+27 |     if not signal_ids:
+28 |         return None
+   |
+
+E741 Ambiguous variable name: `l`
+  --> app/alerting/diagnosis_helper.py:85:32
+   |
+83 |         )
+84 |     )
+85 |     sig_ids = [l.signal_id for l in links_result.scalars().all()]
+   |                                ^
+86 |
+87 |     signal_summaries = []
+   |
+
+F541 [*] f-string without any placeholders
+   --> app/alerting/diagnosis_helper.py:131:14
+    |
+129 |               )
+130 |
+131 |       prompt = f"""## Incident Diagnosis Request
+    |  ______________^
+132 | |
+133 | | ### Agent Role
+134 | | You are acting as a diagnostic agent with the following configuration:
+135 | | """
+    | |___^
+136 |       
+137 |       if agent_system_prompt:
+    |
+help: Remove extraneous `f` prefix
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/alerting/diagnosis_sse.py:12:1
+   |
+10 |   """
+11 |
+12 | / from __future__ import annotations
+13 | |
+14 | | import json
+15 | | from dataclasses import dataclass, field
+16 | | from typing import Any
+   | |______________________^
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/alerting/escalation.py:100:5
+    |
+ 98 |       """
+ 99 |       results: list[dict] = []
+100 | /     from app.models.alerting import IncidentAction
+101 | |     import uuid
+    | |_______________^
+102 |
+103 |       for rule in matching_rules:
+    |
+help: Organize imports
+
+F401 [*] `sqlalchemy.update` imported but unused
+  --> app/alerting/incident_manager.py:15:46
+   |
+13 | from datetime import UTC, datetime, timedelta
+14 |
+15 | from sqlalchemy import exists, func, select, update
+   |                                              ^^^^^^
+16 | from sqlalchemy.ext.asyncio import AsyncSession
+   |
+help: Remove unused import: `sqlalchemy.update`
+
+F821 Undefined name `logger`
+   --> app/alerting/incident_manager.py:202:13
+    |
+200 |             schedule_notification(send_incident_resolved(incident, duration_minutes))
+201 |         except Exception:
+202 |             logger.exception("Failed to schedule resolved notification for incident=%s", incident.incident_key)
+    |             ^^^^^^
+203 |
+204 |     session.add(incident)
+    |
+
+F821 Undefined name `logger`
+   --> app/alerting/incident_manager.py:311:9
+    |
+309 |         schedule_notification(send_incident_resolved(incident, duration_minutes))
+310 |     except Exception:
+311 |         logger.exception("Failed to schedule resolved notification")
+    |         ^^^^^^
+312 |     session.add(action)
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/alerting/ingest.py:192:9
+    |
+191 |         # Schedule IM notification (delayed, waits for AI)
+192 |         from app.alerting.notify import send_incident_created, schedule_notification
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+193 |
+194 |         schedule_notification(send_incident_created(incident))
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/alerting/ingest.py:217:13
+    |
+215 |     async def _run():
+216 |         try:
+217 |             from app.alerting.escalation import evaluate_escalation_rules, apply_escalation_actions
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+218 |
+219 |             async with get_session_factory()() as session:
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/alerting/ingest.py:272:13
+    |
+270 |       async def _run():
+271 |           try:
+272 | /             from app.models.agents import CustomAgent
+273 | |             from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt
+274 | |             from langgraph_sdk import get_client
+275 | |             from sqlmodel import select
+    | |_______________________________________^
+276 |
+277 |               async with get_session_factory()() as session:
+    |
+help: Organize imports
+
+F541 [*] f-string without any placeholders
+   --> app/alerting/notify.py:142:22
+    |
+141 |     if incident.ai_summary:
+142 |         lines.append(f"")
+    |                      ^^^
+143 |         lines.append(f"📋 *AI 解读:* {incident.ai_summary[:200]}")
+    |
+help: Remove extraneous `f` prefix
+
+F821 Undefined name `raw_alert`
+  --> app/alerting/providers/grafana.py:54:26
+   |
+52 |             id="",
+53 |             tenant_id="",
+54 |             raw_alert_id=raw_alert.id,
+   |                          ^^^^^^^^^
+55 |             source=self.provider_type,
+56 |             service=labels.get("service", ""),
+   |
+
+F401 [*] `dataclasses.field` imported but unused
+  --> app/alerting/rule_engine.py:23:36
+   |
+21 | import operator
+22 | import re
+23 | from dataclasses import dataclass, field
+   |                                    ^^^^^
+24 | from datetime import UTC, datetime
+25 | from typing import Any
+   |
+help: Remove unused import: `dataclasses.field`
+
+F811 Redefinition of unused `field` from line 23
+  --> app/alerting/rule_engine.py:74:5
+   |
+72 | def _evaluate_condition(condition: dict, data: dict[str, Any]) -> bool:
+73 |     """Evaluate a single condition against signal data."""
+74 |     field = condition.get("field", "")
+   |     ^^^^^ `field` redefined here
+75 |     op_name = condition.get("op", "eq")
+76 |     expected = condition.get("value")
+   |
+  ::: app/alerting/rule_engine.py:23:36
+   |
+21 | import operator
+22 | import re
+23 | from dataclasses import dataclass, field
+   |                                    ----- previous definition of `field` here
+24 | from datetime import UTC, datetime
+25 | from typing import Any
+   |
+help: Remove definition: `field`
+
+F401 [*] `json` imported but unused
+  --> app/alerting/ticket_provider.py:8:8
+   |
+ 6 | """
+ 7 |
+ 8 | import json
+   |        ^^^^
+ 9 | import logging
+10 | from dataclasses import dataclass
+   |
+help: Remove unused import: `json`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/app.py:1:1
+   |
+ 1 | / import asyncio
+ 2 | | import logging
+ 3 | | from collections.abc import AsyncGenerator
+ 4 | | from contextlib import asynccontextmanager
+ 5 | | from datetime import UTC, datetime, timedelta
+ 6 | |
+ 7 | | from fastapi import FastAPI
+ 8 | |
+ 9 | | from app.gateway.bootstrap_admin import bootstrap_admin
+10 | | from app.gateway.config import get_gateway_config, get_plugin_states, set_gateway_config
+11 | | from app.gateway.routers import (
+12 | |     admin,
+13 | |     agents,
+14 | |     announcements,
+15 | |     artifacts,
+16 | |     auth as auth_routes,
+17 | |     channels,
+18 | |     files,
+19 | |     mcp,
+20 | |     memory,
+21 | |     models,
+22 | |     plugins,
+23 | |     skills,
+24 | |     suggestions,
+25 | |     summarization,
+26 | |     templates,
+27 | |     tenants,
+28 | |     threads,
+29 | |     uploads,
+30 | | )
+31 | | from deerflow.config.app_config import get_app_config
+   | |_____________________________________________________^
+32 |
+33 |   # Configure logging
+   |
+help: Organize imports
+
+F401 [*] `datetime.timedelta` imported but unused
+ --> app/gateway/app.py:5:37
+  |
+3 | from collections.abc import AsyncGenerator
+4 | from contextlib import asynccontextmanager
+5 | from datetime import UTC, datetime, timedelta
+  |                                     ^^^^^^^^^
+6 |
+7 | from fastapi import FastAPI
+  |
+help: Remove unused import: `datetime.timedelta`
+
+F841 Local variable `current_utc_time` is assigned to but never used
+   --> app/gateway/app.py:375:13
+    |
+373 |             now = datetime.now(UTC)
+374 |             today = now.strftime("%Y%m%d")
+375 |             current_utc_time = now.strftime("%H:%M")
+    |             ^^^^^^^^^^^^^^^^
+376 |
+377 |             # Reset fired_dates when the day rolls over (UTC baseline)
+    |
+help: Remove assignment to unused variable `current_utc_time`
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/app.py:382:13
+    |
+380 |                   fired_dates = {}
+381 |
+382 | /             from app.alerting.notify import send_daily_digest
+383 | |             from app.models.alerting import AlertingSettings
+384 | |             from sqlalchemy import select
+385 | |             from deerflow.database.session import get_session_factory
+    | |_____________________________________________________________________^
+386 |
+387 |               async with get_session_factory()() as session:
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/auth.py:1:1
+   |
+ 1 | / import logging
+ 2 | | from datetime import UTC, datetime
+ 3 | |
+ 4 | | from fastapi import Request
+ 5 | | from sqlalchemy import text
+ 6 | | from starlette.middleware.base import BaseHTTPMiddleware
+ 7 | | from starlette.responses import JSONResponse
+ 8 | |
+ 9 | | from app.gateway.auth_db import (
+10 | |     auth_connection,
+11 | |     column_exists,
+12 | |     _row_to_dict,
+13 | | )
+14 | | from deerflow.config.tenant_context import reset_tenant_context, set_tenant_context
+15 | | from deerflow.database.tenant_service import ensure_default_tenant_for_user, get_membership, list_user_tenants, normalize_tenant_role
+16 | | from deerflow.database.user_config_service import get_current_tenant_id, set_current_tenant_id
+   | |______________________________________________________________________________________________^
+17 |
+18 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+E402 Module level import not at top of file
+  --> app/gateway/auth_db.py:14:1
+   |
+12 | logger = logging.getLogger(__name__)
+13 |
+14 | from sqlalchemy import Connection, Engine, create_engine, text
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from sqlalchemy.exc import OperationalError
+   |
+
+E402 Module level import not at top of file
+  --> app/gateway/auth_db.py:15:1
+   |
+14 | from sqlalchemy import Connection, Engine, create_engine, text
+15 | from sqlalchemy.exc import OperationalError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 |
+17 | from deerflow.config import get_app_config
+   |
+
+F401 [*] `sqlalchemy.exc.OperationalError` imported but unused
+  --> app/gateway/auth_db.py:15:28
+   |
+14 | from sqlalchemy import Connection, Engine, create_engine, text
+15 | from sqlalchemy.exc import OperationalError
+   |                            ^^^^^^^^^^^^^^^^
+16 |
+17 | from deerflow.config import get_app_config
+   |
+help: Remove unused import: `sqlalchemy.exc.OperationalError`
+
+E402 Module level import not at top of file
+  --> app/gateway/auth_db.py:17:1
+   |
+15 | from sqlalchemy.exc import OperationalError
+16 |
+17 | from deerflow.config import get_app_config
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/auth_repository.py:1:1
+   |
+ 1 | / from datetime import UTC, datetime
+ 2 | | from typing import Any
+ 3 | |
+ 4 | | from sqlalchemy import text
+ 5 | | from sqlalchemy.exc import SQLAlchemyError
+ 6 | |
+ 7 | | from app.gateway.auth_crypto import hash_password
+ 8 | | from app.gateway.auth_db import (
+ 9 | |     auth_connection,
+10 | |     column_exists,
+11 | |     get_db_type,
+12 | |     table_exists,
+13 | |     _row_to_dict,
+14 | | )
+   | |_^
+   |
+help: Organize imports
+
+F401 [*] `app.gateway.auth_db.get_db_type` imported but unused
+  --> app/gateway/auth_repository.py:11:5
+   |
+ 9 |     auth_connection,
+10 |     column_exists,
+11 |     get_db_type,
+   |     ^^^^^^^^^^^
+12 |     table_exists,
+13 |     _row_to_dict,
+   |
+help: Remove unused import: `app.gateway.auth_db.get_db_type`
+
+F401 [*] `deerflow.database.user_config_service.delete_user_model` imported but unused
+  --> app/gateway/routers/admin.py:32:5
+   |
+30 |     create_user_model,
+31 |     delete_global_model_with_assignments,
+32 |     delete_user_model,
+   |     ^^^^^^^^^^^^^^^^^
+33 |     list_platform_assigned_models_for_tenant,
+34 |     list_platform_global_models,
+   |
+help: Remove unused import: `deerflow.database.user_config_service.delete_user_model`
+
+UP041 [*] Replace aliased errors with `TimeoutError`
+    --> app/gateway/routers/admin.py:1495:12
+     |
+1493 |             message=f"Connection successful. Model response: {preview}",
+1494 |         )
+1495 |     except asyncio.TimeoutError:
+     |            ^^^^^^^^^^^^^^^^^^^^
+1496 |         return AdminTestModelConnectionResponse(
+1497 |             success=False,
+     |
+help: Replace `asyncio.TimeoutError` with builtin `TimeoutError`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/agents.py:3:1
+   |
+ 1 |   """CRUD API for custom agents — DB-backed."""
+ 2 |
+ 3 | / import logging
+ 4 | | import re
+ 5 | | import uuid
+ 6 | |
+ 7 | | from fastapi import APIRouter, Depends, HTTPException, Request, Query
+ 8 | | from pydantic import BaseModel, Field
+ 9 | | from sqlalchemy import select as sa_select
+10 | | from sqlalchemy.exc import IntegrityError
+11 | | from sqlmodel.ext.asyncio.session import AsyncSession
+12 | |
+13 | | from app.gateway.authorization import require_tenant_context, _is_tenant_admin
+14 | | from app.gateway.config import get_plugin_states
+15 | | from app.models.agents import CustomAgent
+16 | | from deerflow.config.agents_config import AgentConfig
+17 | | from deerflow.config.paths import get_paths
+18 | | from deerflow.database.session import get_session
+19 | | from deerflow.skills import load_skills
+   | |_______________________________________^
+20 |
+21 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `deerflow.config.agents_config.AgentConfig` imported but unused
+  --> app/gateway/routers/agents.py:16:43
+   |
+14 | from app.gateway.config import get_plugin_states
+15 | from app.models.agents import CustomAgent
+16 | from deerflow.config.agents_config import AgentConfig
+   |                                           ^^^^^^^^^^^
+17 | from deerflow.config.paths import get_paths
+18 | from deerflow.database.session import get_session
+   |
+help: Remove unused import: `deerflow.config.agents_config.AgentConfig`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/alerts.py:3:1
+   |
+ 1 |   """Alerting API routes — ingest, incident list/detail, source management."""
+ 2 |
+ 3 | / import logging
+ 4 | | import os
+ 5 | |
+ 6 | | from fastapi import APIRouter, Depends, HTTPException, Query, Request
+ 7 | | from pydantic import BaseModel, Field
+ 8 | | from sqlalchemy import select, func
+ 9 | | from sqlalchemy.ext.asyncio import AsyncSession
+10 | | from sqlmodel import select as sm_select
+11 | |
+12 | | from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
+13 | | from app.alerting.ingest import process_alert
+14 | | from app.alerting.incident_manager import suppress_incident
+15 | | from app.gateway.authorization import require_tenant_context, require_tenant_admin
+16 | | from app.models.alerting import AlertRule, AlertingSettings, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
+17 | | from deerflow.database.session import get_session, get_session_factory
+   | |______________________________________________________________________^
+18 |
+19 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `sqlmodel.select` imported but unused
+  --> app/gateway/routers/alerts.py:10:32
+   |
+ 8 | from sqlalchemy import select, func
+ 9 | from sqlalchemy.ext.asyncio import AsyncSession
+10 | from sqlmodel import select as sm_select
+   |                                ^^^^^^^^^
+11 |
+12 | from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
+   |
+help: Remove unused import: `sqlmodel.select`
+
+F401 [*] `asyncio` imported but unused
+  --> app/gateway/routers/alerts.py:26:16
+   |
+24 | class DiagnosisTaskManager:
+25 |     def __init__(self):
+26 |         import asyncio
+   |                ^^^^^^^
+27 |         self._tasks = {}         # incident_id -> asyncio.Task
+28 |         self._queues = {}        # incident_id -> Set[asyncio.Queue]
+   |
+help: Remove unused import: `asyncio`
+
+E711 Comparison to `None` should be `cond is not None`
+   --> app/gateway/routers/alerts.py:230:69
+    |
+228 |     services_res = await session.exec(
+229 |         select(Incident.service, func.count(Incident.id))
+230 |         .where(Incident.tenant_id == tenant_id, Incident.service != None, Incident.service != "")
+    |                                                                     ^^^^
+231 |         .group_by(Incident.service)
+232 |         .order_by(func.count(Incident.id).desc())
+    |
+help: Replace with `cond is not None`
+
+E741 Ambiguous variable name: `l`
+   --> app/gateway/routers/alerts.py:407:35
+    |
+405 |     )
+406 |     link_rows = links_result.scalars().all()
+407 |     signal_ids = [l.signal_id for l in link_rows]
+    |                                   ^
+408 |
+409 |     signals: list[dict] = []
+    |
+
+E741 Ambiguous variable name: `l`
+   --> app/gateway/routers/alerts.py:598:35
+    |
+596 |         )
+597 |     )
+598 |     signal_ids = [l.signal_id for l in links_result.scalars().all()]
+    |                                   ^
+599 |     if signal_ids:
+600 |         sig_result = await session.exec(
+    |
+
+F541 [*] f-string without any placeholders
+   --> app/gateway/routers/alerts.py:704:20
+    |
+702 |             timestamp=incident.resolved_at.isoformat(),
+703 |             title="告警已恢复",
+704 |             detail=f"Incident 状态变更为 resolved",
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+705 |             actor="system",
+706 |             metadata={"previous_status": "firing", "new_status": "resolved"},
+    |
+help: Remove extraneous `f` prefix
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/alerts.py:773:5
+    |
+771 |       session.add(incident)
+772 |
+773 | /     import uuid
+774 | |     from app.models.alerting import IncidentAction
+    | |__________________________________________________^
+775 |       action = IncidentAction(
+776 |           id=str(uuid.uuid4()),
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/alerts.py:820:5
+    |
+818 |       session.add(incident)
+819 |
+820 | /     import uuid
+821 | |     from app.models.alerting import IncidentAction
+    | |__________________________________________________^
+822 |       action = IncidentAction(
+823 |           id=str(uuid.uuid4()),
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/alerts.py:870:5
+    |
+868 |       session.add(incident)
+869 |
+870 | /     import uuid
+871 | |     from app.models.alerting import IncidentAction
+    | |__________________________________________________^
+872 |       action = IncidentAction(
+873 |           id=str(uuid.uuid4()),
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/alerts.py:919:5
+    |
+917 |         raise HTTPException(status_code=400, detail="Incident is already resolved")
+918 |
+919 |     from datetime import UTC, datetime as dt
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+920 |
+921 |     incident.status = "resolved"
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/alerts.py:927:5
+    |
+925 |       note = body.resolution_note if body else None
+926 |
+927 | /     import uuid
+928 | |     from app.models.alerting import IncidentAction
+    | |__________________________________________________^
+929 |       action = IncidentAction(
+930 |           id=str(uuid.uuid4()),
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/alerts.py:942:9
+    |
+940 |       # Trigger IM notification for resolution if configured
+941 |       try:
+942 | /         from datetime import UTC, datetime as dt
+943 | |         from app.alerting.notify import send_incident_resolved
+    | |______________________________________________________________^
+944 |           now = dt.now(UTC)
+945 |           first_seen = incident.first_seen_at.replace(tzinfo=UTC) if incident.first_seen_at and incident.first_seen_at.tzinfo is None e…
+    |
+help: Organize imports
+
+E741 Ambiguous variable name: `l`
+   --> app/gateway/routers/alerts.py:997:35
+    |
+995 |         )
+996 |     )
+997 |     signal_ids = [l.signal_id for l in links_result.scalars().all()]
+    |                                   ^
+998 |
+999 |     ticket_config = {}
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:1057:5
+     |
+1055 |       session.add(incident)
+1056 |
+1057 | /     import uuid
+1058 | |     from app.models.alerting import IncidentAction
+     | |__________________________________________________^
+1059 |       action = IncidentAction(
+1060 |           id=str(uuid.uuid4()),
+     |
+help: Organize imports
+
+E741 Ambiguous variable name: `l`
+    --> app/gateway/routers/alerts.py:1113:39
+     |
+1111 |         )
+1112 |     )
+1113 |     chk_signal_ids = [l.signal_id for l in links_chk.scalars().all()]
+     |                                       ^
+1114 |     ai_enabled_for_incident = False
+1115 |     if chk_signal_ids:
+     |
+
+E741 Ambiguous variable name: `l`
+    --> app/gateway/routers/alerts.py:1159:35
+     |
+1157 |         )
+1158 |     )
+1159 |     signal_ids = [l.signal_id for l in links_result.scalars().all()]
+     |                                   ^
+1160 |
+1161 |     signals_data: list[dict] = []
+     |
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:1182:5
+     |
+1180 |       await session.commit()
+1181 |
+1182 | /     from deerflow.config import get_app_config
+1183 | |     from app.alerting.ai_analysis import schedule_analysis
+     | |__________________________________________________________^
+1184 |
+1185 |       if not get_app_config().models:
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:1230:5
+     |
+1228 |       session_factory=None
+1229 |   ):
+1230 | /     import asyncio
+1231 | |     import logging
+1232 | |     import os
+1233 | |     from app.alerting.diagnosis_sse import (
+1234 | |         parse_messages_tuple_event, parse_values_event,
+1235 | |         msg_thread, msg_done, msg_error,
+1236 | |     )
+1237 | |     from app.models.alerting import Incident
+1238 | |     from app.gateway.routers.alerts import _cancel_incident_diagnosis_run, logger
+     | |_________________________________________________________________________________^
+1239 |       
+1240 |       agui_logger = logging.getLogger("agui")
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:1406:5
+     |
+1404 |       session: AsyncSession = Depends(get_session),
+1405 |   ):
+1406 | /     from starlette.responses import StreamingResponse
+1407 | |     from app.alerting.diagnosis_helper import get_diagnosis_agent_id_for_incident, build_incident_diagnosis_prompt
+1408 | |     from app.models.agents import CustomAgent
+     | |_____________________________________________^
+1409 |
+1410 |       tenant_id = require_tenant_context(request)
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:1475:9
+     |
+1474 |       async def event_stream():
+1475 | /         import asyncio
+1476 | |         from app.alerting.diagnosis_sse import (
+1477 | |             msg_thread, msg_done, msg_error,
+1478 | |             _text_message_content, _step_started, _step_finished
+1479 | |         )
+1480 | |         import json
+     | |___________________^
+1481 |
+1482 |           # Capture current length of text buffer
+     |
+help: Organize imports
+
+F401 [*] `app.alerting.diagnosis_sse.msg_error` imported but unused
+    --> app/gateway/routers/alerts.py:1477:35
+     |
+1475 |         import asyncio
+1476 |         from app.alerting.diagnosis_sse import (
+1477 |             msg_thread, msg_done, msg_error,
+     |                                   ^^^^^^^^^
+1478 |             _text_message_content, _step_started, _step_finished
+1479 |         )
+     |
+help: Remove unused import: `app.alerting.diagnosis_sse.msg_error`
+
+F401 [*] `json` imported but unused
+    --> app/gateway/routers/alerts.py:1480:16
+     |
+1478 |             _text_message_content, _step_started, _step_finished
+1479 |         )
+1480 |         import json
+     |                ^^^^
+1481 |
+1482 |         # Capture current length of text buffer
+     |
+help: Remove unused import: `json`
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:2347:5
+     |
+2345 |     session: AsyncSession = Depends(get_session),
+2346 | ) -> IncidentStatsSummary:
+2347 |     from datetime import UTC, datetime as dt, timedelta
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2348 |     tenant_id = require_tenant_context(request)
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/alerts.py:2471:5
+     |
+2469 |     session: AsyncSession = Depends(get_session),
+2470 | ) -> list[SourceHealthItem]:
+2471 |     from datetime import UTC, datetime as dt, timedelta
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2472 |     tenant_id = require_tenant_context(request)
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/assets.py:3:1
+   |
+ 1 |   """CRUD API for Asset Management (Keychains, Hosts, Groups)."""
+ 2 |
+ 3 | / import logging
+ 4 | | import uuid
+ 5 | | from typing import Any
+ 6 | |
+ 7 | | from fastapi import APIRouter, Depends, HTTPException, Request
+ 8 | | from pydantic import BaseModel, Field
+ 9 | | from sqlalchemy import select as sa_select
+10 | | from sqlmodel.ext.asyncio.session import AsyncSession
+11 | |
+12 | | from app.gateway.authorization import require_tenant_context
+13 | | from app.models.assets import AssetGroup, Keychain, LocalAsset
+14 | | from app.gateway.routers.terminal import build_ssh_command
+15 | | from deerflow.database.session import get_session
+16 | | import asyncio
+17 | | import os
+18 | | import subprocess
+   | |_________________^
+19 |
+20 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+UP041 [*] Replace aliased errors with `TimeoutError`
+   --> app/gateway/routers/assets.py:446:12
+    |
+444 |         else:
+445 |             return {"status": "error", "message": stderr.decode('utf-8') or stdout.decode('utf-8') or "Connection failed"}
+446 |     except asyncio.TimeoutError:
+    |            ^^^^^^^^^^^^^^^^^^^^
+447 |         return {"status": "error", "message": "Connection timed out"}
+448 |     except Exception as e:
+    |
+help: Replace `asyncio.TimeoutError` with builtin `TimeoutError`
+
+F401 [*] `fastapi.Cookie` imported but unused
+ --> app/gateway/routers/auth.py:6:32
+  |
+4 | from datetime import UTC, datetime, timedelta
+5 |
+6 | from fastapi import APIRouter, Cookie, HTTPException, Request, Response
+  |                                ^^^^^^
+7 | from pydantic import BaseModel, Field
+8 | from sqlalchemy import text
+  |
+help: Remove unused import: `fastapi.Cookie`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/channels.py:69:5
+   |
+67 |   async def test_channel_notification(body: TestNotificationRequest) -> TestNotificationResponse:
+68 |       """Send a test notification to a specific IM channel and chat ID."""
+69 | /     from datetime import datetime
+70 | |     from app.channels.service import get_channel_service
+71 | |     from app.channels.message_bus import OutboundMessage
+   | |________________________________________________________^
+72 |
+73 |       service = get_channel_service()
+   |
+help: Organize imports
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:105:1
+    |
+103 | # ---------------------------------------------------------------------------
+104 |
+105 | from fastapi import Depends, Request
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+106 | from sqlalchemy import select
+107 | from sqlalchemy.exc import IntegrityError
+    |
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:106:1
+    |
+105 | from fastapi import Depends, Request
+106 | from sqlalchemy import select
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+107 | from sqlalchemy.exc import IntegrityError
+108 | from sqlalchemy.ext.asyncio import AsyncSession
+    |
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:107:1
+    |
+105 | from fastapi import Depends, Request
+106 | from sqlalchemy import select
+107 | from sqlalchemy.exc import IntegrityError
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+108 | from sqlalchemy.ext.asyncio import AsyncSession
+    |
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:108:1
+    |
+106 | from sqlalchemy import select
+107 | from sqlalchemy.exc import IntegrityError
+108 | from sqlalchemy.ext.asyncio import AsyncSession
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+109 |
+110 | from app.gateway.authorization import require_tenant_admin, require_tenant_context
+    |
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:110:1
+    |
+108 | from sqlalchemy.ext.asyncio import AsyncSession
+109 |
+110 | from app.gateway.authorization import require_tenant_admin, require_tenant_context
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+111 | from deerflow.database.models import UserConfig
+112 | from deerflow.database.session import get_session
+    |
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:111:1
+    |
+110 | from app.gateway.authorization import require_tenant_admin, require_tenant_context
+111 | from deerflow.database.models import UserConfig
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+112 | from deerflow.database.session import get_session
+    |
+
+E402 Module level import not at top of file
+   --> app/gateway/routers/channels.py:112:1
+    |
+110 | from app.gateway.authorization import require_tenant_admin, require_tenant_context
+111 | from deerflow.database.models import UserConfig
+112 | from deerflow.database.session import get_session
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+113 |
+114 | im_settings_router = APIRouter(prefix="/api/tenant-im", tags=["tenant-im"])
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/files.py:12:1
+   |
+10 |   """
+11 |
+12 | / import hashlib
+13 | | import logging
+14 | | import uuid
+15 | | from typing import Any
+16 | |
+17 | | from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
+18 | | from fastapi.responses import Response
+19 | | from pydantic import BaseModel, Field
+20 | | from sqlalchemy import select as sa_select, and_, or_
+21 | | from sqlmodel.ext.asyncio.session import AsyncSession
+22 | |
+23 | | from app.gateway.authorization import require_tenant_context
+24 | | from app.models.files import FileFolder, FileObject
+25 | | from deerflow.database.session import get_session
+26 | | from deerflow.storage.local import get_storage_driver
+   | |_____________________________________________________^
+27 |
+28 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/models.py:1:1
+   |
+ 1 | / import asyncio
+ 2 | |
+ 3 | | from fastapi import APIRouter, Depends, HTTPException, Request
+ 4 | | from pydantic import BaseModel, ConfigDict, Field
+ 5 | |
+ 6 | | from app.gateway.authorization import _is_global_admin, _is_tenant_admin, require_config_write_access, require_tenant_admin, require_t…
+ 7 | | from deerflow.database.user_config_service import (
+ 8 | |     create_tenant_shared_model,
+ 9 | |     create_user_model,
+10 | |     delete_tenant_shared_model,
+11 | |     delete_user_model,
+12 | |     get_available_models,
+13 | |     get_user_models,
+14 | |     list_tenant_shared_models,
+15 | |     update_tenant_shared_model,
+16 | |     update_user_model,
+17 | | )
+18 | | from deerflow.models.factory import _maybe_patch_openai_model_class
+19 | | from deerflow.reflection.resolvers import resolve_class
+20 | |
+21 | | from deerflow.database.models import TenantModelConfig
+22 | | from deerflow.database.session import get_session_factory
+23 | | from deerflow.database.secrets_crypto import decrypt_model_settings
+24 | | from sqlmodel import select
+   | |___________________________^
+   |
+help: Organize imports
+
+F401 [*] `deerflow.database.user_config_service.create_tenant_shared_model` imported but unused
+  --> app/gateway/routers/models.py:8:5
+   |
+ 6 | from app.gateway.authorization import _is_global_admin, _is_tenant_admin, require_config_write_access, require_tenant_admin, require_t…
+ 7 | from deerflow.database.user_config_service import (
+ 8 |     create_tenant_shared_model,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 9 |     create_user_model,
+10 |     delete_tenant_shared_model,
+   |
+help: Remove unused import
+
+F401 [*] `deerflow.database.user_config_service.delete_tenant_shared_model` imported but unused
+  --> app/gateway/routers/models.py:10:5
+   |
+ 8 |     create_tenant_shared_model,
+ 9 |     create_user_model,
+10 |     delete_tenant_shared_model,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+11 |     delete_user_model,
+12 |     get_available_models,
+   |
+help: Remove unused import
+
+F401 [*] `deerflow.database.user_config_service.get_user_models` imported but unused
+  --> app/gateway/routers/models.py:13:5
+   |
+11 |     delete_user_model,
+12 |     get_available_models,
+13 |     get_user_models,
+   |     ^^^^^^^^^^^^^^^
+14 |     list_tenant_shared_models,
+15 |     update_tenant_shared_model,
+   |
+help: Remove unused import
+
+F811 Redefinition of unused `_is_tenant_admin` from line 6
+   --> app/gateway/routers/models.py:219:5
+    |
+219 | def _is_tenant_admin(request: Request) -> bool:
+    |     ^^^^^^^^^^^^^^^^ `_is_tenant_admin` redefined here
+220 |     role = getattr(request.state, "tenant_role", None)
+221 |     return isinstance(role, str) and role.lower() == "tenant_admin"
+    |
+   ::: app/gateway/routers/models.py:6:57
+    |
+  4 | from pydantic import BaseModel, ConfigDict, Field
+  5 |
+  6 | from app.gateway.authorization import _is_global_admin, _is_tenant_admin, require_config_write_access, require_tenant_admin, require_te…
+    |                                                         ---------------- previous definition of `_is_tenant_admin` here
+  7 | from deerflow.database.user_config_service import (
+  8 |     create_tenant_shared_model,
+    |
+help: Remove definition: `_is_tenant_admin`
+
+UP041 [*] Replace aliased errors with `TimeoutError`
+   --> app/gateway/routers/models.py:281:12
+    |
+279 |             message=f"Connection successful. Model response: {preview}",
+280 |         )
+281 |     except asyncio.TimeoutError:
+    |            ^^^^^^^^^^^^^^^^^^^^
+282 |         return TestConnectionResponse(
+283 |             success=False,
+    |
+help: Replace `asyncio.TimeoutError` with builtin `TimeoutError`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> app/gateway/routers/plugins.py:3:1
+  |
+1 |   """Plugin info endpoint — exposes enabled/disabled state to frontend."""
+2 |
+3 | / from fastapi import APIRouter
+4 | | from pydantic import BaseModel
+5 | |
+6 | | from app.plugins.registry import PLUGIN_DEFINITIONS
+7 | | from app.gateway.config import get_plugin_states
+  | |________________________________________________^
+8 |
+9 |   router = APIRouter(prefix="/api", tags=["plugins"])
+  |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/skills.py:1:1
+   |
+ 1 | / import json as _json
+ 2 | | import logging
+ 3 | | import re
+ 4 | | import shutil
+ 5 | | import tempfile
+ 6 | | from pathlib import Path
+ 7 | |
+ 8 | | import yaml
+ 9 | | from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+10 | | from pydantic import BaseModel, Field
+11 | |
+12 | | from app.gateway.authorization import require_tenant_admin, require_tenant_context
+13 | | from app.gateway.path_utils import resolve_thread_virtual_path
+14 | | from deerflow.database.user_config_service import (
+15 | |     create_tenant_shared_skill,
+16 | |     create_tenant_personal_skill,
+17 | |     delete_tenant_shared_skill,
+18 | |     get_available_skills,
+19 | |     get_tenant_shared_skill_settings,
+20 | |     list_tenant_shared_skills,
+21 | |     set_tenant_shared_skill_enabled,
+22 | |     update_tenant_shared_skill,
+23 | |     update_tenant_personal_skill,
+24 | |     update_tenant_shared_skill_settings,
+25 | |     update_tenant_personal_skill_settings,
+26 | |     delete_tenant_personal_skill,
+27 | | )
+28 | | from deerflow.skills import Skill, get_skills_root_path, load_skills
+29 | | from deerflow.skills.installer import SkillAlreadyExistsError, install_skill_from_archive
+   | |_________________________________________________________________________________________^
+30 |
+31 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `json` imported but unused
+ --> app/gateway/routers/skills.py:1:16
+  |
+1 | import json as _json
+  |                ^^^^^
+2 | import logging
+3 | import re
+  |
+help: Remove unused import: `json`
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/skills.py:1058:9
+     |
+1056 |       require_tenant_context(request)
+1057 |       try:
+1058 | /         from deerflow.models.factory import create_chat_model
+1059 | |         from langchain_core.messages import SystemMessage, HumanMessage
+     | |_______________________________________________________________________^
+1060 |
+1061 |           llm = create_chat_model(body.model_name or "gpt-4o")
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> app/gateway/routers/skills.py:1100:9
+     |
+1098 |       require_tenant_context(request)
+1099 |       try:
+1100 | /         import json as _json
+1101 | |         from deerflow.models import create_chat_model
+1102 | |         from deerflow.database.user_config_store import load_enabled_tenant_model_names
+     | |_______________________________________________________________________________________^
+1103 |
+1104 |           tenant_id = getattr(request.state, "tenant_id", "")
+     |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/suggestions.py:1:1
+   |
+ 1 | / import json
+ 2 | | import logging
+ 3 | | import os
+ 4 | | import time
+ 5 | | from collections import defaultdict, deque
+ 6 | | from collections.abc import Mapping
+ 7 | | from typing import Any
+ 8 | |
+ 9 | | from fastapi import APIRouter, HTTPException, Request
+10 | | from pydantic import BaseModel, Field
+11 | |
+12 | | from app.gateway.authorization import require_tenant_context
+13 | | from deerflow.database.user_config_store import load_enabled_tenant_model_names
+14 | | from deerflow.models import create_chat_model
+15 | | from langgraph_sdk import get_client
+   | |____________________________________^
+16 |
+17 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/summarization.py:3:1
+   |
+ 1 |   """Summarization settings API router for tenant-admin settings."""
+ 2 |
+ 3 | / from fastapi import APIRouter, HTTPException, Request
+ 4 | | from pydantic import BaseModel, Field
+ 5 | |
+ 6 | | from app.gateway.authorization import require_tenant_context
+ 7 | | from deerflow.config.summarization_config import (
+ 8 | |     ContextSize,
+ 9 | |     DEFAULT_ENABLED,
+10 | |     DEFAULT_KEEP_MESSAGES,
+11 | |     DEFAULT_TRIGGER_MESSAGES,
+12 | |     DEFAULT_TRIGGER_TOKENS,
+13 | |     DEFAULT_TRIM_TOKENS_TO_SUMMARIZE,
+14 | |     SummarizationConfig,
+15 | |     get_summarization_config,
+16 | |     set_summarization_config,
+17 | | )
+   | |_^
+18 |
+19 |   router = APIRouter(prefix="/api", tags=["summarization"])
+   |
+help: Organize imports
+
+F401 [*] `deerflow.config.summarization_config.DEFAULT_ENABLED` imported but unused
+  --> app/gateway/routers/summarization.py:9:5
+   |
+ 7 | from deerflow.config.summarization_config import (
+ 8 |     ContextSize,
+ 9 |     DEFAULT_ENABLED,
+   |     ^^^^^^^^^^^^^^^
+10 |     DEFAULT_KEEP_MESSAGES,
+11 |     DEFAULT_TRIGGER_MESSAGES,
+   |
+help: Remove unused import
+
+F401 [*] `deerflow.config.summarization_config.DEFAULT_TRIM_TOKENS_TO_SUMMARIZE` imported but unused
+  --> app/gateway/routers/summarization.py:13:5
+   |
+11 |     DEFAULT_TRIGGER_MESSAGES,
+12 |     DEFAULT_TRIGGER_TOKENS,
+13 |     DEFAULT_TRIM_TOKENS_TO_SUMMARIZE,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 |     SummarizationConfig,
+15 |     get_summarization_config,
+   |
+help: Remove unused import
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> app/gateway/routers/templates.py:3:1
+  |
+1 |   """User PPT template upload and management (per-thread workspace storage)."""
+2 |
+3 | / from pathlib import Path
+4 | |
+5 | | from fastapi import APIRouter, HTTPException, Query, Request, UploadFile, File, Form
+6 | | from pydantic import BaseModel
+  | |______________________________^
+7 |
+8 |   router = APIRouter(prefix="/api/templates", tags=["templates"])
+  |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/terminal.py:1:1
+   |
+ 1 | / import asyncio
+ 2 | | import json
+ 3 | | import logging
+ 4 | | import uuid
+ 5 | |
+ 6 | | from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
+ 7 | | from fastapi.responses import StreamingResponse
+ 8 | | from pydantic import BaseModel
+ 9 | | from sqlalchemy import func
+10 | | from sqlalchemy import select as sa_select
+11 | | from sqlmodel.ext.asyncio.session import AsyncSession
+12 | |
+13 | | from app.gateway.authorization import require_tenant_context
+14 | | from app.models.assets import Keychain, LocalAsset
+15 | | from app.models.terminal import ChatSession, TerminalSecuritySettings, CommandAuditLog
+16 | | from app.services.terminal.session import build_ssh_command, session_manager
+17 | | from deerflow.database.session import get_session
+   | |_________________________________________________^
+18 |
+19 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/terminal.py:353:5
+    |
+351 |     settings = result.scalars().first()
+352 |
+353 |     from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+354 |
+355 |     if not settings:
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/terminal.py:429:5
+    |
+427 |         await db.commit()
+428 |
+429 |     from app.services.terminal.security import DEFAULT_SECURITY_CONFIG, DEFAULT_AUTO_APPROVAL
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+430 |     return {
+431 |         "ok": True,
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/terminal.py:512:5
+    |
+510 |   async def agent_invoke(req: AgentInvokeRequest, request: Request):
+511 |       """Invoke the terminal agent graph and stream results via SSE."""
+512 | /     from app.agent.terminal_graph import terminal_graph
+513 | |     from app.agent.terminal_graph import TerminalState
+514 | |     from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
+515 | |     import json as json_mod
+    | |___________________________^
+516 |
+517 |       tenant_id = require_tenant_context(request)
+    |
+help: Organize imports
+
+F401 [*] `langchain_core.messages.AIMessage` imported but unused
+   --> app/gateway/routers/terminal.py:514:55
+    |
+512 |     from app.agent.terminal_graph import terminal_graph
+513 |     from app.agent.terminal_graph import TerminalState
+514 |     from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
+    |                                                       ^^^^^^^^^
+515 |     import json as json_mod
+    |
+help: Remove unused import
+
+F401 [*] `langchain_core.messages.ToolMessage` imported but unused
+   --> app/gateway/routers/terminal.py:514:66
+    |
+512 |     from app.agent.terminal_graph import terminal_graph
+513 |     from app.agent.terminal_graph import TerminalState
+514 |     from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
+    |                                                                  ^^^^^^^^^^^
+515 |     import json as json_mod
+    |
+help: Remove unused import
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> app/gateway/routers/terminal.py:688:5
+    |
+686 |   async def agent_approve(req: AgentApproveRequest, request: Request):
+687 |       """Resume the agent graph after user approves/rejects a tool call via Human-in-the-Loop."""
+688 | /     from app.agent.terminal_graph import terminal_graph
+689 | |     from langgraph.types import Command
+690 | |     import json as json_mod
+691 | |     import uuid
+    | |_______________^
+692 |
+693 |       async def event_stream():
+    |
+help: Organize imports
+
+F841 Local variable `first_content` is assigned to but never used
+   --> app/gateway/routers/terminal.py:706:13
+    |
+704 |             # Generate a unified message bubble ID for the approval phases (execution + summary text)
+705 |             msg_id = f"msg-{uuid.uuid4()}"
+706 |             first_content = False
+    |             ^^^^^^^^^^^^^
+707 |             approved_tool_completed = False
+    |
+help: Remove assignment to unused variable `first_content`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/gateway/routers/uploads.py:3:1
+   |
+ 1 |   """Upload router for handling file uploads."""
+ 2 |
+ 3 | / import logging
+ 4 | | import os
+ 5 | | from pathlib import Path
+ 6 | |
+ 7 | | from fastapi import APIRouter, File, HTTPException, Request, UploadFile
+ 8 | | from pydantic import BaseModel
+ 9 | |
+10 | | from app.gateway.audit import record_audit_event
+11 | | from app.gateway.authorization import require_tenant_context
+12 | | from deerflow.config.paths import get_paths
+13 | | from deerflow.sandbox.sandbox_provider import get_sandbox_provider
+14 | | from deerflow.uploads.manager import (
+15 | |     PathTraversalError,
+16 | |     build_derived_files,
+17 | |     claim_unique_filename,
+18 | |     delete_file_safe,
+19 | |     enrich_file_listing,
+20 | |     ensure_uploads_dir,
+21 | |     guess_content_type,
+22 | |     get_uploads_dir,
+23 | |     list_files_in_dir,
+24 | |     normalize_filename,
+25 | |     upload_attachment_id,
+26 | |     upload_artifact_url,
+27 | |     upload_virtual_path,
+28 | | )
+29 | | from deerflow.utils.file_conversion import CONVERTIBLE_EXTENSIONS, convert_file_to_markdown
+   | |___________________________________________________________________________________________^
+30 |
+31 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `typing.Any` imported but unused
+  --> app/models/assets.py:8:20
+   |
+ 7 | from datetime import UTC, datetime
+ 8 | from typing import Any
+   |                    ^^^
+ 9 |
+10 | from sqlalchemy import Column, DateTime, String, UniqueConstraint, func
+   |
+help: Remove unused import: `typing.Any`
+
+F401 [*] `sqlalchemy.String` imported but unused
+  --> app/models/assets.py:10:42
+   |
+ 8 | from typing import Any
+ 9 |
+10 | from sqlalchemy import Column, DateTime, String, UniqueConstraint, func
+   |                                          ^^^^^^
+11 | from sqlmodel import Field, SQLModel
+   |
+help: Remove unused import: `sqlalchemy.String`
+
+F401 [*] `sqlalchemy.Integer` imported but unused
+  --> app/models/files.py:15:42
+   |
+13 | from datetime import UTC, datetime
+14 |
+15 | from sqlalchemy import Column, DateTime, Integer, String, Text, UniqueConstraint, func
+   |                                          ^^^^^^^
+16 | from sqlmodel import Field, SQLModel
+   |
+help: Remove unused import
+
+F401 [*] `sqlalchemy.String` imported but unused
+  --> app/models/files.py:15:51
+   |
+13 | from datetime import UTC, datetime
+14 |
+15 | from sqlalchemy import Column, DateTime, Integer, String, Text, UniqueConstraint, func
+   |                                                   ^^^^^^
+16 | from sqlmodel import Field, SQLModel
+   |
+help: Remove unused import
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> app/models/terminal.py:6:1
+   |
+ 4 |   """
+ 5 |
+ 6 | / from datetime import UTC, datetime
+ 7 | | from typing import Any
+ 8 | |
+ 9 | | from sqlalchemy import Column, DateTime, String, JSON, Text, func
+10 | | from sqlmodel import Field, SQLModel
+   | |____________________________________^
+   |
+help: Organize imports
+
+F401 [*] `sqlalchemy.String` imported but unused
+  --> app/models/terminal.py:9:42
+   |
+ 7 | from typing import Any
+ 8 |
+ 9 | from sqlalchemy import Column, DateTime, String, JSON, Text, func
+   |                                          ^^^^^^
+10 | from sqlmodel import Field, SQLModel
+   |
+help: Remove unused import: `sqlalchemy.String`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> app/services/terminal/interaction.py:1:1
+  |
+1 | import re
+  | ^^^^^^^^^
+2 |
+3 | class InteractionDetector:
+  |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> app/services/terminal/security.py:1:1
+  |
+1 | / import re
+2 | | import shlex
+3 | | from typing import Literal, Any, List, Dict
+  | |___________________________________________^
+4 |
+5 |   SecurityResult = Literal["allow", "ask", "block"]
+  |
+help: Organize imports
+
+F401 [*] `shlex` imported but unused
+ --> app/services/terminal/security.py:2:8
+  |
+1 | import re
+2 | import shlex
+  |        ^^^^^
+3 | from typing import Literal, Any, List, Dict
+  |
+help: Remove unused import: `shlex`
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> app/services/terminal/security.py:3:1
+  |
+1 | import re
+2 | import shlex
+3 | from typing import Literal, Any, List, Dict
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 |
+5 | SecurityResult = Literal["allow", "ask", "block"]
+  |
+
+UP035 `typing.Dict` is deprecated, use `dict` instead
+ --> app/services/terminal/security.py:3:1
+  |
+1 | import re
+2 | import shlex
+3 | from typing import Literal, Any, List, Dict
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 |
+5 | SecurityResult = Literal["allow", "ask", "block"]
+  |
+
+F401 [*] `typing.Any` imported but unused
+ --> app/services/terminal/security.py:3:29
+  |
+1 | import re
+2 | import shlex
+3 | from typing import Literal, Any, List, Dict
+  |                             ^^^
+4 |
+5 | SecurityResult = Literal["allow", "ask", "block"]
+  |
+help: Remove unused import
+
+F401 [*] `typing.Dict` imported but unused
+ --> app/services/terminal/security.py:3:40
+  |
+1 | import re
+2 | import shlex
+3 | from typing import Literal, Any, List, Dict
+  |                                        ^^^^
+4 |
+5 | SecurityResult = Literal["allow", "ask", "block"]
+  |
+help: Remove unused import
+
+UP006 [*] Use `list` instead of `List` for type annotation
+   --> app/services/terminal/security.py:133:45
+    |
+131 | ]
+132 |
+133 | def split_compound_command(command: str) -> List[str]:
+    |                                             ^^^^
+134 |     parts = []
+135 |     current = []
+    |
+help: Replace with `list`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/agents/lead_agent/agent.py:1:1
+   |
+ 1 | / from __future__ import annotations
+ 2 | |
+ 3 | | import logging
+ 4 | |
+ 5 | | from langchain.agents import create_agent
+ 6 | |
+ 7 | | from deerflow.agents.lead_agent.prompt import apply_prompt_template
+ 8 | | from deerflow.agents.middlewares.summarization_middleware import DeerflowSummarizationMiddleware
+ 9 | | from deerflow.agents.middlewares.title_middleware import TitleMiddleware
+10 | | from deerflow.agents.middlewares.todo_middleware import TodoMiddleware
+11 | | from deerflow.agents.middlewares.tool_error_handling_middleware import build_lead_runtime_middlewares
+12 | | from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
+13 | | from deerflow.config.summarization_config import get_summarization_config
+14 | | from deerflow.config.title_config import get_title_config
+15 | | from deerflow.agents.thread_state import ThreadState
+16 | | from deerflow.config import get_app_config
+17 | | from deerflow.config.agents_config import load_agent_config
+18 | | from deerflow.config.tenant_context import tenant_context
+19 | | from deerflow.database.user_config_store import load_enabled_tenant_model_names
+20 | | from deerflow.models.factory import create_chat_model
+   | |_____________________________________________________^
+21 |
+22 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> packages/harness/deerflow/agents/lead_agent/agent.py:208:5
+    |
+206 |       grep_search, web_fetch) and the terminal system prompt.
+207 |       """
+208 | /     from app.agent.terminal_tools import get_terminal_tools, set_terminal_context
+209 | |     from app.agent.prompts import TERMINAL_AGENT_SYSTEM_PROMPT
+    | |______________________________________________________________^
+210 |
+211 |       cfg = config.get("configurable", {})
+    |
+help: Organize imports
+
+E501 Line too long (340 > 240)
+   --> packages/harness/deerflow/agents/lead_agent/prompt.py:400:230
+    |
+398 | …down files
+399 | …
+400 | … "阶段 2" in Chinese, instead of the English "Phase 1", "Phase 2") to maintain full language consistency.
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+401 | …
+402 | …
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/agents/memory/updater.py:3:1
+   |
+ 1 |   """Memory updater for reading, writing, and updating memory data."""
+ 2 |
+ 3 | / import json
+ 4 | | import logging
+ 5 | | import re
+ 6 | | import uuid
+ 7 | | from datetime import datetime
+ 8 | | from pathlib import Path
+ 9 | | from typing import Any
+10 | |
+11 | | from deerflow.agents.memory.prompt import (
+12 | |     MEMORY_UPDATE_PROMPT,
+13 | |     format_conversation_for_update,
+14 | | )
+15 | | from deerflow.config.memory_config import get_memory_config
+16 | | from deerflow.config.tenant_context import get_current_tenant_id, get_current_user_id
+17 | | from deerflow.config.paths import get_paths
+18 | | from deerflow.models import create_chat_model
+   | |_____________________________________________^
+19 |
+20 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F841 Local variable `exc_module` is assigned to but never used
+  --> packages/harness/deerflow/agents/middlewares/model_error_handling_middleware.py:52:5
+   |
+50 |     """
+51 |     exc_type = type(exc).__name__
+52 |     exc_module = type(exc).__module__
+   |     ^^^^^^^^^^
+53 |     exc_message = str(exc).strip()
+   |
+help: Remove assignment to unused variable `exc_module`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/agents/middlewares/summarization_middleware.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / import logging
+ 8 | | from typing import Any, NotRequired, override
+ 9 | |
+10 | | from langchain.agents import AgentState
+11 | | from langchain.agents.middleware import AgentMiddleware
+12 | | from langchain.agents.middleware.summarization import SummarizationMiddleware
+13 | | from langchain_core.language_models import BaseChatModel
+14 | | from langchain_core.messages import HumanMessage
+15 | | from langgraph.runtime import Runtime
+16 | |
+17 | | from deerflow.config.summarization_config import get_summarization_config
+18 | | from deerflow.models.factory import create_chat_model
+19 | | from deerflow.config import get_app_config
+   | |__________________________________________^
+20 |
+21 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `typing.NotRequired` imported but unused
+  --> packages/harness/deerflow/agents/middlewares/summarization_middleware.py:8:25
+   |
+ 7 | import logging
+ 8 | from typing import Any, NotRequired, override
+   |                         ^^^^^^^^^^^
+ 9 |
+10 | from langchain.agents import AgentState
+   |
+help: Remove unused import: `typing.NotRequired`
+
+F401 [*] `langchain_core.language_models.BaseChatModel` imported but unused
+  --> packages/harness/deerflow/agents/middlewares/summarization_middleware.py:13:44
+   |
+11 | from langchain.agents.middleware import AgentMiddleware
+12 | from langchain.agents.middleware.summarization import SummarizationMiddleware
+13 | from langchain_core.language_models import BaseChatModel
+   |                                            ^^^^^^^^^^^^^
+14 | from langchain_core.messages import HumanMessage
+15 | from langgraph.runtime import Runtime
+   |
+help: Remove unused import: `langchain_core.language_models.BaseChatModel`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/client.py:1:1
+   |
+ 1 | / from __future__ import annotations
+ 2 | |
+ 3 | | import asyncio
+ 4 | | import json
+ 5 | | import logging
+ 6 | | import os
+ 7 | | from collections.abc import AsyncIterator
+ 8 | | from dataclasses import dataclass
+ 9 | | from pathlib import Path
+10 | | from typing import Any
+11 | |
+12 | | from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+13 | | from langchain_core.runnables import RunnableConfig
+14 | |
+15 | | from deerflow.agents.lead_agent.prompt import apply_prompt_template
+16 | | from deerflow.agents.lead_agent.agent import _build_middlewares
+17 | | from deerflow.agents.thread_state import ThreadState
+18 | | from deerflow.config import get_app_config, reload_app_config
+19 | | from deerflow.config.tenant_context import tenant_context
+20 | | from deerflow.models.factory import create_chat_model
+   | |_____________________________________________________^
+21 |
+22 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `asyncio` imported but unused
+ --> packages/harness/deerflow/client.py:3:8
+  |
+1 | from __future__ import annotations
+2 |
+3 | import asyncio
+  |        ^^^^^^^
+4 | import json
+5 | import logging
+  |
+help: Remove unused import: `asyncio`
+
+F401 [*] `json` imported but unused
+ --> packages/harness/deerflow/client.py:4:8
+  |
+3 | import asyncio
+4 | import json
+  |        ^^^^
+5 | import logging
+6 | import os
+  |
+help: Remove unused import: `json`
+
+F401 [*] `os` imported but unused
+ --> packages/harness/deerflow/client.py:6:8
+  |
+4 | import json
+5 | import logging
+6 | import os
+  |        ^^
+7 | from collections.abc import AsyncIterator
+8 | from dataclasses import dataclass
+  |
+help: Remove unused import: `os`
+
+F401 [*] `collections.abc.AsyncIterator` imported but unused
+ --> packages/harness/deerflow/client.py:7:29
+  |
+5 | import logging
+6 | import os
+7 | from collections.abc import AsyncIterator
+  |                             ^^^^^^^^^^^^^
+8 | from dataclasses import dataclass
+9 | from pathlib import Path
+  |
+help: Remove unused import: `collections.abc.AsyncIterator`
+
+F401 [*] `pathlib.Path` imported but unused
+  --> packages/harness/deerflow/client.py:9:21
+   |
+ 7 | from collections.abc import AsyncIterator
+ 8 | from dataclasses import dataclass
+ 9 | from pathlib import Path
+   |                     ^^^^
+10 | from typing import Any
+   |
+help: Remove unused import: `pathlib.Path`
+
+F841 Local variable `loop` is assigned to but never used
+  --> packages/harness/deerflow/config/agents_config.py:30:9
+   |
+28 |     """
+29 |     try:
+30 |         loop = asyncio.get_running_loop()
+   |         ^^^^
+31 |     except RuntimeError:
+32 |         return asyncio.run(coro)
+   |
+help: Remove assignment to unused variable `loop`
+
+UP037 [*] Remove quotes from type annotation
+   --> packages/harness/deerflow/config/agents_config.py:298:18
+    |
+296 |         return []
+297 |
+298 |     agents: list["AgentConfig"] = []
+    |                  ^^^^^^^^^^^^^
+299 |
+300 |     for entry in sorted(agents_dir.iterdir()):
+    |
+help: Remove quotes
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/database/user_config_service.py:1:1
+   |
+ 1 | / import logging
+ 2 | | import os
+ 3 | | from collections.abc import Iterable
+ 4 | | from datetime import datetime
+ 5 | | from typing import Any
+ 6 | |
+ 7 | | from sqlalchemy.exc import OperationalError
+ 8 | | from sqlmodel import delete, select
+ 9 | |
+10 | | from deerflow.config.app_config import AppConfig
+11 | | from deerflow.config.extensions_config import ExtensionsConfig
+12 | | from deerflow.database.models import TenantMcpServer, TenantModelConfig, TenantSkill, UserConfig
+13 | | from deerflow.database.user_config_store import _build_default_payloads
+14 | | from deerflow.database.secrets_crypto import (
+15 | |     decrypt_app_payload,
+16 | |     decrypt_extensions_payload,
+17 | |     decrypt_mcp_server_payload,
+18 | |     decrypt_model_settings,
+19 | |     encrypt_app_payload,
+20 | |     encrypt_extensions_payload,
+21 | |     encrypt_mcp_server_payload,
+22 | |     encrypt_model_settings,
+23 | | )
+24 | | from deerflow.database.session import get_session_factory
+25 | | from deerflow.skills import get_skills_root_path, load_skills
+   | |_____________________________________________________________^
+   |
+help: Organize imports
+
+F401 [*] `deerflow.config.app_config.AppConfig` imported but unused
+  --> packages/harness/deerflow/database/user_config_service.py:10:40
+   |
+ 8 | from sqlmodel import delete, select
+ 9 |
+10 | from deerflow.config.app_config import AppConfig
+   |                                        ^^^^^^^^^
+11 | from deerflow.config.extensions_config import ExtensionsConfig
+12 | from deerflow.database.models import TenantMcpServer, TenantModelConfig, TenantSkill, UserConfig
+   |
+help: Remove unused import: `deerflow.config.app_config.AppConfig`
+
+F401 [*] `deerflow.config.extensions_config.ExtensionsConfig` imported but unused
+  --> packages/harness/deerflow/database/user_config_service.py:11:47
+   |
+10 | from deerflow.config.app_config import AppConfig
+11 | from deerflow.config.extensions_config import ExtensionsConfig
+   |                                               ^^^^^^^^^^^^^^^^
+12 | from deerflow.database.models import TenantMcpServer, TenantModelConfig, TenantSkill, UserConfig
+13 | from deerflow.database.user_config_store import _build_default_payloads
+   |
+help: Remove unused import: `deerflow.config.extensions_config.ExtensionsConfig`
+
+F541 [*] f-string without any placeholders
+    --> packages/harness/deerflow/database/user_config_service.py:1119:33
+     |
+1117 |                 if global_model:
+1118 |                     valid_rows.append(row)
+1119 |                     logger.info(f"[list_tenant_shared_models] Global model exists, keeping")
+     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1120 |                 else:
+1121 |                     # Orphaned model - delete it
+     |
+help: Remove extraneous `f` prefix
+
+F541 [*] f-string without any placeholders
+    --> packages/harness/deerflow/database/user_config_service.py:1122:33
+     |
+1120 |                 else:
+1121 |                     # Orphaned model - delete it
+1122 |                     logger.info(f"[list_tenant_shared_models] Global model NOT found, deleting orphaned model")
+     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1123 |                     await session.delete(row)
+1124 |             else:
+     |
+help: Remove extraneous `f` prefix
+
+F541 [*] f-string without any placeholders
+    --> packages/harness/deerflow/database/user_config_service.py:1126:29
+     |
+1124 |             else:
+1125 |                 # Not from global - keep it
+1126 |                 logger.info(f"[list_tenant_shared_models] Not from global, keeping")
+     |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1127 |                 valid_rows.append(row)
+     |
+help: Remove extraneous `f` prefix
+
+F541 [*] f-string without any placeholders
+    --> packages/harness/deerflow/database/user_config_service.py:1219:25
+     |
+1217 |             logger.info(f"[cleanup_orphaned_tenant_models] Cleaned up models: {cleaned_models}")
+1218 |         else:
+1219 |             logger.info(f"[cleanup_orphaned_tenant_models] No orphaned models found")
+     |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1220 |
+1221 |         return cleaned_models
+     |
+help: Remove extraneous `f` prefix
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/models/factory.py:1:1
+   |
+ 1 | / import logging
+ 2 | | import functools
+ 3 | |
+ 4 | | import httpx
+ 5 | | from langchain.chat_models import BaseChatModel
+ 6 | |
+ 7 | | from deerflow.config import get_app_config, get_tracing_config, is_tracing_enabled
+ 8 | | from deerflow.reflection import resolve_class
+   | |_____________________________________________^
+ 9 |
+10 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/models/factory.py:67:9
+   |
+66 |       try:
+67 | /         from langchain_openai import ChatOpenAI
+68 | |
+69 | |         from deerflow.models.patched_openai import PatchedChatOpenAI
+70 | |         from deerflow.models.patched_minimax import PatchedChatMiniMax
+   | |______________________________________________________________________^
+71 |       except Exception as exc:  # pragma: no cover - defensive fallback
+72 |           logger.debug("Failed to load PatchedChatOpenAI, using model class as-is: %s", exc)
+   |
+help: Organize imports
+
+F841 Local variable `loop` is assigned to but never used
+   --> packages/harness/deerflow/sandbox/tools.py:551:9
+    |
+549 |     import concurrent.futures
+550 |     try:
+551 |         loop = asyncio.get_running_loop()
+    |         ^^^^
+552 |     except RuntimeError:
+553 |         return asyncio.run(coro)
+    |
+help: Remove assignment to unused variable `loop`
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> packages/harness/deerflow/sandbox/tools.py:608:5
+    |
+607 |   async def _fetch_model_config(user_id: str, tenant_id: str | None, model_name: str) -> dict[str, any] | None:
+608 | /     from typing import Any
+609 | |     from sqlalchemy import select
+610 | |     from deerflow.database.session import get_session_factory
+611 | |     from deerflow.database.models import TenantModelConfig
+612 | |     from deerflow.database.user_config_service import (
+613 | |         PLATFORM_MODEL_OWNER_ID,
+614 | |         _tenant_shared_model_owner_id,
+615 | |         _get_scoped_model_rows,
+616 | |     )
+617 | |     from deerflow.database.secrets_crypto import decrypt_model_settings
+    | |_______________________________________________________________________^
+618 |
+619 |       session_factory = get_session_factory()
+    |
+help: Organize imports
+
+F401 [*] `typing.Any` imported but unused
+   --> packages/harness/deerflow/sandbox/tools.py:608:24
+    |
+607 | async def _fetch_model_config(user_id: str, tenant_id: str | None, model_name: str) -> dict[str, any] | None:
+608 |     from typing import Any
+    |                        ^^^
+609 |     from sqlalchemy import select
+610 |     from deerflow.database.session import get_session_factory
+    |
+help: Remove unused import: `typing.Any`
+
+F401 [*] `typing.Any` imported but unused
+   --> packages/harness/deerflow/sandbox/tools.py:692:24
+    |
+691 | def _get_text2image_env(user_id: str, tenant_id: str | None, thread_id: str) -> dict[str, str]:
+692 |     from typing import Any
+    |                        ^^^
+693 |     image_model_name = _get_selected_image_model(thread_id)
+694 |     if not image_model_name or image_model_name.lower() == "none":
+    |
+help: Remove unused import: `typing.Any`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/storage/__init__.py:9:1
+   |
+ 7 |   """
+ 8 |
+ 9 | / from deerflow.storage.provider import StorageProvider, StorageProviderConfig
+10 | | from deerflow.storage.local import LocalStorageDriver
+11 | | from deerflow.storage.s3 import S3StorageDriver
+12 | | from deerflow.storage.juicefs import JuiceFSStorageDriver
+   | |_________________________________________________________^
+13 |
+14 |   __all__ = [
+   |
+help: Organize imports
+
+E501 Line too long (279 > 240)
+  --> packages/harness/deerflow/subagents/builtins/bash_agent.py:21:241
+   |
+19 | …
+20 | …
+21 | …rification after you have the result. A message with tool calls is NOT a final report.
+   |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 | …
+   |
+
+E501 Line too long (285 > 240)
+  --> packages/harness/deerflow/subagents/builtins/general_purpose.py:21:241
+   |
+19 | …
+20 | …
+21 | …lls does NOT count as a final answer. You cannot call more tools after your final answer.
+   |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 | …
+23 | …
+   |
+
+F841 Local variable `loop` is assigned to but never used
+  --> packages/harness/deerflow/tools/builtins/setup_agent_tool.py:20:9
+   |
+18 |     """Run an async coroutine from sync code, handling both event-loop and no-loop cases."""
+19 |     try:
+20 |         loop = asyncio.get_running_loop()
+   |         ^^^^
+21 |     except RuntimeError:
+22 |         return asyncio.run(coro)
+   |
+help: Remove assignment to unused variable `loop`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/harness/deerflow/uploads/manager.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / import os
+ 8 | | import re
+ 9 | | import hashlib
+10 | | import mimetypes
+11 | | from pathlib import Path
+12 | | from urllib.parse import quote
+13 | |
+14 | | from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
+   | |________________________________________________________________^
+   |
+help: Organize imports
+
+UP012 [*] Unnecessary UTF-8 `encoding` argument to `encode`
+   --> packages/harness/deerflow/uploads/manager.py:205:27
+    |
+203 | def upload_attachment_id(thread_id: str, filename: str) -> str:
+204 |     """Build a stable attachment id for a file in a thread uploads directory."""
+205 |     digest = hashlib.sha1(f"{thread_id}:{filename}".encode("utf-8")).hexdigest()[:16]
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+206 |     return f"att-{digest}"
+    |
+help: Remove unnecessary `encoding` argument
+
+F401 [*] `pathlib.Path` imported but unused
+  --> scripts/backfill_agents_to_db.py:13:21
+   |
+11 | import logging
+12 | import uuid
+13 | from pathlib import Path
+   |                     ^^^^
+14 |
+15 | import yaml
+   |
+help: Remove unused import: `pathlib.Path`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> scripts/backfill_agents_to_db.py:77:5
+   |
+75 |   async def _backfill():
+76 |       """Main backfill logic."""
+77 | /     from app.models.agents import CustomAgent
+78 | |
+79 | |     from sqlmodel import select
+   | |_______________________________^
+80 |
+81 |       session_factory = get_session_factory()
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> scripts/fix_auth_data.py:18:1
+   |
+16 |   sys.path.append(str(Path(__file__).resolve().parents[1]))
+17 |
+18 | / from sqlalchemy import create_engine, text
+19 | |
+20 | | from app.gateway.auth_db import _resolve_auth_db_url
+21 | | from app.gateway.auth_crypto import hash_password
+   | |_________________________________________________^
+   |
+help: Organize imports
+
+F541 [*] f-string without any placeholders
+  --> scripts/fix_auth_data.py:31:11
+   |
+29 | def run_fix():
+30 |     db_url = _resolve_auth_db_url()
+31 |     print(f"Connecting to database...")
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 |
+33 |     engine = create_engine(db_url)
+   |
+help: Remove extraneous `f` prefix
+
+UP017 [*] Use `datetime.UTC` alias
+  --> scripts/reset_admin_password_explicit.py:32:24
+   |
+31 |     db_url = _resolve_auth_db_url()
+32 |     now = datetime.now(timezone.utc)
+   |                        ^^^^^^^^^^^^
+33 |
+34 |     engine = create_engine(db_url)
+   |
+help: Convert to `datetime.UTC` alias
+
+F401 [*] `hashlib` imported but unused
+  --> scripts/seed_k8s_alerts.py:14:8
+   |
+13 | import asyncio
+14 | import hashlib
+   |        ^^^^^^^
+15 | import json
+16 | import sys
+   |
+help: Remove unused import: `hashlib`
+
+F401 [*] `json` imported but unused
+  --> scripts/seed_k8s_alerts.py:15:8
+   |
+13 | import asyncio
+14 | import hashlib
+15 | import json
+   |        ^^^^
+16 | import sys
+17 | import uuid
+   |
+help: Remove unused import: `json`
+
+F401 [*] `sqlmodel.Session` imported but unused
+  --> scripts/seed_k8s_alerts.py:23:22
+   |
+22 | from sqlalchemy import select
+23 | from sqlmodel import Session
+   |                      ^^^^^^^
+24 |
+25 | from app.alerting.dedup import compute_fingerprint, compute_payload_hash
+   |
+help: Remove unused import: `sqlmodel.Session`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_admin_router.py:1:1
+  |
+1 | / import sqlite3
+2 | | from datetime import UTC, datetime, timedelta
+3 | | from types import SimpleNamespace
+4 | |
+5 | | from fastapi import FastAPI, Request
+6 | | from fastapi.testclient import TestClient
+7 | |
+8 | | from app.gateway.routers import admin
+9 | | from app.gateway import auth_db
+  | |_______________________________^
+  |
+help: Organize imports
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:220:27
+    |
+218 |         response = client.get("/api/admin/users", headers={"x-user-role": "admin"})
+219 |
+220 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+221 |     payload = response.json()
+222 |     assert len(payload["users"]) == 1
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:235:27
+    |
+233 |         )
+234 |
+235 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+236 |     assert response.json() == {"user_id": "u-admin", "role": "admin"}
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:248:27
+    |
+246 |         response = client.get("/api/admin/users", headers={"x-user-role": "admin"})
+247 |
+248 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+249 |     users = response.json()["users"]
+250 |     assert any(user["id"] == "u-user" and user["status"] == "active" for user in users)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:269:27
+    |
+267 |         )
+268 |
+269 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+270 |     payload = response.json()
+271 |     assert payload["id"] == "u-user"
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:324:27
+    |
+322 |         response = client.get("/api/admin/users/usage", headers={"x-user-role": "admin"})
+323 |
+324 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+325 |     payload = response.json()
+326 |     rows = {row["user_id"]: row for row in payload["users"]}
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:352:27
+    |
+350 |         response = client.get("/api/admin/users/usage", headers={"x-user-role": "admin"})
+351 |
+352 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+353 |     payload = response.json()
+354 |     rows = {row["user_id"]: row for row in payload["users"]}
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:378:27
+    |
+376 |         response = client.get("/api/admin/users/usage", headers={"x-user-role": "admin"})
+377 |
+378 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+379 |     payload = response.json()
+380 |     rows = {row["user_id"]: row for row in payload["users"]}
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:510:27
+    |
+508 |         )
+509 |
+510 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+511 |     assert calls and calls[0][0][0] == "admin.user.password.reset"
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:542:27
+    |
+540 |         )
+541 |
+542 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+543 |     payload = response.json()
+544 |     assert payload["user_id"] == "u-user"
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_admin_router.py:586:27
+    |
+584 |         response = client.get("/api/admin/audit/logs?limit=10", headers={"x-user-role": "admin"})
+585 |
+586 |     print(response.json()); assert response.status_code == 200
+    |                           ^
+587 |     payload = response.json()
+588 |     assert len(payload["events"]) == 1
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_brand_identity_gate.py:1:1
+  |
+1 | / import importlib.util
+2 | | import sys
+3 | | from pathlib import Path
+  | |________________________^
+  |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> tests/test_custom_agent.py:207:9
+    |
+205 |   class TestCustomAgentModel:
+206 |       def test_create_and_query(self, test_session_factory):
+207 | /         from app.models.agents import CustomAgent
+208 | |
+209 | |         from sqlmodel import select
+    | |___________________________________^
+210 |
+211 |           async def _run():
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_incident_diagnosis.py:3:1
+   |
+ 1 |   """Tests for incident deep diagnosis API endpoint."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import asyncio
+ 6 | | import uuid
+ 7 | | import pytest
+ 8 | | from fastapi.testclient import TestClient
+ 9 | | from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+10 | | from sqlmodel import SQLModel
+11 | | from sqlmodel.ext.asyncio.session import AsyncSession
+12 | | from unittest.mock import AsyncMock, MagicMock, patch
+13 | |
+14 | | from app.models.agents import CustomAgent
+15 | | from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   | |___________________________________________________________________________________________^
+16 |
+17 |   # ---------------------------------------------------------------------------
+   |
+help: Organize imports
+
+F401 [*] `uuid` imported but unused
+ --> tests/test_incident_diagnosis.py:6:8
+  |
+5 | import asyncio
+6 | import uuid
+  |        ^^^^
+7 | import pytest
+8 | from fastapi.testclient import TestClient
+  |
+help: Remove unused import: `uuid`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_incident_diagnosis.py:30:5
+   |
+28 |   async def _create_tables(engine: AsyncEngine) -> None:
+29 |       # Ensure all tables are registered
+30 | /     from app.models.agents import CustomAgent
+31 | |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   | |_______________________________________________________________________________________________^
+32 |
+33 |       async with engine.begin() as conn:
+   |
+help: Organize imports
+
+F401 [*] `app.models.agents.CustomAgent` imported but unused
+  --> tests/test_incident_diagnosis.py:30:35
+   |
+28 | async def _create_tables(engine: AsyncEngine) -> None:
+29 |     # Ensure all tables are registered
+30 |     from app.models.agents import CustomAgent
+   |                                   ^^^^^^^^^^^
+31 |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   |
+help: Remove unused import: `app.models.agents.CustomAgent`
+
+F401 [*] `app.models.alerting.Incident` imported but unused
+  --> tests/test_incident_diagnosis.py:31:37
+   |
+29 |     # Ensure all tables are registered
+30 |     from app.models.agents import CustomAgent
+31 |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   |                                     ^^^^^^^^
+32 |
+33 |     async with engine.begin() as conn:
+   |
+help: Remove unused import
+
+F401 [*] `app.models.alerting.IncidentSignalLink` imported but unused
+  --> tests/test_incident_diagnosis.py:31:47
+   |
+29 |     # Ensure all tables are registered
+30 |     from app.models.agents import CustomAgent
+31 |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   |                                               ^^^^^^^^^^^^^^^^^^
+32 |
+33 |     async with engine.begin() as conn:
+   |
+help: Remove unused import
+
+F401 [*] `app.models.alerting.Signal` imported but unused
+  --> tests/test_incident_diagnosis.py:31:67
+   |
+29 |     # Ensure all tables are registered
+30 |     from app.models.agents import CustomAgent
+31 |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   |                                                                   ^^^^^^
+32 |
+33 |     async with engine.begin() as conn:
+   |
+help: Remove unused import
+
+F401 [*] `app.models.alerting.RawAlert` imported but unused
+  --> tests/test_incident_diagnosis.py:31:75
+   |
+29 |     # Ensure all tables are registered
+30 |     from app.models.agents import CustomAgent
+31 |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   |                                                                           ^^^^^^^^
+32 |
+33 |     async with engine.begin() as conn:
+   |
+help: Remove unused import
+
+F401 [*] `app.models.alerting.AlertSource` imported but unused
+  --> tests/test_incident_diagnosis.py:31:85
+   |
+29 |     # Ensure all tables are registered
+30 |     from app.models.agents import CustomAgent
+31 |     from app.models.alerting import Incident, IncidentSignalLink, Signal, RawAlert, AlertSource
+   |                                                                                     ^^^^^^^^^^^
+32 |
+33 |     async with engine.begin() as conn:
+   |
+help: Remove unused import
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_incident_diagnosis.py:58:5
+   |
+57 |   def _make_test_app(session_factory, default_user_id: str | None = "user-a"):
+58 | /     from fastapi import FastAPI, Request
+59 | |     from app.gateway.routers.alerts import router
+   | |_________________________________________________^
+60 |
+61 |       app = FastAPI()
+   |
+help: Organize imports
+
+F401 [*] `pytest` imported but unused
+ --> tests/test_plugins_config.py:2:8
+  |
+1 | """Integration tests for plugin configuration system."""
+2 | import pytest
+  |        ^^^^^^
+  |
+help: Remove unused import: `pytest`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_plugins_config.py:7:5
+  |
+5 | def test_load_plugin_config_defaults_all_enabled():
+6 |     """When no plugins config provided, all plugins default to enabled."""
+7 |     from app.plugins.registry import load_plugin_config, PLUGIN_DEFINITIONS
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8 |
+9 |     states = load_plugin_config(None)
+  |
+help: Organize imports
+
+F401 [*] `pytest` imported but unused
+ --> tests/test_plugins_routes.py:2:8
+  |
+1 | """Test /api/plugins endpoint."""
+2 | import pytest
+  |        ^^^^^^
+3 | from fastapi.testclient import TestClient
+  |
+help: Remove unused import: `pytest`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_plugins_routes.py:8:5
+   |
+ 6 |   def test_plugins_list_returns_all_definitions():
+ 7 |       """GET /api/plugins should return all plugin definitions with enabled state."""
+ 8 | /     from app.plugins.registry import PLUGIN_DEFINITIONS
+ 9 | |     from app.gateway.routers.plugins import router
+10 | |     from fastapi import FastAPI
+   | |_______________________________^
+11 |
+12 |       app = FastAPI()
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_plugins_routes.py:31:5
+   |
+29 |   def test_plugins_respect_config():
+30 |       """When plugin is disabled, enabled should be false."""
+31 | /     from app.plugins.registry import load_plugin_config
+32 | |     from app.gateway.config import set_gateway_config, GatewayConfig
+   | |____________________________________________________________________^
+33 |
+34 |       cfg = GatewayConfig(plugins={"ops-alerting": {"enabled": False}})
+   |
+help: Organize imports
+
+F401 [*] `app.plugins.registry.load_plugin_config` imported but unused
+  --> tests/test_plugins_routes.py:31:38
+   |
+29 | def test_plugins_respect_config():
+30 |     """When plugin is disabled, enabled should be false."""
+31 |     from app.plugins.registry import load_plugin_config
+   |                                      ^^^^^^^^^^^^^^^^^^
+32 |     from app.gateway.config import set_gateway_config, GatewayConfig
+   |
+help: Remove unused import: `app.plugins.registry.load_plugin_config`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_plugins_routes.py:37:5
+   |
+35 |       set_gateway_config(cfg)
+36 |
+37 | /     from app.gateway.routers.plugins import router
+38 | |     from fastapi import FastAPI
+   | |_______________________________^
+39 |
+40 |       app = FastAPI()
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_plugins_spi.py:3:1
+   |
+ 1 |   """Tests for the plugin system — SPI protocols and registry."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import pytest
+ 6 | |
+ 7 | | from app.plugins import EventSource, Executor, Notifier
+ 8 | | from app.plugins.registry import (
+ 9 | |     PLUGIN_DEFINITIONS,
+10 | |     PluginDefinition,
+11 | |     load_plugin_config,
+12 | | )
+   | |_^
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_present_file_tool_core_logic.py:3:1
+  |
+1 |   """Core behavior tests for present_files path normalization."""
+2 |
+3 | / import json
+4 | | import importlib
+5 | | from types import SimpleNamespace
+  | |_________________________________^
+6 |
+7 |   present_file_tool_module = importlib.import_module("deerflow.tools.builtins.present_file_tool")
+  |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_publishable_collection.py:3:1
+  |
+1 |   """Regression tests for collection-safe backend publishing checks."""
+2 |
+3 | / import subprocess
+4 | | import sys
+5 | | from pathlib import Path
+  | |________________________^
+  |
+help: Organize imports
+
+F401 [*] `app.gateway.routers.admin` imported but unused
+ --> tests/test_scrypt.py:8:42
+  |
+6 | from app.gateway.app import app
+7 | from app.gateway.auth_crypto import verify_password
+8 | from app.gateway.routers import admin as admin_router
+  |                                          ^^^^^^^^^^^^
+  |
+help: Remove unused import: `app.gateway.routers.admin`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_scrypt.py:45:5
+   |
+43 |           conn.commit()
+44 |
+45 | /     import app.gateway.routers.admin as admin
+46 | |     from app.gateway.authorization import require_platform_admin
+47 | |     from app.gateway.auth import AuthMiddleware
+   | |_______________________________________________^
+48 |       
+49 |       # Have to mock require_platform_admin differently if it's used as dependency
+   |
+help: Organize imports
+
+F401 [*] `app.gateway.routers.admin` imported but unused
+  --> tests/test_scrypt.py:45:41
+   |
+43 |         conn.commit()
+44 |
+45 |     import app.gateway.routers.admin as admin
+   |                                         ^^^^^
+46 |     from app.gateway.authorization import require_platform_admin
+47 |     from app.gateway.auth import AuthMiddleware
+   |
+help: Remove unused import: `app.gateway.routers.admin`
+
+F401 [*] `app.gateway.auth.AuthMiddleware` imported but unused
+  --> tests/test_scrypt.py:47:34
+   |
+45 |     import app.gateway.routers.admin as admin
+46 |     from app.gateway.authorization import require_platform_admin
+47 |     from app.gateway.auth import AuthMiddleware
+   |                                  ^^^^^^^^^^^^^^
+48 |     
+49 |     # Have to mock require_platform_admin differently if it's used as dependency
+   |
+help: Remove unused import: `app.gateway.auth.AuthMiddleware`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_scrypt2.py:1:1
+   |
+ 1 | / import sqlite3
+ 2 | |
+ 3 | | from fastapi import FastAPI
+ 4 | | from fastapi.testclient import TestClient
+ 5 | |
+ 6 | | from app.gateway import auth_db
+ 7 | | from app.gateway.auth_crypto import verify_password
+ 8 | | from app.gateway.routers import admin as admin_router
+ 9 | | from app.gateway.routers.admin import router
+10 | | from app.gateway.authorization import require_platform_admin
+   | |____________________________________________________________^
+   |
+help: Organize imports
+
+F401 [*] `app.gateway.routers.admin` imported but unused
+  --> tests/test_scrypt2.py:8:42
+   |
+ 6 | from app.gateway import auth_db
+ 7 | from app.gateway.auth_crypto import verify_password
+ 8 | from app.gateway.routers import admin as admin_router
+   |                                          ^^^^^^^^^^^^
+ 9 | from app.gateway.routers.admin import router
+10 | from app.gateway.authorization import require_platform_admin
+   |
+help: Remove unused import: `app.gateway.routers.admin`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_scrypt3.py:1:1
+  |
+1 | / import sqlite3
+2 | |
+3 | | from fastapi import FastAPI
+4 | | from fastapi.testclient import TestClient
+5 | |
+6 | | from app.gateway import auth_db
+7 | | from app.gateway.auth_crypto import verify_password
+8 | | from app.gateway.routers import admin as admin_router
+9 | | from app.gateway.authorization import require_platform_admin
+  | |____________________________________________________________^
+  |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_scrypt4.py:1:1
+  |
+1 | / import sqlite3
+2 | |
+3 | | from fastapi import FastAPI
+4 | | from fastapi.testclient import TestClient
+5 | |
+6 | | from app.gateway import auth_db
+7 | | from app.gateway.auth_crypto import verify_password
+8 | | from app.gateway.routers import admin as admin_router
+9 | | from app.gateway.authorization import require_platform_admin
+  | |____________________________________________________________^
+  |
+help: Organize imports
+
+F401 [*] `tempfile` imported but unused
+ --> tests/test_storage_juicefs.py:3:8
+  |
+1 | """Unit tests for the JuiceFSStorageDriver."""
+2 |
+3 | import tempfile
+  |        ^^^^^^^^
+4 | from pathlib import Path
+  |
+help: Remove unused import: `tempfile`
+
+F401 `aioboto3` imported but unused; consider using `importlib.util.find_spec` to test for availability
+  --> tests/test_storage_s3.py:11:12
+   |
+ 9 | # aioboto3 is optional — skip all tests if not installed
+10 | try:
+11 |     import aioboto3
+   |            ^^^^^^^^
+12 |     from moto import mock_aws
+   |
+help: Remove unused import: `aioboto3`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_terminal_multihost.py:1:1
+  |
+1 | / import pytest
+2 | | from app.agent.terminal_graph import _resolve_tool_targets, _target_assets
+3 | | from app.services.terminal.session import _new_command_marker, _strip_command_markers, session_manager
+  | |______________________________________________________________________________________________________^
+  |
+help: Organize imports
+
+F401 [*] `pytest` imported but unused
+ --> tests/test_terminal_multihost.py:1:8
+  |
+1 | import pytest
+  |        ^^^^^^
+2 | from app.agent.terminal_graph import _resolve_tool_targets, _target_assets
+3 | from app.services.terminal.session import _new_command_marker, _strip_command_markers, session_manager
+  |
+help: Remove unused import: `pytest`
+
+F401 [*] `app.agent.terminal_graph._target_assets` imported but unused
+ --> tests/test_terminal_multihost.py:2:61
+  |
+1 | import pytest
+2 | from app.agent.terminal_graph import _resolve_tool_targets, _target_assets
+  |                                                             ^^^^^^^^^^^^^^
+3 | from app.services.terminal.session import _new_command_marker, _strip_command_markers, session_manager
+  |
+help: Remove unused import: `app.agent.terminal_graph._target_assets`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_terminal_security.py:1:1
+   |
+ 1 | / import pytest
+ 2 | | from app.services.terminal.security import (
+ 3 | |     CommandSecurityService,
+ 4 | |     split_compound_command,
+ 5 | |     extract_executable,
+ 6 | |     matches_pattern,
+ 7 | |     DEFAULT_SECURITY_CONFIG,
+ 8 | |     DEFAULT_AUTO_APPROVAL,
+ 9 | | )
+10 | | from app.agent.terminal_tools import _build_web_fetch_command, _build_write_file_command
+11 | | from app.gateway.routers.terminal import _build_web_fetch_argv
+   | |______________________________________________________________^
+   |
+help: Organize imports
+
+F401 [*] `pytest` imported but unused
+ --> tests/test_terminal_security.py:1:8
+  |
+1 | import pytest
+  |        ^^^^^^
+2 | from app.services.terminal.security import (
+3 |     CommandSecurityService,
+  |
+help: Remove unused import: `pytest`
+
+F401 [*] `app.services.terminal.security.DEFAULT_SECURITY_CONFIG` imported but unused
+ --> tests/test_terminal_security.py:7:5
+  |
+5 |     extract_executable,
+6 |     matches_pattern,
+7 |     DEFAULT_SECURITY_CONFIG,
+  |     ^^^^^^^^^^^^^^^^^^^^^^^
+8 |     DEFAULT_AUTO_APPROVAL,
+9 | )
+  |
+help: Remove unused import
+
+F401 [*] `app.services.terminal.security.DEFAULT_AUTO_APPROVAL` imported but unused
+  --> tests/test_terminal_security.py:8:5
+   |
+ 6 |     matches_pattern,
+ 7 |     DEFAULT_SECURITY_CONFIG,
+ 8 |     DEFAULT_AUTO_APPROVAL,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+ 9 | )
+10 | from app.agent.terminal_tools import _build_web_fetch_command, _build_write_file_command
+   |
+help: Remove unused import
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_terminal_trimming.py:1:1
+  |
+1 | / import pytest
+2 | | from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+3 | | from app.agent.terminal_graph import _trim_message_history
+  | |__________________________________________________________^
+4 |
+5 |   def test_trim_empty_messages():
+  |
+help: Organize imports
+
+F401 [*] `pytest` imported but unused
+ --> tests/test_terminal_trimming.py:1:8
+  |
+1 | import pytest
+  |        ^^^^^^
+2 | from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+3 | from app.agent.terminal_graph import _trim_message_history
+  |
+help: Remove unused import: `pytest`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_text2image_integration.py:1:1
+   |
+ 1 | / import pytest
+ 2 | | from pathlib import Path
+ 3 | | from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+ 4 | | from sqlmodel import SQLModel
+ 5 | | from unittest.mock import patch, MagicMock
+ 6 | |
+ 7 | | from langgraph.checkpoint.memory import InMemorySaver
+ 8 | | from deerflow.database.models import TenantModelConfig
+ 9 | | from deerflow.database.secrets_crypto import encrypt_model_settings
+10 | | from deerflow.database.user_config_service import PLATFORM_MODEL_OWNER_ID
+11 | | from deerflow.sandbox.tools import _get_selected_image_model, _get_text2image_env, _run_async
+   | |_____________________________________________________________________________________________^
+   |
+help: Organize imports
+
+F401 [*] `unittest.mock.patch` imported but unused
+ --> tests/test_text2image_integration.py:5:27
+  |
+3 | from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+4 | from sqlmodel import SQLModel
+5 | from unittest.mock import patch, MagicMock
+  |                           ^^^^^
+6 |
+7 | from langgraph.checkpoint.memory import InMemorySaver
+  |
+help: Remove unused import
+
+F401 [*] `unittest.mock.MagicMock` imported but unused
+ --> tests/test_text2image_integration.py:5:34
+  |
+3 | from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+4 | from sqlmodel import SQLModel
+5 | from unittest.mock import patch, MagicMock
+  |                                  ^^^^^^^^^
+6 |
+7 | from langgraph.checkpoint.memory import InMemorySaver
+  |
+help: Remove unused import
+
+F401 [*] `deerflow.sandbox.tools._run_async` imported but unused
+  --> tests/test_text2image_integration.py:11:84
+   |
+ 9 | from deerflow.database.secrets_crypto import encrypt_model_settings
+10 | from deerflow.database.user_config_service import PLATFORM_MODEL_OWNER_ID
+11 | from deerflow.sandbox.tools import _get_selected_image_model, _get_text2image_env, _run_async
+   |                                                                                    ^^^^^^^^^^
+   |
+help: Remove unused import: `deerflow.sandbox.tools._run_async`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_text2image_integration.py:24:5
+   |
+22 |       factory = async_sessionmaker(engine, expire_on_commit=False)
+23 |
+24 | /     import deerflow.database.user_config_service as user_config_service
+25 | |     import deerflow.database.session as session_module
+   | |______________________________________________________^
+26 |
+27 |       monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
+   |
+help: Organize imports
+
+Found 234 errors.
+[*] 186 fixable with the `--fix` option (7 hidden fixes can be enabled with the `--unsafe-fixes` option).

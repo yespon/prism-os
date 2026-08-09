@@ -1,0 +1,973 @@
+
+> prismos-frontend@0.2.0-alpha.1 lint /Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend
+> eslint . --ext .ts,.tsx
+
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/admin/models/page.tsx
+  277:42  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  459:39  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/admin/security/page.tsx
+  15:1  error  `@/core/auth/auth-api` import should occur before import of `@/core/auth/hooks`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/admin/tenants/edit-tenant-dialog.tsx
+  81:46  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/admin/tenants/page.tsx
+  198:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/api/terminal/chat/approve/route.ts
+   1:44  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   5:50  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  26:19  error  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/api/terminal/chat/route.ts
+   1:44  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   5:50  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  11:53  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  12:31  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  34:19  error  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/change-password/page.tsx
+  12:1   error    `@/core/auth/auth-api` import should occur before import of `@/core/auth/hooks`                    import/order
+  12:22  warning  'Session' is defined but never used                                                                @typescript-eslint/no-unused-vars
+  14:1   error    `@/components/auth/locale-switcher` import should occur before import of `@/components/ui/button`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/select-workspace/page.tsx
+  16:1  error  `@/core/i18n/hooks` import should occur before import of `@/core/tenants/hooks`                    import/order
+  17:1  error  `@/components/auth/locale-switcher` import should occur before import of `@/components/ui/button`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/setup/page.tsx
+  13:1  error    `@/components/auth/locale-switcher` import should occur before import of `@/components/ui/button`                                 import/order
+  42:6  warning  React Hook useEffect has a missing dependency: 't.auth.setup.errorCheckStatus'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  48:9  error    Prefer using an optional chain expression instead, as it's more concise and easier to read                                        @typescript-eslint/prefer-optional-chain
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/sign-in/page.tsx
+  20:1  error  `@/core/auth/auth-api` import should occur before type import of `@/core/tenants`                  import/order
+  21:1  error  `@/core/i18n/hooks` import should occur before type import of `@/core/tenants`                     import/order
+  22:1  error  `@/components/auth/locale-switcher` import should occur before import of `@/components/ui/button`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/sign-up/page.tsx
+  19:1  error  `@/components/auth/locale-switcher` import should occur before import of `@/components/ui/button`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/chats/[thread_id]/chat-thread-content.tsx
+   54:10  warning  'pathOfThread' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+   66:1   error    `@/app/workspace/terminal/context` import should occur before import of `@/components/ai-elements/prompt-input`  import/order
+  332:47  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  388:63  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/chats/[thread_id]/page.tsx
+   16:1  error    `@/components/workspace/chats/chat-header-context` import should occur before import of `@/components/workspace/chats/chat-tabs-context`  import/order
+  195:6  warning  React Hook useMemo has a missing dependency: 't.chatHeader.selectModel'. Either include it or remove the dependency array                 react-hooks/exhaustive-deps
+  221:5  warning  React Hook useCallback has a missing dependency: 'settings'. Either include it or remove the dependency array                             react-hooks/exhaustive-deps
+  253:7  warning  React Hook useMemo has a missing dependency: 'confirmBatchDelete'. Either include it or remove the dependency array                       react-hooks/exhaustive-deps
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/chats/[thread_id]/thread-attachments-panel.tsx
+  7:1  error  `@/core/auth/auth-api` import should occur before import of `@/core/config`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/files/page.tsx
+   12:3    warning  'FileIcon' is defined but never used                                                                                                                                @typescript-eslint/no-unused-vars
+   13:3    warning  'MoreHorizontal' is defined but never used                                                                                                                          @typescript-eslint/no-unused-vars
+   18:3    warning  'Home' is defined but never used                                                                                                                                    @typescript-eslint/no-unused-vars
+   20:3    warning  'X' is defined but never used                                                                                                                                       @typescript-eslint/no-unused-vars
+   26:1    error    `@/components/ui/input` import should occur after import of `@/components/ui/dropdown-menu`                                                                         import/order
+   30:3    warning  'DialogDescription' is defined but never used                                                                                                                       @typescript-eslint/no-unused-vars
+   41:1    error    `@/core/i18n/hooks` import should occur after type import of `@/core/files/types`                                                                                   import/order
+   42:1    error    `@/core/files/hooks` import should occur after import of `@/components/workspace/files/file-preview-sheet`                                                          import/order
+   50:1    error    `@/core/files/api` import should occur after import of `@/components/workspace/files/file-preview-sheet`                                                            import/order
+  197:9    warning  'currentFolderName' is assigned a value but never used                                                                                                              @typescript-eslint/no-unused-vars
+  301:107  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  441:40   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/incidents/[incident_id]/page.tsx
+   40:168  warning  'getSeverityBadgeStyles' is defined but never used                                                                                                                  @typescript-eslint/no-unused-vars
+   40:192  warning  'formatDate' is defined but never used                                                                                                                              @typescript-eslint/no-unused-vars
+   40:204  warning  'diagnoseIncident' is defined but never used                                                                                                                        @typescript-eslint/no-unused-vars
+   57:1    error    `@/core/tenants/use-workspace-type-guard` import should occur before import of `@/core/threads/utils`                                                               import/order
+  106:5    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  115:52   warning  'isLoadingAgents' is assigned a value but never used                                                                                                                @typescript-eslint/no-unused-vars
+  126:6    warning  React Hook useEffect has a missing dependency: 'selectedAgentId'. Either include it or remove the dependency array                                                  react-hooks/exhaustive-deps
+  136:9    warning  'selectedAgentName' is assigned a value but never used                                                                                                              @typescript-eslint/no-unused-vars
+  431:9    warning  'diagnosisQuery' is assigned a value but never used                                                                                                                 @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/overview/page.tsx
+  102:10  warning  'formatRelativeTime' is defined but never used              @typescript-eslint/no-unused-vars
+  270:9   warning  'getSeverityBadgeClass' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/skills/[name]/page.tsx
+   15:1   error    `@/core/models/hooks` import should occur after import of `@/components/ui/badge`                                                                                   import/order
+   16:1   error    `@/components/ui/select` import should occur after import of `@/components/ui/badge`                                                                                import/order
+   17:1   error    `@/core/terminal-agent/useTerminalAgent` import should occur after type import of `@/core/skills/type`                                                              import/order
+   18:1   error    There should be no empty line within import group                                                                                                                   import/order
+   18:1   error    `@/components/workspace/messages/markdown-content` import should occur after import of `@/components/ui/badge`                                                      import/order
+   20:1   error    `@/components/ui/button` import should occur after import of `@/components/ui/badge`                                                                                import/order
+   21:1   error    `@/components/ui/textarea` import should occur after import of `@/components/ui/badge`                                                                              import/order
+   22:1   error    `@/components/ui/input` import should occur after import of `@/components/ui/badge`                                                                                 import/order
+   42:10  warning  'generating' is assigned a value but never used                                                                                                                     @typescript-eslint/no-unused-vars
+   42:22  warning  'setGenerating' is assigned a value but never used                                                                                                                  @typescript-eslint/no-unused-vars
+   68:5   warning  'handleSubmit' is assigned a value but never used                                                                                                                   @typescript-eslint/no-unused-vars
+  107:43  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  108:41  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  109:45  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  110:35  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  198:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  244:37  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  403:37  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  408:54  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  408:89  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  416:31  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  433:43  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  458:57  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/skills/page.tsx
+   18:39  warning  'TabsContent' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+   19:10  warning  'Textarea' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   44:24  warning  'createPersonalSkill' is assigned a value but never used                                                   @typescript-eslint/no-unused-vars
+   44:56  warning  'isCreating' is assigned a value but never used                                                            @typescript-eslint/no-unused-vars
+   46:56  warning  'isDeleting' is assigned a value but never used                                                            @typescript-eslint/no-unused-vars
+  129:67  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  129:84  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/terminal/context.tsx
+  3:1   error    There should be at least one empty line between import groups  import/order
+  3:52  warning  'useState' is defined but never used                           @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/terminal/page.tsx
+  3:10  warning  'useLocalSettings' is defined but never used                              @typescript-eslint/no-unused-vars
+  4:1   error    `next/navigation` import should occur before import of `@/core/settings`  import/order
+  4:10  warning  'useSearchParams' is defined but never used                               @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/app/workspace/terminal/terminal-agent-ui.tsx
+     3:1    error    There should be at least one empty line between import groups                                                                                                       import/order
+     3:1    error    `react` import should occur after import of `lucide-react`                                                                                                          import/order
+     4:1    error    `@/core/terminal-agent/useTerminalAgent` import should occur after import of `@/components/workspace/terminal/save-as-skill-dialog`                                 import/order
+     5:1    error    `@/core/terminal-agent/command-interaction-input` import should occur after import of `@/components/workspace/terminal/save-as-skill-dialog`                        import/order
+     6:1    error    `@/app/workspace/terminal/context` import should occur after import of `sonner`                                                                                     import/order
+     7:1    error    `@/core/terminal-agent/security/security-settings-ui` import should occur after import of `@/components/workspace/terminal/save-as-skill-dialog`                    import/order
+     8:1    error    `@/core/terminal-agent/chat-history` import should occur after import of `@/components/workspace/terminal/save-as-skill-dialog`                                     import/order
+     8:35   warning  'ChatMessage' is defined but never used                                                                                                                             @typescript-eslint/no-unused-vars
+     9:1    error    There should be at least one empty line between import groups                                                                                                       import/order
+    10:32   warning  'MoreHorizontal' is defined but never used                                                                                                                          @typescript-eslint/no-unused-vars
+    11:3    warning  'Mic' is defined but never used                                                                                                                                     @typescript-eslint/no-unused-vars
+    12:3    warning  'TerminalSquare' is defined but never used                                                                                                                          @typescript-eslint/no-unused-vars
+    12:28   warning  'ShieldAlert' is defined but never used                                                                                                                             @typescript-eslint/no-unused-vars
+    13:3    warning  'ThumbsUp' is defined but never used                                                                                                                                @typescript-eslint/no-unused-vars
+    13:13   warning  'ThumbsDown' is defined but never used                                                                                                                              @typescript-eslint/no-unused-vars
+    13:51   warning  'ChevronLeft' is defined but never used                                                                                                                             @typescript-eslint/no-unused-vars
+    13:64   warning  'Bot' is defined but never used                                                                                                                                     @typescript-eslint/no-unused-vars
+    14:39   warning  'Play' is defined but never used                                                                                                                                    @typescript-eslint/no-unused-vars
+    14:45   warning  'StopCircle' is defined but never used                                                                                                                              @typescript-eslint/no-unused-vars
+    16:1    error    `@/components/ui/button` import should occur after import of `sonner`                                                                                               import/order
+    17:1    error    `@/components/ui/dropdown-menu` import should occur after import of `sonner`                                                                                        import/order
+    23:1    error    `@/core/models/hooks` import should occur after import of `@/components/workspace/terminal/save-as-skill-dialog`                                                    import/order
+    24:1    error    `@/components/ui/input` import should occur after import of `sonner`                                                                                                import/order
+    25:1    error    `@/components/ui/tooltip` import should occur after import of `sonner`                                                                                              import/order
+    30:1    error    `@/components/workspace/messages/markdown-content` import should occur after import of `sonner`                                                                     import/order
+    31:1    error    There should be at least one empty line between import groups                                                                                                       import/order
+    32:1    error    `@/core/alerting/incident-context` import should occur after import of `@/components/workspace/terminal/save-as-skill-dialog`                                       import/order
+    39:30   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    45:35   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    45:70   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    49:33   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    49:68   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    55:32   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    58:30   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+    60:29   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    60:69   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    60:84   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+    66:30   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    71:34   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    71:40   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    87:36   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+    91:22   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+    92:21   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   100:19   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   100:55   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   101:16   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   102:37   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   102:41   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+   107:26   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   118:34   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   123:31   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   123:43   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   134:28   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   135:20   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   135:39   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   135:54   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   135:67   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   142:82   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   150:10   warning  'messageFeedback' is assigned a value but never used                                                                                                                @typescript-eslint/no-unused-vars
+   154:40   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   156:66   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   187:22   warning  'agentInput' is assigned a value but never used                                                                                                                     @typescript-eslint/no-unused-vars
+   187:34   warning  'handleInputChange' is assigned a value but never used                                                                                                              @typescript-eslint/no-unused-vars
+   187:53   warning  'handleSubmit' is assigned a value but never used                                                                                                                   @typescript-eslint/no-unused-vars
+   202:70   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   219:7    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   227:41   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   237:34   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   238:18   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   250:46   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   252:33   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   253:24   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   254:37   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   254:52   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   258:22   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   280:5    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   285:7    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   291:40   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   293:6    warning  React Hook useEffect has a missing dependency: 'selectedModel'. Either include it or remove the dependency array                                                    react-hooks/exhaustive-deps
+   297:11   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   297:25   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   297:88   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   298:13   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   301:40   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   354:5    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   548:31   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   550:19   error    'reasoningText' is never reassigned. Use 'const' instead                                                                                                            prefer-const
+   561:129  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   600:46   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   603:68   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   604:59   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   654:61   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   664:33   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   665:33   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   706:133  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   725:63   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   728:70   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   728:89   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   729:63   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   730:55   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   730:69   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   786:114  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   813:67   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   843:107  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   843:158  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   857:46   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   869:75   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   869:80   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   871:55   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   872:65   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   873:70   error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   883:108  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   888:37   error    Unexpected empty arrow function                                                                                                                                     @typescript-eslint/no-empty-function
+   889:40   error    Unexpected empty arrow function                                                                                                                                     @typescript-eslint/no-empty-function
+   890:37   error    Unexpected empty arrow function                                                                                                                                     @typescript-eslint/no-empty-function
+  1005:53   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/backoffice/change-password-dialog.tsx
+   9:1   error  `@/core/i18n/hooks` import should occur after import of `@/core/auth/auth-api`  import/order
+  20:1   error  `@/core/tenants` import should occur after import of `@/core/auth/auth-api`     import/order
+  81:18  error  Promise returned in function argument where a void return was expected          @typescript-eslint/no-misused-promises
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/alert-rules-tab.tsx
+    4:1    error    `lucide-react` import should occur before import of `react`                                                                                                      import/order
+   10:3    warning  'SparklesIcon' is defined but never used                                                                                                                         @typescript-eslint/no-unused-vars
+   12:3    warning  'ShieldCheckIcon' is defined but never used                                                                                                                      @typescript-eslint/no-unused-vars
+   15:3    warning  'CheckIcon' is defined but never used                                                                                                                            @typescript-eslint/no-unused-vars
+   24:1    error    `@/components/ui/badge` import should occur before import of `@/components/ui/button`                                                                            import/order
+   26:1    error    `@/components/ui/dialog` import should occur before import of `@/components/ui/input`                                                                            import/order
+   32:3    warning  'DialogTrigger' is defined but never used                                                                                                                        @typescript-eslint/no-unused-vars
+  236:36   error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+  251:39   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                        @typescript-eslint/prefer-nullish-coalescing
+  251:74   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                        @typescript-eslint/prefer-nullish-coalescing
+  432:153  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                        @typescript-eslint/prefer-nullish-coalescing
+  433:59   error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+  433:72   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                        @typescript-eslint/prefer-nullish-coalescing
+  476:39   error    '(rule.condition_json as Record<string, unknown> | null)?.logic || "AND"' will use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+  476:102  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                        @typescript-eslint/prefer-nullish-coalescing
+  479:52   error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+  481:57   error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+  481:142  error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+  551:66   error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/alert-sources-tab.tsx
+    4:1   error    `lucide-react` import should occur before import of `react`                                                                                                         import/order
+   21:1   error    `@/components/ui/badge` import should occur before import of `@/components/ui/button`                                                                               import/order
+   23:1   error    `@/components/ui/dialog` import should occur before import of `@/components/ui/input`                                                                               import/order
+   36:8   warning  'AlertSourceUpdate' is defined but never used                                                                                                                       @typescript-eslint/no-unused-vars
+   39:1   error    `@/core/agents` import should occur before import of `@/core/alerting`                                                                                              import/order
+  213:49  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  214:51  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  218:9   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+  378:19  warning  'sourceToken' is assigned a value but never used                                                                                                                    @typescript-eslint/no-unused-vars
+  472:27  error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/alerting-settings-tab.tsx
+    4:1    error    `next/link` import should occur before import of `react`                                                        import/order
+    5:1    error    There should be at least one empty line between import groups                                                   import/order
+    5:1    error    `lucide-react` import should occur before import of `react`                                                     import/order
+   13:3    warning  'HelpCircleIcon' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+   63:7    error    Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+   70:42   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  132:43   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  145:68   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  332:77   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  396:109  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  515:61   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  573:56   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/tenant-admin-alerts-page.tsx
+  3:65  warning  'ActivityIcon' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  5:1   error    There should be at least one empty line between import groups                                                         import/order
+  7:1   error    `./alert-rules-tab` import should occur before import of `./alert-sources-tab`                                        import/order
+  9:1   error    `@/components/workspace/incidents/escalation-rules-panel` import should occur before import of `./alert-sources-tab`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/tenant-admin-members-page.test.tsx
+  1:10  warning  'fireEvent' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/tenant-admin-models-page.tsx
+  29:10  error  Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+  76:66  error  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  85:66  error  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx
+   56:10  error  Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+   73:10  error  Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+  234:66  error  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/tenant-admin-tools-page.tsx
+   68:10  warning  'pairsToArray' is defined but never used                                                    @typescript-eslint/no-unused-vars
+   72:10  warning  'arrayToPairs' is defined but never used                                                    @typescript-eslint/no-unused-vars
+  253:48  warning  'isChecking' is assigned a value but never used                                             @typescript-eslint/no-unused-vars
+  307:10  error    Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+  326:9   warning  'setArgsFromValue' is assigned a value but never used                                       @typescript-eslint/no-unused-vars
+  679:66  error    Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  688:64  error    Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  698:66  error    Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/tenant-admin/tenant-im-settings-page.tsx
+    4:1    error    `lucide-react` import should occur before import of `react`                                                import/order
+   15:3    warning  'ExternalLinkIcon' is defined but never used                                                               @typescript-eslint/no-unused-vars
+   20:1    error    There should be at least one empty line between import groups                                              import/order
+   24:1    error    `@/components/ui/card` import should occur before import of `@/components/ui/input`                        import/order
+   53:103  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   67:40   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  120:86   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  275:277  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                            react/no-unescaped-entities
+  275:282  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                            react/no-unescaped-entities
+  275:324  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                            react/no-unescaped-entities
+  275:327  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                            react/no-unescaped-entities
+  382:56   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/agents/agent-card.tsx
+   64:12  error  Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+   69:12  error  Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+   76:12  error  Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+   80:12  error  Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+  103:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/agents/agent-gallery.tsx
+  16:1  error    `@/components/workspace/settings/summarization-settings-page` import should occur before import of `@/core/agents`  import/order
+  21:9  warning  'router' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/agents/create-agent-dialog.tsx
+    5:1   error    There should be at least one empty line between import groups                                                   import/order
+    8:1   error    `@/components/ui/input` import should occur after import of `@/components/ui/dialog`                            import/order
+    9:1   error    `@/components/ui/switch` import should occur after import of `@/components/ui/dialog`                           import/order
+   10:1   error    `@/components/ui/textarea` import should occur after import of `@/components/ui/dialog`                         import/order
+   11:1   error    `@/components/ui/select` import should occur after import of `@/components/ui/dialog`                           import/order
+   18:33  warning  'DialogHeader' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+   20:1   error    `@/core/tenants/hooks` import should occur after import of `@/core/models/hooks`                                import/order
+   21:1   error    `@/core/permissions/scope` import should occur after import of `@/core/models/hooks`                            import/order
+  104:38  error    Promise returned in function argument where a void return was expected                                          @typescript-eslint/no-misused-promises
+  129:7   error    Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+  182:57  error    ["custom"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+  182:67  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  183:29  error    ["public"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+  183:39  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  247:45  error    ["custom"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+  271:45  error    ["public"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/agents/edit-agent-dialog.tsx
+    3:19  warning  'CheckCircle2Icon' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+    5:1   error    There should be at least one empty line between import groups                                                   import/order
+    8:1   error    `@/components/ui/input` import should occur after import of `@/components/ui/dialog`                            import/order
+    9:1   error    `@/components/ui/switch` import should occur after import of `@/components/ui/dialog`                           import/order
+   10:1   error    `@/components/ui/textarea` import should occur after import of `@/components/ui/dialog`                         import/order
+   11:1   error    `@/components/ui/select` import should occur after import of `@/components/ui/dialog`                           import/order
+   18:33  warning  'DialogHeader' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+   20:1   error    `@/core/tenants/hooks` import should occur after import of `@/core/models/hooks`                                import/order
+   21:1   error    `@/core/permissions/scope` import should occur after import of `@/core/models/hooks`                            import/order
+   78:7   error    Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+  131:57  error    ["custom"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+  131:67  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  132:29  error    ["public"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+  132:39  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  196:45  error    ["custom"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+  220:45  error    ["public"] is better written in dot notation                                                                    @typescript-eslint/dot-notation
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/artifacts/artifact-file-detail.tsx
+  275:6   warning  React Hook useCallback has a missing dependency: 't.common.downloadFailed'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+  318:6   warning  React Hook useCallback has a missing dependency: 't.common.openWindowFailed'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  449:83  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/artifacts/artifact-file-list.tsx
+  347:6  warning  React Hook useCallback has a missing dependency: 't.common.downloadFailed'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/artifacts/artifact-trigger.tsx
+  10:3  warning  'Tooltip' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/artifacts/pptx-slide-viewer.tsx
+  2:1  error  There should be no empty line within import group                             import/order
+  4:1  error  There should be at least one empty line between import groups                 import/order
+  4:1  error  `@aiden0z/pptx-renderer` import should occur before import of `lucide-react`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/chats/chat-box.tsx
+   21:10  warning  'useThread' is defined but never used                                                                                            @typescript-eslint/no-unused-vars
+   46:20  error    React Hook "usePathname" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+   47:23  error    React Hook "useRef" is called conditionally. React Hooks must be called in the exact same order in every component render        react-hooks/rules-of-hooks
+   48:21  error    React Hook "useRef" is called conditionally. React Hooks must be called in the exact same order in every component render        react-hooks/rules-of-hooks
+   58:7   error    React Hook "useArtifacts" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+   60:65  error    React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render      react-hooks/rules-of-hooks
+   62:27  error    React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render       react-hooks/rules-of-hooks
+   79:28  error    React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render       react-hooks/rules-of-hooks
+   91:3   error    React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render     react-hooks/rules-of-hooks
+  130:29  error    React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render       react-hooks/rules-of-hooks
+  137:27  error    React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render       react-hooks/rules-of-hooks
+  141:3   error    React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render     react-hooks/rules-of-hooks
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/chats/chat-header-context.tsx
+  7:1  error  `@/core/i18n/hooks` type import should occur before type import of `@/core/models/hooks`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/chats/skill-settings-panel.tsx
+   19:1   error    There should be no empty line within import group                                                                       import/order
+   19:1   error    `@/core/api/auth-client` import should occur after import of `@/components/ui/tooltip`                                  import/order
+   29:1   error    `@/lib/utils` import should occur after import of `@/core/models/hooks`                                                 import/order
+  553:20  error    Unexpected empty arrow function                                                                                         @typescript-eslint/no-empty-function
+  584:6   warning  React Hook useCallback has a missing dependency: 'updateSetting'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  605:6   warning  React Hook useCallback has a missing dependency: 'updateSetting'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  628:6   warning  React Hook React.useEffect has a missing dependency: 'updateSetting'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  975:64  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/chats/use-thread-chat.ts
+  4:21  warning  'useMemo' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/context-warning-banner.tsx
+  5:1  error  `@langchain/langgraph-sdk` type import should occur before import of `lucide-react`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/files/file-preview-sheet.tsx
+    6:3   warning  'Eye' is defined but never used                                                                                   @typescript-eslint/no-unused-vars
+   10:3   warning  'Share2' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+   16:1   error    `@/components/ui/badge` import should occur before import of `@/components/ui/button`                             import/order
+   20:3   warning  'DialogHeader' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+   29:1   error    `@/components/workspace/messages/markdown-content` import should occur before import of `@/core/api/auth-client`  import/order
+   30:1   error    `@/core/i18n/hooks` import should occur before import of `@/core/utils/files`                                     import/order
+   52:66  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator         @typescript-eslint/prefer-nullish-coalescing
+   63:39  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator         @typescript-eslint/prefer-nullish-coalescing
+  129:6   warning  React Hook useEffect has a missing dependency: 'binaryUrl'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  271:16  warning  Unused eslint-disable directive (no problems were reported from '@next/next/no-img-element')
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/incidents/alert-sources-panel.tsx
+    4:1   error    `@tanstack/react-query` import should occur before import of `react`                                                                                                import/order
+    4:10  warning  'useQueryClient' is defined but never used                                                                                                                          @typescript-eslint/no-unused-vars
+    6:1   error    `lucide-react` import should occur before import of `react`                                                                                                         import/order
+    7:3   warning  'AlertCircleIcon' is defined but never used                                                                                                                         @typescript-eslint/no-unused-vars
+   12:3   warning  'ExternalLinkIcon' is defined but never used                                                                                                                        @typescript-eslint/no-unused-vars
+   35:1   error    `@/components/ui/badge` import should occur before import of `@/components/ui/button`                                                                               import/order
+   36:1   error    `@/components/ui/dialog` import should occur before import of `@/components/ui/input`                                                                               import/order
+   50:8   warning  'AlertSourceCreate' is defined but never used                                                                                                                       @typescript-eslint/no-unused-vars
+  138:18  error    Use a ! assertion to more succinctly remove null and undefined from the type                                                                                        @typescript-eslint/non-nullable-type-assertion-style
+  255:34  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  270:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  509:50  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/incidents/escalation-rules-panel.tsx
+    4:1   error    `@tanstack/react-query` import should occur before import of `react`                                       import/order
+    4:10  warning  'useQueryClient' is defined but never used                                                                 @typescript-eslint/no-unused-vars
+    6:1   error    `lucide-react` import should occur before import of `react`                                                import/order
+    9:3   warning  'ExternalLinkIcon' is defined but never used                                                               @typescript-eslint/no-unused-vars
+   15:3   warning  'UserPlusIcon' is defined but never used                                                                   @typescript-eslint/no-unused-vars
+   21:1   error    `@/components/ui/badge` import should occur before import of `@/components/ui/button`                      import/order
+   30:65  warning  'useUpdateAlertRule' is defined but never used                                                             @typescript-eslint/no-unused-vars
+   74:24  error    This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+   79:21  error    This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+   81:42  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  306:65  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                            react/no-unescaped-entities
+  306:70  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                            react/no-unescaped-entities
+  311:34  error    This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+  312:31  error    This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/incidents/incident-header.tsx
+  235:65  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/incidents/save-as-skill-dialog.tsx
+   6:1   error    `next/navigation` import should occur before import of `react`                          import/order
+  18:10  warning  'Textarea' is defined but never used                                                    @typescript-eslint/no-unused-vars
+  19:1   error    `@/components/ui/tabs` import should occur before import of `@/components/ui/textarea`  import/order
+  20:1   error    `@/components/ui/badge` import should occur before import of `@/components/ui/button`   import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/incidents/signal-timeline.tsx
+    4:1    error    `lucide-react` import should occur before import of `react`                                                                                              import/order
+    6:3    warning  'BotIcon' is defined but never used                                                                                                                      @typescript-eslint/no-unused-vars
+    9:3    warning  'DatabaseIcon' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+   11:3    warning  'TicketIcon' is defined but never used                                                                                                                   @typescript-eslint/no-unused-vars
+   13:3    warning  'UserPlusIcon' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+   14:3    warning  'VolumeXIcon' is defined but never used                                                                                                                  @typescript-eslint/no-unused-vars
+   73:37   error    This assertion is unnecessary since it does not change the type of the expression                                                                        @typescript-eslint/no-unnecessary-type-assertion
+   73:69   error    This assertion is unnecessary since it does not change the type of the expression                                                                        @typescript-eslint/no-unnecessary-type-assertion
+  101:13   error    This assertion is unnecessary since it does not change the type of the expression                                                                        @typescript-eslint/no-unnecessary-type-assertion
+  141:120  error    'event.metadata.source || ""' will use Object's default stringification format ('[object Object]') when stringified                                      @typescript-eslint/no-base-to-string
+  141:142  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                @typescript-eslint/prefer-nullish-coalescing
+  143:96   error    'event.metadata.severity || "warning"' will use Object's default stringification format ('[object Object]') when stringified                             @typescript-eslint/no-base-to-string
+  143:120  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                @typescript-eslint/prefer-nullish-coalescing
+  150:52   error    'event.metadata?.signal_id || `${event.type}-${event.timestamp}`' will use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+  150:78   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                @typescript-eslint/prefer-nullish-coalescing
+  187:67   error    'event.metadata?.signal_id || `${event.type}-${event.timestamp}`' will use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+  187:93   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                @typescript-eslint/prefer-nullish-coalescing
+  190:56   error    'event.metadata?.signal_id || `${event.type}-${event.timestamp}`' will use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+  190:82   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                @typescript-eslint/prefer-nullish-coalescing
+  193:54   error    'event.metadata?.signal_id || `${event.type}-${event.timestamp}`' will use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+  193:80   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                @typescript-eslint/prefer-nullish-coalescing
+  208:13   error    This assertion is unnecessary since it does not change the type of the expression                                                                        @typescript-eslint/no-unnecessary-type-assertion
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/incidents/source-health-panel.tsx
+   8:3   warning  'Loader2Icon' is defined but never used       @typescript-eslint/no-unused-vars
+  17:15  warning  'SourceHealthItem' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/input-box.tsx
+   56:10  warning  'getBackendBaseURL' is defined but never used                                                              @typescript-eslint/no-unused-vars
+  165:71  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  197:3   warning  'onNewChat' is defined but never used. Allowed unused args must match /^_/u                                @typescript-eslint/no-unused-vars
+  231:9   warning  'searchParams' is assigned a value but never used                                                          @typescript-eslint/no-unused-vars
+  268:9   warning  'textareaRef' is assigned a value but never used                                                           @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/messages/clarification-block.tsx
+   6:1   error  `@/core/i18n/hooks` import should occur before import of `@/lib/utils`                                     import/order
+  98:36  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/messages/markdown-content.tsx
+   13:1   error    `@/app/workspace/terminal/context` import should occur before import of `@/components/ai-elements/code-block`                                                                                                                                                import/order
+   14:1   error    `lucide-react` import should occur before import of `react`                                                                                                                                                                                                  import/order
+   43:18  error    Unexpected any. Specify a different type                                                                                                                                                                                                                     @typescript-eslint/no-explicit-any
+   44:17  warning  'node' is assigned a value but never used                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  119:39  error    Unexpected any. Specify a different type                                                                                                                                                                                                                     @typescript-eslint/no-explicit-any
+  121:47  error    React Hook "React.useState" is called in function "execute_command" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use"  react-hooks/rules-of-hooks
+  122:45  error    React Hook "React.useState" is called in function "execute_command" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use"  react-hooks/rules-of-hooks
+  136:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                     @typescript-eslint/no-explicit-any
+  139:91  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                    @typescript-eslint/prefer-nullish-coalescing
+  200:24  error    React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?                                                                    react-hooks/rules-of-hooks
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/messages/message-group.tsx
+   49:3   warning  'variant' is assigned a value but never used. Allowed unused args must match /^_/u                              @typescript-eslint/no-unused-vars
+   64:12  error    This assertion is unnecessary since it does not change the type of the expression                               @typescript-eslint/no-unnecessary-type-assertion
+   86:19  error    This assertion is unnecessary since it does not change the type of the expression                               @typescript-eslint/no-unnecessary-type-assertion
+  101:7   error    Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+  125:8   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                      @typescript-eslint/prefer-optional-chain
+  212:8   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                      @typescript-eslint/prefer-optional-chain
+  296:3   warning  'isLast' is assigned a value but never used. Allowed unused args must match /^_/u                               @typescript-eslint/no-unused-vars
+  297:3   warning  'isLoading' is assigned a value but never used. Allowed unused args must match /^_/u                            @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/messages/message-list.tsx
+   11:1   error  `@/core/artifacts/utils` import should occur before import of `@/core/auth/auth-api`                       import/order
+  232:36  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/messages/subtask-card.tsx
+   63:9   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                 @typescript-eslint/prefer-optional-chain
+   66:6   warning  React Hook useEffect has a missing dependency: 'task'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+   82:6   warning  React Hook useMemo has a missing dependency: 'task'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+   94:6   warning  React Hook useMemo has a missing dependency: 'task'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  212:66  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/settings/tool-settings-page.tsx
+    3:10  warning  'Plus' is defined but never used                      @typescript-eslint/no-unused-vars
+  109:24  warning  'createAsync' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  110:24  warning  'updateAsync' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  338:19  warning  'enableMCPServer' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/settings/user-settings-page.tsx
+  20:1   error  `@/core/auth/auth-api` import should occur before import of `@/core/auth/hooks`                            import/order
+  84:32  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  84:46  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/skill-command-menu.tsx
+  65:10  error  Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/add-credential-dialog.tsx
+   1:1   error  There should be at least one empty line between import groups                           import/order
+   3:1   error  `@/components/ui/button` import should occur before import of `@/components/ui/dialog`  import/order
+   7:1   error  `lucide-react` import should occur before import of `react`                             import/order
+  12:34  error  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/add-host-dialog.tsx
+    1:1    error    There should be at least one empty line between import groups                                              import/order
+    3:1    error    `@/components/ui/button` import should occur before import of `@/components/ui/dialog`                     import/order
+    6:1    error    `lucide-react` import should occur before import of `react`                                                import/order
+   11:22   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   12:35   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   13:15   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   14:17   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   15:12   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   19:87   warning  'credentials' is assigned a value but never used. Allowed unused args must match /^_/u                     @typescript-eslint/no-unused-vars
+   19:118  warning  'onAddCredentialClick' is defined but never used. Allowed unused args must match /^_/u                     @typescript-eslint/no-unused-vars
+   41:32   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   42:28   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   43:39   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   44:40   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   45:46   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   46:40   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   83:16   warning  'e' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+   92:33   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   92:46   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   98:33   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  101:33   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  101:57   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  103:17   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  105:28   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  125:45   error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  128:19   error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/asset-sidebar.tsx
+    1:1   error    `react` import should occur after import of `lucide-react`                                                 import/order
+    2:1   error    There should be at least one empty line between import groups                                              import/order
+    2:27  warning  'KeyRound' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+    2:43  warning  'Folder' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+    2:51  warning  'FolderOpen' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+    3:1   error    `@/components/ui/input` import should occur after import of `@/components/ui/dropdown-menu`                import/order
+    5:1   error    There should be at least one empty line between import groups                                              import/order
+    6:1   error    `./add-host-dialog` import should occur after import of `./add-credential-dialog`                          import/order
+   12:28  error    Unexpected empty arrow function                                                                            @typescript-eslint/no-empty-function
+   18:26  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   21:12  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   22:17  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   23:12  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   29:46  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   35:49  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   35:57  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   36:21  error    ["ungrouped"] is better written in dot notation                                                            @typescript-eslint/dot-notation
+   40:38  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   53:51  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   79:44  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   92:69  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  160:43  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  187:35  error    ["ungrouped"] is better written in dot notation                                                            @typescript-eslint/dot-notation
+  190:29  error    ["ungrouped"] is better written in dot notation                                                            @typescript-eslint/dot-notation
+  245:10  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  246:22  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/persistent-terminal.tsx
+    4:1   error    There should be at least one empty line between import groups                                                                                                       import/order
+    4:1   error    `next/navigation` import should occur before import of `react`                                                                                                      import/order
+    7:1   error    There should be at least one empty line between import groups                                                                                                       import/order
+    7:1   error    `lucide-react` import should occur before import of `react`                                                                                                         import/order
+   14:1   error    `@/components/workspace/terminal/asset-sidebar` import should occur before import of `@/components/workspace/terminal/web-terminal`                                 import/order
+   15:1   error    `@/app/workspace/terminal/terminal-agent-ui` import should occur before import of `@/components/workspace/terminal/web-terminal`                                    import/order
+   16:1   error    `@/app/workspace/terminal/context` import should occur before import of `@/components/workspace/terminal/web-terminal`                                              import/order
+   17:1   error    `@/components/ui/resizable-panel` import should occur before import of `@/components/workspace/terminal/web-terminal`                                               import/order
+   18:1   error    `@/components/ui/dropdown-menu` import should occur before import of `@/components/workspace/terminal/web-terminal`                                                 import/order
+   25:1   error    There should be at least one empty line between import groups                                                                                                       import/order
+   25:1   error    `sonner` import should occur before import of `@/components/workspace/terminal/web-terminal`                                                                        import/order
+   38:54  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   38:62  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   49:26  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   50:35  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+   64:79  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   69:40  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   70:50  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   71:40  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  104:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  138:6   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array                                                           react-hooks/exhaustive-deps
+  161:37  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  205:54  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  216:74  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/prompt-interceptor.ts
+   6:3   error    Type string trivially inferred from a string literal, remove type annotation         @typescript-eslint/no-inferrable-types
+   7:3   error    Type boolean trivially inferred from a boolean literal, remove type annotation       @typescript-eslint/no-inferrable-types
+   8:3   error    Type string trivially inferred from a string literal, remove type annotation         @typescript-eslint/no-inferrable-types
+  15:71  error    Type number trivially inferred from a number literal, remove type annotation         @typescript-eslint/no-inferrable-types
+  46:25  warning  'isTimeout' is defined but never used. Allowed unused args must match /^_/u          @typescript-eslint/no-unused-vars
+  79:5   warning  Unused eslint-disable directive (no problems were reported from 'no-control-regex')
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/save-as-skill-dialog.tsx
+   6:1   error  `next/navigation` import should occur before import of `react`                                             import/order
+  19:1   error  `@/components/ui/badge` import should occur before import of `@/components/ui/button`                      import/order
+  28:50  error  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  39:25  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  73:51  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/terminal/web-terminal.tsx
+    3:1   error    `react` import should occur after import of `lucide-react`                                                import/order
+    4:1   error    `@xterm/xterm` import should occur after import of `@xterm/addon-web-links`                               import/order
+    6:1   error    There should be at least one empty line between import groups                                             import/order
+    8:1   error    `@/lib/utils` import should occur after import of `lucide-react`                                          import/order
+    9:1   error    `@/components/ui/button` import should occur after import of `lucide-react`                               import/order
+   10:1   error    There should be at least one empty line between import groups                                             import/order
+   10:10  warning  'TerminalSquare' is defined but never used                                                                @typescript-eslint/no-unused-vars
+   26:28  error    Component definition is missing display name                                                              react/display-name
+  130:11  error    Prefer using an optional chain expression instead, as it's more concise and easier to read                @typescript-eslint/prefer-optional-chain
+  137:11  error    Prefer using an optional chain expression instead, as it's more concise and easier to read                @typescript-eslint/prefer-optional-chain
+  175:6   warning  React Hook useEffect has a missing dependency: 'theme'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  212:11  error    Prefer using an optional chain expression instead, as it's more concise and easier to read                @typescript-eslint/prefer-optional-chain
+  216:38  error    Type number trivially inferred from a number literal, remove type annotation                              @typescript-eslint/no-inferrable-types
+  218:13  error    Prefer using an optional chain expression instead, as it's more concise and easier to read                @typescript-eslint/prefer-optional-chain
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/thread-title.tsx
+  9:1  error  `@/core/threads` type import should occur before import of `@/core/threads/hooks`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/token-usage-indicator.tsx
+  65:9  warning  'hardCapThreshold' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/workspace-container.tsx
+  39:6  warning  React Hook useMemo has a missing dependency: 't.workspace.unboundWorkspace'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/workspace-layout-client.tsx
+  11:1  error    `@/components/workspace/terminal/persistent-terminal` import should occur before import of `@/components/workspace/workspace-sidebar`  import/order
+  15:1  error    `@/core/i18n/hooks` import should occur before import of `@/core/settings`                                                             import/order
+  47:6  warning  React Hook useEffect has a missing dependency: 't.threadErrors.rateLimited'. Either include it or remove the dependency array          react-hooks/exhaustive-deps
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/workspace-nav-menu.tsx
+  47:1  error  `@/core/auth/auth-api` import should occur before import of `@/core/auth/hooks`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/workspace-sidebar.tsx
+   3:8   warning  'Link' is defined but never used                                 @typescript-eslint/no-unused-vars
+   4:10  warning  'usePathname' is defined but never used                          @typescript-eslint/no-unused-vars
+   5:1   error    `lucide-react` import should occur before import of `next/link`  import/order
+   5:10  warning  'Bot' is defined but never used                                  @typescript-eslint/no-unused-vars
+  12:3   warning  'SidebarGroup' is defined but never used                         @typescript-eslint/no-unused-vars
+  13:3   warning  'SidebarGroupLabel' is defined but never used                    @typescript-eslint/no-unused-vars
+  14:3   warning  'SidebarMenu' is defined but never used                          @typescript-eslint/no-unused-vars
+  15:3   warning  'SidebarMenuItem' is defined but never used                      @typescript-eslint/no-unused-vars
+  16:3   warning  'SidebarMenuButton' is defined but never used                    @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/components/workspace/workspace-switcher.tsx
+  12:1  error  `@/core/i18n/hooks` import should occur before import of `@/core/tenants`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/agents/hooks.ts
+  13:1  error  `@/core/tenants/store` import should occur before import of `./api`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/alerting/api.ts
+  217:60  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/alerting/diagnosis-types.ts
+  235:3   error  The generic type arguments should be specified as part of the constructor type arguments                        @typescript-eslint/consistent-generic-constructors
+  248:3   error  The generic type arguments should be specified as part of the constructor type arguments                        @typescript-eslint/consistent-generic-constructors
+  328:11  error  Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+  339:36  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  341:11  error  Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+  351:34  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  430:59  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/alerting/hooks.ts
+  29:3    warning  'getIncidentStats' is defined but never used          @typescript-eslint/no-unused-vars
+  37:145  warning  'IncidentStats' is defined but never used             @typescript-eslint/no-unused-vars
+  37:208  warning  'TestNotificationResponse' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/api/auth-client.ts
+  5:1  error  `@/core/auth/auth-api` import should occur before import of `@/core/config`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/auth/auth-api.ts
+   38:33  error  Use the `RegExp#exec()` method instead                                             @typescript-eslint/prefer-regexp-exec
+   63:33  error  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+   63:43  error  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   79:22  error  ["Authorization"] is better written in dot notation                                @typescript-eslint/dot-notation
+  104:33  error  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  104:43  error  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/auth/hooks.ts
+  5:27  warning  'Session' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/auth/server-session.ts
+  5:1  error  `@/core/auth/auth-api` type import should occur before import of `@/core/config`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/brand/public-identity.test.ts
+  2:1  error  There should be at least one empty line between import groups  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/files/hooks.ts
+  15:15  warning  'FileFolder' is defined but never used          @typescript-eslint/no-unused-vars
+  15:27  warning  'FileObject' is defined but never used          @typescript-eslint/no-unused-vars
+  15:39  warning  'FileUploadResponse' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/i18n/hooks.ts
+  8:1  error  `./locales/zh-CN` import should occur after import of `./locales/ko`  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/i18n/locales/en-US.ts
+   5:3  warning  'GraduationCapIcon' is defined but never used  @typescript-eslint/no-unused-vars
+   6:3  warning  'ImageIcon' is defined but never used          @typescript-eslint/no-unused-vars
+   7:3  warning  'MicroscopeIcon' is defined but never used     @typescript-eslint/no-unused-vars
+   8:3  warning  'PenLineIcon' is defined but never used        @typescript-eslint/no-unused-vars
+   9:3  warning  'PieChartIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  12:3  warning  'ShapesIcon' is defined but never used         @typescript-eslint/no-unused-vars
+  13:3  warning  'SparklesIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  15:3  warning  'VideoIcon' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/i18n/locales/ja.ts
+   5:3  warning  'GraduationCapIcon' is defined but never used  @typescript-eslint/no-unused-vars
+   6:3  warning  'ImageIcon' is defined but never used          @typescript-eslint/no-unused-vars
+   7:3  warning  'MicroscopeIcon' is defined but never used     @typescript-eslint/no-unused-vars
+   8:3  warning  'PenLineIcon' is defined but never used        @typescript-eslint/no-unused-vars
+   9:3  warning  'PieChartIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  12:3  warning  'ShapesIcon' is defined but never used         @typescript-eslint/no-unused-vars
+  13:3  warning  'SparklesIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  15:3  warning  'VideoIcon' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/i18n/locales/ko.ts
+   5:3  warning  'GraduationCapIcon' is defined but never used  @typescript-eslint/no-unused-vars
+   6:3  warning  'ImageIcon' is defined but never used          @typescript-eslint/no-unused-vars
+   7:3  warning  'MicroscopeIcon' is defined but never used     @typescript-eslint/no-unused-vars
+   8:3  warning  'PenLineIcon' is defined but never used        @typescript-eslint/no-unused-vars
+   9:3  warning  'PieChartIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  12:3  warning  'ShapesIcon' is defined but never used         @typescript-eslint/no-unused-vars
+  13:3  warning  'SparklesIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  15:3  warning  'VideoIcon' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/i18n/locales/zh-CN.ts
+   5:3  warning  'GraduationCapIcon' is defined but never used  @typescript-eslint/no-unused-vars
+   6:3  warning  'ImageIcon' is defined but never used          @typescript-eslint/no-unused-vars
+   7:3  warning  'MicroscopeIcon' is defined but never used     @typescript-eslint/no-unused-vars
+   8:3  warning  'PenLineIcon' is defined but never used        @typescript-eslint/no-unused-vars
+   9:3  warning  'PieChartIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  12:3  warning  'ShapesIcon' is defined but never used         @typescript-eslint/no-unused-vars
+  13:3  warning  'SparklesIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  15:3  warning  'VideoIcon' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/plugins/hooks.ts
+  3:1  error  There should be at least one empty line between import groups  import/order
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/tenants/route-type-requirements.ts
+  31:32  warning  'routePath' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+  31:51  warning  'tenantType' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/chat-history.ts
+   25:11  error  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   27:21  error  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   90:53  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   96:26  error  Type number trivially inferred from a number literal, remove type annotation                               @typescript-eslint/no-inferrable-types
+  112:18  error  Prefer using an optional chain expression instead, as it's more concise and easier to read                 @typescript-eslint/prefer-optional-chain
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/command-interaction-input.tsx
+    3:1   error    There should be at least one empty line between import groups                                              import/order
+    5:1   error    `lucide-react` import should occur before import of `react`                                                import/order
+   14:3   warning  'ChevronDown' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+   20:3   warning  'EyeOff' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+   21:3   warning  'Play' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   22:3   warning  'Pause' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+   23:3   warning  'RotateCcw' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  127:79  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  295:70  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  298:48  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  304:69  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  307:46  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  342:47  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  551:54  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/command-security-checker.ts
+  169:30  error  Use the `RegExp#exec()` method instead                                                                     @typescript-eslint/prefer-regexp-exec
+  170:28  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/event-emitter.ts
+   6:31  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+   8:62  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+   9:3   error  The generic type arguments should be specified as part of the constructor type arguments  @typescript-eslint/consistent-generic-constructors
+  20:31  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+  22:27  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/focus_chain_service.ts
+  166:29  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  179:44  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  179:62  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/interaction-detector.ts
+   28:3   warning  'ConfirmValues' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+   38:3   warning  Unused eslint-disable directive (no problems were reported from 'no-control-regex')
+   95:3   error    Type string trivially inferred from a string literal, remove type annotation                               @typescript-eslint/no-inferrable-types
+   97:3   error    Type number trivially inferred from a number literal, remove type annotation                               @typescript-eslint/no-inferrable-types
+  114:3   error    Type string trivially inferred from a string literal, remove type annotation                               @typescript-eslint/no-inferrable-types
+  115:3   error    Type number trivially inferred from a number literal, remove type annotation                               @typescript-eslint/no-inferrable-types
+  282:47  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  445:37  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  545:54  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  561:35  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  606:24  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  611:29  error    Promise returned in function argument where a void return was expected                                     @typescript-eslint/no-misused-promises
+  775:39  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  777:76  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/llm-caller.ts
+  174:31  error  Use the `RegExp#exec()` method instead  @typescript-eslint/prefer-regexp-exec
+  187:26  error  Use the `RegExp#exec()` method instead  @typescript-eslint/prefer-regexp-exec
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/security/auto-approval-settings.ts
+  78:3   error  Type number trivially inferred from a number literal, remove type annotation                               @typescript-eslint/no-inferrable-types
+  80:3   error  Type boolean trivially inferred from a boolean literal, remove type annotation                             @typescript-eslint/no-inferrable-types
+  83:44  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/security/security-config.ts
+   96:42  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  150:37  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/security/security-settings-ui.tsx
+    3:1   error    There should be at least one empty line between import groups                                                                                                       import/order
+    6:1   error    `lucide-react` import should occur before import of `react`                                                                                                         import/order
+    8:3   warning  'Settings2' is defined but never used                                                                                                                               @typescript-eslint/no-unused-vars
+   15:1   error    There should be at least one empty line between import groups                                                                                                       import/order
+   15:1   error    `react` import should occur before import of `@/components/ui/button`                                                                                               import/order
+   16:1   error    There should be at least one empty line between import groups                                                                                                       import/order
+   21:1   error    `./auto-approval-settings` import should occur before import of `./security-config`                                                                                 import/order
+   34:10  warning  'loading' is assigned a value but never used                                                                                                                        @typescript-eslint/no-unused-vars
+   86:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  100:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  120:26  error    Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/todo/todo-context-tracker.ts
+  23:3  error  Type number trivially inferred from a number literal, remove type annotation  @typescript-eslint/no-inferrable-types
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/todo/todo-read-tool.ts
+  19:41  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  38:34  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/todo/todo-write-tool.ts
+  37:5   warning  'taskId' is defined but never used. Allowed unused args must match /^_/u                                        @typescript-eslint/no-unused-vars
+  43:16  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator       @typescript-eslint/prefer-nullish-coalescing
+  92:9   error    Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/terminal-agent/useTerminalAgent.ts
+    1:1   error    There should be at least one empty line between import groups                                                                                                                                                                                              import/order
+   33:3   warning  'assetIp' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   42:44  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+   52:32  warning  'setPendingDangerousTool' is assigned a value but never used                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   82:28  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  137:66  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  163:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  165:52  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  165:73  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  202:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  244:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  246:60  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  246:81  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  263:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  265:48  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  290:54  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  333:41  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  334:46  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  335:22  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  349:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  351:32  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  361:75  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  377:20  warning  'e' is defined but never used                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  383:6   warning  React Hook useCallback has a missing dependency: 'taskId'. Either include it or remove the dependency array. If 'setMessages' needs the current value of 'taskId', you can also switch to useReducer instead of useState and read 'taskId' in the reducer  react-hooks/exhaustive-deps
+  423:77  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  425:31  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  426:45  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  429:51  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                  @typescript-eslint/prefer-nullish-coalescing
+  459:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  516:48  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  541:46  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  552:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  560:26  warning  'toolName' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  560:44  warning  'command' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  561:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                                                                         @typescript-eslint/no-floating-promises
+  567:26  warning  'toolName' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  568:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                                                                         @typescript-eslint/no-floating-promises
+  618:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                                                                         @typescript-eslint/no-floating-promises
+  636:38  error    Unexpected empty arrow function                                                                                                                                                                                                                            @typescript-eslint/no-empty-function
+  650:36  error    Unexpected empty method 'confirmDangerousCommand'                                                                                                                                                                                                          @typescript-eslint/no-empty-function
+  651:35  error    Unexpected empty method 'rejectDangerousCommand'                                                                                                                                                                                                           @typescript-eslint/no-empty-function
+
+/Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend/src/core/threads/hooks.ts
+  433:6  warning  React Hook useEffect has missing dependencies: 't.threadErrors.conversationSummarized' and 't.threadErrors.conversationSummarizedDesc'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 750 problems (558 errors, 192 warnings)
+  214 errors and 3 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.

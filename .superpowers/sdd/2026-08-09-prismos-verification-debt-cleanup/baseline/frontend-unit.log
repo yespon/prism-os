@@ -1,0 +1,446 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend
+> vitest run
+
+
+ RUN  v4.1.2 /Users/yespon/Documents/AgentOS/prism-platform/.worktrees/prismos-brand-root-migration/frontend
+
+ ❯ src/app/admin/tenants/create-tenant-dialog.test.tsx (1 test | 1 failed) 15ms
+     × does not expose tenant_member option and keeps initial role fixed 14ms
+ ❯ src/components/tenant-admin/tenant-admin-guard.test.tsx (3 tests | 3 failed) 28ms
+     × renders loading state while checking tenant role 18ms
+     × redirects non-tenant-admin users 2ms
+     × renders children for tenant_admin 2ms
+ ❯ src/components/workspace/workspace-container.test.tsx (1 test | 1 failed) 20ms
+     × shows tenant dropdown and switches tenant 18ms
+ ❯ src/app/workspace/chats/[thread_id]/page.attachments.test.tsx (5 tests | 5 failed) 24ms
+     × supports select and unselect attachment 12ms
+     × calls delete handler and shows derived/source relation 2ms
+     × supports collapse and expand 3ms
+     × shows rename hint when stored filename differs 2ms
+     × shows deleting state and delete failure message 3ms
+ ❯ src/components/tenant-admin/tenant-admin-skills-page.test.tsx (4 tests | 4 failed) 16ms
+     × splits built-in and custom skills into separate tabs 9ms
+     × creates a manual tenant skill with description and instructions 1ms
+     × imports a .zip skill archive from the dialog 3ms
+     × keeps import button disabled until archive is selected 1ms
+ ❯ src/components/workspace/workspace-nav-chat-list.test.tsx (2 tests | 2 failed) 19ms
+     × points intelligent workspace entry to valid chats route 15ms
+     × shows unread announcement badge on announcements nav item 3ms
+ ❯ src/components/workspace/workspace-nav-menu.test.tsx (4 tests | 4 failed) 30ms
+     × shows personal settings entry for normal users 20ms
+     × opens settings dialog from personal settings entry 4ms
+     × shows platform admin entry for platform admins 3ms
+     × shows tenant admin workspace entry for tenant admins 2ms
+ ❯ src/components/workspace/messages/message-list-item.test.tsx (2 tests | 1 failed) 135ms
+     × retries the original human message object 11ms
+ ❯ src/app/admin/page.test.tsx (1 test | 1 failed) 20ms
+     × renders unified overview header, KPI blocks and empty audit state 17ms
+ ❯ src/components/tenant-admin/tenant-admin-members-page.test.tsx (1 test | 1 failed) 21ms
+     × renders dedicated tenant admin members page and searchable users 18ms
+ ❯ src/components/tenant-admin/tenant-admin-tools-page.test.tsx (2 tests | 2 failed) 16ms
+     × shows built-in tools alongside tenant-owned tools 12ms
+     × supports toggling, deleting and creating tenant MCP tools 2ms
+ ❯ src/components/workspace/settings/resource-settings-permission-ui.test.tsx (1 test | 1 failed) 28ms
+     × hides model/tool/skill creation entry for tenant members 25ms
+ ❯ src/app/workspace/overview/page.test.tsx (1 test | 1 failed) 17ms
+     × renders unified overview header and section empty states 15ms
+ ❯ src/app/admin/tenants/page.test.tsx (2 tests | 2 failed) 31ms
+     × does not show tenant member management action 22ms
+     × shows permanent delete action for inactive tenants 6ms
+ ❯ src/components/tenant-admin/tenant-admin-dashboard.test.tsx (1 test | 1 failed) 40ms
+     × renders unified dashboard structure 37ms
+ ❯ src/components/tenant-admin/tenant-admin-shell.test.tsx (1 test | 1 failed) 19ms
+     × renders tenant admin navigation and content 15ms
+ ❯ src/components/backoffice/backoffice-shell-layout.test.tsx (1 test | 1 failed) 18ms
+     × renders unified sidebar width and main container classes 16ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 32 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/admin/page.test.tsx > AdminDashboardPage > renders unified overview header, KPI blocks and empty audit state
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ AdminDashboardPage src/app/admin/page.tsx:99:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/32]⎯
+
+ FAIL  src/components/backoffice/backoffice-shell-layout.test.tsx > BackofficeShellLayout > renders unified sidebar width and main container classes
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ BackofficeShellLayout src/components/backoffice/backoffice-shell-layout.tsx:67:39
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/32]⎯
+
+ FAIL  src/components/tenant-admin/tenant-admin-dashboard.test.tsx > TenantAdminDashboard > renders unified dashboard structure
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ TenantAdminDashboard src/components/tenant-admin/tenant-admin-dashboard.tsx:17:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/32]⎯
+
+ FAIL  src/components/tenant-admin/tenant-admin-guard.test.tsx > TenantAdminGuard > renders loading state while checking tenant role
+ FAIL  src/components/tenant-admin/tenant-admin-guard.test.tsx > TenantAdminGuard > redirects non-tenant-admin users
+ FAIL  src/components/tenant-admin/tenant-admin-guard.test.tsx > TenantAdminGuard > renders children for tenant_admin
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ TenantAdminGuard src/components/tenant-admin/tenant-admin-guard.tsx:14:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/32]⎯
+
+ FAIL  src/components/tenant-admin/tenant-admin-members-page.test.tsx > TenantAdminMembersPage > renders dedicated tenant admin members page and searchable users
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ TenantAdminMembersPage src/components/tenant-admin/tenant-admin-members-page.tsx:379:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/32]⎯
+
+ FAIL  src/components/tenant-admin/tenant-admin-shell.test.tsx > TenantAdminShell > renders tenant admin navigation and content
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ TenantAdminShell src/components/tenant-admin/tenant-admin-shell.tsx:15:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/32]⎯
+
+ FAIL  src/components/tenant-admin/tenant-admin-skills-page.test.tsx > TenantAdminSkillsPage > splits built-in and custom skills into separate tabs
+ FAIL  src/components/tenant-admin/tenant-admin-skills-page.test.tsx > TenantAdminSkillsPage > creates a manual tenant skill with description and instructions
+ FAIL  src/components/tenant-admin/tenant-admin-skills-page.test.tsx > TenantAdminSkillsPage > imports a .zip skill archive from the dialog
+ FAIL  src/components/tenant-admin/tenant-admin-skills-page.test.tsx > TenantAdminSkillsPage > keeps import button disabled until archive is selected
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ TenantAdminSkillsPage src/components/tenant-admin/tenant-admin-skills-page.tsx:25:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/32]⎯
+
+ FAIL  src/components/tenant-admin/tenant-admin-tools-page.test.tsx > TenantAdminToolsPage > shows built-in tools alongside tenant-owned tools
+ FAIL  src/components/tenant-admin/tenant-admin-tools-page.test.tsx > TenantAdminToolsPage > supports toggling, deleting and creating tenant MCP tools
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ TenantAdminToolsPage src/components/tenant-admin/tenant-admin-tools-page.tsx:246:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/32]⎯
+
+ FAIL  src/components/workspace/workspace-container.test.tsx > WorkspaceHeader > shows tenant dropdown and switches tenant
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ WorkspaceHeader src/components/workspace/workspace-container.tsx:27:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/32]⎯
+
+ FAIL  src/components/workspace/workspace-nav-chat-list.test.tsx > WorkspaceNavChatList > points intelligent workspace entry to valid chats route
+ FAIL  src/components/workspace/workspace-nav-chat-list.test.tsx > WorkspaceNavChatList > shows unread announcement badge on announcements nav item
+Error: No QueryClient set, use QueryClientProvider to set one
+ ❯ useQueryClient node_modules/.pnpm/@tanstack+react-query@5.90.20_react@19.2.4/node_modules/@tanstack/react-query/src/QueryClientProvider.tsx:18:10
+ ❯ useBaseQuery node_modules/.pnpm/@tanstack+react-query@5.90.20_react@19.2.4/node_modules/@tanstack/react-query/src/useBaseQuery.ts:54:17
+ ❯ useQuery node_modules/.pnpm/@tanstack+react-query@5.90.20_react@19.2.4/node_modules/@tanstack/react-query/src/useQuery.ts:51:9
+ ❯ useCurrentTenant src/core/tenants/hooks.ts:37:17
+     35|
+     36| export function useCurrentTenant() {
+     37|   const query = useQuery<CurrentTenant>({
+       |                 ^
+     38|     queryKey: ["tenants", "current"],
+     39|     queryFn: loadCurrentTenant,
+ ❯ WorkspaceNavChatList src/components/workspace/workspace-nav-chat-list.tsx:31:35
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/32]⎯
+
+ FAIL  src/components/workspace/workspace-nav-menu.test.tsx > WorkspaceNavMenu > shows personal settings entry for normal users
+ FAIL  src/components/workspace/workspace-nav-menu.test.tsx > WorkspaceNavMenu > opens settings dialog from personal settings entry
+ FAIL  src/components/workspace/workspace-nav-menu.test.tsx > WorkspaceNavMenu > shows platform admin entry for platform admins
+ FAIL  src/components/workspace/workspace-nav-menu.test.tsx > WorkspaceNavMenu > shows tenant admin workspace entry for tenant admins
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ WorkspaceNavMenu src/components/workspace/workspace-nav-menu.tsx:59:39
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/32]⎯
+
+ FAIL  src/app/admin/tenants/create-tenant-dialog.test.tsx > CreateTenantDialog > does not expose tenant_member option and keeps initial role fixed
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ CreateTenantDialog src/app/admin/tenants/create-tenant-dialog.tsx:35:25
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/32]⎯
+
+ FAIL  src/app/admin/tenants/page.test.tsx > AdminTenantsPage > does not show tenant member management action
+ FAIL  src/app/admin/tenants/page.test.tsx > AdminTenantsPage > shows permanent delete action for inactive tenants
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ AdminTenantsPage src/app/admin/tenants/page.tsx:33:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/32]⎯
+
+ FAIL  src/app/workspace/overview/page.test.tsx > WorkspaceOverviewPage > renders unified overview header and section empty states
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ WorkspaceOverviewPage src/app/workspace/overview/page.tsx:207:25
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/32]⎯
+
+ FAIL  src/components/workspace/messages/message-list-item.test.tsx > MessageListItem > retries the original human message object
+TypeError: Cannot read properties of undefined (reading 'retryInstruction')
+ ❯ MessageListItem src/components/workspace/messages/message-list-item.tsx:129:44
+    127|                       </TooltipTrigger>
+    128|                       <TooltipContent>
+    129|                         <p>{t.messageGroup.retryInstruction}</p>
+       |                                            ^
+    130|                       </TooltipContent>
+    131|                     </Tooltip>
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+ ❯ renderRootSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17450:11
+ ❯ performWorkOnRoot node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:16583:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/32]⎯
+
+ FAIL  src/components/workspace/settings/resource-settings-permission-ui.test.tsx > Resource settings permission UI > hides model/tool/skill creation entry for tenant members
+Error: [vitest] No "useTestModelConnection" export is defined on the "@/core/models/hooks" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("@/core/models/hooks"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ ModelLifecycleSettingsPage src/components/workspace/settings/model-lifecycle-settings-page.tsx:47:65
+     45|   const isMutating = isRegistering || isUpdating || isUpdatingTenant;
+     46|
+     47|   const { mutateAsync: testConnection, isPending: isTesting } = useTes…
+       |                                                                 ^
+     48|   const [testResult, setTestResult] = useState<{ success: boolean; mes…
+     49|
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/32]⎯
+
+ FAIL  src/app/workspace/chats/[thread_id]/page.attachments.test.tsx > ThreadAttachmentsPanel > supports select and unselect attachment
+ FAIL  src/app/workspace/chats/[thread_id]/page.attachments.test.tsx > ThreadAttachmentsPanel > calls delete handler and shows derived/source relation
+ FAIL  src/app/workspace/chats/[thread_id]/page.attachments.test.tsx > ThreadAttachmentsPanel > supports collapse and expand
+ FAIL  src/app/workspace/chats/[thread_id]/page.attachments.test.tsx > ThreadAttachmentsPanel > shows rename hint when stored filename differs
+ FAIL  src/app/workspace/chats/[thread_id]/page.attachments.test.tsx > ThreadAttachmentsPanel > shows deleting state and delete failure message
+Error: useI18n must be used within I18nProvider
+ ❯ useI18nContext src/core/i18n/context.tsx:38:11
+     36|   const context = useContext(I18nContext);
+     37|   if (!context) {
+     38|     throw new Error("useI18n must be used within I18nProvider");
+       |           ^
+     39|   }
+     40|   return context;
+ ❯ useI18n src/core/i18n/hooks.ts:28:33
+ ❯ ThreadAttachmentsPanel src/app/workspace/chats/[thread_id]/thread-attachments-panel.tsx:29:17
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/32]⎯
+
+
+ Test Files  17 failed | 18 passed (35)
+      Tests  32 failed | 54 passed (86)
+   Start at  16:24:02
+   Duration  5.25s (transform 2.07s, setup 1.90s, import 10.52s, tests 1.45s, environment 23.76s)
+
+ ELIFECYCLE  Command failed with exit code 1.
