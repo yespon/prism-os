@@ -23,6 +23,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { decodeContextFromURL, type IncidentContext } from '@/core/alerting/incident-context';
 import { toast } from 'sonner';
+import {
+  loadHostSidebarCollapsed,
+  loadTerminalTheme,
+  saveHostSidebarCollapsed,
+  saveTerminalTheme,
+  type TerminalTheme,
+} from '@/core/terminal-agent/terminal-preferences';
 
 /**
  * Try to match an incident's service to an asset in the asset list.
@@ -84,13 +91,13 @@ export function PersistentTerminal() {
 
   // Load saved preferences
   useEffect(() => {
-    const savedSidebar = localStorage.getItem('opsintech_host_sidebar_collapsed');
-    if (savedSidebar === 'true') {
+    const savedSidebar = loadHostSidebarCollapsed(localStorage);
+    if (savedSidebar === true) {
       setIsSidebarCollapsed(true);
     }
     
-    const savedTheme = localStorage.getItem('opsintech_terminal_theme') as 'light' | 'dark' | 'hacker' | null;
-    if (savedTheme && ['light', 'dark', 'hacker'].includes(savedTheme)) {
+    const savedTheme = loadTerminalTheme(localStorage);
+    if (savedTheme) {
       setTerminalTheme(savedTheme);
     }
 
@@ -130,15 +137,15 @@ export function PersistentTerminal() {
     router.replace('/workspace/terminal', { scroll: false });
   }, [searchParams, assets]);
 
-  const handleThemeChange = (theme: 'light' | 'dark' | 'hacker') => {
+  const handleThemeChange = (theme: TerminalTheme) => {
     setTerminalTheme(theme);
-    localStorage.setItem('opsintech_terminal_theme', theme);
+    saveTerminalTheme(localStorage, theme);
   };
 
   const handleToggleSidebar = () => {
     setIsSidebarCollapsed((prev) => {
       const next = !prev;
-      localStorage.setItem('opsintech_host_sidebar_collapsed', String(next));
+      saveHostSidebarCollapsed(localStorage, next);
       return next;
     });
   };

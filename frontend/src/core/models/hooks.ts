@@ -1,24 +1,35 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-import { deleteModel, loadModels, registerModel, updateModel, loadAvailableModels, loadTenantModels, registerTenantModel, updateTenantModel, deleteTenantModel, testModelConnection } from "./api";
-import type { RegisterModelInput, Model, TestConnectionInput, TestConnectionResponse } from "./types";
+import { readMigratedStorage, writePrismOSStorage } from "@/core/storage/brand-migration";
 
-const STORAGE_KEY = "opsintech:models:disabled";
+import { deleteModel, loadModels, registerModel, updateModel, loadAvailableModels, loadTenantModels, registerTenantModel, updateTenantModel, deleteTenantModel, testModelConnection } from "./api";
+import type { RegisterModelInput, Model, TestConnectionInput } from "./types";
+
+const STORAGE_KEY = "prismos_models_disabled";
+const LEGACY_STORAGE_KEY = "opsintech:models:disabled";
 
 export function getDisabledModelsStore(): string[] {
   if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
-  } catch {
-    return [];
-  }
+  return readMigratedStorage({
+    storage: window.localStorage,
+    key: STORAGE_KEY,
+    legacyKey: LEGACY_STORAGE_KEY,
+    parse: parseStringArray,
+  }) ?? [];
 }
 
 export function setDisabledModelsStore(disabled: string[]) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(disabled));
+  writePrismOSStorage(window.localStorage, STORAGE_KEY, JSON.stringify(disabled));
+}
+
+function parseStringArray(raw: string): string[] {
+  const value: unknown = JSON.parse(raw);
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "string")) {
+    throw new Error("Invalid string array");
+  }
+  return value;
 }
 
 export function useModels({ enabled = true }: { enabled?: boolean } = {}) {
@@ -151,4 +162,3 @@ export function useTestModelConnection() {
     mutationFn: (input: TestConnectionInput) => testModelConnection(input),
   });
 }
-

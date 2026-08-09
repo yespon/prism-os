@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { sanitizeRunStreamOptions } from "./stream-mode";
+import { sanitizeRunStreamOptions, warnUnsupportedStreamModes } from "./stream-mode";
 
 describe("sanitizeRunStreamOptions", () => {
   it("drops unsupported stream modes from array payloads", () => {
@@ -38,5 +38,13 @@ describe("sanitizeRunStreamOptions", () => {
   };
 
     expect(sanitizeRunStreamOptions(options)).toBe(options);
+  });
+
+  it("uses the PrismOS identity in unsupported-mode warnings", () => {
+    const warn = vi.fn();
+    warnUnsupportedStreamModes(["legacy-tools"], warn);
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("[PrismOS]"));
+    expect(warn).toHaveBeenCalledWith(expect.not.stringMatching(/opsintech/i));
   });
 });

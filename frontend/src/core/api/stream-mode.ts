@@ -29,7 +29,7 @@ export function warnUnsupportedStreamModes(
   }
 
   warn(
-    `[opsintech] Dropped unsupported LangGraph stream mode(s): ${unseenModes.join(", ")}`,
+    `[PrismOS] Dropped unsupported LangGraph stream mode(s): ${unseenModes.join(", ")}`,
   );
 }
 

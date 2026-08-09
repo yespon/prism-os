@@ -1,3 +1,5 @@
+import { readMigratedStorage, writePrismOSStorage } from "@/core/storage/brand-migration";
+
 import type { AgentThreadContext } from "../threads";
 
 export const DEFAULT_LOCAL_SETTINGS: LocalSettings = {
@@ -15,7 +17,8 @@ export const DEFAULT_LOCAL_SETTINGS: LocalSettings = {
   },
 };
 
-const LOCAL_SETTINGS_KEY = "opsintech.local-settings";
+const LOCAL_SETTINGS_KEY = "prismos_local_settings";
+const LEGACY_LOCAL_SETTINGS_KEY = "opsintech.local-settings";
 
 export interface LocalSettings {
   notification: {
@@ -37,31 +40,42 @@ export function getLocalSettings(): LocalSettings {
   if (typeof window === "undefined") {
     return DEFAULT_LOCAL_SETTINGS;
   }
-  const json = localStorage.getItem(LOCAL_SETTINGS_KEY);
   try {
-    if (json) {
-      const settings = JSON.parse(json);
-      const mergedSettings = {
-        ...DEFAULT_LOCAL_SETTINGS,
-        context: {
-          ...DEFAULT_LOCAL_SETTINGS.context,
-          ...settings.context,
-        },
-        layout: {
-          ...DEFAULT_LOCAL_SETTINGS.layout,
-          ...settings.layout,
-        },
-        notification: {
-          ...DEFAULT_LOCAL_SETTINGS.notification,
-          ...settings.notification,
-        },
-      };
-      return mergedSettings;
-    }
-  } catch {}
-  return DEFAULT_LOCAL_SETTINGS;
+    const settings = readMigratedStorage({
+      storage: localStorage,
+      key: LOCAL_SETTINGS_KEY,
+      legacyKey: LEGACY_LOCAL_SETTINGS_KEY,
+      parse: parseLocalSettings,
+    });
+    return settings ?? DEFAULT_LOCAL_SETTINGS;
+  } catch {
+    return DEFAULT_LOCAL_SETTINGS;
+  }
 }
 
 export function saveLocalSettings(settings: LocalSettings) {
-  localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(settings));
+  writePrismOSStorage(localStorage, LOCAL_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function parseLocalSettings(raw: string): LocalSettings {
+  const settings: unknown = JSON.parse(raw);
+  if (typeof settings !== "object" || settings === null || Array.isArray(settings)) {
+    throw new Error("Invalid local settings shape");
+  }
+  const record = settings as Partial<LocalSettings>;
+  return {
+    ...DEFAULT_LOCAL_SETTINGS,
+    context: {
+      ...DEFAULT_LOCAL_SETTINGS.context,
+      ...(record.context ?? {}),
+    },
+    layout: {
+      ...DEFAULT_LOCAL_SETTINGS.layout,
+      ...(record.layout ?? {}),
+    },
+    notification: {
+      ...DEFAULT_LOCAL_SETTINGS.notification,
+      ...(record.notification ?? {}),
+    },
+  };
 }

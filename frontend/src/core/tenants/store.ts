@@ -1,6 +1,9 @@
 "use client";
 
-const TENANT_STORAGE_KEY = "opsintech.current_tenant_id";
+import { readMigratedStorage, removePrismOSStorage, writePrismOSStorage } from "@/core/storage/brand-migration";
+
+const TENANT_STORAGE_KEY = "prismos_current_tenant_id";
+const LEGACY_TENANT_STORAGE_KEY = "opsintech.current_tenant_id";
 
 let cachedTenantId: string | null = null;
 const listeners = new Set<(tenantId: string | null) => void>();
@@ -30,7 +33,16 @@ export function getCurrentTenantId(): string | null {
   if (!isBrowser()) {
     return null;
   }
-  cachedTenantId = normalizeTenantId(window.localStorage.getItem(TENANT_STORAGE_KEY));
+  cachedTenantId = readMigratedStorage({
+    storage: window.localStorage,
+    key: TENANT_STORAGE_KEY,
+    legacyKey: LEGACY_TENANT_STORAGE_KEY,
+    parse: (raw) => {
+      const tenantId = normalizeTenantId(raw);
+      if (!tenantId) throw new Error("Invalid tenant id");
+      return tenantId;
+    },
+  });
   return cachedTenantId;
 }
 
@@ -40,11 +52,11 @@ export function setCurrentTenantId(tenantId: string | null) {
 
   if (isBrowser()) {
     if (normalized) {
-      window.localStorage.setItem(TENANT_STORAGE_KEY, normalized);
+      writePrismOSStorage(window.localStorage, TENANT_STORAGE_KEY, normalized);
     } else {
-      window.localStorage.removeItem(TENANT_STORAGE_KEY);
+      removePrismOSStorage(window.localStorage, TENANT_STORAGE_KEY);
     }
-    window.dispatchEvent(new CustomEvent("opsintech:tenant-changed", { detail: { tenantId: normalized } }));
+    window.dispatchEvent(new CustomEvent("prismos:tenant-changed", { detail: { tenantId: normalized } }));
   }
 
   notify(normalized);

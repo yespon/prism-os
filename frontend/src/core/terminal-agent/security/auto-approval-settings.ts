@@ -5,6 +5,8 @@
  * Controls which tool actions can be auto-approved without user confirmation.
  */
 
+import { readMigratedStorage, writePrismOSStorage } from "@/core/storage/brand-migration";
+
 export interface AutoApprovalActions {
   /** Auto-approve reading files on the remote server */
   readFiles: boolean;
@@ -44,7 +46,8 @@ export const DEFAULT_AUTO_APPROVAL: AutoApprovalSettings = {
   enableNotifications: true,
 };
 
-const STORAGE_KEY = 'opsintech_auto_approval_settings';
+const STORAGE_KEY = 'prismos_auto_approval_settings';
+const LEGACY_STORAGE_KEY = 'opsintech_auto_approval_settings';
 
 // List of known read-only commands
 const READONLY_COMMANDS = [
@@ -161,10 +164,12 @@ export class AutoApprovalManager {
 
   private loadFromStorage(): AutoApprovalSettings | null {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return null;
-      const parsed = JSON.parse(stored);
-      return { ...DEFAULT_AUTO_APPROVAL, ...parsed };
+      return readMigratedStorage({
+        storage: localStorage,
+        key: STORAGE_KEY,
+        legacyKey: LEGACY_STORAGE_KEY,
+        parse: parseAutoApprovalSettings,
+      });
     } catch {
       return null;
     }
@@ -172,9 +177,17 @@ export class AutoApprovalManager {
 
   private saveToStorage(): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.settings));
+      writePrismOSStorage(localStorage, STORAGE_KEY, JSON.stringify(this.settings));
     } catch {
       console.warn('[AutoApproval] Failed to save to localStorage');
     }
   }
+}
+
+function parseAutoApprovalSettings(raw: string): AutoApprovalSettings {
+  const parsed: unknown = JSON.parse(raw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    throw new Error("Invalid auto-approval settings shape");
+  }
+  return { ...DEFAULT_AUTO_APPROVAL, ...(parsed as Partial<AutoApprovalSettings>) };
 }

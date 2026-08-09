@@ -6,6 +6,8 @@
  * Supports hot-reloading of config, JSON import/export.
  */
 
+import { readMigratedStorage, writePrismOSStorage } from "@/core/storage/brand-migration";
+
 export interface SecurityPolicy {
   /** Block critical commands (rm, dd, mkfs etc.) directly without asking */
   blockCritical: boolean;
@@ -84,7 +86,8 @@ export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
   },
 };
 
-const STORAGE_KEY = 'opsintech_terminal_security_config';
+const STORAGE_KEY = 'prismos_terminal_security_config';
+const LEGACY_STORAGE_KEY = 'opsintech_terminal_security_config';
 
 export class SecurityConfigManager {
   private config: SecurityConfig;
@@ -156,18 +159,12 @@ export class SecurityConfigManager {
 
   private loadFromStorage(): SecurityConfig | null {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return null;
-      const parsed = JSON.parse(stored);
-      // Merge with defaults to handle version drift
-      return {
-        ...DEFAULT_SECURITY_CONFIG,
-        ...parsed,
-        securityPolicy: {
-          ...DEFAULT_SECURITY_CONFIG.securityPolicy,
-          ...(parsed.securityPolicy || {}),
-        },
-      };
+      return readMigratedStorage({
+        storage: localStorage,
+        key: STORAGE_KEY,
+        legacyKey: LEGACY_STORAGE_KEY,
+        parse: parseSecurityConfig,
+      });
     } catch {
       return null;
     }
@@ -175,10 +172,26 @@ export class SecurityConfigManager {
 
   private saveToStorage(): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.config));
+      writePrismOSStorage(localStorage, STORAGE_KEY, JSON.stringify(this.config));
     } catch {
       // Storage full or unavailable
       console.warn('[SecurityConfig] Failed to save to localStorage');
     }
   }
+}
+
+function parseSecurityConfig(raw: string): SecurityConfig {
+  const parsed: unknown = JSON.parse(raw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    throw new Error("Invalid security config shape");
+  }
+  const record = parsed as Partial<SecurityConfig>;
+  return {
+    ...DEFAULT_SECURITY_CONFIG,
+    ...record,
+    securityPolicy: {
+      ...DEFAULT_SECURITY_CONFIG.securityPolicy,
+      ...(record.securityPolicy ?? {}),
+    },
+  };
 }

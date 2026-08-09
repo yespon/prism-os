@@ -3,6 +3,8 @@
  * Supports multi-tab sessions, history loading, pagination, and title generation.
  */
 
+import { readMigratedStorage, writePrismOSStorage } from "@/core/storage/brand-migration";
+
 export interface ChatSession {
   id: string;
   title: string;
@@ -28,7 +30,8 @@ export interface ChatMessage {
   timestamp: string;
 }
 
-const STORAGE_KEY = 'opsintech_terminal_chats';
+const STORAGE_KEY = 'prismos_terminal_chats';
+const LEGACY_STORAGE_KEY = 'opsintech_terminal_chats';
 const MAX_SESSIONS = 50;
 const PAGE_SIZE = 40;
 
@@ -37,13 +40,12 @@ export class ChatHistoryManager {
    * Load all chat sessions from storage.
    */
   static loadSessions(): ChatSession[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      return JSON.parse(raw);
-    } catch {
-      return [];
-    }
+    return readMigratedStorage({
+      storage: localStorage,
+      key: STORAGE_KEY,
+      legacyKey: LEGACY_STORAGE_KEY,
+      parse: parseChatSessions,
+    }) ?? [];
   }
 
   /**
@@ -66,7 +68,7 @@ export class ChatHistoryManager {
     }
 
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+      writePrismOSStorage(localStorage, STORAGE_KEY, JSON.stringify(sessions));
     } catch {
       console.warn('[ChatHistory] Failed to save session');
     }
@@ -77,7 +79,7 @@ export class ChatHistoryManager {
    */
   static deleteSession(sessionId: string): void {
     const sessions = ChatHistoryManager.loadSessions().filter((s) => s.id !== sessionId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+    writePrismOSStorage(localStorage, STORAGE_KEY, JSON.stringify(sessions));
   }
 
   /**
@@ -118,4 +120,12 @@ export class ChatHistoryManager {
   static generateId(): string {
     return `chat_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
   }
+}
+
+function parseChatSessions(raw: string): ChatSession[] {
+  const value: unknown = JSON.parse(raw);
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "object" && item !== null && !Array.isArray(item))) {
+    throw new Error("Invalid chat session array");
+  }
+  return value as ChatSession[];
 }
