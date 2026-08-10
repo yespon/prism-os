@@ -151,9 +151,14 @@ services:
     environment:
       - CI=true
       - PRISMOS_HOME=/app/backend/.prismos
-      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
-      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
       - PRISMOS_SANDBOX_HOST=host.docker.internal
+      # Legacy aliases remain for modules that still read OPSINTECH_* directly.
+      - OPSINTECH_HOME=/app/backend/.prismos
+      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
+      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
+      - OPSINTECH_SANDBOX_HOST=host.docker.internal
       - CORS_ORIGINS=http://localhost:${PORT:-2026},http://frontend:3000
       - FRONTEND_URL=http://frontend:3000
     extra_hosts:
@@ -197,6 +202,12 @@ services:
       - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
       - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
       - PRISMOS_SANDBOX_HOST=host.docker.internal
+      # Legacy aliases remain for modules that still read OPSINTECH_* directly.
+      - OPSINTECH_HOME=/app/backend/.prismos
+      - OPSINTECH_CONFIG_PATH=/app/config.yaml
+      - OPSINTECH_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}
+      - OPSINTECH_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-..}/skills
+      - OPSINTECH_SANDBOX_HOST=host.docker.internal
       - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
       - PRISMOS_RUNTIME_ADAPTER_MODULE=${PRISMOS_RUNTIME_ADAPTER_MODULE:-app.runtime_adapters}
       - CORS_ORIGINS=http://localhost:${PORT:-2026},http://frontend:3000
