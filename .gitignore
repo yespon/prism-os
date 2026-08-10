@@ -48,6 +48,10 @@ log/
 # Local implementation worktrees
 .worktrees/
 
+# Local agent workflow state and runtime data
+.superpowers/
+backend/.prismos/
+
 # pnpm
 .pnpm-store
 sandbox_image_cache.tar
