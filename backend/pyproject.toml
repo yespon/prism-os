@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "deerflow-harness",
-    "fastapi>=0.115.0",
+    "fastapi>=0.141.1",
     "httpx>=0.28.0",
     "python-multipart>=0.0.20",
     "sse-starlette>=2.1.0",
@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8.0.0", "ruff>=0.14.11"]
+dev = ["pytest>=9.0.3", "ruff>=0.14.11"]
 
 [tool.uv.workspace]
 members = ["packages/harness"]

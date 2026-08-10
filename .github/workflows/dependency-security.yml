@@ -1,0 +1,108 @@
+name: Dependency Security
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Audit frontend dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit production dependencies
+        run: pnpm audit --registry=https://registry.npmjs.org --prod --audit-level=high
+
+      - name: Typecheck frontend
+        run: pnpm typecheck
+
+  backend:
+    name: Audit backend dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.26
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install locked dependencies
+        run: uv sync --locked
+
+      - name: Generate auditable runtime package list
+        run: |
+          uv run python - <<'PY'
+          import importlib.metadata as metadata
+          from pathlib import Path
+
+          excluded = {"deerflow-harness"}
+          packages = []
+          for distribution in metadata.distributions():
+              name = distribution.metadata.get("Name")
+              if name and name.lower() not in excluded:
+                  packages.append(f"{name}=={distribution.version}")
+
+          Path("/tmp/prismos-backend-installed.txt").write_text(
+              "\n".join(sorted(set(packages))) + "\n"
+          )
+          print(f"Generated {len(set(packages))} auditable distributions")
+          PY
+
+      - name: Audit locked runtime environment
+        run: >-
+          uv run --with pip-audit pip-audit
+          --strict
+          --disable-pip
+          --no-deps
+          --progress-spinner off
+          --format=json
+          -r /tmp/prismos-backend-installed.txt
+
+      - name: Run backend dependency regression test
+        run: PYTHONPATH=. uv run pytest tests/test_frontend_docker_config.py -q
+
+  compose:
+    name: Validate Compose configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate production Compose configuration
+        run: docker compose -f docker/docker-compose.yaml config --quiet
