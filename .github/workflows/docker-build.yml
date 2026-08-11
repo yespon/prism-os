@@ -93,7 +93,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: backend/Dockerfile
@@ -125,7 +125,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: frontend/Dockerfile
@@ -157,7 +157,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build provisioner
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: docker/provisioner
           file: docker/provisioner/Dockerfile
