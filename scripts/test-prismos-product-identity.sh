@@ -6,7 +6,7 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${REPO_ROOT}"
 
-uv run --offline python - <<'PY'
+python - <<'PY'
 import tomllib
 from pathlib import Path
 

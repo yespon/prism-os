@@ -39,7 +39,7 @@ jobs:
           cache-dependency-glob: backend/uv.lock
 
       - name: Enforce PrismOS brand identity
-        run: uv run --offline python scripts/check_brand_identity.py
+        run: python scripts/check_brand_identity.py
 
       - name: Check PrismOS environment compatibility
         run: bash scripts/test-prismos-env.sh
