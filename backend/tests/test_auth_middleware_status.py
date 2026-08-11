@@ -338,6 +338,9 @@ def test_resolve_tenant_id_falls_back_to_default_and_persists(monkeypatch):
     async def _fake_ensure_default_tenant_for_user(user_id: str):
         return _Membership("tenant-default")
 
+    async def _fake_list_user_tenants(user_id: str):
+        return []
+
     async def _fake_set_current_tenant_id(user_id: str, tenant_id: str):
         calls["user_id"] = user_id
         calls["tenant_id"] = tenant_id
@@ -345,6 +348,7 @@ def test_resolve_tenant_id_falls_back_to_default_and_persists(monkeypatch):
     monkeypatch.setattr(auth_module, "get_current_tenant_id", _fake_get_current_tenant_id)
     monkeypatch.setattr(auth_module, "get_membership", _fake_get_membership)
     monkeypatch.setattr(auth_module, "ensure_default_tenant_for_user", _fake_ensure_default_tenant_for_user)
+    monkeypatch.setattr(auth_module, "list_user_tenants", _fake_list_user_tenants)
     monkeypatch.setattr(auth_module, "set_current_tenant_id", _fake_set_current_tenant_id)
 
     tenant_id = asyncio.run(auth_module._resolve_tenant_id("u-1", None))

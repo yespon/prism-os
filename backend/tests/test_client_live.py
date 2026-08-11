@@ -14,12 +14,22 @@ import pytest
 
 from deerflow.client import DeerFlowClient, StreamEvent
 
-# Skip entire module in CI or when no config.yaml exists
+# Skip entire module in CI, when no config.yaml exists, or when the local
+# configuration does not expose a usable model. Merely having a config.yaml is
+# not enough: the repository may contain a developer-only shell config without
+# platform models or credentials.
 _skip_reason = None
 if os.environ.get("CI"):
     _skip_reason = "Live tests skipped in CI"
 elif not Path(__file__).resolve().parents[2].joinpath("config.yaml").exists():
     _skip_reason = "No config.yaml found — live tests require valid API credentials"
+else:
+    try:
+        _configured_models = DeerFlowClient(thinking_enabled=False).list_models().get("models", [])
+    except Exception:
+        _configured_models = []
+    if not any(model.get("name") and model.get("model") and model.get("use") for model in _configured_models):
+        _skip_reason = "No usable model configured — live tests require valid API credentials"
 
 if _skip_reason:
     pytest.skip(_skip_reason, allow_module_level=True)

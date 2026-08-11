@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage  # noqa: F401
+from langgraph.checkpoint.memory import InMemorySaver
 
 from app.gateway.routers.mcp import McpConfigResponse
 from app.gateway.routers.memory import MemoryConfigResponse, MemoryStatusResponse
@@ -41,8 +42,11 @@ def mock_app_config():
 
 
 @pytest.fixture
-def client(mock_app_config):
-    """Create a DeerFlowClient with mocked config loading."""
+def client(mock_app_config, monkeypatch):
+    """Create a DeerFlowClient with isolated config and in-memory state."""
+    # _ensure_agent() resolves the default checkpointer dynamically. Keep these
+    # unit tests independent of a developer's local config.yaml and database.
+    monkeypatch.setattr("deerflow.agents.checkpointer.get_checkpointer", lambda: InMemorySaver())
     with patch("deerflow.client.get_app_config", return_value=mock_app_config):
         return DeerFlowClient()
 
