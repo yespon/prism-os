@@ -60,6 +60,9 @@
     {"path": "scripts/check_brand_identity.py", "classification": "compatibility-code", "reason": "Scanner pattern intentionally names the legacy tokens it must detect.", "owner": "brand-gate", "remove_by": "0.3.0", "max_matches": 2},
     {"path": "scripts/prismos-env.sh", "classification": "compatibility-code", "reason": "Host-boundary adapter reads legacy deployment inputs and exports only PrismOS variables.", "owner": "deployment", "remove_by": "0.3.0", "max_matches": 28},
     {"path": "scripts/test-prismos-env.sh", "classification": "test-fixture", "reason": "Tests bounded shell compatibility with legacy deployment inputs.", "owner": "deployment-tests", "remove_by": "0.3.0", "max_matches": 32},
-    {"path": "scripts/test-prismos-product-identity.sh", "classification": "test-fixture", "reason": "Tests public identity and explicit legacy compatibility boundaries.", "owner": "brand-gate", "remove_by": "0.3.0", "max_matches": 7}
+    {"path": "scripts/test-prismos-product-identity.sh", "classification": "test-fixture", "reason": "Tests public identity and explicit legacy compatibility boundaries.", "owner": "brand-gate", "remove_by": "0.3.0", "max_matches": 7},
+    {"path": "docker/docker-compose.yaml", "classification": "compatibility-code", "reason": "Provides the bounded 0.2.x legacy environment aliases still consumed by the runtime compatibility adapter.", "owner": "deployment", "remove_by": "0.3.0", "max_matches": 15},
+    {"path": "docs/strategy/agentos-prismos-gap-roadmap-review.md", "classification": "migration-document", "reason": "Records the bounded legacy compatibility boundary in the strategic roadmap review.", "owner": "documentation", "remove_by": "0.3.0", "max_matches": 2},
+    {"path": "docs/superpowers/plans/2026-08-10-prismos-branch-integration.md", "classification": "migration-document", "reason": "Records the bounded legacy compatibility decision for the local branch integration.", "owner": "documentation", "remove_by": "0.3.0", "max_matches": 13}
   ]
 }
