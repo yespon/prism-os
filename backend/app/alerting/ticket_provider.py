@@ -27,6 +27,8 @@ async def create_ticket(
     incident: Incident,
     ticket_config: dict[str, Any],
     signals_data: list[dict] | None = None,
+    *,
+    idempotency_key: str | None = None,
 ) -> TicketResult:
     """Create an external ticket for an incident.
 
@@ -48,42 +50,52 @@ async def create_ticket(
     provider = ticket_config.get("provider", "webhook")
 
     if provider == "webhook":
-        return await _create_webhook_ticket(incident, ticket_config, signals_data)
+        return await _create_webhook_ticket(incident, ticket_config, signals_data, idempotency_key=idempotency_key)
     else:
         raise ValueError(f"Unsupported ticket provider: {provider}")
+
+
+def render_ticket_payload(
+    incident: Incident,
+    ticket_config: dict[str, Any],
+    signals_data: list[dict] | None = None,
+) -> dict[str, Any]:
+    template = ticket_config.get("template")
+    return (
+        _render_template(template, incident, signals_data)
+        if template else _default_ticket_payload(incident, signals_data)
+    )
 
 
 async def _create_webhook_ticket(
     incident: Incident,
     ticket_config: dict[str, Any],
     signals_data: list[dict] | None = None,
+    *,
+    idempotency_key: str | None = None,
 ) -> TicketResult:
     """Create a ticket via generic webhook (POST JSON)."""
     webhook_url = ticket_config.get("webhook_url", "")
     if not webhook_url:
         raise ValueError("ticket.webhook_url is required for webhook provider")
 
-    headers = ticket_config.get("headers", {})
-    template = ticket_config.get("template")
-
-    if template:
-        # Use the user-provided template with variable substitution
-        payload = _render_template(template, incident, signals_data)
-    else:
-        # Default payload format
-        payload = _default_ticket_payload(incident, signals_data)
+    headers = {"Content-Type": "application/json", **ticket_config.get("headers", {})}
+    if idempotency_key is not None:
+        headers = {name: value for name, value in headers.items() if name.lower() != "idempotency-key"}
+        headers["Idempotency-Key"] = idempotency_key
+    payload = render_ticket_payload(incident, ticket_config, signals_data)
 
     async with httpx.AsyncClient(timeout=30) as client:
         try:
             response = await client.post(
                 webhook_url,
                 json=payload,
-                headers={"Content-Type": "application/json", **headers},
+                headers=headers,
             )
             response.raise_for_status()
         except httpx.HTTPError as e:
-            logger.error("ticket: webhook request failed: %s", e)
-            raise RuntimeError(f"Ticket creation failed: {e}") from e
+            logger.error("ticket: webhook request failed (%s)", type(e).__name__)
+            raise RuntimeError("Ticket creation failed") from e
 
     # Try to extract ticket_id and URL from response
     ticket_id = ""
@@ -100,8 +112,8 @@ async def _create_webhook_ticket(
         ticket_id = f"inc-{incident.incident_key}"
 
     logger.info(
-        "ticket: created for incident=%s via webhook: ticket_id=%s url=%s",
-        incident.incident_key, ticket_id, ticket_url,
+        "ticket: created for incident=%s via webhook: ticket_id=%s",
+        incident.incident_key, ticket_id,
     )
     return TicketResult(ticket_id=ticket_id, ticket_url=ticket_url or None, provider="webhook")
 

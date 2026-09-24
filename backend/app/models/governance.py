@@ -69,3 +69,24 @@ class PlatformApprovalRecord(SQLModel, table=True):
     expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     decided_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))
     consumed_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))
+
+
+class PlatformActionSubmissionRecord(SQLModel, table=True):
+    __tablename__ = "platform_action_submissions"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "decision_id", name="uq_platform_submission_tenant_decision"),
+        Index("ix_platform_submission_tenant_status", "tenant_id", "status"),
+    )
+
+    idempotency_key: str = Field(sa_column=Column(String(255), primary_key=True))
+    tenant_id: str = Field(sa_column=Column(String(255), nullable=False))
+    decision_id: str = Field(sa_column=Column(String(255), ForeignKey("platform_policy_decisions.id"), nullable=False))
+    approval_id: str | None = Field(default=None, sa_column=Column(String(255), ForeignKey("platform_approvals.id"), nullable=True))
+    action: str = Field(sa_column=Column(String(255), nullable=False))
+    status: str = Field(sa_column=Column(String(32), nullable=False))
+    ticket_id: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    ticket_url: str | None = Field(default=None, sa_column=Column(String(2048), nullable=True))
+    provider: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+    claimed_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))
+    submitted_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))

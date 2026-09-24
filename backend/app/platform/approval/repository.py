@@ -79,6 +79,11 @@ class ApprovalRepository:
                     raise ValueError("decision_id already has an Approval") from None
                 raise
 
+    async def get_by_decision(self, tenant_id: str, decision_id: str) -> tuple[Approval, int] | None:
+        async with self._session_factory() as session:
+            row = await self._by_decision(session, tenant_id, decision_id)
+            return None if row is None else (Approval.model_validate(row.approval_json), row.version)
+
     async def get(self, tenant_id: str, approval_id: str) -> tuple[Approval, int] | None:
         async with self._session_factory() as session:
             statement = select(PlatformApprovalRecord).where(
