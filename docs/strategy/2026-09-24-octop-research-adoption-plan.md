@@ -232,7 +232,7 @@ P0 契约基线已完成，**不得把这一进度视为整个 M1 的 6–8 周�
 
 1. 以已通过的[M1/P0 计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)和[契约基线证据](../../backend/docs/PLATFORM_CONTRACTS.md)为起点，冻结九个公开符号及迁移兼容边界，不创建平行平台包。
 2. 固定一个 Web 请求、一个现有 IM 请求和一个 Terminal 副作用动作，形成调用图；M1 的 Golden Scenario fixture 只绑定既有 AIOps 链路。
-3. 编写 Policy/Approval 的 M1 增量 Spec 与 ADR，落实 decision/audit-before-side-effect 顺序和失败回退；IM 的 `EntryContext` 与外部身份绑定先形成独立 ADR 候选，不扩大 M1 退出门。
+3. 按已建立的[M1 增量 Spec](../superpowers/specs/2026-09-24-prismos-m1-governed-action-design.md)、[ADR](./adr/2026-09-24-m1-governed-action-boundary.md)和[逐任务计划](../superpowers/plans/2026-09-24-prismos-m1-policy-approval-implementation.md)实施 Policy/Approval，落实 decision/audit-before-side-effect 顺序和失败回退；IM 的 `EntryContext` 与外部身份绑定先形成独立 ADR 候选，不扩大 M1 退出门。
 4. 在现有 Nginx → LangGraph 请求路径上设计可信执行入口：从已认证会话解析 user/tenant，核验 Agent 可见性和启用状态，并绑定新线程 Agent；补跨租户、伪造上下文、停用后重试和旧线程不变的反例测试。通过前不开放 Agent 卡片的“开始对话”。
 5. 按租户打开首次使用引导，记录管理员就绪与普通用户阻塞路径；执行 M1 治理迭代并通过退出门。M2 建 Run 后研究 Schedule 契约，产品试点在 M5 立项。
 
