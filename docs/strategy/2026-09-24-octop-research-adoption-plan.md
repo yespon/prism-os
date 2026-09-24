@@ -2,7 +2,7 @@
 
 **日期：** 2026-09-24
 
-**状态：** 调研结论与实施建议；不替代已批准的 PrismOS Capability Roadmap
+**状态：** 调研结论与分阶段实施方案；不替代已批准的 PrismOS Capability Roadmap
 
 **证据版本：** PrismOS `73954f018fe1a9f59279d4060a99c0b9d0ad6eee`；Octop `c04aacc604a23ac05c00538f1bd4bc586fee6bb6`（`v1.0.2b2`）
 
@@ -15,6 +15,8 @@ Octop 值得借鉴的是一组协同工作的产品与工程模式：统一的�
 **实施顺序不变：M1 治理执行闭环 → M2 Task/Run 生命周期 → M3 Runtime 与质量证据 → M4–M7 按证据启动 Agent 资产、工作流、数据/知识和扩展供应链。** Octop 的能力作为每个阶段的用例和设计参考，不另起平行路线。首年不迁到单进程，不把用户级共享语义照搬到租户，也不开放任意插件或外部编码 Agent 执行。
 
 本文件覆盖全部候选能力，但只有 M1 近期工作拆成下一步可执行的核验与迭代；**M1 的新增工作不能扩大已批准的退出门**。M2 之后各阶段在前一阶段退出门通过后，再写独立 Spec、ADR 和逐任务 Implementation Plan。日期用于容量规划，不构成自动晋级承诺。
+
+**交互优先级：** 在每个已获准的能力阶段并行交付一个有界体验切片。近期优先验证“管理员完成配置 → 用户选择可用 Agent → 发起新对话 → 看见结果或明确的阻塞原因”。体验切片可以独立延后，不改变平台退出门和依赖顺序。
 
 ## 2. 方法和证据边界
 
@@ -29,6 +31,7 @@ Octop 值得借鉴的是一组协同工作的产品与工程模式：统一的�
 - M6 的正式退出门需要**两个参考 Connector**；可先以一个做首个纵向切片，但不能凭一个连接器宣称 M6 完成。
 - M7 的启动门需要**至少三类真实扩展由不同边界独立维护**，不是两种内部扩展。
 - M1 的承诺是治理型 AIOps Golden Scenario；额外 IM 入口只做现状核验与契约适配预研，不作为 M1 退出门或阻塞已有 P0/Policy/Approval 工作。
+- 现有工作台已支持模型连通性测试、通用欢迎页和提问建议。交互切片复用这些能力，不重复建设。
 
 ## 3. Octop 架构与能力的代码级调研
 
@@ -36,7 +39,7 @@ Octop 值得借鉴的是一组协同工作的产品与工程模式：统一的�
 | --- | --- | --- | --- |
 | 组合根 | [`OctopServer.start`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/server.py)装配 DB、仓库、Agent、Gateway、Cron；[ADR 001](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/docs/adr/001-single-process-model.md)明确无外部队列和独立 worker。 | 显式依赖、启动/关闭顺序、从持久状态重建。 | 保留 PrismOS Gateway/LangGraph/Frontend 的现有进程边界。Octop 的 ADR 也明确单机纵向扩展和 CPU 阻塞代价。 |
 | 统一入口 | [`GlobalProcessor`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/gateway/process/processor.py#L127)汇合 Web、IM、CLI；[会话键](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/docs/architecture.md#L70-L86)区分 Agent、通道、用户和群聊。 | 入口只负责身份解析、规范化、会话映射和回传。 | 必须从认证 Membership 或已验证通道绑定解析 tenant；不信任消息中自报 tenant。 |
-| 定时任务 | [`CronManager`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/cron/manager.py#L50)从 DB 恢复调度；[`CronDeliveryService`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/cron/delivery.py#L49)在会话锁内执行并投影历史；[`CronJob`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/cron/job.py#L21)记录状态和审计。 | DB 是配置事实源；调度、执行、投递分责；支持 run-now。 | 代码没有证明分布式租约或端到端 exactly-once。M2 先冻结 Run/Attempt/幂等语义，M5 再把 cron 实现为 Run 触发器，不另建执行状态机。 |
+| 定时任务 | [`CronManager`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/cron/manager.py#L50)从 DB 恢复调度；[`CronDeliveryService`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/cron/delivery.py#L49)在会话锁内执行并投影历史；[`CronJob`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/cron/job.py#L21)记录状态和审计。 | DB 是配置事实源；调度、执行、投递分责；支持 run-now。 | 代码没有证明分布式租约或端到端 exactly-once。M2 先冻结 Run/Attempt/幂等语义，M5 再把 cron 实现为带租约的 Run 触发器，不另建执行状态机。 |
 | 知识库 | [`KnowledgeService`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/knowledge/service.py#L78)处理 owner/shared 可见性；[索引任务](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/knowledge/jobs.py)支持中断恢复；[检索](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/knowledge/retrieve.py)筛选可见库和 ready 文档并生成引用。 | 解析/索引状态、检索预算、引用来源、失败恢复。 | owner/shared 是实例级规则，不是租户 ACL；检索失败可降级但须对用户可见并留审计。完整知识治理到 M6。 |
 | 连接器 | [`ConnectorService`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/connectors/service.py#L74)有实例、加密凭据、OAuth 刷新和 MCP 配置装配。 | 目录定义与安装实例分离；凭据、授权状态和健康检查闭环。 | PrismOS 需 tenant/owner、SecretRef、工具权限和同步状态；不能只扩展 MCP JSON。 |
 | 插件 | [`PluginManager`](https://github.com/TencentCloud/Octop/blob/c04aacc604a23ac05c00538f1bd4bc586fee6bb6/src/octop/infra/agents/plugins/manager.py#L270)有 bundled seed、发现、安装、启停和工具目录；可从 ZIP/URL 安装并在主进程加载依赖。 | manifest、版本、安装/启用两种状态、UI 与工具元数据。 | 主进程执行第三方代码不适合企业扩展默认边界；先内部包规范，后建签名、权限、隔离、回滚。 |
@@ -55,6 +58,17 @@ Octop 的主要经验是“入口 → 会话 → Agent → 投递”的完整用
 | 连接器 | [租户 MCP API](../../backend/app/gateway/routers/mcp.py)和健康检查 | Connector Instance、SecretRef、授权范围、同步状态 | M6 |
 | 插件生命周期 | [SPI 草图](../../backend/app/plugins/__init__.py)、[静态运维插件](../../backend/app/plugins/registry.py)、[状态 API](../../backend/app/gateway/routers/plugins.py) | 包格式、版本、权限、安装、升级、隔离、回滚 | M7 |
 | 团队和 ACP | [CustomAgent](../../backend/app/models/agents.py)、subagent、Terminal interrupt/resume | 不可变版本、部署绑定、跨 Agent 授权、外部 runner 治理 | M4/M5 后按需求验证 |
+
+### 工作台交互起点
+
+| 用户路径 | 当前实现 | 下一步 |
+| --- | --- | --- |
+| 首次配置 | `/setup` 建立管理员；平台/租户模型管理页已有模型测试与启用状态。 | 在管理概览显示配置就绪与下一步链接；普通用户只看到可执行入口或联系管理员提示。 |
+| 选择 Agent 并聊天 | Agent 列表支持搜索、创建和编辑；`AgentThreadContext` 已有 `agent_name`，但卡片只有编辑/删除操作，聊天页也没有贯通 Agent 选择。 | 新对话显示所选 Agent；已有对话保持原绑定。服务端完成可信身份、可见性和启用状态核验后才开放卡片直达聊天。 |
+| 运行与审批 | 聊天展示流式结果，Terminal 有局部 interrupt/resume。 | M1 显示纳管动作的审批等待与结果；M2 使用平台 Run 状态作为刷新和恢复后的事实源。 |
+| 结果来源 | File/Artifact 可查看，通用知识治理未成形。 | M3 在研究场景显示来源引用及失败提示；M6 才建设知识管理界面。 |
+
+**安全前置事实：** 当前 Nginx 将 `/api/langgraph/` 直接转发给 LangGraph，浏览器提交的 `tenant_id`、`user_id`、`agent_name` 不能作为授权证据。Agent 卡片直达聊天必须等可信服务端入口校验会话、租户成员关系、Agent 可见性及启用状态，并把验证过的身份绑定到运行上下文；前端先行查询只改善提示，不构成安全门。
 
 已有 [M1/P0 实施计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)规定 `app.platform` 契约边界、AuditEvent 最小持久化和兼容方式。**在当前检出版本中，`backend/app/platform` 与 `backend/tests/contracts` 尚不存在，未检到该计划的核心契约实现；因此近期工作的真实起点是 P0。** 先执行已批准计划，不创建第二套 ID、Audit 或 ExecutionEnvelope。
 
@@ -117,6 +131,15 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 
 从当前检出版本看 P0 尚未落地，**不得以 6–8 周承诺整个 M1**。先核算 P0 剩余任务和真实吞吐量；两周一轮审查完成证据与阻塞项，必要时调整日历，不削弱退出门。
 
+### M1 同期交互切片：首次成功执行
+
+1. **管理员就绪入口：** 在租户管理概览复用已加载的可用模型状态，显示“可发起对话”或“需启用模型”，并链接现有租户模型管理页、Agent 列表和工作台；平台管理员在平台概览使用现有模型配置与测试入口。未加载成功时显示“状态未知”，不把网络错误解释为零模型。
+2. **普通用户阻塞提示：** 工作台新对话在没有可用模型时显示原因和联系管理员指引，不暴露仅管理员可用的模型操作；有可用模型时保留现有欢迎页和建议问题。
+3. **Agent 直达聊天：** 在服务端可信入口完成身份和 Agent 校验之后，卡片只对可用 Agent 显示“开始对话”；新线程绑定 `agent_name` 并在发送前展示名称，旧线程不受工作台当前选择影响。停用、越权或不存在的 Agent 必须在执行前拒绝，不能回退到默认 Agent。
+4. **治理状态：** 纳管动作的 allow、deny、require_approval、超时及失败说明来自 M1 Decision/Approval，不由聊天文案推断；没有对应契约前只展示现有流式状态。
+
+验收演示从管理员配置开始，以用户获得结果或明确阻塞原因结束。只读就绪引导由前端 `NEXT_PUBLIC_FIRST_RUN_TENANT_IDS` 按租户灰度，默认关闭；关闭后回到现有工作台路径。Agent 直达聊天及审批交互须另经服务端授权与治理契约门，不能仅靠此前端开关发布。此切片不增加 M1 正式退出门。
+
 ### M2：通用执行生命周期（已批准，规划 2026.12–2027.03）
 
 **先决条件：** M1 纳管动作有持久 Decision/Audit，Approval 恢复可验证。
@@ -129,7 +152,7 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 
 ### M3：Runtime 契约与质量证据（已批准，规划 2027.04–07）
 
-**先决条件：** M2 生命周期及 Web/IM 的恢复和幂等测试通过。
+**先决条件：** M2 生命周期及实际纳管入口的恢复和幂等测试通过；IM 仅在纳入 M2 范围后成为必需入口。
 
 **主交付：** `Start/Stream/Pause/Resume/Cancel/GetState` Runtime Adapter Contract；基础 Evaluation、成本、Trace 关联；AIOps 和企业研究两个 Golden Scenarios 共用 Execution/Policy/Audit。
 
@@ -137,14 +160,21 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 
 **验收：** 平台上层不依赖 LangGraph 私有类型；两个领域场景使用同一评测与审计链；Contract Test 和 Evaluation Gate 可重复运行。
 
+### M2–M3 同期交互切片
+
+- **M2：** 对话中读取平台 Run 状态，展示当前阶段、审批等待、失败原因、取消与允许的重试。刷新和服务重启后的展示以 Run 为准；现有聊天消息只作为内容投影。Schedule 仍是契约预研，不提供管理入口。
+- **M3：** 研究场景结果显示原文件、版本、引用位置和 Artifact/Run 关联；打开来源时重新校验权限。检索失败时明确提示降级，评测覆盖引用完整性、越权拒绝与成本。
+
 ### M4–M7：按证据立项的候选阶段
 
 | 里程碑 | 借鉴 Octop 后的 PrismOS 切片 | 启动门 | 退出门与范围 |
 | --- | --- | --- | --- |
 | **M4 Agent 资产**，规划 2027.08–11 | 从 `CustomAgent` 演进 Definition、不可变 Version、Deployment；草稿、发布、回滚。借鉴专家配置体验。 | M3 两场景复用核心，Agent 配置变更带来的复现问题有证据。 | 历史 Run 可解析当时版本；回滚不改历史；人格模板/专家市场只作 UI 候选。 |
 | **M5 最小 Workflow**，规划 2027.12–2028.03 | Event/Schedule/Manual 入口，有限 DAG、Agent/Tool 节点、Approval 等待和补偿；先做单租户只读 Schedule → Run 试点，再按需求验证团队分工。 | M4 Version/Deployment 用于真实运行，且有跨步骤或定时执行的实际需求。 | 定时重复触发只生成一个业务 Run，重启后 occurrence 可解释；双 Agent 场景的授权和结果可追踪；不做通用 BPMN。 |
-| **M6 数据、Connector、Knowledge 治理**，规划 2028.04–07 | 租户 Connector Catalog/Instance、CredentialRef/Secret Provider、OAuth 刷新/撤销、健康；Knowledge Source/Document/Chunk/IndexVersion、ACL、引用和检索审计。先做一个纵向切片，正式退出前完成两个参考 Connector。 | 外部接入确成主要重复成本，至少两类不同接入模式，Policy/Artifact/Secret 边界清楚。 | 两个 Connector 通过统一契约测试；撤权后检索和调用失败，跨租户、索引残留、token 续期和外部故障有测试；不做通用 iPaaS。 |
+| **M6 数据、Connector、Knowledge 治理**，规划 2028.04–07 | 租户 Connector Catalog/Instance、SecretRef/Secret Provider、OAuth 刷新/撤销、健康；Knowledge Source/Document/Chunk/IndexVersion、ACL、引用和检索审计。先做一个纵向切片，正式退出前完成两个参考 Connector。 | 外部接入确成主要重复成本，至少两类不同接入模式，Policy/Artifact/Secret 边界清楚。 | 两个 Connector 通过统一契约测试；撤权后检索和调用失败，跨租户、索引残留、token 续期和外部故障有测试；不做通用 iPaaS。 |
 | **M7 扩展供应链**，规划 2028.08–11 | 规范现有运维模块为版本化内置包，再做私有目录、签名/摘要、权限声明、租户安装、升级与回滚。 | 至少三类真实扩展由不同边界独立维护，且 Policy/Audit/隔离契约稳定。 | 不可信代码不在 Gateway 主进程加载；兼容、权限、依赖和回滚门通过；公共 Marketplace 延后。 |
+
+候选阶段各交付一个最小管理交互：M4 发布/回滚与版本标识，M5 Schedule 运行记录和失败处置，M6 Connector 授权/健康及索引状态，M7 扩展权限、安装、升级和回滚。界面不得先于对应的平台事实源与授权契约发布。
 
 若实证需求不足，停在上一稳定阶段。桌面壳、远程桌面、MBTI、大量社交平台和公共插件市场不会仅因 Octop 已提供而进入默认 Backlog。ACP 入站可在 M4 后做兼容试验；ACP 出站须等 Policy/Run/隔离成熟并有明确用例。
 
@@ -154,13 +184,14 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 
 | 工作包 | 所有者 | 估算 | 前置条件 | 完成物 |
 | --- | --- | ---: | --- | --- |
+| M1 首次使用引导 | 工作台前端 | 与 P0 并行的小切片 | 现有模型状态接口、按租户 UI 开关 | 管理员就绪入口、普通用户无模型提示与回退；Agent 发起对话另受可信服务端入口门约束 |
 | M1 入口事实映射与审计 | 平台后端 | P0 核验后重估 | P0 契约 | 现有 AIOps 链路的身份/关联映射、契约测试 |
-| M1 Policy/Approval 贯通 | 平台后端 + 前端 | 4–6 | 身份和 Audit | 两入口副作用闭环、审批/恢复、故障注入 |
+| M1 Policy/Approval 贯通 | 平台后端 + 前端 | 4–6 | 身份和 Audit | 现有 AIOps 链路的副作用闭环、审批/恢复、故障注入 |
 | M2 Task/Run 生命周期 | 平台后端 | 按 M2 正式计划重估 | M1 退出门 | Schema、迁移、状态机、恢复测试 |
 | M2 Schedule 契约预研 | 平台后端 | 不进入 M2 交付容量 | Run/幂等语义 | 触发器/投递 ADR、故障矩阵，无产品接口 |
 | M3 来源引用试点 | Runtime/Artifact + 场景 | 2–3 | Runtime/Artifact 关联 | 引用契约、研究评测、失败可见性 |
 | M5 Schedule 首个试点 | 平台后端 + 工作台 | M5 立项时重估 | Workflow/Event 入口和 Agent Version | 单租户只读 Schedule → Run、重启与去重证据 |
-| M6 Connector/Knowledge 纵向切片 | 集成/数据后端 | 届时重估 | CredentialRef/Policy/ACL | 首个数据源和语料切片；M6 最终需两个参考 Connector |
+| M6 Connector/Knowledge 纵向切片 | 集成/数据后端 | 届时重估 | SecretRef/Policy/ACL | 首个数据源和语料切片；M6 最终需两个参考 Connector |
 
 每个两周迭代保留约 20% 容量用于回归、迁移和文档。超过两周不能演示端到端效果的包继续拆分；增加人力只能并行不冲突的工作，不能跳过依赖门。
 
@@ -172,6 +203,7 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 | 隔离与安全 | 跨租户反例、伪造 IM 身份、过期/撤销授权、Policy/Audit 故障时的副作用控制、Secret 不进日志或模型上下文。 |
 | 恢复与幂等 | 重启、重复 IM/webhook、cron 重叠、网络超时、投递成功但回执丢失、索引中断的故障注入。 |
 | 质量 | 新测试 passed/skipped/failed 明细，既有失败基线不恶化；两个 Golden Scenarios 的 trace、artifact、成本和质量信号。 |
+| 交互 | 首次任务从管理员配置到用户结果的演示录屏或脚本；无模型、无权限、停用 Agent、审批等待、失败与恢复提示；按租户开关开启/关闭路径。 |
 | 运维 | 健康/积压视图、失败重试和人工处置、备份、迁移 dry-run、双写观测、版本回滚演练。 |
 
 **迁移顺序：** 新表/契约 → 只读旁路观测 → 双写或双投影 → 单租户 feature flag → Golden Scenario → 扩大租户 → 停止旧写入 → 清理兼容层。每一步定义关闭开关后的行为；旧数据不在缺少备份、校验和回滚演练时原地覆盖。
@@ -184,17 +216,24 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 | --- | --- | --- |
 | 功能追赶挤掉平台主轴 | UI、cron、RAG、插件各有状态和权限 | 每项借鉴绑定既有里程碑，复用 Execution/Policy/Audit 并通过退出门。 |
 | 个人助手模型侵入企业多租户 | 照搬 owner/shared、全局插件开关 | 先写 tenant/owner/actor/ACL 不变量及反例测试。 |
-| 单机调度误用于多实例 | 重复执行副作用 | M2 增加 DB 幂等键和可观测租约；多实例验证前只允许一个调度者。 |
+| 单机调度误用于多实例 | 重复执行副作用 | M2 验证 Run 幂等语义；M5 的 Schedule 试点增加可观测租约与多实例故障测试，通过前只允许一个调度者。 |
 | 外部扩展破坏隔离 | URL/ZIP 安装依赖并在 Gateway 进程执行 | M7 先内置包，再私有签名目录；依赖审查、沙箱和权限声明是安装门。 |
 | 宣传与默认值不一致 | “有审批”却默认关闭，“有策略”却只警告 | 以实际默认值和故障注入判断控制；PrismOS 当前 guardrail 也默认关闭，M1 明确纳管动作集合。 |
 | 路线膨胀 | 提前冻结两年 API 和人天 | 只冻结下一阶段契约；M4–M7 保留启动/退出门。 |
+
+### 本次实施状态（2026-09-24）
+
+- 已实现：租户管理概览的模型就绪与下一步指引；新对话无可用模型的分角色提示；`NEXT_PUBLIC_FIRST_RUN_TENANT_IDS` 默认关闭的按租户 UI 灰度，以及关闭开关后的旧路径。
+- 待平台门：M1/P0 契约和治理闭环；可信的 LangGraph 执行身份绑定、Agent 可见性/启用校验；Agent 卡片直达聊天与审批状态。当前前端引导不代表 M1 已通过退出门。
+- 待后续立项：M2–M7 的 Run、Runtime、Workflow、Connector/Knowledge 和扩展管理能力及对应体验切片。
 
 ## 10. 立即执行的下一步
 
 1. 核对[M1/P0 计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)各任务与当前代码，标注完成、未完成和冲突项；先完成已有 P0，不创建平行平台包。
 2. 固定一个 Web 请求、一个现有 IM 请求和一个 Terminal 副作用动作，形成调用图；M1 的 Golden Scenario fixture 只绑定既有 AIOps 链路。
 3. 按现有 P0 计划落地契约，再写 Policy/Approval 的 M1 增量 Spec。IM 的 `EntryContext` 和外部身份绑定先形成独立 ADR 候选，不扩大 M1 退出门。
-4. 执行 M1 治理迭代并通过退出门；M2 建 Run 后研究 Schedule 契约，产品试点在 M5 立项。
+4. 在现有 Nginx → LangGraph 请求路径上设计可信执行入口：从已认证会话解析 user/tenant，核验 Agent 可见性和启用状态，并绑定新线程 Agent；补跨租户、伪造上下文、停用后重试和旧线程不变的反例测试。通过前不开放 Agent 卡片的“开始对话”。
+5. 按租户打开首次使用引导，记录管理员就绪与普通用户阻塞路径；执行 M1 治理迭代并通过退出门。M2 建 Run 后研究 Schedule 契约，产品试点在 M5 立项。
 
 ## 附录：主要证据
 

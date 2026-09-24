@@ -95,7 +95,11 @@ Key environment variables (see `.env.example` for full list):
 NEXT_PUBLIC_BACKEND_BASE_URL="http://localhost:8001"
 # LangGraph API URLs (optional, uses nginx proxy by default)
 NEXT_PUBLIC_LANGGRAPH_BASE_URL="http://localhost:2024"
+# Optional: enable first-run guidance for explicitly listed tenant IDs (default: off)
+NEXT_PUBLIC_FIRST_RUN_TENANT_IDS="tenant-a,tenant-b"
 ```
+
+`NEXT_PUBLIC_FIRST_RUN_TENANT_IDS` controls UI guidance only. It is not an authorization boundary. Rebuild the frontend after changing the value. Agent launch from the gallery remains disabled until the server can verify identity, tenant membership, and Agent access on the LangGraph execution path.
 
 ## Project Structure
 

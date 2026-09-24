@@ -69,9 +69,11 @@ interface ChatThreadContentProps {
   threadId: string;
   context: ReturnType<typeof useLocalSettings>[0]["context"];
   onContextChange: (context: ReturnType<typeof useLocalSettings>[0]["context"]) => void;
+  noAvailableModel: boolean;
+  isTenantAdmin: boolean;
 }
 
-export function ChatThreadContent({ threadId, context, onContextChange }: ChatThreadContentProps) {
+export function ChatThreadContent({ threadId, context, onContextChange, noAvailableModel, isTenantAdmin }: ChatThreadContentProps) {
   const { t } = useI18n();
   const searchParams = useSearchParams();
   const incidentId = searchParams.get("incident");
@@ -435,6 +437,16 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                     </div>
                   </div>
                 )}
+                {isNewThread && noAvailableModel && (
+                  <div role="alert" className="mx-auto mb-4 w-full max-w-3xl rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+                    <p>{isTenantAdmin ? t.chatHeader.noModelAdminHint : t.chatHeader.noModelMemberHint}</p>
+                    {isTenantAdmin && (
+                      <Link href="/tenant-admin/models" className="mt-2 inline-block font-medium underline underline-offset-4">
+                        {t.chatHeader.manageModels}
+                      </Link>
+                    )}
+                  </div>
+                )}
                 {isThreadConnecting && (
                   <div className="pointer-events-none absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 justify-center">
                     <div className="mx-auto flex flex-col items-center justify-center gap-3 rounded-3xl p-8 text-center animate-in fade-in duration-300">
@@ -545,7 +557,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                           : "ready"
                     }
                     context={context}
-                    disabled={env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" || isUploading}
+                    disabled={env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" || isUploading || (isNewThread && noAvailableModel)}
                     onContextChange={onContextChange}
                     onSubmit={handleSubmit}
                     onStop={handleStop}

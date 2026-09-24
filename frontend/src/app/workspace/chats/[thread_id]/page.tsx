@@ -14,9 +14,11 @@ import {
 } from "@/components/ui/dialog";
 import { ChatHeaderProvider } from "@/components/workspace/chats/chat-header-context";
 import { useChatTabs } from "@/components/workspace/chats/chat-tabs-context";
+import { isFirstRunGuidanceEnabled } from "@/core/first-run-guidance";
 import { useI18n } from "@/core/i18n/hooks";
 import { useAvailableModels } from "@/core/models/hooks";
 import { useLocalSettings } from "@/core/settings";
+import { useCurrentTenant } from "@/core/tenants/hooks";
 import {
   useDeleteThread,
   useThreads,
@@ -151,7 +153,8 @@ export default function ChatPage() {
     openThread(tid);
   }, [openThread]);
 
-  const { models: availableModels } = useAvailableModels();
+  const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useAvailableModels();
+  const { data: currentTenant } = useCurrentTenant();
   const models = useMemo(() => {
     const seen = new Set<string>();
     return availableModels.filter((model) => {
@@ -277,6 +280,8 @@ export default function ChatPage() {
               threadId={tid}
               context={settings.context}
               onContextChange={handleContextChange}
+              noAvailableModel={isFirstRunGuidanceEnabled(currentTenant?.tenant_id) && !modelsLoading && !modelsError && models.length === 0}
+              isTenantAdmin={currentTenant?.role === "tenant_admin"}
             />
           </div>
         ))}

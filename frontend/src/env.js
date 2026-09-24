@@ -23,6 +23,7 @@ export const env = createEnv({
     NEXT_PUBLIC_LANGGRAPH_BASE_URL: z.string().optional(),
     NEXT_PUBLIC_PUBLIC_APP_URL: z.string().optional(),
     NEXT_PUBLIC_STATIC_WEBSITE_ONLY: z.string().optional(),
+    NEXT_PUBLIC_FIRST_RUN_TENANT_IDS: z.string().optional(),
   },
 
   /**
@@ -37,6 +38,7 @@ export const env = createEnv({
     NEXT_PUBLIC_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_PUBLIC_APP_URL,
     NEXT_PUBLIC_STATIC_WEBSITE_ONLY:
       process.env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY,
+    NEXT_PUBLIC_FIRST_RUN_TENANT_IDS: process.env.NEXT_PUBLIC_FIRST_RUN_TENANT_IDS,
     GITHUB_OAUTH_TOKEN: process.env.GITHUB_OAUTH_TOKEN,
   },
   /**
