@@ -9,11 +9,11 @@
 
 让现有 AIOps 链路中一个真实 Agent Action，在外部副作用前经过可信身份绑定、持久 Policy Decision、必要时的持久 Approval、关键 Audit，然后由受控入口提交。另选同一链路的一个只读 Action 验证风险分类。M1 的 `task_id`/`run_id` 仍为关联 ID；运行状态和重试/恢复语义属于 M2。
 
-本设计不更改 P0 的九个公开导出、不把运维对象写入平台必填字段、不建立新的模型连通性测试接口，也不把 IM 新入口或 Agent 卡片直达聊天纳入治理链的退出条件。可信 LangGraph 入口是后续打开卡片直达的独立安全门。
+本设计保留 P0 的九个公开导出并增加 M1 契约符号、不把运维对象写入平台必填字段、不建立新的模型连通性测试接口，也不把 IM 新入口或 Agent 卡片直达聊天纳入治理链的退出条件。可信 LangGraph 入口是后续打开卡片直达的独立安全门。
 
 ## 当前实证与实施前置
 
-完整调用图与接入风险见[入口与 Action 调用图](../../strategy/2026-09-24-m1-entry-action-call-map.md)。其中 `terminal.execute` fixture 不构成真实 AIOps→Terminal 路径证据；普通 Agent 的 `tool_groups` 当前未被执行层过滤，必须先修复该入口门。
+完整调用图与接入风险见[入口与 Action 调用图](../../strategy/2026-09-24-m1-entry-action-call-map.md)。其中 `terminal.execute` fixture 不构成真实 AIOps→Terminal 路径证据；DB 自定义 Agent 的 MCP `tool_groups` 现已在服务器发现前过滤；内置/社区 Tool 和可信入口仍需独立治理。
 
 | 现有部件 | 事实 | 需要补的边界 |
 | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 ## 契约
 
-`PolicyRequest` 包含 v1 schema、tenant、request ID、ExecutionEnvelope、action 名、资源引用或目标标识、显式 `read_only`/`side_effect` 风险类别、规范化上下文摘要、请求时间和最小非敏感属性。`PolicyDecision` 包含 decision ID、request ID、tenant、同一 execution/action/context hash、`allow|deny|require_approval`、policy ID/version、结构化 reason code、决策时间与有效期。未知 schema、额外字段、跨租户引用、naive datetime 一律拒绝。决策只包含决策事实，不复制命令正文或凭据。
+`PolicyRequest` 包含 v1 schema、tenant、request ID、ExecutionEnvelope、action 名、资源引用或目标标识、显式 `read_only`/`side_effect` 风险类别、规范化上下文摘要、请求时间。临时 `ActionContextInput` 仅接收非敏感参数并生成规范摘要，参数不进入序列化契约。`PolicyDecision` 包含 decision ID、request ID、tenant、同一 execution/action/context hash、`allow|deny|require_approval`、policy ID/version、结构化 reason code、决策时间与有效期。未知 schema、额外字段、跨租户引用、naive datetime 一律拒绝。决策只包含决策事实，不复制命令正文或凭据。
 
 `Approval` 包含 approval ID、decision ID、tenant、requester/approver、policy version、context hash、创建/到期/终结时间与 `pending|approved|rejected|expired|consumed` 状态。只有 `require_approval` 决策可创建；审批人不能凭浏览器参数选择 tenant 或替换 Action。`resume` 消费批准时再验证当前权限、decision version、context hash 和有效期。审批状态由数据库条件更新，重复和并发请求返回同一终态或冲突，不重复提交。
 

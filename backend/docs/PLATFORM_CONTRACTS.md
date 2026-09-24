@@ -1,25 +1,35 @@
 # PrismOS Platform Contract Baseline
 
-**Status:** M1/P0 contract baseline implemented; governed execution is not yet complete.
+**Status:** P0 baseline and additive M1 Policy/Approval data contracts implemented; governed execution is not yet complete.
 
 ## Supported API
 
-Only these imports from `app.platform.contracts` are public in v1:
+The original nine P0 imports remain stable. M1 adds five contract-only symbols:
 
 ```python
 from app.platform.contracts import (
     PLATFORM_SCHEMA_V1,
+    ActionContextInput,
+    Approval,
     AuditEvent,
     DefinitionRef,
     EnvironmentRef,
     ExecutionEnvelope,
     IdentityRef,
+    PolicyDecision,
+    PolicyRequest,
     ResourceMetadata,
+    hash_action_context,
     new_platform_id,
     stable_platform_id,
 )
 ```
 
+`ActionContextInput` is transient: its `parameters` are excluded from serialization.
+`hash_action_context` includes the validated parameters in a canonical SHA-256
+digest. Adapters must pass only approved nonsecret facts; key checks cannot infer
+whether an arbitrary value is a credential. Policy and Approval models describe
+facts; importing them does not enable evaluation, persistence or enforcement.
 Private modules and persistence classes are not compatibility promises.
 
 ## Contract example
@@ -70,9 +80,12 @@ The AIOps values are extension data and do not define core required fields.
 
 ## Explicit non-capabilities
 
-P0 does not implement a Policy engine, Approval lifecycle, Task/Run lifecycle,
-Workflow, retry, cancellation, recovery or Evaluation resource. `task_id`,
-`run_id`, `policy_decision_id` and `approval_id` are correlation references only.
+The current checkout does not implement a Policy engine, durable Approval
+lifecycle, Task/Run lifecycle, Workflow, retry, cancellation, recovery or
+Evaluation resource. The Approval transition functions are pure and do not
+provide concurrency control or a database fact source. `task_id` and `run_id`
+remain correlation references only. Existing `policy_decision_id` and
+`approval_id` fields do not imply a persisted decision or approval.
 
 ## Legacy JSONL migration
 
@@ -97,7 +110,7 @@ The existing JSONL writer remains active and unchanged. Downgrade exports or bac
 up new records first, removes only `platform_audit_events`, and never rewrites or
 deletes the legacy JSONL file.
 
-## Verification evidence
+## P0 verification evidence at completion
 
 | Evidence | Result |
 | --- | --- |
