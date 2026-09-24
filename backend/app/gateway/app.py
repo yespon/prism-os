@@ -16,6 +16,7 @@ from app.gateway.routers import (
     artifacts,
     channels,
     files,
+    langgraph_proxy,
     mcp,
     memory,
     models,
@@ -180,7 +181,7 @@ API Gateway for PrismOS, a governed Agent operating system built on a LangGraph-
 
 ### Architecture
 
-LangGraph requests are handled by nginx reverse proxy.
+Browser LangGraph requests pass through this authenticated gateway.
 This gateway provides custom endpoints for models, MCP configuration, skills, and artifacts.
         """,
         version="0.1.0",
@@ -310,6 +311,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Agents API is mounted at /api/agents
     app.include_router(agents.router)
+
+    # Authenticated browser boundary for LangGraph thread/run APIs.
+    app.include_router(langgraph_proxy.router)
 
     # Approval API reads tenant-scoped durable facts; review uses current membership.
     app.include_router(approvals.router)

@@ -13,6 +13,7 @@ from app.alerting.incident_manager import suppress_incident
 from app.alerting.ingest import process_alert
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.models.alerting import AlertingSettings, AlertRule, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
+from app.platform.execution.trust import attach_execution_capability
 from deerflow.database.session import get_session, get_session_factory
 
 logger = logging.getLogger(__name__)
@@ -1309,12 +1310,12 @@ async def _run_diagnosis_background_task(
             config={
                 "recursion_limit": 500,
             },
-            context={
+            context=await attach_execution_capability({
                 "agent_name": agent_name,
                 "user_id": user_id,
                 "tenant_id": tenant_id,
                 "thread_id": thread_id,
-            },
+            }),
             stream_mode=["messages-tuple", "values"],
         ):
             event = getattr(chunk, "event", "")

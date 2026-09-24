@@ -24,7 +24,7 @@
 | 7 | 已新增 Approval 服务和 Gateway read/approve/reject API：tenant 与审批人取自认证会话，操作时重查租户启用状态、成员角色与原请求者有效身份；内部 consume 在恢复时重查 Decision、context/version、权限与期限，并以 CAS 持久化。pending 由 Policy 服务创建，内部恢复提交已接入工作包 8；可信 Agent Tool 尚未接入。 | 授权、自审批、撤权、停用租户、跨租户、过期、reject、重复审阅、上下文变更与状态冲突测试通过；浏览器身份字段无法覆写会话。实际 Action 恢复/资源授权及部署数据库并发仍待工作包 8/集成门。 | 4–6 |
 | 8 | 已新增提交事实表与唯一迁移、本地稳定 idempotency key、`not_submitted→unknown→submitted` CAS，以及默认关闭的 Agent→AIOps 工单内部 Adapter。Adapter 重查租户 Incident、启用的来源配置、请求者权限和 payload/目标摘要；审批恢复先消费，再占位并调用现有 webhook。Provider 可传幂等键，但接收端未承诺去重；超时或结果写入失败保留 unknown，不自动重发。人工工单与规则 `auto_ticket` 仍是独立旧路径。 | 并发占位只有一个成功；allow、deny、审批等待/恢复、撤权、上下文变化、Audit 故障和超时反例通过；真实 Incident→AlertSource 解析及迁移升降级通过。Agent Tool 尚未注册，可信入口与真实已认证请求→Tool/Provider 的集成门留给工作包 10–11；结果审计和兼容双写已在工作包 9 完成。 | 1、5–7 |
 | 9 | 已完成当前 `ticket.create` 的兼容投递：提交事实、`action.submitted` 关键 Audit 与无 payload 投递引用同事务落库；再投递 Gateway JSONL 和 IncidentAction。失败保留原事件 ID、目的地、次数和错误类别，可按租户重放及查看计数，不重放外部建单。Provider 超时另记 `action.submission_unknown`，提交状态仍为 unknown。Terminal 当前未纳管，原有 `terminal_audit_logs` 路径保持可读写，不生成虚假的工单命令记录。 | 受控工单的旧时间线仍可读；JSONL 失败不回滚提交事实，重放成功且不重复建单；跨租户重放隔离、Secret 不入 Audit/投递表；迁移升降级及禁用 Adapter 不触发外部调用验证通过。实际 Gateway JSONL 文件锁与目标部署数据库并发仍在集成门复核。 | 5、8 |
-| 10 | 可信执行入口：Gateway 绑定会话 tenant/user、Agent 可见性/启用与线程 Agent；LangGraph 仅接受已验证上下文或签名能力，运行时拒绝裸浏览器自报身份。Nginx 路由、旧线程不变和回退路径一并验证。 | 跨租户、停用、伪造 context、重放能力、旧线程改 Agent 均在实际 Tool 执行前拒绝。 | 1、7–8 |
+| 10 | 已实现浏览器 LangGraph 的 Gateway 代理：会话身份、tenant、Agent 可见性/启用和线程 Agent 由服务端绑定；新线程归属写入独立事实表，旧线程仅在已有 owner 元数据匹配时认领。Run 身份由 Gateway 重写，并可签发数据库一次性能力；LangGraph 严格模式在工具装配前消费能力，裸身份、字段冲突和重放均拒绝。生产与本地 Nginx 均改经 Gateway，SSE 原样透传。严格图上下文开关 `PRISMOS_TRUSTED_GRAPH_CONTEXT` 默认 `off`，M1 放量前须在 Gateway/LangGraph 同时设为 `required` 并做真实部署验证；未认证 IM 身份不签发能力。 | 新线程归属、跨租户/跨用户、停用 Agent、伪造身份和 bootstrap、线程换 Agent、非法 Run 端点、能力过期/重放、SSE、Nginx 路由及迁移升降级测试通过。旧无 owner 元数据且无其他可信归属的线程不自动认领；目标部署的真实流式 Tool/Provider、严格模式下后台调用与回退演练仍在工作包 11 集成门复核。 | 1、7–8 |
 | 11 | AIOps Golden Scenario 与最小 UI：实际诊断 Action 覆盖 allow、deny、审批、reject/expire、Policy/Audit 故障；界面从平台事实显示等待/结果，不以聊天消息推断。单租户、单 Action 开关放量。 | 成功、失败、撤权、关闭开关回退；操作员可从 Action 追到 tenant、actor/workload、run、decision、approval、policy version 和 result。 | 2–10 |
 | 12 | M1 四门复核：Contract、Golden Scenario、Quality、Migration，另做副作用/Secret/tenant Security Gate；记录测试通过、跳过、历史失败及部署回滚证据。 | 仅当[批准路线的 M1 退出门](../specs/2026-08-08-prismos-capability-roadmap-design.md)全部满足时宣布 M1 完成；此前不启动 M2 生命周期。 | 1–11 |
 
@@ -34,6 +34,13 @@
 - 旧审计投递按 `tenant_id` 查询 `platform_legacy_audit_deliveries`，关注 `pending`/`failed` 数量、`attempts`、`error_category`；投递行只存原平台事件引用，不存 webhook 配置、Header 或响应正文。
 - 在 `backend` 目录执行 `uv run python -m scripts.replay_legacy_audit --tenant <tenant-id>` 可重放最多 100 条；可用 `--limit` 调整上限。重放只更新 Gateway JSONL 与 IncidentAction，不再次调用工单 Provider。
 - `unknown` 提交状态不能用该命令补发工单，应先人工核对外部 Provider；结果 Audit 写失败时也保持 unknown。当前 Adapter 默认关闭且尚未注册为 Agent Tool。
+
+
+## 工作包 10 放量与回退
+
+- 浏览器请求经 `/api/langgraph/` 进入 Gateway；Gateway 只转发明确列出的 Thread、Run 和只读 Assistant 操作，不把浏览器 Authorization、Cookie 或声称的身份字段交给 LangGraph。新对话由 Gateway 写入 owner 元数据及绑定；已有线程首次访问只在 owner 元数据匹配认证身份时认领，缺少可信归属的历史线程暂不自动认领。
+- `PRISMOS_TRUSTED_GRAPH_CONTEXT=required` 必须同时设置在 Gateway 和 LangGraph，且先确认后台 AIOps 诊断运行可以签发凭据；默认 `off` 保持受控 Action 未放量。IM 的外部用户 ID 尚无平台身份映射，严格模式下不获得凭据。
+- 回退时先关闭受控 Action 的租户开关，再将严格图上下文开关设为 `off`；若须恢复历史直通代理，回退 Nginx 的 `/api/langgraph/` 路由配置。线程绑定与能力事实保留供审计，不反向改写已执行 Run。
 
 ## 实施规则
 

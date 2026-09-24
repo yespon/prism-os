@@ -108,3 +108,29 @@ class PlatformLegacyAuditDeliveryRecord(SQLModel, table=True):
     error_category: str | None = Field(default=None, sa_column=Column(String(128), nullable=True))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+
+
+class PlatformThreadBindingRecord(SQLModel, table=True):
+    __tablename__ = "platform_thread_bindings"
+    __table_args__ = (Index("ix_platform_thread_owner", "tenant_id", "user_id"),)
+
+    thread_id: str = Field(sa_column=Column(String(255), primary_key=True))
+    tenant_id: str = Field(sa_column=Column(String(255), nullable=False))
+    user_id: str = Field(sa_column=Column(String(255), nullable=False))
+    agent_name: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    legacy_claim: bool = Field(default=False, nullable=False)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+
+
+class PlatformExecutionCapabilityRecord(SQLModel, table=True):
+    __tablename__ = "platform_execution_capabilities"
+    __table_args__ = (Index("ix_platform_capability_expiry", "expires_at"),)
+
+    token_hash: str = Field(sa_column=Column(String(64), primary_key=True))
+    tenant_id: str = Field(sa_column=Column(String(255), nullable=False))
+    user_id: str = Field(sa_column=Column(String(255), nullable=False))
+    thread_id: str = Field(sa_column=Column(String(255), nullable=False))
+    agent_name: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+    expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+    consumed_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))

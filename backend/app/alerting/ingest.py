@@ -26,6 +26,7 @@ from app.alerting.incident_manager import create_signal, find_or_create_incident
 from app.alerting.providers import get_provider
 from app.alerting.rule_engine import evaluate_rules, get_aggregation_config
 from app.models.alerting import AlertRule, AlertSource, Incident, IncidentSignalLink, RawAlert, Signal
+from app.platform.execution.trust import attach_execution_capability
 
 logger = logging.getLogger(__name__)
 
@@ -320,12 +321,12 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
                     config={
                         "recursion_limit": 500,
                     },
-                    context={
+                    context=await attach_execution_capability({
                         "agent_name": agent.name,
                         "tenant_id": tenant_id,
                         "user_id": agent.user_id,
                         "thread_id": thread_id,
-                    },
+                    }),
                 )
 
                 # Extract the last AI response text from the result

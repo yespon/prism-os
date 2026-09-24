@@ -50,6 +50,6 @@ POST /terminal/invoke（会话 tenant/user）
 ## M1 接入决定与验证门
 
 1. 只读候选为诊断 Agent 已注册的 `read_file`。沙箱 `write_file` 会改变文件，但同一 Agent 还可经 `bash`、`str_replace` 及其他 Tool 修改文件；只给 `write_file` 加 PEP 无法证明无绕过。因此首个副作用选择新增有界的 Agent→AIOps 工单 webhook Action Adapter，调用已有 `create_ticket` Provider，但由受控入口独占该 Agent Tool 的提交路径。规则触发的 `auto_ticket` 和独立 Terminal 演示都不能替代这个真实 Agent Action。当前 `ticket_provider.create_ticket` 未传幂等键；人工 `/incidents/{id}/ticket` 与规则 `auto_ticket` 仍各自直接调用 Provider。M1 内部 Adapter 现已先占用本地唯一提交标识，超时保留 unknown 且不自动重发；Provider 可传幂等键，但接收端是否去重仍未知。Adapter 默认关闭且尚未注册为 Agent Tool；可信执行入口通过前不开放真实调用。
-2. 诊断 Gateway 的 Agent enabled 与跨租户校验已补测试；通用 LangGraph 入口仍待同等验证。Tool registry 已在 MCP 发现前按服务器筛选，空选择不再隐式加载所有 MCP；旧 DB 自定义 Agent 的空数组会失去此前意外获得的 MCP 权限，这是有意的安全收紧。默认 Agent/未指定组调用者保持原有行为。内置 `bash`/文件工具仍需独立 PEP，不能把 MCP 筛选当作完整工具治理。
+2. 诊断 Gateway 的 Agent enabled 与跨租户校验已补测试；通用浏览器 LangGraph 入口现经 Gateway 代理核验会话、tenant、Agent 和线程绑定；LangGraph 严格上下文开关默认关闭，真实部署放量仍待工作包 11。Tool registry 已在 MCP 发现前按服务器筛选，空选择不再隐式加载所有 MCP；旧 DB 自定义 Agent 的空数组会失去此前意外获得的 MCP 权限，这是有意的安全收紧。默认 Agent/未指定组调用者保持原有行为。内置 `bash`/文件工具仍需独立 PEP，不能把 MCP 筛选当作完整工具治理。
 3. 统一 PEP 必须位于实际 Tool/Action 提交函数之前，Decision 与关键 Audit 同事务持久化成功才能进入副作用函数。对 Terminal 的两个执行路径和 AIOps 选定路径分别做 bypass 测试。
 4. `terminal.execute` fixture 保留为解耦的契约样例；最终 Golden Scenario 另增真实路径测试，覆盖 allow、deny、require_approval、过期、重复提交和 Audit 故障。

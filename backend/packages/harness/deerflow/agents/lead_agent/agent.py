@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 
 from langchain.agents import create_agent
 
@@ -12,7 +13,7 @@ from deerflow.agents.middlewares.tool_error_handling_middleware import build_lea
 from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
 from deerflow.agents.thread_state import ThreadState
 from deerflow.config import get_app_config
-from deerflow.config.agents_config import load_agent_config
+from deerflow.config.agents_config import _run_async, load_agent_config
 from deerflow.config.summarization_config import get_summarization_config
 from deerflow.config.tenant_context import tenant_context
 from deerflow.config.title_config import get_title_config
@@ -83,7 +84,37 @@ def _resolve_model_name(requested_model_name: str | None, *, allowed_model_names
     return available_names[0]
 
 
+def _validate_execution_context(config: dict) -> None:
+    """Consume trusted identity before assembling any Agent tools."""
+    if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required":
+        return
+    from app.platform.execution.trust import ExecutionCapabilityRepository, ExecutionTrustError
+
+    cfg = config.get("configurable", {}) or {}
+    context = config.get("context", {}) or {}
+    thread_id = cfg.get("thread_id") or context.get("thread_id")
+    identity_claimed = bool(context) or any(
+        key in cfg
+        for key in ("user_id", "tenant_id", "agent_name", "is_bootstrap", "prismos_execution_capability")
+    )
+    if not thread_id and not identity_claimed:
+        return  # schema/assistant discovery without an execution context
+    for key in ("thread_id", "user_id", "tenant_id", "agent_name", "is_bootstrap", "prismos_execution_capability"):
+        if key in cfg and key in context and cfg[key] != context[key]:
+            raise ExecutionTrustError("conflicting graph execution context")
+    user_id = cfg.get("user_id") or context.get("user_id")
+    tenant_id = cfg.get("tenant_id") or context.get("tenant_id")
+    agent_name = cfg.get("agent_name") or context.get("agent_name")
+    token = cfg.get("prismos_execution_capability") or context.get("prismos_execution_capability")
+    if not all((thread_id, user_id, tenant_id)):
+        raise ExecutionTrustError("trusted graph execution identity required")
+    _run_async(ExecutionCapabilityRepository().consume(
+        token, tenant_id, user_id, thread_id, agent_name,
+    ))
+
+
 def make_lead_agent(config):
+    _validate_execution_context(config)
     load_runtime_adapters()
     from deerflow.tools import get_available_tools
     from deerflow.tools.builtins import setup_agent

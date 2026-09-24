@@ -36,7 +36,7 @@
 
 ## 数据与兼容
 
-当前已建立 Decision/Approval 的独立表、租户范围读取与 Approval CAS，迁移接在 P0 唯一 head 后。关键 Decision、Audit 与待审批事实已可同事务写入；内部确定性 Policy 求值及基于会话的审批授权接口已实现；默认关闭的内部工单 Adapter、提交事实、结果审计与旧路径投递已实现；可信 Agent Tool 注册仍待实施，不能视为完成的治理闭环。
+当前已建立 Decision/Approval 的独立表、租户范围读取与 Approval CAS，迁移接在 P0 唯一 head 后。关键 Decision、Audit 与待审批事实已可同事务写入；内部确定性 Policy 求值及基于会话的审批授权接口已实现；默认关闭的内部工单 Adapter、提交事实、结果审计与旧路径投递已实现；可信浏览器执行入口已通过 Gateway 代理和一次性能力实现，严格模式默认关闭；Agent Tool 注册及真实集成门仍待实施，不能视为完成的治理闭环。
 
 新增 PolicyDecision、Approval 与副作用提交标识的最小持久化表；字段及索引由独立迁移接在唯一 Alembic head 后。查询必须带 tenant。关键 Policy/Audit 使用同一 session 和事务；P0 Audit repository 可在不破坏既有 append API 的前提下增加事务内写入方法。审批更新使用受影响行数或版本字段做并发控制。
 
