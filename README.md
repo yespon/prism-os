@@ -19,6 +19,13 @@ workflow, evaluation, connector, and federation layers are developed over time.
 > its core architecture. The platform must remain useful for other enterprise
 > Agent scenarios without coupling it to an operations closed loop.
 
+## Platform contract status
+
+M1/P0 contract baseline implemented; governed execution is not yet complete.
+See [Platform Contract Baseline](./backend/docs/PLATFORM_CONTRACTS.md) for the
+frozen v1 boundary, migration guidance, verification evidence, and explicit
+non-capabilities.
+
 ## Capability baseline
 
 | Area | Current implementation |
