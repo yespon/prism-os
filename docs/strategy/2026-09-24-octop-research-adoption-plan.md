@@ -70,7 +70,7 @@ Octop 的主要经验是“入口 → 会话 → Agent → 投递”的完整用
 
 **安全前置事实：** 当前 Nginx 将 `/api/langgraph/` 直接转发给 LangGraph，浏览器提交的 `tenant_id`、`user_id`、`agent_name` 不能作为授权证据。Agent 卡片直达聊天必须等可信服务端入口校验会话、租户成员关系、Agent 可见性及启用状态，并把验证过的身份绑定到运行上下文；前端先行查询只改善提示，不构成安全门。
 
-已有 [M1/P0 实施计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)规定 `app.platform` 契约边界、AuditEvent 最小持久化和兼容方式。**在当前检出版本中，`backend/app/platform` 与 `backend/tests/contracts` 尚不存在，未检到该计划的核心契约实现；因此近期工作的真实起点是 P0。** 先执行已批准计划，不创建第二套 ID、Audit 或 ExecutionEnvelope。
+已有 [M1/P0 实施计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)规定 `app.platform` 契约边界、AuditEvent 最小持久化和兼容方式。**P0 契约基线现已落地并通过退出检查**，包含 v1 公开契约、AuditEvent 持久化、JSONL 兼容迁移和 AIOps fixture；验证证据见[平台契约基线](../../backend/docs/PLATFORM_CONTRACTS.md)。下一步在该边界上设计 M1 Policy/Approval 治理链，不创建第二套 ID、Audit 或 ExecutionEnvelope。
 
 ## 5. 目标架构与不变量
 
@@ -129,7 +129,7 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 | 2：治理链 | 一个只读工具和一个副作用工具接入 Policy PEP；从 Terminal interrupt/resume 抽出通用 Approval；管理 JSONL/Terminal 与统一 Audit 双写。 | 同一受控链路展示 allow、deny、require_approval。 | 允许、拒绝、审批、过期路径可追溯 tenant、actor、run、decision、action。 |
 | 3：失败和收口 | 注入 Policy 不可用、Audit 写失败、审批后权限变化、重复输入；补最小链路查询和运行手册。IM 身份绑定只做独立评估记录。 | AIOps Golden Scenario 及失败后的可解释记录。 | 新增 Contract Test 全绿，历史失败不增加，M1 正式退出门通过。 |
 
-从当前检出版本看 P0 尚未落地，**不得以 6–8 周承诺整个 M1**。先核算 P0 剩余任务和真实吞吐量；两周一轮审查完成证据与阻塞项，必要时调整日历，不削弱退出门。
+P0 契约基线已完成，**不得把这一进度视为整个 M1 的 6–8 周交付承诺**。下一轮先核算 Policy/Approval、入口身份绑定及失败演练的工作量和真实吞吐量；两周一轮审查完成证据与阻塞项，必要时调整日历，不削弱退出门。
 
 ### M1 同期交互切片：首次成功执行
 
@@ -224,14 +224,15 @@ Tenant-aware Entry Adapter → Intent + ExecutionEnvelope
 ### 本次实施状态（2026-09-24）
 
 - 已实现：租户管理概览的模型就绪与下一步指引；新对话无可用模型的分角色提示；`NEXT_PUBLIC_FIRST_RUN_TENANT_IDS` 默认关闭的按租户 UI 灰度，以及关闭开关后的旧路径。
-- 待平台门：M1/P0 契约和治理闭环；可信的 LangGraph 执行身份绑定、Agent 可见性/启用校验；Agent 卡片直达聊天与审批状态。当前前端引导不代表 M1 已通过退出门。
+- 已通过平台门：M1/P0 契约基线及其测试、迁移与兼容检查，见[平台契约基线](../../backend/docs/PLATFORM_CONTRACTS.md)。
+- 待平台门：M1 Policy/Approval 治理闭环；可信的 LangGraph 执行身份绑定、Agent 可见性/启用校验；Agent 卡片直达聊天与审批状态。当前前端引导不代表 M1 已通过退出门。
 - 待后续立项：M2–M7 的 Run、Runtime、Workflow、Connector/Knowledge 和扩展管理能力及对应体验切片。
 
 ## 10. 立即执行的下一步
 
-1. 核对[M1/P0 计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)各任务与当前代码，标注完成、未完成和冲突项；先完成已有 P0，不创建平行平台包。
+1. 以已通过的[M1/P0 计划](../superpowers/plans/2026-08-08-prismos-governed-foundation-contract-baseline.md)和[契约基线证据](../../backend/docs/PLATFORM_CONTRACTS.md)为起点，冻结九个公开符号及迁移兼容边界，不创建平行平台包。
 2. 固定一个 Web 请求、一个现有 IM 请求和一个 Terminal 副作用动作，形成调用图；M1 的 Golden Scenario fixture 只绑定既有 AIOps 链路。
-3. 按现有 P0 计划落地契约，再写 Policy/Approval 的 M1 增量 Spec。IM 的 `EntryContext` 和外部身份绑定先形成独立 ADR 候选，不扩大 M1 退出门。
+3. 编写 Policy/Approval 的 M1 增量 Spec 与 ADR，落实 decision/audit-before-side-effect 顺序和失败回退；IM 的 `EntryContext` 与外部身份绑定先形成独立 ADR 候选，不扩大 M1 退出门。
 4. 在现有 Nginx → LangGraph 请求路径上设计可信执行入口：从已认证会话解析 user/tenant，核验 Agent 可见性和启用状态，并绑定新线程 Agent；补跨租户、伪造上下文、停用后重试和旧线程不变的反例测试。通过前不开放 Agent 卡片的“开始对话”。
 5. 按租户打开首次使用引导，记录管理员就绪与普通用户阻塞路径；执行 M1 治理迭代并通过退出门。M2 建 Run 后研究 Schedule 契约，产品试点在 M5 立项。
 
