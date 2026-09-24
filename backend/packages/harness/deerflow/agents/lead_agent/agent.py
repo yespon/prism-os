@@ -125,6 +125,8 @@ def make_lead_agent(config):
             return _make_terminal_agent(config)
 
         agent_config = load_agent_config(agent_name, user_id=user_id) if not is_bootstrap else None
+        if agent_name and not is_bootstrap and agent_config is None:
+            raise ValueError(f"Agent '{agent_name}' is unavailable or disabled")
         agent_model_name = agent_config.model if agent_config and agent_config.model else None
 
         model_name = _resolve_model_name(

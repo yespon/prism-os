@@ -18,7 +18,7 @@ POST /incidents/{id}/diagnose
 
 代码位置：`backend/app/gateway/routers/alerts.py` 的 `diagnose_incident`、`_run_diagnosis_background_task`；`backend/app/alerting/diagnosis_helper.py`；`backend/packages/harness/deerflow/agents/lead_agent/agent.py`；`backend/packages/harness/deerflow/tools/tools.py`。
 
-- Gateway 诊断入口校验会话、tenant、Agent 所有者/共享范围；本分支已补 `CustomAgent.enabled` 过滤和跨租户/停用反例测试。背景任务把 tenant/user/agent 写入 LangGraph context；这组字段在直通 LangGraph 浏览器路径中不能视为可信授权。
+- Gateway 诊断入口校验会话、tenant、Agent 所有者/共享范围；本分支已补 `CustomAgent.enabled` 过滤和跨租户/停用反例测试。Lead Agent 对显式指定但不可用的 Agent 也已拒绝默认回退。背景任务把 tenant/user/agent 写入 LangGraph context；这组字段在直通 LangGraph 浏览器路径中仍不能视为可信授权。
 - `get_available_tools(groups=...)` 的函数注释明确表示 `groups` 被忽略；普通自定义 Agent 获得沙箱内置工具、社区工具和已缓存 MCP 工具。`diagnosis_helper.py` 中的工具分组提示是 Prompt，不是执行授权。
 - Lead Agent 的 GuardrailMiddleware 只在 `guardrails.enabled` 且配置 Provider 时装配；当前 Provider 只返回布尔 allow/deny，没有平台 PolicyDecision 或持久审批。
 - `agent_name == "terminal-agent"` 才进入内置 Terminal Agent 分支。普通 AIOps 自定义 Agent 并不因 Golden fixture 中的 `terminal.execute` 获得 SSH Terminal 工具。因此 fixture 只证明平台 Schema 可容纳该 Action，**不是实际 AIOps Agent→Terminal 执行证据**。

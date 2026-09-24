@@ -319,3 +319,11 @@ def test_make_lead_agent_applies_tenant_context_to_prompt_building(monkeypatch):
     )
 
     assert captured == {"tenant_id": "tenant-a", "user_id": "user-a"}
+
+
+def test_named_disabled_agent_does_not_fall_back_to_default(monkeypatch):
+    monkeypatch.setattr(lead_agent_module, "load_agent_config", lambda *args, **kwargs: None)
+    monkeypatch.setattr(lead_agent_module, "load_runtime_adapters", lambda: None)
+
+    with pytest.raises(ValueError, match="unavailable or disabled"):
+        lead_agent_module.make_lead_agent({"context": {"agent_name": "disabled-agent"}})
