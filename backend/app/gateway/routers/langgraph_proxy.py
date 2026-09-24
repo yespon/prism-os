@@ -30,6 +30,7 @@ _THREAD_ID = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
 _IDENTITY_KEYS = {
     "tenant_id", "user_id", "agent_name", "thread_id", "owner_user_id",
     "owner_tenant_id", "prismos_execution_capability", "is_bootstrap",
+    "prismos_action_incident_id", "action_incident_id",
 }
 _UPSTREAM = os.getenv("LANGGRAPH_API_URL", "http://langgraph:2024").rstrip("/")
 

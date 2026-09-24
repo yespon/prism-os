@@ -19,7 +19,7 @@ from deerflow.config.tenant_context import tenant_context
 from deerflow.config.title_config import get_title_config
 from deerflow.database.user_config_store import load_enabled_tenant_model_names
 from deerflow.models.factory import create_chat_model
-from deerflow.runtime import get_terminal_agent_provider, load_runtime_adapters
+from deerflow.runtime import get_governed_action_provider, get_terminal_agent_provider, load_runtime_adapters
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ def _resolve_model_name(requested_model_name: str | None, *, allowed_model_names
     return available_names[0]
 
 
-def _validate_execution_context(config: dict) -> None:
+def _validate_execution_context(config: dict) -> dict[str, str] | None:
     """Consume trusted identity before assembling any Agent tools."""
     if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required":
         return
@@ -108,13 +108,16 @@ def _validate_execution_context(config: dict) -> None:
     token = cfg.get("prismos_execution_capability") or context.get("prismos_execution_capability")
     if not all((thread_id, user_id, tenant_id)):
         raise ExecutionTrustError("trusted graph execution identity required")
-    _run_async(ExecutionCapabilityRepository().consume(
+    incident_id = _run_async(ExecutionCapabilityRepository().consume(
         token, tenant_id, user_id, thread_id, agent_name,
     ))
+    if incident_id:
+        return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id,
+                "agent_name": agent_name, "incident_id": incident_id}
 
 
 def make_lead_agent(config):
-    _validate_execution_context(config)
+    trusted_action = _validate_execution_context(config)
     load_runtime_adapters()
     from deerflow.tools import get_available_tools
     from deerflow.tools.builtins import setup_agent
@@ -218,10 +221,19 @@ def make_lead_agent(config):
 
         agent_skills = set(agent_config.skills) if (agent_config and agent_config.skills is not None) else None
         effective_skills = {skill_name} if skill_name else agent_skills
+        action_provider = get_governed_action_provider()
+        action_tools = action_provider(trusted_action) if trusted_action and action_provider else []
+        action_prompt = (
+            "\nFor this incident diagnosis, create a ticket only if the evidence warrants one. "
+            "Use create_governed_incident_ticket and report its returned platform status; "
+            "never claim a ticket was created unless the status is submitted."
+            if action_tools else ""
+        )
 
         return create_agent(
             model=create_chat_model(name=model_name, thinking_enabled=thinking_enabled, reasoning_effort=reasoning_effort),
-            tools=get_available_tools(model_name=model_name, groups=agent_config.tool_groups if agent_config else None, subagent_enabled=subagent_enabled),
+            tools=(get_available_tools(model_name=model_name, groups=agent_config.tool_groups if agent_config else None,
+                                       subagent_enabled=subagent_enabled) + action_tools),
             middleware=_build_middlewares(config, model_name=model_name, agent_name=agent_name),
             system_prompt=apply_prompt_template(
                 subagent_enabled=subagent_enabled,
@@ -229,7 +241,7 @@ def make_lead_agent(config):
                 agent_name=agent_name,
                 available_skills=effective_skills,
                 user_id=user_id,
-            ),
+            ) + action_prompt,
             state_schema=ThreadState,
         )
 

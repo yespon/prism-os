@@ -131,6 +131,7 @@ class PlatformExecutionCapabilityRecord(SQLModel, table=True):
     user_id: str = Field(sa_column=Column(String(255), nullable=False))
     thread_id: str = Field(sa_column=Column(String(255), nullable=False))
     agent_name: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    action_incident_id: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     consumed_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))

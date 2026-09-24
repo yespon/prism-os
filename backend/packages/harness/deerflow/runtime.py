@@ -21,6 +21,7 @@ _agent_loader: AgentLoader | None = None
 _agent_lister: AgentLister | None = None
 _agent_persister: AgentPersister | None = None
 _terminal_provider: dict[str, Any] | None = None
+_governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
 _loaded_adapter_module: str | None = None
 
 
@@ -64,6 +65,16 @@ def get_terminal_agent_provider() -> dict[str, Any] | None:
     return _terminal_provider
 
 
+def register_governed_action_provider(provider: Callable[[dict[str, str]], list[Any]]) -> None:
+    """Register a host-owned Tool factory for a verified graph execution."""
+    global _governed_action_provider
+    _governed_action_provider = provider
+
+
+def get_governed_action_provider() -> Callable[[dict[str, str]], list[Any]] | None:
+    return _governed_action_provider
+
+
 def load_runtime_adapters() -> None:
     """Import the configured adapter module once.
 
@@ -80,9 +91,10 @@ def load_runtime_adapters() -> None:
 
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
-    global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _loaded_adapter_module
+    global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _loaded_adapter_module
     _agent_loader = None
     _agent_lister = None
     _agent_persister = None
     _terminal_provider = None
+    _governed_action_provider = None
     _loaded_adapter_module = None

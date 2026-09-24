@@ -142,13 +142,16 @@ async def test_proxy_issues_single_use_capability_for_graph(proxy_setup, monkeyp
     created = await client.post("/api/langgraph/threads", json={})
     thread_id = created.json()["thread_id"]
     response = await client.post(f"/api/langgraph/threads/{thread_id}/runs/stream", json={
-        "assistant_id": "lead_agent", "context": {"agent_name": "diagnosis"},
+        "assistant_id": "lead_agent", "context": {"agent_name": "diagnosis",
+                                                 "action_incident_id": "forged-incident",
+                                                 "prismos_action_incident_id": "forged-incident"},
     })
     assert response.status_code == 200
     context = state.calls[-1][2]["context"]
+    assert "action_incident_id" not in context and "prismos_action_incident_id" not in context
     token = context["prismos_execution_capability"]
     capabilities = ExecutionCapabilityRepository(factory)
-    await capabilities.consume(token, "tenant-a", "user-1", thread_id, "diagnosis")
+    assert await capabilities.consume(token, "tenant-a", "user-1", thread_id, "diagnosis") is None
     with pytest.raises(ExecutionTrustError, match="replay"):
         await capabilities.consume(token, "tenant-a", "user-1", thread_id, "diagnosis")
 

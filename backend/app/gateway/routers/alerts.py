@@ -561,6 +561,96 @@ class TimelineEvent(BaseModel):
     metadata: dict | None = None
 
 
+async def _governed_ticket_status(incident_id: str, tenant_id: str, user_id: str | None = None) -> dict:
+    """Read durable Decision, Approval and Submission facts for the current diagnosis."""
+    from datetime import UTC, datetime
+
+    from app.alerting.governed_ticket_tool import ticket_canary_enabled, ticket_request_id
+    from app.platform.approval.repository import ApprovalRepository
+    from app.platform.policy.repository import PolicyDecisionRepository
+    from app.platform.submission.repository import ActionSubmissionRepository
+
+    if not ticket_canary_enabled(tenant_id):
+        return {"enabled": False, "status": None}
+    async with get_session_factory()() as session:
+        incident = (await session.exec(select(Incident).where(
+            Incident.id == incident_id, Incident.tenant_id == tenant_id,
+        ))).scalars().first()
+    if incident is None:
+        raise HTTPException(404, "Incident not found")
+    if not incident.thread_id:
+        return {"enabled": True, "status": None}
+    decision = await PolicyDecisionRepository().get_by_request(
+        tenant_id, ticket_request_id(incident.thread_id, incident_id),
+    )
+    if decision is None or decision.action != "ticket.create" or decision.resource_id != incident_id:
+        return {"enabled": True, "status": None}
+    found = await ApprovalRepository().get_by_decision(tenant_id, decision.decision_id)
+    approval = found[0] if found else None
+    submission = await ActionSubmissionRepository().get(tenant_id, decision.decision_id)
+    if submission:
+        status = "submitted" if submission.status == "submitted" else "unknown"
+    elif decision.verdict == "deny":
+        status = "denied"
+    elif approval:
+        expired = approval.expires_at <= datetime.now(UTC) or decision.expires_at <= datetime.now(UTC)
+        status = "expired" if expired and approval.status in ("pending", "approved") else (
+            "awaiting_approval" if approval.status == "pending" else
+            "unknown" if approval.status == "consumed" else approval.status
+        )
+    else:
+        status = "unknown"
+    return {
+        "enabled": True, "status": status, "decision_id": decision.decision_id,
+        "approval_id": approval.approval_id if approval else None,
+        "tenant_id": decision.tenant_id, "actor_id": decision.execution.actor.id if decision.execution.actor else None,
+        "workload_id": decision.execution.workload.id, "run_id": decision.execution.run_id,
+        "policy_id": decision.policy_id, "policy_version": decision.policy_version,
+        "reason_code": decision.reason_code, "ticket_id": submission.ticket_id if submission else None,
+        "can_resume": (approval is not None and approval.status == "approved" and submission is None
+                       and decision.expires_at > datetime.now(UTC) and decision.execution.actor is not None
+                       and decision.execution.actor.id == user_id),
+    }
+
+
+@router.get("/incidents/{incident_id}/governed-ticket")
+async def get_governed_incident_ticket(incident_id: str, request: Request) -> dict:
+    tenant_id = require_tenant_context(request)
+    return await _governed_ticket_status(incident_id, tenant_id, getattr(request.state, "user_id", None))
+
+
+@router.post("/incidents/{incident_id}/governed-ticket/resume")
+async def resume_governed_incident_ticket(incident_id: str, request: Request) -> dict:
+    from app.alerting.governed_ticket_tool import execute_ticket_scope
+
+    tenant_id = require_tenant_context(request)
+    user_id = getattr(request.state, "user_id", None)
+    if not isinstance(user_id, str) or not user_id:
+        raise HTTPException(401, "Authentication required")
+    status = await _governed_ticket_status(incident_id, tenant_id, user_id)
+    if not status.get("enabled") or not status.get("decision_id"):
+        raise HTTPException(404, "Governed Action unavailable")
+    if status["actor_id"] != user_id:
+        raise HTTPException(403, "Only the requesting user can resume this Action")
+    if status["status"] not in ("approved", "rejected", "expired", "submitted", "unknown"):
+        raise HTTPException(409, "Approval has not been decided")
+    async with get_session_factory()() as session:
+        incident = (await session.exec(select(Incident).where(
+            Incident.id == incident_id, Incident.tenant_id == tenant_id,
+        ))).scalars().first()
+    if incident is None or not incident.thread_id or not status["workload_id"].startswith("diagnosis-agent:"):
+        raise HTTPException(409, "Diagnosis context changed")
+    scope = {"tenant_id": tenant_id, "user_id": user_id, "thread_id": incident.thread_id,
+             "incident_id": incident_id, "agent_name": status["workload_id"].removeprefix("diagnosis-agent:")}
+    try:
+        await execute_ticket_scope(scope)
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
+    return await _governed_ticket_status(incident_id, tenant_id, user_id)
+
+
 @router.get(
     "/incidents/{incident_id}/timeline",
     response_model=list[TimelineEvent],
@@ -1315,7 +1405,7 @@ async def _run_diagnosis_background_task(
                 "user_id": user_id,
                 "tenant_id": tenant_id,
                 "thread_id": thread_id,
-            }),
+            }, action_incident_id=incident_id),
             stream_mode=["messages-tuple", "values"],
         ):
             event = getattr(chunk, "event", "")

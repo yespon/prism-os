@@ -315,3 +315,108 @@ async def test_result_audit_failure_keeps_submission_unknown(ticket_setup, monke
     assert await state.delivery.list_undelivered("tenant-a") == []
     assert all(e.event_type != "action.submitted" for e in await audits.list_recent("tenant-a"))
     assert len(state.calls) == 1
+
+@pytest.mark.anyio
+async def test_diagnosis_agent_tool_reaches_provider_once_and_exposes_platform_facts(ticket_setup, monkeypatch) -> None:
+    from app.alerting import governed_ticket_tool as agent_action
+
+    make, _, state, _, _, decisions, audits, _, _ = ticket_setup
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    monkeypatch.setattr(agent_action, "ticket_adapter", lambda _tenant: make("allow"))
+    monkeypatch.setattr(agent_action, "PolicyDecisionRepository", lambda: decisions)
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-thread-1",
+             "agent_name": "diagnosis", "incident_id": "incident-1"}
+    tools = agent_action.governed_ticket_tools(scope)
+    assert len(tools) == 1
+    first = await tools[0].ainvoke({})
+    repeated = await tools[0].ainvoke({})
+    assert first == repeated
+    assert first["status"] == "submitted" and first["ticket_id"] == "T-1"
+    assert len(state.calls) == 1
+    decision = await decisions.get("tenant-a", first["decision_id"])
+    assert decision.execution.actor.id == "user-1"
+    assert decision.execution.workload.id == "diagnosis-agent:diagnosis"
+    assert decision.execution.attributes["thread_id"] == "diagnosis-thread-1"
+    assert decision.policy_version == "v1"
+    assert any(event.event_type == "action.submitted" and event.policy_decision_id == first["decision_id"]
+               for event in await audits.list_recent("tenant-a"))
+
+
+@pytest.mark.anyio
+async def test_diagnosis_agent_tool_waits_for_approval_and_blocks_revoked_requester(ticket_setup, monkeypatch) -> None:
+    from app.alerting import governed_ticket_tool as agent_action
+
+    make, _, state, _, approval_service, decisions, _, _, _ = ticket_setup
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    monkeypatch.setattr(agent_action, "ticket_adapter", lambda _tenant: make("require_approval"))
+    monkeypatch.setattr(agent_action, "PolicyDecisionRepository", lambda: decisions)
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-thread-2",
+             "agent_name": "diagnosis", "incident_id": "incident-1"}
+    selected_tool = agent_action.governed_ticket_tools(scope)[0]
+    waiting = await selected_tool.ainvoke({})
+    assert waiting["status"] == "awaiting_approval" and state.calls == []
+    await approval_service.review("tenant-a", waiting["approval_id"], "admin-1", "approve")
+    state.allowed = False
+    with pytest.raises(PermissionError, match="authorized"):
+        await selected_tool.ainvoke({})
+    assert state.calls == []
+    state.allowed = True
+    submitted = await selected_tool.ainvoke({})
+    assert submitted["status"] == "submitted" and len(state.calls) == 1
+
+
+def test_diagnosis_agent_tool_requires_both_canary_switches(monkeypatch) -> None:
+    from app.alerting.governed_ticket_tool import governed_ticket_tools
+
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "thread",
+             "agent_name": "diagnosis", "incident_id": "incident-1"}
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    assert governed_ticket_tools(scope) == []
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    assert len(governed_ticket_tools(scope)) == 1
+    assert governed_ticket_tools({**scope, "tenant_id": "tenant-b"}) == []
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "off")
+    assert governed_ticket_tools(scope) == []
+
+@pytest.mark.anyio
+async def test_diagnosis_card_status_reads_persisted_action_facts(ticket_setup, monkeypatch) -> None:
+    from fastapi import HTTPException
+
+    from app.gateway.routers import alerts
+    from app.platform.approval import repository as approval_repository
+    from app.platform.policy import repository as policy_repository
+    from app.platform.submission import repository as submission_repository
+
+    make, execution, state, _, _, _, _, _, incident = ticket_setup
+    incident.thread_id = "status-thread"
+    async with state.delivery._session_factory() as session:
+        session.add(incident)
+        await session.commit()
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    monkeypatch.setattr(alerts, "get_session_factory", lambda: state.delivery._session_factory)
+    monkeypatch.setattr(approval_repository, "get_session_factory", lambda: state.delivery._session_factory)
+    monkeypatch.setattr(policy_repository, "get_session_factory", lambda: state.delivery._session_factory)
+    monkeypatch.setattr(submission_repository, "get_session_factory", lambda: state.delivery._session_factory)
+    assert (await alerts._governed_ticket_status("incident-1", "tenant-a"))["status"] is None
+    from app.alerting.governed_ticket_tool import ticket_request_id
+
+    result = await make("allow").execute(execution, ticket_request_id("status-thread", "incident-1"),
+                                         "incident-1", at=NOW)
+    status = await alerts._governed_ticket_status("incident-1", "tenant-a")
+    assert status["status"] == "submitted" and status["decision_id"] == result.decision_id
+    assert status["actor_id"] == "user-1" and status["run_id"] == "run-1"
+    assert status["policy_version"] == "v1" and status["ticket_id"] == "T-1"
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-b")
+    with pytest.raises(HTTPException) as error:
+        await alerts._governed_ticket_status("incident-1", "tenant-b")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    assert error.value.status_code == 404
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "off")
+    assert await alerts._governed_ticket_status("incident-1", "tenant-a") == {"enabled": False, "status": None}

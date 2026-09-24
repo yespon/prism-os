@@ -70,3 +70,12 @@ async def test_capability_is_consumed_once_under_concurrency(trust_repositories)
     ), return_exceptions=True)
     assert sum(result is None for result in results) == 1
     assert sum(isinstance(result, ExecutionTrustError) for result in results) == 1
+
+@pytest.mark.anyio
+async def test_server_scoped_capability_carries_incident_only_once(trust_repositories) -> None:
+    _, capabilities = trust_repositories
+    token = await capabilities.issue("tenant-a", "user-1", "thread-1", "diagnosis",
+                                     action_incident_id="incident-1", at=NOW)
+    assert await capabilities.consume(token, "tenant-a", "user-1", "thread-1", "diagnosis", at=NOW) == "incident-1"
+    with pytest.raises(ExecutionTrustError, match="replay"):
+        await capabilities.consume(token, "tenant-a", "user-1", "thread-1", "diagnosis", at=NOW)

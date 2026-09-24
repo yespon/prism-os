@@ -333,3 +333,87 @@ class TestIncidentDiagnosis:
                     inc = await session.get(Incident, "incident-1")
                     assert inc.diagnosis_status == "failed"
             asyncio.run(verify_db())
+
+
+def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
+    test_session_factory, client, mock_langgraph, monkeypatch,
+) -> None:
+    """Gateway diagnosis -> one-use graph scope -> Agent Tool -> Policy/Provider."""
+
+    from app.alerting import governed_ticket_tool as agent_action
+    from app.alerting.governed_ticket import TicketActionAdapter, TicketTarget
+    from app.alerting.legacy_audit_delivery import LegacyAuditDeliveryService
+    from app.alerting.ticket_provider import TicketResult
+    from app.models import governance as _governance_models  # noqa: F401
+    from app.platform.audit.repository import AuditEventRepository
+    from app.platform.execution import trust
+    from app.platform.policy.evaluator import PolicyConfiguration, PolicyRule
+    from app.platform.policy.fact_writer import PolicyFactWriter
+    from app.platform.policy.repository import PolicyDecisionRepository
+    from app.platform.policy.service import PolicyService
+    from app.platform.submission.repository import ActionSubmissionRepository
+
+    asyncio.run(TestIncidentDiagnosis()._setup_data(test_session_factory))
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    monkeypatch.setattr(trust, "get_session_factory", lambda: test_session_factory)
+    decisions = PolicyDecisionRepository(test_session_factory)
+    submissions = ActionSubmissionRepository(test_session_factory)
+    sent = []
+    observed = []
+
+    async def resolve(_tenant, incident_id):
+        async with test_session_factory() as session:
+            incident = await session.get(Incident, incident_id)
+        return TicketTarget(incident, {"provider": "webhook", "webhook_url": "https://tickets.example/create"}, [])
+
+    async def send(_incident, _config, _signals, *, idempotency_key):
+        sent.append(idempotency_key)
+        return TicketResult(ticket_id="GOLDEN-1", ticket_url="https://tickets.example/GOLDEN-1", provider="webhook")
+
+    async def link(_tenant, _incident, _result):
+        return None
+
+    adapter = TicketActionAdapter(
+        enabled_tenants=frozenset({"tenant-a"}),
+        configuration=PolicyConfiguration(policy_id="golden-ticket", version="v1",
+            rules={"ticket.create": PolicyRule(risk_class="side_effect", verdict="allow")}),
+        policy=PolicyService(PolicyFactWriter(test_session_factory), decisions),
+        submissions=submissions,
+        deliveries=LegacyAuditDeliveryService(test_session_factory, gateway_writer=lambda _event: None),
+        resolve_target=resolve, check_permission=lambda _tenant, _user: asyncio.sleep(0, result=True),
+        send_ticket=send, link_ticket=link,
+    )
+    monkeypatch.setattr(agent_action, "ticket_adapter", lambda _tenant: adapter)
+    monkeypatch.setattr(agent_action, "PolicyDecisionRepository", lambda: decisions)
+
+    async def graph_stream(thread_id, _assistant, *, context, **_kwargs):
+        incident_id = await trust.ExecutionCapabilityRepository(test_session_factory).consume(
+            context["prismos_execution_capability"], context["tenant_id"], context["user_id"],
+            thread_id, context["agent_name"],
+        )
+        assert incident_id == "incident-1"
+        scope = {"tenant_id": context["tenant_id"], "user_id": context["user_id"],
+                 "thread_id": thread_id, "agent_name": context["agent_name"], "incident_id": incident_id}
+        outcome = await agent_action.governed_ticket_tools(scope)[0].ainvoke({})
+        observed.append(outcome)
+        yield MockStreamChunk("metadata", {})
+
+    mock_langgraph.runs.stream = graph_stream
+    with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+        response = client.post("/api/incidents/incident-1/diagnose",
+            headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"})
+    assert response.status_code == 200
+    assert observed[0]["status"] == "submitted" and observed[0]["ticket_id"] == "GOLDEN-1"
+    assert len(sent) == 1
+
+    async def verify_facts():
+        decision = await decisions.get("tenant-a", observed[0]["decision_id"])
+        assert decision.execution.actor.id == "user-a"
+        assert decision.execution.workload.id == "diagnosis-agent:shared-diagnoser"
+        assert decision.execution.run_id
+        assert (await submissions.get("tenant-a", decision.decision_id)).status == "submitted"
+        assert any(event.event_type == "action.submitted" for event in
+                   await AuditEventRepository(test_session_factory).list_recent("tenant-a"))
+    asyncio.run(verify_facts())

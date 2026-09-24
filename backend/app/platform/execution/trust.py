@@ -111,7 +111,7 @@ class ExecutionCapabilityRepository:
 
     async def issue(
         self, tenant_id: str, user_id: str, thread_id: str, agent_name: str | None,
-        *, at: datetime | None = None, ttl_seconds: int = 60,
+        *, action_incident_id: str | None = None, at: datetime | None = None, ttl_seconds: int = 60,
     ) -> str:
         if not all((tenant_id, user_id, thread_id)) or ttl_seconds <= 0 or ttl_seconds > 300:
             raise ExecutionTrustError("invalid execution capability request")
@@ -120,7 +120,7 @@ class ExecutionCapabilityRepository:
         row = PlatformExecutionCapabilityRecord(
             token_hash=sha256(token.encode()).hexdigest(),
             tenant_id=tenant_id, user_id=user_id, thread_id=thread_id,
-            agent_name=agent_name, created_at=instant,
+            agent_name=agent_name, action_incident_id=action_incident_id, created_at=instant,
             expires_at=instant + timedelta(seconds=ttl_seconds),
         )
         async with self._session_factory() as session, session.begin():
@@ -130,7 +130,7 @@ class ExecutionCapabilityRepository:
     async def consume(
         self, token: str | None, tenant_id: str, user_id: str,
         thread_id: str, agent_name: str | None, *, at: datetime | None = None,
-    ) -> None:
+    ) -> str | None:
         if not isinstance(token, str) or len(token) < 32:
             raise ExecutionTrustError("trusted execution capability required")
         instant = at or datetime.now(UTC)
@@ -150,15 +150,16 @@ class ExecutionCapabilityRepository:
             ).values(consumed_at=instant))
             if result.rowcount != 1:
                 raise ExecutionTrustError("execution capability replay")
+            return row.action_incident_id
 
 
-async def attach_execution_capability(context: dict) -> dict:
+async def attach_execution_capability(context: dict, *, action_incident_id: str | None = None) -> dict:
     """Add a short-lived bearer to a server-created LangGraph run context."""
     trusted = dict(context)
     if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required":
         return trusted
     trusted["prismos_execution_capability"] = await ExecutionCapabilityRepository().issue(
         trusted["tenant_id"], trusted["user_id"], trusted["thread_id"],
-        trusted.get("agent_name"),
+        trusted.get("agent_name"), action_incident_id=action_incident_id,
     )
     return trusted

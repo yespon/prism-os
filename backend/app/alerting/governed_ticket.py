@@ -1,4 +1,4 @@
-"""Feature-gated Agent ticket Action; deliberately not registered as a Tool yet."""
+"""Feature-gated Agent ticket Action behind the trusted diagnosis Tool."""
 
 import json
 from collections.abc import Awaitable, Callable
@@ -151,7 +151,7 @@ class TicketActionAdapter:
         self, execution: ExecutionEnvelope, request_id: str, incident_id: str,
         *, at: datetime | None = None,
     ) -> TicketActionOutcome:
-        """Only trusted server code may call this until the execution-entry gate is complete."""
+        """Execute only from trusted server scopes after rechecking live permissions."""
         if execution.tenant_id not in self._enabled_tenants:
             raise PermissionError("governed ticket Action is disabled for this tenant")
         actor = execution.actor

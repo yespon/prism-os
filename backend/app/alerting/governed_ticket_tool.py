@@ -1,0 +1,86 @@
+"""The single canary Agent Action for a server-scoped incident diagnosis."""
+
+import os
+from datetime import UTC, datetime
+from hashlib import sha256
+
+from langchain_core.tools import tool
+
+from app.alerting.governed_ticket import TicketActionAdapter, TicketActionOutcome
+from app.platform.contracts import ExecutionEnvelope, IdentityRef, stable_platform_id
+from app.platform.policy.evaluator import PolicyConfiguration, PolicyRule
+from app.platform.policy.repository import PolicyDecisionRepository
+
+
+def ticket_canary_enabled(tenant_id: str) -> bool:
+    """Both trusted graph execution and one explicit tenant/Action must be enabled."""
+    return (
+        os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() == "required"
+        and bool(tenant_id)
+        and os.getenv("PRISMOS_GOVERNED_TICKET_TENANT", "") == tenant_id
+        and os.getenv("PRISMOS_GOVERNED_TICKET_ACTION", "off") == "ticket.create"
+    )
+
+
+def ticket_adapter(tenant_id: str) -> TicketActionAdapter:
+    verdict = os.getenv("PRISMOS_GOVERNED_TICKET_VERDICT", "deny")
+    if verdict not in ("allow", "deny", "require_approval"):
+        verdict = "deny"
+    configuration = PolicyConfiguration(
+        policy_id="aiops-ticket-m1",
+        version=os.getenv("PRISMOS_GOVERNED_TICKET_POLICY_VERSION", "v1") or "v1",
+        rules={"ticket.create": PolicyRule(risk_class="side_effect", verdict=verdict)},
+    )
+    return TicketActionAdapter(enabled_tenants=frozenset({tenant_id}) if ticket_canary_enabled(tenant_id) else frozenset(),
+                               configuration=configuration)
+
+
+def ticket_request_id(thread_id: str, incident_id: str) -> str:
+    digest = sha256(f"{thread_id}:{incident_id}".encode()).hexdigest()
+    return f"ticket-{digest}"
+
+
+def ticket_execution(scope: dict[str, str]) -> ExecutionEnvelope:
+    tenant_id = scope["tenant_id"]
+    thread_id = scope["thread_id"]
+    return ExecutionEnvelope(
+        tenant_id=tenant_id,
+        task_id=stable_platform_id("task", "diagnosis", thread_id),
+        run_id=stable_platform_id("run", "diagnosis", thread_id),
+        correlation_id=scope["incident_id"],
+        workload=IdentityRef(kind="workload", id=f"diagnosis-agent:{scope['agent_name']}", tenant_id=tenant_id),
+        actor=IdentityRef(kind="user", id=scope["user_id"], tenant_id=tenant_id),
+        occurred_at=datetime.now(UTC),
+        attributes={"thread_id": thread_id},
+    )
+
+
+async def execute_ticket_scope(scope: dict[str, str], *, adapter: TicketActionAdapter | None = None,
+                               decisions: PolicyDecisionRepository | None = None) -> TicketActionOutcome:
+    tenant_id = scope["tenant_id"]
+    if not ticket_canary_enabled(tenant_id):
+        raise PermissionError("governed ticket Action is disabled")
+    request_id = ticket_request_id(scope["thread_id"], scope["incident_id"])
+    existing = await (decisions or PolicyDecisionRepository()).get_by_request(tenant_id, request_id)
+    execution = existing.execution if existing else ticket_execution(scope)
+    if execution.actor is None or execution.actor.id != scope["user_id"] or execution.workload.id != f"diagnosis-agent:{scope['agent_name']}":
+        raise PermissionError("diagnosis Action identity changed")
+    return await (adapter or ticket_adapter(tenant_id)).execute(execution, request_id, scope["incident_id"])
+
+
+def governed_ticket_tools(scope: dict[str, str]) -> list:
+    """Called only after the graph has consumed a server-issued diagnosis capability."""
+    if not ticket_canary_enabled(scope["tenant_id"]):
+        return []
+
+    @tool("create_governed_incident_ticket")
+    async def create_governed_incident_ticket() -> dict:
+        """Create a ticket for this diagnosis incident through Policy and Approval; report the actual platform status."""
+        outcome = await execute_ticket_scope(scope)
+        return {
+            "status": outcome.status, "decision_id": outcome.decision_id,
+            "approval_id": outcome.approval_id, "ticket_id": outcome.ticket_id,
+            "needs_reconciliation": outcome.needs_reconciliation,
+        }
+
+    return [create_governed_incident_ticket]

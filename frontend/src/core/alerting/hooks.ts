@@ -11,6 +11,7 @@ import {
   deleteAlertRule,
   deleteAlertSource,
   getIncident,
+  getGovernedTicketStatus,
   listAlertRules,
   listAlertSources,
   listIncidents,
@@ -58,6 +59,17 @@ export function useIncidentDetail(incidentId: string | null | undefined) {
     queryFn: () => getIncident(incidentId!),
     enabled: !!tenantId && !!incidentId,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useGovernedTicketStatus(incidentId: string | null | undefined) {
+  const { data: currentTenant } = useCurrentTenant();
+  const tenantId = currentTenant?.tenant_id ?? null;
+  return useQuery({
+    queryKey: ["incidents", "governed-ticket", tenantId, incidentId],
+    queryFn: () => getGovernedTicketStatus(incidentId!),
+    enabled: !!tenantId && !!incidentId,
+    refetchInterval: 5000,
   });
 }
 
