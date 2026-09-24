@@ -1,6 +1,6 @@
 # PrismOS Platform Contract Baseline
 
-**Status:** P0 baseline and additive M1 Policy/Approval data contracts implemented; governed execution is not yet complete.
+**Status:** P0 baseline and M1 Policy/Approval contracts plus independent fact stores implemented; governed execution is not yet complete.
 
 ## Supported API
 
@@ -29,7 +29,7 @@ from app.platform.contracts import (
 `hash_action_context` includes the validated parameters in a canonical SHA-256
 digest. Adapters must pass only approved nonsecret facts; key checks cannot infer
 whether an arbitrary value is a credential. Policy and Approval models describe
-facts; importing them does not enable evaluation, persistence or enforcement.
+facts; importing them does not enable evaluation, approval authorization or enforcement.
 Private modules and persistence classes are not compatibility promises.
 
 ## Contract example
@@ -80,12 +80,14 @@ The AIOps values are extension data and do not define core required fields.
 
 ## Explicit non-capabilities
 
-The current checkout does not implement a Policy engine, durable Approval
-lifecycle, Task/Run lifecycle, Workflow, retry, cancellation, recovery or
-Evaluation resource. The Approval transition functions are pure and do not
-provide concurrency control or a database fact source. `task_id` and `run_id`
-remain correlation references only. Existing `policy_decision_id` and
-`approval_id` fields do not imply a persisted decision or approval.
+The current checkout does not implement a Policy engine, authenticated
+Approval API, governed Action dispatcher, Task/Run lifecycle, Workflow, retry,
+cancellation, recovery or Evaluation resource. PolicyDecision and Approval now
+have independent tenant-scoped stores; Approval state updates use compare-and-swap.
+These stores are not yet connected to a single decision/audit-before-side-effect
+transaction. `task_id` and `run_id` remain correlation references only. An
+AuditEvent carrying `policy_decision_id` or `approval_id` does not by itself
+prove that the related fact was persisted.
 
 ## Legacy JSONL migration
 

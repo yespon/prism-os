@@ -36,6 +36,8 @@
 
 ## 数据与兼容
 
+当前已建立 Decision/Approval 的独立表、租户范围读取与 Approval CAS，迁移接在 P0 唯一 head 后。关键 Decision 与 Audit 的同事务写入、审批授权接口和受控外部提交仍待实施，不能将独立表视为完成的治理闭环。
+
 新增 PolicyDecision、Approval 与副作用提交标识的最小持久化表；字段及索引由独立迁移接在唯一 Alembic head 后。查询必须带 tenant。关键 Policy/Audit 使用同一 session 和事务；P0 Audit repository 可在不破坏既有 append API 的前提下增加事务内写入方法。审批更新使用受影响行数或版本字段做并发控制。
 
 Gateway JSONL 和 `terminal_audit_logs` 继续读写；平台 Audit 为纳管路径的关键事实。兼容双写失败记录在可重放投递表，包含目的地、原事件 ID、重试计数和错误类别，不保存 Secret。关闭租户/Action 开关后仍走旧路径；平台记录保留供审计，不能反向删除已发生的 Action。
