@@ -1445,6 +1445,7 @@ async def diagnose_incident(
         select(CustomAgent).where(
             CustomAgent.id == agent_id,
             CustomAgent.tenant_id == tenant_id,
+            CustomAgent.enabled.is_(True),
             (CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared")
         )
     )

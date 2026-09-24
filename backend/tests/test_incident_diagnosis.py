@@ -140,6 +140,13 @@ class TestIncidentDiagnosis:
                 name="other-diagnoser",
                 system_prompt="Other agent system prompt",
             )
+            cross_tenant_agent = CustomAgent(
+                id="agent-tenant-b",
+                tenant_id="tenant-b",
+                user_id="tenant-shared",
+                name="tenant-b-diagnoser",
+                system_prompt="Other tenant agent system prompt",
+            )
 
             # 2. Create Alert Source
             source = AlertSource(
@@ -191,7 +198,7 @@ class TestIncidentDiagnosis:
                 signal_id="sig-1",
             )
 
-            session.add_all([private_agent, shared_agent, other_agent, source, incident, signal, raw_alert, link])
+            session.add_all([private_agent, shared_agent, other_agent, cross_tenant_agent, source, incident, signal, raw_alert, link])
             await session.commit()
 
     def test_diagnose_default_agent(self, test_session_factory, client, mock_langgraph):
@@ -269,6 +276,36 @@ class TestIncidentDiagnosis:
             # Should return 400 Bad Request / Permission Denied
             assert response.status_code == 400
             assert "permission denied" in response.json()["detail"]
+
+    def test_diagnose_cross_tenant_agent_is_rejected_before_run(self, test_session_factory, client, mock_langgraph):
+        asyncio.run(self._setup_data(test_session_factory))
+
+        response = client.post(
+            "/api/incidents/incident-1/diagnose?agent_id=agent-tenant-b",
+            headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+        )
+        assert response.status_code == 400
+        mock_langgraph.threads.create.assert_not_awaited()
+
+    def test_diagnose_disabled_agent_is_rejected_before_run(self, test_session_factory, client, mock_langgraph):
+        asyncio.run(self._setup_data(test_session_factory))
+
+        async def disable_agent():
+            async with test_session_factory() as session:
+                agent = await session.get(CustomAgent, "agent-shared")
+                agent.enabled = False
+                session.add(agent)
+                await session.commit()
+
+        asyncio.run(disable_agent())
+
+        response = client.post(
+            "/api/incidents/incident-1/diagnose",
+            headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+        )
+        assert response.status_code == 400
+        assert "not found or permission denied" in response.json()["detail"]
+        mock_langgraph.threads.create.assert_not_awaited()
 
     def test_diagnose_stream_failure_handling(self, test_session_factory, client, mock_langgraph):
         asyncio.run(self._setup_data(test_session_factory))
