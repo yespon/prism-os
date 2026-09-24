@@ -17,7 +17,7 @@ def test_submission_migration_round_trip(tmp_path) -> None:
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         assert "platform_action_submissions" in tables
         assert "platform_policy_decisions" in tables
-        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "j4d5e6f7g8h9"
+        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "k5e6f7g8h9i0"
     command.downgrade(config, "i3c4d5e6f7g8")
     with sqlite3.connect(db_path) as connection:
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}

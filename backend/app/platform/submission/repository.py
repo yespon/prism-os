@@ -11,6 +11,8 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.governance import PlatformActionSubmissionRecord, PlatformApprovalRecord, PlatformAuditEventRecord, PlatformPolicyDecisionRecord
+from app.platform.audit.legacy_delivery import LegacyAuditDeliveryOutbox
+from app.platform.audit.repository import AuditEventRepository
 from app.platform.contracts import Approval, AuditEvent, PolicyDecision
 from deerflow.database.session import get_session_factory
 
@@ -172,7 +174,8 @@ class ActionSubmissionRepository:
 
     async def mark_submitted(
         self, tenant_id: str, decision_id: str, *, ticket_id: str,
-        provider: str, ticket_url: str | None = None, at: datetime | None = None,
+        provider: str, result_audit: AuditEvent, ticket_url: str | None = None,
+        at: datetime | None = None,
     ) -> SubmissionFact:
         instant = self._at(at)
         if not ticket_id.strip() or not provider.strip():
@@ -185,6 +188,24 @@ class ActionSubmissionRepository:
             row = (await session.exec(statement)).one_or_none()
             if row is None or row.status != "unknown":
                 raise SubmissionConflict("submission was not claimed or already completed")
+            decision_row = await session.get(PlatformPolicyDecisionRecord, decision_id)
+            if decision_row is None or decision_row.tenant_id != tenant_id:
+                raise SubmissionConflict("persisted Policy Decision missing")
+            decision = PolicyDecision.model_validate(decision_row.decision_json)
+            if (
+                result_audit.tenant_id != tenant_id
+                or result_audit.event_type != "action.submitted"
+                or result_audit.action != row.action
+                or result_audit.outcome != "succeeded"
+                or result_audit.execution != decision.execution
+                or result_audit.policy_decision_id != decision_id
+                or result_audit.approval_id != row.approval_id
+                or result_audit.resource_id != decision.resource_id
+                or result_audit.payload != {"ticket_id": ticket_id, "provider": provider}
+            ):
+                raise SubmissionConflict("result AuditEvent does not match submission")
+            await AuditEventRepository.append_in_session(session, result_audit)
+            LegacyAuditDeliveryOutbox.stage(session, result_audit)
             result = await session.exec(
                 update(PlatformActionSubmissionRecord)
                 .where(
@@ -205,3 +226,23 @@ class ActionSubmissionRepository:
                 action=row.action, status="submitted", ticket_id=ticket_id,
                 ticket_url=ticket_url, provider=provider,
             )
+
+
+    async def record_unknown_result(self, tenant_id: str, decision_id: str, event: AuditEvent) -> None:
+        """Record an indeterminate provider result without releasing the reservation."""
+        async with self._session_factory() as session, session.begin():
+            row = (await session.exec(select(PlatformActionSubmissionRecord).where(
+                PlatformActionSubmissionRecord.tenant_id == tenant_id,
+                PlatformActionSubmissionRecord.decision_id == decision_id,
+            ))).one_or_none()
+            decision_row = await session.get(PlatformPolicyDecisionRecord, decision_id)
+            if row is None or row.status != "unknown" or decision_row is None or decision_row.tenant_id != tenant_id:
+                raise SubmissionConflict("unknown submission fact missing")
+            decision = PolicyDecision.model_validate(decision_row.decision_json)
+            if (event.tenant_id != tenant_id or event.event_type != "action.submission_unknown"
+                or event.action != row.action or event.outcome != "pending"
+                or event.execution != decision.execution or event.policy_decision_id != decision_id
+                or event.approval_id != row.approval_id or event.resource_id != decision.resource_id
+                or event.payload != {"reason_code": "provider_result_unknown"}):
+                raise SubmissionConflict("unknown result AuditEvent does not match submission")
+            await AuditEventRepository.append_in_session(session, event)

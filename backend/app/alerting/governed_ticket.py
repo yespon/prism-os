@@ -9,11 +9,12 @@ from typing import Any, Literal
 
 from sqlmodel import select
 
+from app.alerting.legacy_audit_delivery import LegacyAuditDeliveryService
 from app.alerting.ticket_provider import TicketResult, create_ticket, render_ticket_payload
 from app.models.alerting import AlertSource, Incident, IncidentSignalLink, RawAlert, Signal
 from app.platform.approval.repository import ApprovalRepository
 from app.platform.approval.service import ApprovalService
-from app.platform.contracts import ActionContextInput, ExecutionEnvelope, PolicyRequest, hash_action_context
+from app.platform.contracts import ActionContextInput, AuditEvent, ExecutionEnvelope, PolicyRequest, hash_action_context, stable_platform_id
 from app.platform.policy.evaluator import PolicyConfiguration
 from app.platform.policy.service import PolicyService
 from app.platform.submission.repository import ActionSubmissionRepository, SubmissionFact
@@ -100,6 +101,7 @@ class TicketActionAdapter:
         approvals: ApprovalRepository | None = None,
         approval_service: ApprovalService | None = None,
         submissions: ActionSubmissionRepository | None = None,
+        deliveries: LegacyAuditDeliveryService | None = None,
         resolve_target: TargetResolver = resolve_ticket_target,
         check_permission: PermissionCheck = active_requester,
         send_ticket: TicketSender = create_ticket,
@@ -111,6 +113,7 @@ class TicketActionAdapter:
         self._approvals = approvals or ApprovalRepository()
         self._approval_service = approval_service or ApprovalService()
         self._submissions = submissions or ActionSubmissionRepository()
+        self._deliveries = deliveries or LegacyAuditDeliveryService(self._submissions._session_factory)
         self._resolve_target = resolve_target
         self._check_permission = check_permission
         self._send_ticket = send_ticket
@@ -217,20 +220,51 @@ class TicketActionAdapter:
                 idempotency_key=fact.idempotency_key,
             )
         except Exception:
+            unknown_audit = AuditEvent(
+                tenant_id=decision.tenant_id,
+                event_id=stable_platform_id("event", "ticket-result-unknown", decision.decision_id),
+                event_type="action.submission_unknown", action=decision.action,
+                outcome="pending", severity="warning", execution=decision.execution,
+                policy_decision_id=decision.decision_id, approval_id=approval_id,
+                resource_id=decision.resource_id,
+                payload={"reason_code": "provider_result_unknown"}, recorded_at=instant,
+            )
+            try:
+                await self._submissions.record_unknown_result(
+                    decision.tenant_id, decision.decision_id, unknown_audit,
+                )
+            except Exception:
+                # Reservation remains unknown even if result Audit is unavailable.
+                pass
             return TicketActionOutcome(
                 status="unknown", decision_id=decision.decision_id,
                 approval_id=approval_id, idempotency_key=fact.idempotency_key,
             )
+        result_audit = AuditEvent(
+            tenant_id=decision.tenant_id,
+            event_id=stable_platform_id("event", "ticket-submitted", decision.decision_id),
+            event_type="action.submitted", action=decision.action, outcome="succeeded",
+            execution=decision.execution, policy_decision_id=decision.decision_id,
+            approval_id=approval_id, resource_id=decision.resource_id,
+            payload={"ticket_id": ticket.ticket_id, "provider": ticket.provider},
+            recorded_at=instant,
+        )
         try:
             submitted = await self._submissions.mark_submitted(
                 decision.tenant_id, decision.decision_id, ticket_id=ticket.ticket_id,
                 ticket_url=ticket.ticket_url, provider=ticket.provider, at=instant,
+                result_audit=result_audit,
             )
         except Exception:
             return TicketActionOutcome(
                 status="unknown", decision_id=decision.decision_id,
                 approval_id=approval_id, idempotency_key=fact.idempotency_key,
             )
+        try:
+            await self._deliveries.deliver_event(decision.tenant_id, result_audit.event_id)
+        except Exception:
+            # Pending rows remain durable; replay does not call the ticket provider.
+            pass
         try:
             await self._link_ticket(decision.tenant_id, incident_id, ticket)
         except Exception:

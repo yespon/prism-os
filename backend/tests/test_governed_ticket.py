@@ -3,14 +3,15 @@ from types import SimpleNamespace
 
 import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.alerting.governed_ticket import TicketActionAdapter, TicketTarget
+from app.alerting.legacy_audit_delivery import LegacyAuditDeliveryService
 from app.alerting.ticket_provider import TicketResult
 from app.models import alerting as _alert_models  # noqa: F401
 from app.models import governance as _governance_models  # noqa: F401
-from app.models.alerting import Incident
+from app.models.alerting import Incident, IncidentAction
 from app.platform.approval.repository import ApprovalRepository
 from app.platform.approval.service import ApprovalService
 from app.platform.audit.repository import AuditEventRepository
@@ -41,7 +42,7 @@ async def ticket_setup(tmp_path):
                 "headers": {"Authorization": "Bearer private-secret"}},
         signals=[],
     )
-    state = SimpleNamespace(allowed=True, allowed_sequence=[], calls=[], linked=[])
+    state = SimpleNamespace(allowed=True, allowed_sequence=[], calls=[], linked=[], gateway_events=[])
 
     async def resolve(tenant_id, incident_id):
         assert (tenant_id, incident_id) == ("tenant-a", "incident-1")
@@ -67,6 +68,7 @@ async def ticket_setup(tmp_path):
     decisions = PolicyDecisionRepository(factory)
     approvals = ApprovalRepository(factory)
     submissions = ActionSubmissionRepository(factory)
+    state.delivery = LegacyAuditDeliveryService(factory, gateway_writer=lambda event: state.gateway_events.append(event))
     approval_service = ApprovalService(approvals, decisions, member, tenant)
     policy = PolicyService(PolicyFactWriter(factory), decisions)
     execution = ExecutionEnvelope(
@@ -85,7 +87,7 @@ async def ticket_setup(tmp_path):
             configuration=config, policy=policy, approvals=approvals,
             approval_service=approval_service, submissions=submissions,
             resolve_target=resolve, check_permission=permission,
-            send_ticket=sender, link_ticket=linker,
+            send_ticket=sender, link_ticket=linker, deliveries=state.delivery,
         )
 
     yield adapter, execution, state, approvals, approval_service, decisions, AuditEventRepository(factory), submissions, incident
@@ -132,7 +134,7 @@ async def test_approval_waits_then_consumes_before_single_submission(ticket_setu
 
 @pytest.mark.anyio
 async def test_timeout_stays_unknown_without_automatic_retry(ticket_setup) -> None:
-    make, execution, state, _, _, _, _, submissions, _ = ticket_setup
+    make, execution, state, _, _, _, audits, submissions, _ = ticket_setup
 
     async def timeout(*_args, **kwargs):
         state.calls.append(kwargs["idempotency_key"])
@@ -144,6 +146,8 @@ async def test_timeout_stays_unknown_without_automatic_retry(ticket_setup) -> No
     assert first.status == second.status == "unknown"
     assert len(state.calls) == 1
     assert (await submissions.get("tenant-a", first.decision_id)).status == "unknown"
+    unknown = next(e for e in await audits.list_recent("tenant-a") if e.event_type == "action.submission_unknown")
+    assert unknown.payload == {"reason_code": "provider_result_unknown"}
 
 
 @pytest.mark.anyio
@@ -248,3 +252,66 @@ async def test_rejected_approval_never_submits(ticket_setup) -> None:
     rejected = await adapter.execute(execution, "request-1", "incident-1", at=NOW + timedelta(minutes=2))
     assert rejected.status == "rejected"
     assert state.calls == []
+
+
+@pytest.mark.anyio
+async def test_result_audit_and_legacy_delivery_replay(ticket_setup) -> None:
+    make, execution, state, _, _, _, audits, submissions, _ = ticket_setup
+    def fail_gateway(_event):
+        raise OSError("private-secret: disk unavailable")
+    state.delivery._gateway_writer = fail_gateway
+    outcome = await make("allow").execute(execution, "request-1", "incident-1", at=NOW)
+    assert outcome.status == "submitted" and len(state.calls) == 1
+    events = await audits.list_recent("tenant-a")
+    result = next(event for event in events if event.event_type == "action.submitted")
+    assert result.policy_decision_id == outcome.decision_id
+    assert result.execution == execution
+    assert "private-secret" not in result.model_dump_json()
+    pending = await state.delivery.list_undelivered("tenant-a")
+    assert len(pending) == 1 and pending[0].destination == "gateway_jsonl"
+    assert pending[0].attempts == 1 and pending[0].error_category == "OSError"
+    assert "private-secret" not in str(pending)
+    state.delivery._gateway_writer = lambda event: state.gateway_events.append(event)
+    assert await state.delivery.replay("tenant-a") == 1
+    assert await state.delivery.list_undelivered("tenant-a") == []
+    assert len(state.gateway_events) == 1
+    assert state.gateway_events[0]["event_id"] == result.event_id
+    async with state.delivery._session_factory() as session:
+        action = (await session.exec(select(IncidentAction).where(IncidentAction.id == result.event_id))).one()
+        assert action.action_type == "ticket_created"
+        assert action.action_payload["ticket_id"] == "T-1"
+        assert "private-secret" not in str(action.action_payload)
+    assert (await submissions.get("tenant-a", outcome.decision_id)).status == "submitted"
+    assert len(state.calls) == 1
+
+
+@pytest.mark.anyio
+async def test_replay_is_tenant_scoped_and_never_resubmits_ticket(ticket_setup) -> None:
+    make, execution, state, _, _, _, audits, _, _ = ticket_setup
+    result = await make("allow").execute(execution, "request-1", "incident-1", at=NOW)
+    event = next(e for e in await audits.list_recent("tenant-a") if e.event_type == "action.submitted")
+    assert await state.delivery.replay("tenant-b") == 0
+    assert len(state.calls) == 1
+    assert len(state.gateway_events) == 1
+    assert await state.delivery.replay("tenant-a") == 0
+    assert (await state.delivery.counts("tenant-a"))["delivered"] == 2
+    assert event.policy_decision_id == result.decision_id
+
+
+@pytest.mark.anyio
+async def test_result_audit_failure_keeps_submission_unknown(ticket_setup, monkeypatch) -> None:
+    make, execution, state, _, _, _, audits, submissions, _ = ticket_setup
+    original = AuditEventRepository.append_in_session
+
+    async def fail_result(session, event):
+        if event.event_type == "action.submitted":
+            raise RuntimeError("result audit unavailable")
+        return await original(session, event)
+
+    monkeypatch.setattr(AuditEventRepository, "append_in_session", fail_result)
+    outcome = await make("allow").execute(execution, "request-1", "incident-1", at=NOW)
+    assert outcome.status == "unknown"
+    assert (await submissions.get("tenant-a", outcome.decision_id)).status == "unknown"
+    assert await state.delivery.list_undelivered("tenant-a") == []
+    assert all(e.event_type != "action.submitted" for e in await audits.list_recent("tenant-a"))
+    assert len(state.calls) == 1

@@ -22,11 +22,18 @@
 | 5 | 已新增 AuditEvent 事务内 append 和 `PolicyFactWriter`：Decision、`action.policy_evaluated` AuditEvent、必要时的 pending Approval 同 session 提交；只返回完成信号，不生成可执行 token。 | 三分支和重复写入通过；Decision、Audit、Approval 写入冲突均回滚，孤立 Decision fail closed；目标数据库并发唯一键竞争仍需在集成门复核。 | 4 |
 | 6 | 已实现内部确定性 Policy 服务：按可信配置显式匹配 Action/风险类别，旧 Guardrail/Terminal 结果仅能收紧规则，结果经原子写入单元持久化；尚未接入实际 PEP，因此 Prompt 与旧 `fail_closed=False` 的绕过问题留在受控入口处理。 | 三分支、版本、无配置、Provider 超时/异常、风险类别错误、缺失 actor、重复请求及已批准审批不重开均通过；副作用未配置默认拒绝。 | 3、5 |
 | 7 | 已新增 Approval 服务和 Gateway read/approve/reject API：tenant 与审批人取自认证会话，操作时重查租户启用状态、成员角色与原请求者有效身份；内部 consume 在恢复时重查 Decision、context/version、权限与期限，并以 CAS 持久化。pending 由 Policy 服务创建，内部恢复提交已接入工作包 8；可信 Agent Tool 尚未接入。 | 授权、自审批、撤权、停用租户、跨租户、过期、reject、重复审阅、上下文变更与状态冲突测试通过；浏览器身份字段无法覆写会话。实际 Action 恢复/资源授权及部署数据库并发仍待工作包 8/集成门。 | 4–6 |
-| 8 | 已新增提交事实表与唯一迁移、本地稳定 idempotency key、`not_submitted→unknown→submitted` CAS，以及默认关闭的 Agent→AIOps 工单内部 Adapter。Adapter 重查租户 Incident、启用的来源配置、请求者权限和 payload/目标摘要；审批恢复先消费，再占位并调用现有 webhook。Provider 可传幂等键，但接收端未承诺去重；超时或结果写入失败保留 unknown，不自动重发。人工工单与规则 `auto_ticket` 仍是独立旧路径。 | 并发占位只有一个成功；allow、deny、审批等待/恢复、撤权、上下文变化、Audit 故障和超时反例通过；真实 Incident→AlertSource 解析及迁移升降级通过。Agent Tool 尚未注册，可信入口与真实已认证请求→Tool/Provider 的集成门留给工作包 10–11；结果审计和兼容双写留给工作包 9。 | 1、5–7 |
-| 9 | 兼容双写：Gateway JSONL、Terminal 审计与平台 Audit 对受控路径双写；非关键目标失败记录投递表/重放标识和指标，避免覆盖主事实。 | 旧读路径仍可读；双写故障可见、可重放且不含 Secret；关闭开关恢复旧路径。 | 5、8 |
+| 8 | 已新增提交事实表与唯一迁移、本地稳定 idempotency key、`not_submitted→unknown→submitted` CAS，以及默认关闭的 Agent→AIOps 工单内部 Adapter。Adapter 重查租户 Incident、启用的来源配置、请求者权限和 payload/目标摘要；审批恢复先消费，再占位并调用现有 webhook。Provider 可传幂等键，但接收端未承诺去重；超时或结果写入失败保留 unknown，不自动重发。人工工单与规则 `auto_ticket` 仍是独立旧路径。 | 并发占位只有一个成功；allow、deny、审批等待/恢复、撤权、上下文变化、Audit 故障和超时反例通过；真实 Incident→AlertSource 解析及迁移升降级通过。Agent Tool 尚未注册，可信入口与真实已认证请求→Tool/Provider 的集成门留给工作包 10–11；结果审计和兼容双写已在工作包 9 完成。 | 1、5–7 |
+| 9 | 已完成当前 `ticket.create` 的兼容投递：提交事实、`action.submitted` 关键 Audit 与无 payload 投递引用同事务落库；再投递 Gateway JSONL 和 IncidentAction。失败保留原事件 ID、目的地、次数和错误类别，可按租户重放及查看计数，不重放外部建单。Provider 超时另记 `action.submission_unknown`，提交状态仍为 unknown。Terminal 当前未纳管，原有 `terminal_audit_logs` 路径保持可读写，不生成虚假的工单命令记录。 | 受控工单的旧时间线仍可读；JSONL 失败不回滚提交事实，重放成功且不重复建单；跨租户重放隔离、Secret 不入 Audit/投递表；迁移升降级及禁用 Adapter 不触发外部调用验证通过。实际 Gateway JSONL 文件锁与目标部署数据库并发仍在集成门复核。 | 5、8 |
 | 10 | 可信执行入口：Gateway 绑定会话 tenant/user、Agent 可见性/启用与线程 Agent；LangGraph 仅接受已验证上下文或签名能力，运行时拒绝裸浏览器自报身份。Nginx 路由、旧线程不变和回退路径一并验证。 | 跨租户、停用、伪造 context、重放能力、旧线程改 Agent 均在实际 Tool 执行前拒绝。 | 1、7–8 |
 | 11 | AIOps Golden Scenario 与最小 UI：实际诊断 Action 覆盖 allow、deny、审批、reject/expire、Policy/Audit 故障；界面从平台事实显示等待/结果，不以聊天消息推断。单租户、单 Action 开关放量。 | 成功、失败、撤权、关闭开关回退；操作员可从 Action 追到 tenant、actor/workload、run、decision、approval、policy version 和 result。 | 2–10 |
 | 12 | M1 四门复核：Contract、Golden Scenario、Quality、Migration，另做副作用/Secret/tenant Security Gate；记录测试通过、跳过、历史失败及部署回滚证据。 | 仅当[批准路线的 M1 退出门](../specs/2026-08-08-prismos-capability-roadmap-design.md)全部满足时宣布 M1 完成；此前不启动 M2 生命周期。 | 1–11 |
+
+
+## 工作包 9 运维核对
+
+- 旧审计投递按 `tenant_id` 查询 `platform_legacy_audit_deliveries`，关注 `pending`/`failed` 数量、`attempts`、`error_category`；投递行只存原平台事件引用，不存 webhook 配置、Header 或响应正文。
+- 在 `backend` 目录执行 `uv run python -m scripts.replay_legacy_audit --tenant <tenant-id>` 可重放最多 100 条；可用 `--limit` 调整上限。重放只更新 Gateway JSONL 与 IncidentAction，不再次调用工单 Provider。
+- `unknown` 提交状态不能用该命令补发工单，应先人工核对外部 Provider；结果 Audit 写失败时也保持 unknown。当前 Adapter 默认关闭且尚未注册为 Agent Tool。
 
 ## 实施规则
 

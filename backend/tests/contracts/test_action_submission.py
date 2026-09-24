@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import governance as _governance_models  # noqa: F401
 from app.platform.approval.repository import ApprovalRepository
 from app.platform.approval.transitions import approve, consume
-from app.platform.contracts import IdentityRef, PolicyRequest
+from app.platform.contracts import AuditEvent, IdentityRef, PolicyRequest, stable_platform_id
 from app.platform.policy.fact_writer import PolicyFactWriter
 from app.platform.submission.repository import ActionSubmissionRepository, SubmissionConflict
 
@@ -52,8 +52,17 @@ async def test_allow_submission_claims_only_one_external_attempt(submission_setu
     assert sorted(results) == [False, True]
     assert (await submissions.get("tenant-a", decision.decision_id)).status == "unknown"
     assert await submissions.claim("tenant-a", decision.decision_id, at=NOW + timedelta(seconds=2)) is False
+    result_audit = AuditEvent(
+        tenant_id=decision.tenant_id,
+        event_id=stable_platform_id("event", "ticket-submitted", decision.decision_id),
+        event_type="action.submitted", action=decision.action, outcome="succeeded",
+        execution=decision.execution, policy_decision_id=decision.decision_id,
+        resource_id=decision.resource_id, payload={"ticket_id": "T-1", "provider": "webhook"},
+        recorded_at=NOW + timedelta(seconds=3),
+    )
     submitted = await submissions.mark_submitted(
-        "tenant-a", decision.decision_id, ticket_id="T-1", ticket_url="https://tickets/T-1", provider="webhook", at=NOW + timedelta(seconds=3),
+        "tenant-a", decision.decision_id, ticket_id="T-1", ticket_url="https://tickets/T-1",
+        provider="webhook", result_audit=result_audit, at=NOW + timedelta(seconds=3),
     )
     assert submitted.status == "submitted"
     assert submitted.ticket_id == "T-1"
@@ -110,7 +119,7 @@ async def test_unknown_never_reverts_to_not_submitted(submission_setup) -> None:
     await submissions.prepare(decision, at=NOW)
     assert await submissions.claim("tenant-a", decision.decision_id, at=NOW + timedelta(seconds=2))
     with pytest.raises(SubmissionConflict):
-        await submissions.mark_submitted("tenant-a", decision.decision_id, ticket_id="", provider="webhook")
+        await submissions.mark_submitted("tenant-a", decision.decision_id, ticket_id="", provider="webhook", result_audit=audit)
     assert (await submissions.get("tenant-a", decision.decision_id)).status == "unknown"
     assert (await submissions.prepare(decision, at=NOW)).status == "unknown"
 

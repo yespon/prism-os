@@ -90,3 +90,21 @@ class PlatformActionSubmissionRecord(SQLModel, table=True):
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     claimed_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))
     submitted_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))
+
+
+class PlatformLegacyAuditDeliveryRecord(SQLModel, table=True):
+    __tablename__ = "platform_legacy_audit_deliveries"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "event_id", "destination", name="uq_platform_legacy_delivery"),
+        Index("ix_platform_legacy_delivery_tenant_status", "tenant_id", "status"),
+    )
+
+    id: str = Field(sa_column=Column(String(255), primary_key=True))
+    tenant_id: str = Field(sa_column=Column(String(255), nullable=False))
+    event_id: str = Field(sa_column=Column(String(255), ForeignKey("platform_audit_events.id"), nullable=False))
+    destination: str = Field(sa_column=Column(String(64), nullable=False))
+    status: str = Field(sa_column=Column(String(32), nullable=False))
+    attempts: int = Field(default=0, sa_column=Column(Integer, nullable=False))
+    error_category: str | None = Field(default=None, sa_column=Column(String(128), nullable=True))
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))

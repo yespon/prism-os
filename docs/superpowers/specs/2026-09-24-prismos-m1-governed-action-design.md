@@ -36,11 +36,11 @@
 
 ## 数据与兼容
 
-当前已建立 Decision/Approval 的独立表、租户范围读取与 Approval CAS，迁移接在 P0 唯一 head 后。关键 Decision、Audit 与待审批事实已可同事务写入；内部确定性 Policy 求值及基于会话的审批授权接口已实现；默认关闭的内部工单 Adapter 与提交事实已实现，但可信 Agent Tool 注册、结果审计与兼容双写仍待实施，不能视为完成的治理闭环。
+当前已建立 Decision/Approval 的独立表、租户范围读取与 Approval CAS，迁移接在 P0 唯一 head 后。关键 Decision、Audit 与待审批事实已可同事务写入；内部确定性 Policy 求值及基于会话的审批授权接口已实现；默认关闭的内部工单 Adapter、提交事实、结果审计与旧路径投递已实现；可信 Agent Tool 注册仍待实施，不能视为完成的治理闭环。
 
 新增 PolicyDecision、Approval 与副作用提交标识的最小持久化表；字段及索引由独立迁移接在唯一 Alembic head 后。查询必须带 tenant。关键 Policy/Audit 使用同一 session 和事务；P0 Audit repository 可在不破坏既有 append API 的前提下增加事务内写入方法。审批更新使用受影响行数或版本字段做并发控制。
 
-Gateway JSONL 和 `terminal_audit_logs` 继续读写；平台 Audit 为纳管路径的关键事实。兼容双写失败记录在可重放投递表，包含目的地、原事件 ID、重试计数和错误类别，不保存 Secret。关闭租户/Action 开关后仍走旧路径；平台记录保留供审计，不能反向删除已发生的 Action。
+Gateway JSONL、IncidentAction 和 `terminal_audit_logs` 继续读写；平台 Audit 为纳管路径的关键事实。当前受控 `ticket.create` 只向 Gateway JSONL 与 IncidentAction 投递，Terminal 命令尚未纳管，故不生成 Terminal 审计行。兼容双写失败记录在可重放投递表，包含目的地、原事件 ID、重试计数和错误类别，不保存 Secret。关闭租户/Action 开关后仍走旧路径；平台记录保留供审计，不能反向删除已发生的 Action。
 
 ## 小型交互切片
 
@@ -54,7 +54,7 @@ Gateway JSONL 和 `terminal_audit_logs` 继续读写；平台 Audit 为纳管路
 4. **确定性 Policy：** 最小规则先覆盖只读 allow、受控副作用 deny/require_approval 与明确 allow；配置缺失或计算异常 fail closed。Adapter 可读取 Guardrail/Terminal 安全判断，但必须产出有版本的 PolicyDecision。
 5. **Approval 服务：** create/approve/reject/expire/resume，截止时间和 context hash/version 绑定；Gateway 使用认证身份并核验 tenant/授权。Terminal interrupt 只负责等待和展示。
 6. **受控提交：** 决策与关键审计同事务落库后才允许 side effect；记录稳定 idempotency key 和提交状态。注入审计失败、Policy 超时、重复请求、外部超时、权限撤销并断言副作用次数。
-7. **兼容和场景：** Gateway/Terminal 双写失败进入可观测重放；真实 AIOps allow/deny/approval/reject/expire 路径通过，AIOps 禁用时平台契约仍可测。单租户、单 Action 开关先行，逐步扩大。
+7. **兼容和场景：** 当前受控工单的 Gateway/IncidentAction 双写失败进入可观测重放；Terminal 待真实纳管时再实现对应双写；真实 AIOps allow/deny/approval/reject/expire 路径通过，AIOps 禁用时平台契约仍可测。单租户、单 Action 开关先行，逐步扩大。
 8. **退出门：** 检查所有纳管 Action 的持久 Decision 及 tenant/actor/workload/run/approval/policy version/result 追溯，新增契约全绿，历史失败不增加，迁移及回滚、故障演练通过；只有此时宣告 M1 完成。
 
 每两周评审可运行演示、失败基线、完成率与容量。若 P0 以后的安全门受阻，延后交互切片放量，不提前启动 M2 Task/Run 生命周期。

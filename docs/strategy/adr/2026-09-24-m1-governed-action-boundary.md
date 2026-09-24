@@ -12,7 +12,7 @@ P0 已冻结九个公开符号及 AuditEvent 持久化，但 `policy_decision_id
 
 1. `app.platform` 拥有领域无关的 `PolicyRequest`、`PolicyDecision`、`Approval` 契约及服务。`ExecutionEnvelope`、AuditEvent 和 v1 schema 沿用 P0，不另建 ID 或生命周期模型。M1 的 task/run 继续只表示关联 ID。
 2. 可信入口先从认证会话解析 tenant、actor 和成员关系，再构建不可由浏览器覆写的 ExecutionEnvelope。Adapter 将实际 Action 名、资源与风险分类映射成 PolicyRequest；Policy 只决定 `allow`、`deny`、`require_approval`，不执行动作。
-3. 决策以独立版本和请求内容摘要标识。纳管副作用在执行前，必须将 PolicyDecision 与关键 AuditEvent 在同一个数据库事务中提交；任一写入失败则拒绝执行。`require_approval` 还须持久化待审批事实。JSONL/Terminal 兼容双写在主事务成功后进行，失败进入可观测的重放队列，不得阻断或改写已提交的平台事实。
+3. 决策以独立版本和请求内容摘要标识。纳管副作用在执行前，必须将 PolicyDecision 与关键 AuditEvent 在同一个数据库事务中提交；任一写入失败则拒绝执行。`require_approval` 还须持久化待审批事实。当前工单的 JSONL/IncidentAction 兼容投递在主事务成功后进行，投递失败进入可观测的重放队列，不得阻断或改写已提交的平台事实。Terminal 待命令真正纳管后再接入对应双写。
 4. Approval 有明确截止时间、tenant、actor/approver、decision ID、policy version、context hash 和状态。approve/reject/expire 是条件更新；同一审批只允许一次有效终结。resume 时重新核对租户、当前权限、未过期状态、decision version 与完整上下文摘要。批准只授权同一动作上下文，不能授权变更后的参数或目标。
 5. 副作用由唯一受控执行入口提交，提交标识/idempotency key 与 decision、approval 关联。外部调用结果区分未提交、已提交、提交状态未知；未知状态不自动重放。Adapter 必须证明真实调用不能绕开该入口。只读动作的降级规则必须由显式 Risk Policy 决定；M1 默认也拒绝不确定状态。
 6. Terminal 的安全规则和 Guardrail Provider 可作为 Policy 输入或 PEP 适配器，但不能单独充当平台决策事实。现有 Terminal interrupt 可作为 UI 暂停信号，持久审批状态以平台记录为准。旧路径在功能开关关闭时保持可用；打开开关仅纳管经过端到端验证的租户与 Action。
