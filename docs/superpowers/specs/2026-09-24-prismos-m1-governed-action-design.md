@@ -13,6 +13,8 @@
 
 ## 当前实证与实施前置
 
+完整调用图与接入风险见[入口与 Action 调用图](../../strategy/2026-09-24-m1-entry-action-call-map.md)。其中 `terminal.execute` fixture 不构成真实 AIOps→Terminal 路径证据；普通 Agent 的 `tool_groups` 当前未被执行层过滤，必须先修复该入口门。
+
 | 现有部件 | 事实 | 需要补的边界 |
 | --- | --- | --- |
 | `backend/packages/harness/deerflow/guardrails/provider.py` | `GuardrailDecision.allow` 为布尔值，请求不带 tenant/ExecutionEnvelope | 平台三分支 Policy 契约与可信身份 Adapter |
