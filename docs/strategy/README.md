@@ -9,6 +9,7 @@
 | [agentos-whitepaper.md](./agentos-whitepaper.md) | 正式重构版 | AgentOS 的定位、能力边界、架构原则、治理模型和长期演进方向；当前战略基线。 |
 | [agentos-prismos-gap-roadmap-review.md](./agentos-prismos-gap-roadmap-review.md) | 校验报告 | 对白皮书与 PrismOS 当前实现进行双向审查，记录可行性、逻辑风险、差距矩阵和推荐路线。 |
 | [governed-agent-platform-roadmap.md](./governed-agent-platform-roadmap.md) | 推荐路线草案 | 以能力基线和产品楔入为核心的版本化路线草案，用于拆分里程碑。 |
+| [2026-09-24-octop-research-adoption-plan.md](./2026-09-24-octop-research-adoption-plan.md) | 外部项目调研与实施建议 | 基于 Octop 固定提交的代码调研，将可借鉴能力映射到 PrismOS 已批准路线、退出门和近期迭代。 |
 | [agentos-whitepaper-original.md](./agentos-whitepaper-original.md) | 原始草稿归档副本 | 保留原始生成稿的正文内容；仅做 Markdown 行尾空白规范化，供追溯决策来源；不作为实施规范。 |
 
 ## 使用约定
