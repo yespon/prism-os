@@ -41,6 +41,15 @@ class AuditEventRepository:
         if record.event_json != event.model_dump(mode="json"):
             raise ValueError("event_id already exists with different payload")
 
+    @classmethod
+    async def append_in_session(cls, session: AsyncSession, event: AuditEvent) -> None:
+        """Stage an event in the caller's transaction without committing it."""
+        existing = await session.get(PlatformAuditEventRecord, event.event_id)
+        if existing is not None:
+            cls._assert_same_event(existing, event)
+            return
+        session.add(cls._record(event))
+
     async def append(self, event: AuditEvent) -> None:
         async with self._session_factory() as session:
             existing = await session.get(PlatformAuditEventRecord, event.event_id)

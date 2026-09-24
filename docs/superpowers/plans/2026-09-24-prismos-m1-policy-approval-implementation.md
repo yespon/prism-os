@@ -7,7 +7,7 @@
 ## 已完成的起点
 
 - P0 九个公开契约、AuditEvent 表与 JSONL dry-run 兼容工具已通过[契约基线门](../../../backend/docs/PLATFORM_CONTRACTS.md)。
-- M1 已公开 `ActionContextInput`、`hash_action_context`、`PolicyRequest`、三分支 `PolicyDecision` 与 `Approval` 契约；纯状态转换、Decision/Approval 独立持久化和 Approval CAS 也已实现。决策与关键 Audit 尚未同事务提交，不能作为已经生效的治理执行服务使用。
+- M1 已公开 `ActionContextInput`、`hash_action_context`、`PolicyRequest`、三分支 `PolicyDecision` 与 `Approval` 契约；纯状态转换、Decision/Approval 独立持久化和 Approval CAS 也已实现。决策、关键 Audit 与待审批事实已可同事务提交；确定性 Policy、授权接口及受控 Action 入口尚未接入，不能作为已经生效的治理执行服务使用。
 - AIOps 诊断 Gateway 已拒绝停用、跨租户 Agent；Lead Agent 已拒绝显式不可用 Agent 的默认回退。直通 LangGraph 的浏览器身份问题仍待处理。
 - 当前 Golden fixture 的 `terminal.execute` 是 Schema 示例，未证明诊断 Agent 可以调用 SSH Terminal。DB 自定义 Agent 的 `tool_groups` 现已在 MCP 服务器发现前强制过滤；内置/社区工具还需独立治理。
 
@@ -19,7 +19,7 @@
 | 2 | 已实现 MCP 服务器精确选择：DB Agent 空数组保留为空且不加载 MCP，非空选择在 SDK 发现和 OAuth 前按服务器名过滤；缓存按 tenant/user/服务器集合分开，deferred tool_search 只含所选工具。默认 Agent/未指定组仍走旧行为；内置/社区工具不受 MCP 选择约束。 | 空配置、未知服务器、同名前缀服务器、缓存刷新、Agent 传参和内置工具兼容测试通过；旧 DB 空数组失去此前隐式 MCP 权限，需在试点放量前核对现有 Agent。 | 1 |
 | 3 | M1 契约已增加 canonical Action context hash 和拒绝敏感键的临时输入 DTO，公开 Policy/Approval 事实模型及五个增量符号；原 P0 九符号保持兼容。首个受控 Action 命名为 `ticket.create`，仅用于后续有界 Adapter。 | 三分支、tenant、UTC、过期、上下文变化、非规范 JSON、敏感键及公开导出测试通过；持久服务仍待交付。 | 1–2 |
 | 4 | 已新增唯一 Alembic 迁移、Decision/Approval SQLModel 投影、tenant 范围查询、Decision 幂等与 Approval 版本 CAS；Approval 创建须绑定已持久化的 `require_approval` Decision。 | 临时 SQLite 升级/降级/再升级、重复写入、跨租户和并发 approve/reject 测试通过；目标部署数据库及服务重启场景在集成门复核。 | 3 |
-| 5 | 关键写入单元：扩展 AuditEvent repository 的事务内 append，PolicyDecision 与 `action.policy_evaluated` AuditEvent 同 session 提交；`require_approval` 同事务建 pending Approval；事务失败不得返回可执行 token。 | 决策、审计、审批任一写入失败全回滚；无外部调用；唯一键竞争返回同一事实或冲突。 | 4 |
+| 5 | 已新增 AuditEvent 事务内 append 和 `PolicyFactWriter`：Decision、`action.policy_evaluated` AuditEvent、必要时的 pending Approval 同 session 提交；只返回完成信号，不生成可执行 token。 | 三分支和重复写入通过；Decision、Audit、Approval 写入冲突均回滚，孤立 Decision fail closed；目标数据库并发唯一键竞争仍需在集成门复核。 | 4 |
 | 6 | 确定性 Policy 服务：最小规则对只读/副作用分别求值，映射 Guardrail/Terminal 安全种子；不允许 Prompt、默认 allow 或 `fail_closed=False` 绕开纳管 Action。 | allow/deny/require_approval、策略版本、无配置、Provider 超时/异常、风险类别错误；副作用默认拒绝。 | 3、5 |
 | 7 | Approval API/服务：Gateway 从会话取审批人和 tenant，核验角色、原请求者/权限、context hash/version 与截止时间；状态从数据库读取，纯转换在 CAS 事务内应用。 | create/approve/reject/expire/resume、重复操作、并发、撤权、跨租户、过期与版本变化；浏览器提交的身份字段不起授权作用。 | 4–6 |
 | 8 | 受控提交标识：副作用 Adapter 有唯一 idempotency key 和 `not_submitted|submitted|unknown` 提交事实；恢复消费 Approval 后再重查权限并提交。外部超时进入 unknown，不自动重放。 | 重复请求只产生一次外部提交；Audit/Policy 故障提交次数零；超时不伪装成功，故障可人工核查。 | 1、5–7 |
