@@ -80,10 +80,12 @@ The AIOps values are extension data and do not define core required fields.
 
 ## Explicit non-capabilities
 
-The current checkout does not implement an authenticated Approval API,
-governed Action dispatcher, Task/Run lifecycle, Workflow, retry,
+The current checkout does not implement a governed Action dispatcher,
+Task/Run lifecycle, Workflow, retry,
 cancellation, recovery or Evaluation resource. PolicyDecision and Approval now
-have independent tenant-scoped stores; Approval state updates use compare-and-swap.
+have independent tenant-scoped stores; Approval state updates use compare-and-swap. The Gateway Approval API reads
+current tenant status and membership for approve/reject; internal resume checks the stored
+context and deadline but is not yet connected to an Action dispatcher.
 The internal `PolicyFactWriter` records a Decision, its critical AuditEvent,
 and an optional pending Approval in one transaction. It is not connected to an
 authenticated Action dispatcher. The internal evaluator uses explicit versioned

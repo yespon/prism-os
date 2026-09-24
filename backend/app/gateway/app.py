@@ -12,6 +12,7 @@ from app.gateway.routers import (
     admin,
     agents,
     announcements,
+    approvals,
     artifacts,
     channels,
     files,
@@ -309,6 +310,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Agents API is mounted at /api/agents
     app.include_router(agents.router)
+
+    # Approval API reads tenant-scoped durable facts; review uses current membership.
+    app.include_router(approvals.router)
 
     # Auth helpers (bootstrap-status, setup-bootstrap-admin)
     app.include_router(auth_routes.router)
