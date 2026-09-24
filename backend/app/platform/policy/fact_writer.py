@@ -60,8 +60,17 @@ class PolicyFactWriter:
         AuditEventRepository._assert_same_event(audit_row, audit)
         if approval is not None:
             approval_row = await session.get(PlatformApprovalRecord, approval.approval_id)
-            if approval_row is None or approval_row.approval_json != approval.model_dump(mode="json"):
-                raise ValueError("Policy Decision exists without matching pending Approval")
+            if approval_row is None:
+                raise ValueError("Policy Decision exists without matching Approval")
+            stored = Approval.model_validate(approval_row.approval_json)
+            if (
+                stored.approval_id != approval.approval_id
+                or not stored.binds(decision)
+                or stored.requester != approval.requester
+                or stored.created_at != approval.created_at
+                or stored.expires_at != approval.expires_at
+            ):
+                raise ValueError("Policy Decision exists without matching Approval")
         return True
 
     async def record(self, decision: PolicyDecision, audit: AuditEvent, approval: Approval | None = None) -> None:
