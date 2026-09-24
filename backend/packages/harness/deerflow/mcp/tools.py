@@ -54,16 +54,25 @@ def _make_sync_tool_wrapper(coro: Callable[..., Any], tool_name: str) -> Callabl
     return sync_wrapper
 
 
-async def get_mcp_tools(user_id: str | None = None, tenant_id: str | None = None) -> list[BaseTool]:
+async def get_mcp_tools(
+    user_id: str | None = None,
+    tenant_id: str | None = None,
+    server_names: frozenset[str] | None = None,
+) -> list[BaseTool]:
     """Get all tools from enabled MCP servers.
 
     Args:
         user_id: Current user ID. Defaults to contextvars value if not provided.
         tenant_id: Current tenant ID. Defaults to contextvars value if not provided.
+        server_names: Exact MCP server names allowed for this Agent. None keeps
+            the legacy unrestricted caller behavior; an empty set loads none.
 
     Returns:
         List of LangChain tools from all enabled MCP servers.
     """
+    if server_names is not None and not server_names:
+        return []
+
     try:
         from langchain_mcp_adapters.client import MultiServerMCPClient
     except ImportError:
@@ -85,6 +94,8 @@ async def get_mcp_tools(user_id: str | None = None, tenant_id: str | None = None
 
     # Get MCP servers from the extensions payload
     mcp_servers = ext_payload.get("mcpServers") or ext_payload.get("mcp_servers", {})
+    if server_names is not None:
+        mcp_servers = {name: config for name, config in mcp_servers.items() if name in server_names}
 
     if not mcp_servers:
         logger.info("No MCP servers configured in database")

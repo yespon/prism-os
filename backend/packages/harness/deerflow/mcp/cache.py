@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 _MCP_CACHE_TTL_SECONDS = int(os.getenv("MCP_CACHE_TTL_SECONDS", "300"))
 
-_mcp_tools_cache: dict[str, list[BaseTool]] = {}
-_cache_initialized: dict[str, float] = {}
+_mcp_tools_cache: dict[tuple[str, str, tuple[str, ...] | None], list[BaseTool]] = {}
+_cache_initialized: dict[tuple[str, str, tuple[str, ...] | None], float] = {}
 _initialization_lock = asyncio.Lock()
 _last_cache_version: int = 0
 
@@ -42,11 +42,19 @@ def _bump_cache_version() -> None:
         f.write(str(new_version))
 
 
-def _make_cache_key(tenant_id: str | None, user_id: str | None) -> str:
-    return f"{tenant_id or '__no_tenant__'}:{user_id or '__no_user__'}"
+def _make_cache_key(
+    tenant_id: str | None,
+    user_id: str | None,
+    server_names: frozenset[str] | None = None,
+) -> tuple[str, str, tuple[str, ...] | None]:
+    return (
+        tenant_id or "__no_tenant__",
+        user_id or "__no_user__",
+        None if server_names is None else tuple(sorted(server_names)),
+    )
 
 
-def _is_cache_valid(cache_key: str) -> bool:
+def _is_cache_valid(cache_key: tuple[str, str, tuple[str, ...] | None]) -> bool:
     if cache_key not in _cache_initialized:
         return False
     elapsed = time.time() - _cache_initialized[cache_key]
@@ -66,13 +74,17 @@ def _check_cross_process_invalidation() -> None:
         )
 
 
-async def initialize_mcp_tools(tenant_id: str | None = None, user_id: str | None = None) -> list[BaseTool]:
-    """Initialize and cache MCP tools for a specific tenant+user.
+async def initialize_mcp_tools(
+    tenant_id: str | None = None,
+    user_id: str | None = None,
+    server_names: frozenset[str] | None = None,
+) -> list[BaseTool]:
+    """Initialize MCP tools for one tenant, user, and exact server selection.
 
     Returns:
-        List of LangChain tools from all enabled MCP servers.
+        Tools from selected enabled servers, or all enabled servers for None.
     """
-    cache_key = _make_cache_key(tenant_id, user_id)
+    cache_key = _make_cache_key(tenant_id, user_id, server_names)
 
     async with _initialization_lock:
         if _is_cache_valid(cache_key):
@@ -81,7 +93,7 @@ async def initialize_mcp_tools(tenant_id: str | None = None, user_id: str | None
         from deerflow.mcp.tools import get_mcp_tools
 
         logger.info(f"Initializing MCP tools for cache key: {cache_key}")
-        tools = await get_mcp_tools(user_id=user_id, tenant_id=tenant_id)
+        tools = await get_mcp_tools(user_id=user_id, tenant_id=tenant_id, server_names=server_names)
         _mcp_tools_cache[cache_key] = tools
         _cache_initialized[cache_key] = time.time()
         logger.info(f"MCP tools initialized for {cache_key}: {len(tools)} tool(s) loaded")
@@ -89,30 +101,34 @@ async def initialize_mcp_tools(tenant_id: str | None = None, user_id: str | None
         return tools
 
 
-def _lazy_init_tools(tenant_id: str | None, user_id: str | None) -> None:
+def _lazy_init_tools(
+    tenant_id: str | None,
+    user_id: str | None,
+    server_names: frozenset[str] | None = None,
+) -> None:
     """Run async initialization from sync context."""
-    cache_key = _make_cache_key(tenant_id, user_id)
+    cache_key = _make_cache_key(tenant_id, user_id, server_names)
     try:
         loop = asyncio.get_event_loop()
         if loop.is_running():
             import concurrent.futures
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(
-                    asyncio.run, initialize_mcp_tools(tenant_id, user_id)
+                    asyncio.run, initialize_mcp_tools(tenant_id, user_id, server_names)
                 )
                 future.result()
         else:
-            loop.run_until_complete(initialize_mcp_tools(tenant_id, user_id))
+            loop.run_until_complete(initialize_mcp_tools(tenant_id, user_id, server_names))
     except RuntimeError:
-        asyncio.run(initialize_mcp_tools(tenant_id, user_id))
+        asyncio.run(initialize_mcp_tools(tenant_id, user_id, server_names))
     except Exception as e:
         logger.error(f"Failed to lazy-initialize MCP tools for {cache_key}: {e}", exc_info=True)
         _cache_initialized[cache_key] = time.time()
         _mcp_tools_cache[cache_key] = []
 
 
-def get_cached_mcp_tools() -> list[BaseTool]:
-    """Get cached MCP tools with lazy initialization, scoped to current tenant+user.
+def get_cached_mcp_tools(server_names: frozenset[str] | None = None) -> list[BaseTool]:
+    """Get cached MCP tools for the current tenant, user, and server selection.
 
     Cache entries expire after _MCP_CACHE_TTL_SECONDS (default 300s). When expired,
     the next request triggers a fresh load from the database. Cross-process
@@ -120,15 +136,17 @@ def get_cached_mcp_tools() -> list[BaseTool]:
     directory — when the Gateway process writes a new version after MCP config
     changes, the LangGraph Server picks it up on the next request.
     """
+    if server_names is not None and not server_names:
+        return []
     tenant_id = get_current_tenant_id()
     user_id = get_current_user_id()
-    cache_key = _make_cache_key(tenant_id, user_id)
+    cache_key = _make_cache_key(tenant_id, user_id, server_names)
 
     _check_cross_process_invalidation()
 
     if not _is_cache_valid(cache_key):
         logger.info(f"MCP tools cache expired or not initialized for {cache_key}, performing lazy initialization...")
-        _lazy_init_tools(tenant_id, user_id)
+        _lazy_init_tools(tenant_id, user_id, server_names)
 
     return _mcp_tools_cache.get(cache_key, [])
 

@@ -44,7 +44,8 @@ def get_available_tools(
     conditionally-enabled subagent/vision tools, and MCP tools.
 
     Args:
-        groups: Ignored — kept for API compatibility.
+        groups: Exact MCP server names selected for this Agent. None preserves
+            unrestricted legacy callers; an empty list grants no MCP tools.
         include_mcp: Whether to include tools from MCP servers (default: True).
         model_name: Optional model name to determine if vision tools should be included.
         subagent_enabled: Whether to include subagent tools (task).
@@ -82,11 +83,13 @@ def get_available_tools(
     mcp_tools = []
     # Reset deferred registry upfront to prevent stale state from previous calls
     reset_deferred_registry()
-    if include_mcp:
+    if include_mcp and (groups is None or groups):
         try:
             from deerflow.mcp.cache import get_cached_mcp_tools
 
-            mcp_tools = get_cached_mcp_tools()
+            mcp_tools = get_cached_mcp_tools(
+                server_names=None if groups is None else frozenset(groups)
+            )
             if mcp_tools:
                 logger.info(f"Using {len(mcp_tools)} cached MCP tool(s)")
 

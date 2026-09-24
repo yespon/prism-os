@@ -19,7 +19,7 @@ POST /incidents/{id}/diagnose
 代码位置：`backend/app/gateway/routers/alerts.py` 的 `diagnose_incident`、`_run_diagnosis_background_task`；`backend/app/alerting/diagnosis_helper.py`；`backend/packages/harness/deerflow/agents/lead_agent/agent.py`；`backend/packages/harness/deerflow/tools/tools.py`。
 
 - Gateway 诊断入口校验会话、tenant、Agent 所有者/共享范围；本分支已补 `CustomAgent.enabled` 过滤和跨租户/停用反例测试。Lead Agent 对显式指定但不可用的 Agent 也已拒绝默认回退。背景任务把 tenant/user/agent 写入 LangGraph context；这组字段在直通 LangGraph 浏览器路径中仍不能视为可信授权。
-- `get_available_tools(groups=...)` 的函数注释明确表示 `groups` 被忽略；普通自定义 Agent 获得沙箱内置工具、社区工具和已缓存 MCP 工具。`diagnosis_helper.py` 中的工具分组提示是 Prompt，不是执行授权。
+- 此前 `get_available_tools(groups=...)` 忽略 `groups`；本分支已让 DB 自定义 Agent 的 `tool_groups` 按 MCP 服务器精确名称过滤，并按所选服务器隔离缓存和 deferred tool_search。空数组现在表示不加载 MCP；未指定组的默认/旧调用者继续使用原有 MCP 集合。内置沙箱和社区工具仍可用，`tool_groups` 不能替代对 `bash`、`write_file` 等 Action 的 Policy。`diagnosis_helper.py` 中的工具分组提示依然只是 Prompt。
 - Lead Agent 的 GuardrailMiddleware 只在 `guardrails.enabled` 且配置 Provider 时装配；当前 Provider 只返回布尔 allow/deny，没有平台 PolicyDecision 或持久审批。
 - `agent_name == "terminal-agent"` 才进入内置 Terminal Agent 分支。普通 AIOps 自定义 Agent 并不因 Golden fixture 中的 `terminal.execute` 获得 SSH Terminal 工具。因此 fixture 只证明平台 Schema 可容纳该 Action，**不是实际 AIOps Agent→Terminal 执行证据**。
 
@@ -49,7 +49,7 @@ POST /terminal/invoke（会话 tenant/user）
 
 ## M1 接入决定与验证门
 
-1. 首个 Agent Action 候选为诊断 Agent 可实际调用的沙箱 `write_file`/`bash`；它们会改变沙箱状态，需通过测试证明外部副作用定义和完整追溯是否满足 M1。若不能满足，先增加有界的 Agent→受控 AIOps Action Adapter，不能以规则触发的 `auto_ticket` 或独立 Terminal 演示替代。
-2. 诊断 Gateway 的 Agent enabled 与跨租户校验已补测试；通用 LangGraph 入口仍待同等验证。Tool registry 分组的强制过滤仍未落地；测试必须证明未授权 Tool 在执行前被拒绝。已存的 `tool_groups=[]` 与未设置组的兼容语义需在实现前明确，并且不能让空配置意外获得高风险工具。
+1. 只读候选为诊断 Agent 已注册的 `read_file`。沙箱 `write_file` 会改变文件，但同一 Agent 还可经 `bash`、`str_replace` 及其他 Tool 修改文件；只给 `write_file` 加 PEP 无法证明无绕过。因此首个副作用选择新增有界的 Agent→AIOps 工单 webhook Action Adapter，调用已有 `create_ticket` Provider，但由受控入口独占该 Agent Tool 的提交路径。规则触发的 `auto_ticket` 和独立 Terminal 演示都不能替代这个真实 Agent Action。
+2. 诊断 Gateway 的 Agent enabled 与跨租户校验已补测试；通用 LangGraph 入口仍待同等验证。Tool registry 已在 MCP 发现前按服务器筛选，空选择不再隐式加载所有 MCP；旧 DB 自定义 Agent 的空数组会失去此前意外获得的 MCP 权限，这是有意的安全收紧。默认 Agent/未指定组调用者保持原有行为。内置 `bash`/文件工具仍需独立 PEP，不能把 MCP 筛选当作完整工具治理。
 3. 统一 PEP 必须位于实际 Tool/Action 提交函数之前，Decision 与关键 Audit 同事务持久化成功才能进入副作用函数。对 Terminal 的两个执行路径和 AIOps 选定路径分别做 bypass 测试。
 4. `terminal.execute` fixture 保留为解耦的契约样例；最终 Golden Scenario 另增真实路径测试，覆盖 allow、deny、require_approval、过期、重复提交和 Audit 故障。

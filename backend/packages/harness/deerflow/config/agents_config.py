@@ -40,7 +40,7 @@ def _db_agent_to_config(agent) -> "AgentConfig":
         name=agent.name,
         description=agent.description or "",
         model=agent.model,
-        tool_groups=agent.tool_groups or None,
+        tool_groups=list(agent.tool_groups or []),
         system_prompt=agent.system_prompt or "",
         skills=agent.skills or [],
         enabled=agent.enabled,
