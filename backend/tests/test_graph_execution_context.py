@@ -31,7 +31,8 @@ def test_graph_consumes_matching_trusted_context(monkeypatch) -> None:
         async def consume(self, token, tenant_id, user_id, thread_id, agent_name):
             calls.append((token, tenant_id, user_id, thread_id, agent_name))
 
-    monkeypatch.setattr(trust, "ExecutionCapabilityRepository", FakeCapabilities)
+    monkeypatch.setattr(lead_agent, "load_runtime_adapters", lambda: None)
+    monkeypatch.setattr(lead_agent, "get_execution_validator", lambda: FakeCapabilities().consume)
     lead_agent._validate_execution_context({"context": {
         "thread_id": "thread-1", "tenant_id": "tenant-a", "user_id": "user-1",
         "agent_name": "diagnosis", "prismos_execution_capability": "server-token",

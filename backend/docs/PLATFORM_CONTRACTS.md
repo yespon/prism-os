@@ -1,6 +1,6 @@
 # PrismOS Platform Contract Baseline
 
-**Status:** P0 baseline plus M1 Policy/Approval contracts, deterministic evaluation, atomic facts, and a disabled-by-default ticket Action adapter implemented; governed execution is not yet complete.
+**Status:** P0 baseline plus M1 Policy/Approval and a server-scoped, default-off AIOps ticket Tool implemented. M1 exit awaits the target-deployment Golden and Security gates; see [the 2026-09-25 gate review](../../docs/strategy/2026-09-25-m1-exit-gate-evidence.md).
 
 ## Supported API
 
@@ -80,24 +80,19 @@ The AIOps values are extension data and do not define core required fields.
 
 ## Explicit non-capabilities
 
-The current checkout does not implement a trusted Agent Tool entry or a general
-Action dispatcher, Task/Run lifecycle, Workflow, retry, cancellation, recovery
-or Evaluation resource. PolicyDecision and Approval now
-have independent tenant-scoped stores; Approval state updates use compare-and-swap. The Gateway Approval API reads
-current tenant status and membership for approve/reject; internal resume checks the stored
-context and deadline but is not yet connected to an Action dispatcher.
-The internal `PolicyFactWriter` records a Decision, its critical AuditEvent,
-and an optional pending Approval in one transaction. It is not connected to an
-authenticated Action dispatcher. The internal evaluator uses explicit versioned
-rules and fails closed. The internal ticket adapter uses a durable submission
-reservation and remains disabled by default; no existing Agent Tool is yet forced
-through it. A claimed submission is recorded as `unknown` before the webhook call,
-so a timeout or crash cannot trigger automatic replay. The webhook's receiver may
-ignore the forwarded idempotency key. The submission migration has head
-`j4d5e6f7g8h9` and downgrades without dropping earlier Policy/Approval/Audit tables.
-`task_id` and `run_id` remain correlation references only. An AuditEvent
-carrying `policy_decision_id` or `approval_id` does not by itself prove that
-the related fact was persisted.
+The checkout has a bounded, server-scoped `ticket.create` Agent Tool with durable
+Policy Decision, optional Approval, critical Audit, and at-most-once local submission.
+It does not provide a general Action dispatcher, persistent Task/Run lifecycle,
+Workflow, or Evaluation resource. The feature requires both strict graph context
+and an explicitly selected tenant/Action; both switches default off. The platform
+`run_id` is an M1 correlation reference, not a LangGraph lifecycle record.
+
+The webhook receiver may ignore the forwarded idempotency key. A claimed
+submission is recorded as `unknown` before the webhook call, so timeout or crash
+does not trigger automatic replay. Existing manual and rule-triggered ticket
+routes remain separate legacy paths. The current ticket source configuration may
+contain inline webhook credentials; this is an open Secret Gate item before
+production rollout. The Alembic chain has one head, `m7g8h9i0j1k2`.
 
 ## Legacy JSONL migration
 

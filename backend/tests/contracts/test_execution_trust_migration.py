@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 from pathlib import Path
 
@@ -10,7 +11,10 @@ def test_execution_trust_migration_round_trip(tmp_path) -> None:
     db_path = tmp_path / "trust-migration.db"
     config = Config(str(Path("alembic.ini").resolve()))
     config.set_main_option("sqlalchemy.url", f"sqlite+aiosqlite:///{db_path}")
+    app_logger = logging.getLogger("deerflow.config.app_config")
+    app_logger.disabled = False
     command.upgrade(config, "head")
+    assert not app_logger.disabled
     with sqlite3.connect(db_path) as connection:
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         assert {"platform_thread_bindings", "platform_execution_capabilities", "platform_legacy_audit_deliveries"} <= tables

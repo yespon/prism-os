@@ -13,6 +13,14 @@ import os
 from collections.abc import Callable
 from typing import Any
 
+
+class ExecutionTrustError(PermissionError):
+    """A graph execution identity or one-use capability is untrusted."""
+
+
+ExecutionValidator = Callable[[str | None, str, str, str, str | None], Any]
+
+
 AgentLoader = Callable[[str, str | None, str | None], Any]
 AgentLister = Callable[[str | None, str | None], list[Any]]
 AgentPersister = Callable[..., None]
@@ -22,6 +30,7 @@ _agent_lister: AgentLister | None = None
 _agent_persister: AgentPersister | None = None
 _terminal_provider: dict[str, Any] | None = None
 _governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
+_execution_validator: ExecutionValidator | None = None
 _loaded_adapter_module: str | None = None
 
 
@@ -75,6 +84,16 @@ def get_governed_action_provider() -> Callable[[dict[str, str]], list[Any]] | No
     return _governed_action_provider
 
 
+def register_execution_validator(validator: ExecutionValidator) -> None:
+    """Register the host's durable one-use capability consumer."""
+    global _execution_validator
+    _execution_validator = validator
+
+
+def get_execution_validator() -> ExecutionValidator | None:
+    return _execution_validator
+
+
 def load_runtime_adapters() -> None:
     """Import the configured adapter module once.
 
@@ -85,16 +104,20 @@ def load_runtime_adapters() -> None:
     module_name = os.getenv("PRISMOS_RUNTIME_ADAPTER_MODULE", "").strip()
     if not module_name or module_name == _loaded_adapter_module:
         return
-    importlib.import_module(module_name)
+    module = importlib.import_module(module_name)
+    register = getattr(module, "register_runtime_adapters", None)
+    if callable(register):
+        register()
     _loaded_adapter_module = module_name
 
 
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
-    global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _loaded_adapter_module
+    global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
     _agent_loader = None
     _agent_lister = None
     _agent_persister = None
     _terminal_provider = None
     _governed_action_provider = None
+    _execution_validator = None
     _loaded_adapter_module = None

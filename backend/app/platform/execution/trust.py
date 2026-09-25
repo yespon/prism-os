@@ -14,12 +14,9 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.governance import PlatformExecutionCapabilityRecord, PlatformThreadBindingRecord
 from deerflow.database.session import get_session_factory
+from deerflow.runtime import ExecutionTrustError
 
 DEFAULT_AGENT = "__default__"
-
-
-class ExecutionTrustError(PermissionError):
-    """The requested thread or one-use capability is not trusted."""
 
 
 @dataclass(frozen=True)

@@ -19,7 +19,13 @@ from deerflow.config.tenant_context import tenant_context
 from deerflow.config.title_config import get_title_config
 from deerflow.database.user_config_store import load_enabled_tenant_model_names
 from deerflow.models.factory import create_chat_model
-from deerflow.runtime import get_governed_action_provider, get_terminal_agent_provider, load_runtime_adapters
+from deerflow.runtime import (
+    ExecutionTrustError,
+    get_execution_validator,
+    get_governed_action_provider,
+    get_terminal_agent_provider,
+    load_runtime_adapters,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +94,6 @@ def _validate_execution_context(config: dict) -> dict[str, str] | None:
     """Consume trusted identity before assembling any Agent tools."""
     if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required":
         return
-    from app.platform.execution.trust import ExecutionCapabilityRepository, ExecutionTrustError
-
     cfg = config.get("configurable", {}) or {}
     context = config.get("context", {}) or {}
     thread_id = cfg.get("thread_id") or context.get("thread_id")
@@ -108,9 +112,13 @@ def _validate_execution_context(config: dict) -> dict[str, str] | None:
     token = cfg.get("prismos_execution_capability") or context.get("prismos_execution_capability")
     if not all((thread_id, user_id, tenant_id)):
         raise ExecutionTrustError("trusted graph execution identity required")
-    incident_id = _run_async(ExecutionCapabilityRepository().consume(
-        token, tenant_id, user_id, thread_id, agent_name,
-    ))
+    if not isinstance(token, str) or not token:
+        raise ExecutionTrustError("trusted execution capability required")
+    load_runtime_adapters()
+    validator = get_execution_validator()
+    if validator is None:
+        raise ExecutionTrustError("trusted graph execution validator unavailable")
+    incident_id = _run_async(validator(token, tenant_id, user_id, thread_id, agent_name))
     if incident_id:
         return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id,
                 "agent_name": agent_name, "incident_id": incident_id}

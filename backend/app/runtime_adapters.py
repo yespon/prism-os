@@ -12,10 +12,12 @@ from app.agent.prompts import TERMINAL_AGENT_SYSTEM_PROMPT
 from app.agent.terminal_tools import get_terminal_tools, set_terminal_context
 from app.alerting.governed_ticket_tool import governed_ticket_tools
 from app.models.agents import CustomAgent
+from app.platform.execution.trust import ExecutionCapabilityRepository
 from deerflow.database.session import get_session_factory
 from deerflow.runtime import (
     register_agent_config_provider,
     register_agent_persistence_provider,
+    register_execution_validator,
     register_governed_action_provider,
     register_terminal_agent_provider,
 )
@@ -88,12 +90,21 @@ def _persist_agent(
     _run_async(_create())
 
 
-register_agent_config_provider(_load_agent, _list_agents)
-register_agent_persistence_provider(_persist_agent)
-register_terminal_agent_provider(
-    get_tools=get_terminal_tools,
-    set_context=set_terminal_context,
-    system_prompt=TERMINAL_AGENT_SYSTEM_PROMPT,
-)
+async def _consume_graph_capability(token, tenant_id, user_id, thread_id, agent_name):
+    return await ExecutionCapabilityRepository().consume(token, tenant_id, user_id, thread_id, agent_name)
 
-register_governed_action_provider(governed_ticket_tools)
+
+def register_runtime_adapters() -> None:
+    """Install host providers, including after an explicit runtime reset."""
+    register_agent_config_provider(_load_agent, _list_agents)
+    register_agent_persistence_provider(_persist_agent)
+    register_terminal_agent_provider(
+        get_tools=get_terminal_tools,
+        set_context=set_terminal_context,
+        system_prompt=TERMINAL_AGENT_SYSTEM_PROMPT,
+    )
+    register_governed_action_provider(governed_ticket_tools)
+    register_execution_validator(_consume_graph_capability)
+
+
+register_runtime_adapters()

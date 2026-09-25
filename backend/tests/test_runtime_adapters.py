@@ -108,3 +108,28 @@ def test_adapter_module_registration_shape() -> None:
     assert get_agent_persistence_provider() is not None
     assert get_terminal_agent_provider() is not None
     reset_runtime_adapters()
+
+
+def test_cached_host_module_can_restore_execution_validator(monkeypatch) -> None:
+    from deerflow.runtime import get_execution_validator, register_execution_validator
+
+    calls = []
+
+    class HostModule:
+        def register_runtime_adapters(self) -> None:
+            calls.append("registered")
+            register_execution_validator(lambda *_args: None)
+
+    host = HostModule()
+    monkeypatch.setattr("deerflow.runtime.importlib.import_module", lambda _name: host)
+    monkeypatch.setenv("PRISMOS_RUNTIME_ADAPTER_MODULE", "cached_host_module")
+    try:
+        reset_runtime_adapters()
+        load_runtime_adapters()
+        assert get_execution_validator() is not None
+        reset_runtime_adapters()
+        load_runtime_adapters()
+        assert get_execution_validator() is not None
+        assert calls == ["registered", "registered"]
+    finally:
+        reset_runtime_adapters()
