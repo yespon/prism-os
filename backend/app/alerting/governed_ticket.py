@@ -6,6 +6,7 @@ from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from hashlib import sha256
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 from sqlmodel import select
 
@@ -120,6 +121,21 @@ class TicketActionAdapter:
         self._link_ticket = link_ticket
 
     @staticmethod
+    def _validate_destination(config: dict[str, Any]) -> None:
+        """The M1 canary may use only credential-free HTTPS webhooks."""
+        if config.get("provider", "webhook") != "webhook":
+            raise ValueError("governed ticket requires a webhook provider")
+        url = config.get("webhook_url")
+        if not isinstance(url, str):
+            raise ValueError("governed ticket requires an HTTPS webhook URL")
+        parsed = urlsplit(url)
+        if parsed.scheme != "https" or not parsed.hostname or "@" in parsed.netloc or parsed.query or parsed.fragment:
+            raise ValueError("governed ticket requires a credential-free HTTPS webhook URL")
+        headers = config.get("headers", {})
+        if not isinstance(headers, dict) or headers:
+            raise ValueError("governed ticket does not accept inline webhook headers")
+
+    @staticmethod
     def _request(execution: ExecutionEnvelope, request_id: str, target: TicketTarget, at: datetime) -> PolicyRequest:
         payload = render_ticket_payload(target.incident, target.config, target.signals)
         payload_hash = sha256(json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
@@ -163,6 +179,7 @@ class TicketActionAdapter:
         target = await self._resolve_target(execution.tenant_id, incident_id)
         if target.incident.tenant_id != execution.tenant_id or target.incident.id != incident_id:
             raise PermissionError("incident tenant or identity changed")
+        self._validate_destination(target.config)
         request = self._request(execution, request_id, target, instant)
         decision = await self._policy.evaluate_and_record(request, self._configuration, at=instant)
         if decision.verdict == "deny":
@@ -190,14 +207,16 @@ class TicketActionAdapter:
                 return TicketActionOutcome(status="awaiting_approval", decision_id=decision.decision_id, approval_id=approval_id)
             if approval.status != "approved":
                 raise ValueError("consumed Approval has no submission fact")
-            await self._approval_service.consume_for_request(decision.tenant_id, approval_id, request, at=instant)
         if target.incident.ticket_id:
             raise ValueError("incident already has a ticket")
         if not await self._check_permission(execution.tenant_id, actor.id):
             raise PermissionError("requester authorization changed")
         current = await self._resolve_target(execution.tenant_id, incident_id)
+        self._validate_destination(current.config)
         if current.incident.ticket_id or self._request(execution, request_id, current, instant).context_hash != request.context_hash:
             raise ValueError("ticket Action context changed before submission")
+        if approval_id is not None:
+            await self._approval_service.consume_for_request(decision.tenant_id, approval_id, request, at=instant)
         fact = await self._submissions.prepare(decision, approval_id, at=instant)
         if fact.status in ("submitted", "unknown"):
             return replace(

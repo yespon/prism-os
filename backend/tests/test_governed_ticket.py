@@ -38,8 +38,7 @@ async def ticket_setup(tmp_path):
     )
     target = TicketTarget(
         incident=incident,
-        config={"provider": "webhook", "webhook_url": "https://tickets.example/create",
-                "headers": {"Authorization": "Bearer private-secret"}},
+        config={"provider": "webhook", "webhook_url": "https://tickets.example/create"},
         signals=[],
     )
     state = SimpleNamespace(allowed=True, allowed_sequence=[], calls=[], linked=[], gateway_events=[])
@@ -113,8 +112,27 @@ async def test_allow_submits_once_and_repeats_read_stored_fact(ticket_setup) -> 
     assert len(state.calls) == 1
     assert state.linked == ["T-1"]
     assert (await submissions.get("tenant-a", first.decision_id)).status == "submitted"
-    assert "private-secret" not in (await audits.list_recent("tenant-a"))[0].model_dump_json()
-    assert "private-secret" not in (await decisions.get_by_request("tenant-a", "request-1")).model_dump_json()
+    assert (await audits.list_recent("tenant-a"))[0].event_type == "action.submitted"
+    assert (await decisions.get_by_request("tenant-a", "request-1")).verdict == "allow"
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("config_change", [
+    {"headers": {"Authorization": "Bearer private-secret"}},
+    {"headers": []},
+    {"webhook_url": "https://user:private-secret@tickets.example/create"},
+    {"webhook_url": "https://tickets.example/create?token=private-secret"},
+    {"webhook_url": "http://tickets.example/create"},
+])
+async def test_inline_webhook_credentials_fail_before_policy_or_submission(ticket_setup, config_change) -> None:
+    make, execution, state, _, _, decisions, _, _, _ = ticket_setup
+    adapter = make("allow")
+    target = await adapter._resolve_target("tenant-a", "incident-1")
+    target.config.update(config_change)
+    with pytest.raises(ValueError, match="credential-free HTTPS|inline webhook headers"):
+        await adapter.execute(execution, "request-1", "incident-1", at=NOW)
+    assert state.calls == []
+    assert await decisions.get_by_request("tenant-a", "request-1") is None
 
 
 @pytest.mark.anyio
@@ -163,6 +181,31 @@ async def test_revocation_or_context_change_blocks_approved_action(ticket_setup)
     incident.summary = "Changed after approval"
     with pytest.raises(ValueError, match="context"):
         await adapter.execute(execution, "request-1", "incident-1", at=NOW + timedelta(minutes=2))
+    assert state.calls == []
+
+
+@pytest.mark.anyio
+async def test_destination_change_does_not_consume_approval(ticket_setup) -> None:
+    make, execution, state, approvals, approval_service, _, _, _, _ = ticket_setup
+    adapter = make("require_approval")
+    waiting = await adapter.execute(execution, "request-1", "incident-1", at=NOW)
+    await approval_service.review("tenant-a", waiting.approval_id, "admin-1", "approve", at=NOW + timedelta(minutes=1))
+    original_resolver = adapter._resolve_target
+    resolution_count = 0
+
+    async def changed_after_policy(tenant_id, incident_id):
+        nonlocal resolution_count
+        resolution_count += 1
+        target = await original_resolver(tenant_id, incident_id)
+        if resolution_count == 2:
+            return TicketTarget(target.incident, {**target.config, "headers": {"Authorization": "Bearer private-secret"}}, target.signals)
+        return target
+
+    adapter._resolve_target = changed_after_policy
+    with pytest.raises(ValueError, match="inline webhook headers"):
+        await adapter.execute(execution, "request-1", "incident-1", at=NOW + timedelta(minutes=2))
+    assert resolution_count == 2
+    assert (await approvals.get("tenant-a", waiting.approval_id))[0].status == "approved"
     assert state.calls == []
 
 

@@ -13,7 +13,7 @@
 | Golden Scenario | 已认证的诊断 HTTP 请求经一次性 Incident 范围、模拟 LangGraph 流、Agent Tool 到模拟 Provider；allow、deny、等待/通过/拒绝/过期、撤权、Audit 故障、超时 unknown 和重复请求均有自动化断言。 | 用真实模型、目标 webhook、审批人和请求者运行同一路径；验证目标数据库并发及服务重启后恢复。 | 自动化通过，真实场景待验 |
 | Quality | 全后端 `1382 passed, 18 skipped, 0 failed`；前端 `91 passed`、typecheck 与 Node 24 生产 build 通过；lint `0 errors, 168 warnings`。本轮首跑同一后端套件 `1373 passed, 18 skipped, 8 failed`；已修复 Harness 反向导入、Alembic 禁用应用 logger 的顺序污染，并让干净检出校验受版本控制的配置模板。 | 168 个前端 lint warning 保留为质量债；持续追踪。 | 本地通过 |
 | Migration | SQLite 升降级回归通过；隔离 PostgreSQL 16 从 `l6f7g8h9i0j1` 升到 `m7g8h9i0j1k2`、降回、再升级通过，旧 `incident_actions` 表仍可读取；生产与开发 Compose 清单均通过语法检查（开发清单使用临时空 `.env`）。 | 在目标数据库备份后迁移、读历史审计、验证双写及回退；检验 Gateway JSONL 文件锁与并发。 | 隔离环境通过，目标部署待验 |
-| Security | 浏览器不能伪造 Incident Action 范围；租户隔离、身份重查、关键 Audit 故障阻断副作用、提交 unknown 不自动重发、平台事实/投递不包含测试凭据均有测试。 | 现有 `AlertSource.config_json.ticket.headers` 可保存内联 webhook 凭据，缺少此 Action 的 `SecretRef` 注入边界；目标部署的副作用、Secret 与跨租户演练未执行。只读 `read_file` 的实际 PEP 仍需按 M1 Spec 复核。 | **未通过** |
+| Security | 浏览器不能伪造 Incident Action 范围；租户隔离、身份重查、关键 Audit 故障阻断副作用、提交 unknown 不自动重发、平台事实/投递不包含测试凭据均有测试。 | 受控 `ticket.create` 试点已在 Policy 前与提交前拒绝内联 Header、URL 用户信息/查询串和非 HTTPS 目标，并避免目标变更时消耗批准；但 `AlertSource.config_json` 仍可保存及返回内联凭据，也没有此 Action 的 `SecretRef` 注入边界。目标部署的副作用、Secret 与跨租户演练未执行。诊断 Agent 的沙箱 `read_file` 尚未接平台 PEP。 | **未通过** |
 
 `run_id` 在 M1 只用作诊断线程派生的关联 ID，不代表 M2 的持久 Run 生命周期。人工建单及规则 `auto_ticket` 仍是独立旧路径，不能算作受控 Agent Action 的证据。`terminal.execute` 契约 fixture 也不计作 AIOps 真实调用。
 
@@ -30,7 +30,13 @@
 
 本地开关回退测试证明 `PRISMOS_GOVERNED_TICKET_ACTION=off` 后 Agent 不装配受控 Tool，界面回到原有诊断路径，已记录事实保留。目标部署尚无 PrismOS Gateway/LangGraph 容器、`config.yaml`、`.env`、测试模型和目标 webhook；真实开关切换、服务重启、文件投递重放和部署回滚均未执行。
 
-受控建单的测试源配置包含 `Authorization` 示例，现有实现只保证它不进入平台 Decision、Audit、提交与投递记录；`AlertSource.config_json` 本身仍允许保存内联 Header。正式放量前须提供租户范围的凭据引用和最小范围注入，或明确限制该 Action 只使用无凭据的测试 webhook，并补对应拒绝内联凭据的测试。后一种限制只能用于隔离演示，不能视为完整 Secret Gate 通过。
+受控建单试点现限制为无内联 Header、URL 用户信息/查询串的 HTTPS webhook：配置校验在 Policy 之前和批准后提交之前各执行一次；定向测试覆盖内联 `Authorization`、URL 凭据、HTTP 及目标变更时批准不会被消耗。`AlertSource.config_json` 的旧写入/返回路径仍允许明文 Header，URL 路径也可能承载凭据，因此这只是受控 Action 的隔离演示边界，**不是完整 Secret Gate**。正式放量仍需租户范围的 `SecretRef` 与最小范围注入，并处理旧凭据迁移与响应脱敏。
+
+## 本轮补充复核
+
+诊断 Agent 通过 `get_available_tools` 获得 `deerflow.sandbox.tools.read_file_tool`；该工具在本地沙箱会检查路径，然后直接调用 `sandbox.read_file`，目前没有平台 `PolicyDecision` 与关键 `AuditEvent`。`app.agent.terminal_tools.read_file`、`terminal_graph` 的同名调用和 `sandbox_graph` 的模拟工具属于其他入口，不能充当此链路的 PEP 证据。下一步须在真实诊断 Tool 执行前接入只读 Policy/Audit，并验证未签发的入口无法绕过。
+
+本轮定向回归 `test_governed_ticket.py`、`test_incident_diagnosis.py`、`test_graph_execution_context.py` 共 `36 passed`，Ruff 与 diff 检查通过；先前全量 Quality 数字保持为上一轮基线，尚未重跑。
 
 ## 目标部署验收顺序
 
