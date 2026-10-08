@@ -11,15 +11,15 @@
 | --- | --- | --- | --- |
 | Contract | `scripts/test-platform-contracts.sh`：129 个契约、48 个相邻安全测试通过；Alembic 唯一 head `m7g8h9i0j1k2`；平台包不导入 AIOps/Runtime 私有模块。 | 在目标部署验证 Gateway/LangGraph 同时启用严格图上下文及认证会话传播。 | 本地通过，部署待验 |
 | Golden Scenario | 已认证的诊断 HTTP 请求经一次性 Incident 范围、模拟 LangGraph 流、Agent Tool 到模拟 Provider；allow、deny、等待/通过/拒绝/过期、撤权、Audit 故障、超时 unknown 和重复请求均有自动化断言。 | 用真实模型、目标 webhook、审批人和请求者运行同一路径；验证目标数据库并发及服务重启后恢复。 | 自动化通过，真实场景待验 |
-| Quality | 全后端 `1382 passed, 18 skipped, 0 failed`；前端 `91 passed`、typecheck 与 Node 24 生产 build 通过；lint `0 errors, 168 warnings`。本轮首跑同一后端套件 `1373 passed, 18 skipped, 8 failed`；已修复 Harness 反向导入、Alembic 禁用应用 logger 的顺序污染，并让干净检出校验受版本控制的配置模板。 | 168 个前端 lint warning 保留为质量债；持续追踪。 | 本地通过 |
+| Quality | 全后端 `1391 passed, 18 skipped, 0 failed`；前端 `91 passed`、typecheck 与 Node 24 生产 build 通过；lint `0 errors, 168 warnings`。本轮首跑同一后端套件 `1373 passed, 18 skipped, 8 failed`；已修复 Harness 反向导入、Alembic 禁用应用 logger 的顺序污染，并让干净检出校验受版本控制的配置模板。 | 168 个前端 lint warning 保留为质量债；持续追踪。 | 本地通过 |
 | Migration | SQLite 升降级回归通过；隔离 PostgreSQL 16 从 `l6f7g8h9i0j1` 升到 `m7g8h9i0j1k2`、降回、再升级通过，旧 `incident_actions` 表仍可读取；生产与开发 Compose 清单均通过语法检查（开发清单使用临时空 `.env`）。 | 在目标数据库备份后迁移、读历史审计、验证双写及回退；检验 Gateway JSONL 文件锁与并发。 | 隔离环境通过，目标部署待验 |
-| Security | 浏览器不能伪造 Incident Action 范围；租户隔离、身份重查、关键 Audit 故障阻断副作用、提交 unknown 不自动重发、平台事实/投递不包含测试凭据均有测试。 | 受控 `ticket.create` 试点已在 Policy 前与提交前拒绝内联 Header、URL 用户信息/查询串和非 HTTPS 目标，并避免目标变更时消耗批准；但 `AlertSource.config_json` 仍可保存及返回内联凭据，也没有此 Action 的 `SecretRef` 注入边界。目标部署的副作用、Secret 与跨租户演练未执行。诊断 Agent 的沙箱 `read_file` 尚未接平台 PEP。 | **未通过** |
+| Security | 浏览器不能伪造 Incident Action 范围；租户隔离、身份重查、关键 Audit 故障阻断副作用、提交 unknown 不自动重发、平台事实/投递不包含测试凭据均有测试。 | 受控 `ticket.create` 试点已在 Policy 前与提交前拒绝内联 Header、URL 用户信息/查询串和非 HTTPS 目标，并避免目标变更时消耗批准；但 `AlertSource.config_json` 仍可保存及返回内联凭据，也没有此 Action 的 `SecretRef` 注入边界。目标部署的副作用、Secret 与跨租户演练未执行。诊断 Agent 的沙箱 `read_file` 已在受控 Incident 范围内接平台 PEP，真实部署及其他文件读取 Tool 的绕过复核仍待完成。 | **未通过** |
 
 `run_id` 在 M1 只用作诊断线程派生的关联 ID，不代表 M2 的持久 Run 生命周期。人工建单及规则 `auto_ticket` 仍是独立旧路径，不能算作受控 Agent Action 的证据。`terminal.execute` 契约 fixture 也不计作 AIOps 真实调用。
 
 ## 质量明细与可重复命令
 
-- 后端完整套件：`cd backend && uv run pytest tests -q -rs --tb=short`，`1382 passed, 18 skipped, 30 warnings`。18 项跳过中：1 项缺少 live `config.yaml`，11 项缺少 LLM API 凭据，6 项缺少 S3 测试依赖。跳过项均不是平台核心契约。
+- 后端完整套件：`cd backend && uv run pytest tests -q -rs --tb=short`，`1391 passed, 18 skipped, 30 warnings`。18 项跳过中：1 项缺少 live `config.yaml`，11 项缺少 LLM API 凭据，6 项缺少 S3 测试依赖。跳过项均不是平台核心契约。
 - 平台契约：`UV_BIN=/root/.local/bin/uv ./scripts/test-platform-contracts.sh`，`129 passed`、相邻 `48 passed`、Ruff 通过、唯一迁移 head。
 - 前端：在 Node `v24.11.1` 下运行 `npm run lint`、`npm run typecheck`、`npm run test:unit`、`SKIP_ENV_VALIDATION=1 npm run build`；分别为 0 error/168 warning、通过、39 文件/91 测试通过、构建通过。系统默认 Node 18 不能运行当前 Next.js build；使用已有 Node 24 后通过。
 - 历史发布说明中的 `973 passed, 18 skipped, 184 failed` 属于不同提交和测试集合，不能直接算趋势。本轮同一集合的首次 8 失败已降为 0，未用 skip 或非阻塞标记掩盖失败。
@@ -34,9 +34,9 @@
 
 ## 本轮补充复核
 
-诊断 Agent 通过 `get_available_tools` 获得 `deerflow.sandbox.tools.read_file_tool`；该工具在本地沙箱会检查路径，然后直接调用 `sandbox.read_file`，目前没有平台 `PolicyDecision` 与关键 `AuditEvent`。`app.agent.terminal_tools.read_file`、`terminal_graph` 的同名调用和 `sandbox_graph` 的模拟工具属于其他入口，不能充当此链路的 PEP 证据。下一步须在真实诊断 Tool 执行前接入只读 Policy/Audit，并验证未签发的入口无法绕过。
+诊断 Agent 通过 `get_available_tools` 获得 `deerflow.sandbox.tools.read_file_tool`。在受控 Incident 范围与试点开关同时生效时，宿主现在用同名 Tool 替换它；Tool 核对沙箱运行时 tenant/user/thread 与服务端范围，写入 `read_only` Policy Decision 和同事务关键 Audit，allow 后才调用原沙箱读函数，随后写无内容的结果 Audit。deny、上下文变化、身份不符及关键 Audit 失败均不读取文件。`app.agent.terminal_tools.read_file`、`terminal_graph` 的同名调用和 `sandbox_graph` 的模拟工具仍属其他入口；`bash` 等其他沙箱工具可能读取文件，这个 PEP 只证明被选中的 `read_file` Action。结果 Audit 若在读取后失败，Tool 不返回内容但已发生读取，需在目标环境注入故障核对。
 
-本轮定向回归 `test_governed_ticket.py`、`test_incident_diagnosis.py`、`test_graph_execution_context.py` 共 `36 passed`，Ruff 与 diff 检查通过；先前全量 Quality 数字保持为上一轮基线，尚未重跑。
+凭据边界提交的定向回归共 `36 passed`；新增只读 PEP 后，同三组定向回归共 `39 passed`，Ruff 与 diff 检查通过。新增只读 PEP 后完整后端套件重跑为 `1391 passed, 18 skipped, 30 warnings`。
 
 ## 目标部署验收顺序
 

@@ -238,10 +238,15 @@ def make_lead_agent(config):
             if action_tools else ""
         )
 
+        available_tools = get_available_tools(
+            model_name=model_name, groups=agent_config.tool_groups if agent_config else None,
+            subagent_enabled=subagent_enabled,
+        )
+        governed_names = {tool.name for tool in action_tools if getattr(tool, "name", None)}
+        available_tools = [tool for tool in available_tools if getattr(tool, "name", None) not in governed_names]
         return create_agent(
             model=create_chat_model(name=model_name, thinking_enabled=thinking_enabled, reasoning_effort=reasoning_effort),
-            tools=(get_available_tools(model_name=model_name, groups=agent_config.tool_groups if agent_config else None,
-                                       subagent_enabled=subagent_enabled) + action_tools),
+            tools=available_tools + action_tools,
             middleware=_build_middlewares(config, model_name=model_name, agent_name=agent_name),
             system_prompt=apply_prompt_template(
                 subagent_enabled=subagent_enabled,

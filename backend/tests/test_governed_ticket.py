@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from hashlib import sha256
 from types import SimpleNamespace
 
 import pytest
@@ -372,7 +373,7 @@ async def test_diagnosis_agent_tool_reaches_provider_once_and_exposes_platform_f
     scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-thread-1",
              "agent_name": "diagnosis", "incident_id": "incident-1"}
     tools = agent_action.governed_ticket_tools(scope)
-    assert len(tools) == 1
+    assert [tool.name for tool in tools] == ["create_governed_incident_ticket", "read_file"]
     first = await tools[0].ainvoke({})
     repeated = await tools[0].ainvoke({})
     assert first == repeated
@@ -421,7 +422,7 @@ def test_diagnosis_agent_tool_requires_both_canary_switches(monkeypatch) -> None
     monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
     assert governed_ticket_tools(scope) == []
     monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
-    assert len(governed_ticket_tools(scope)) == 1
+    assert [tool.name for tool in governed_ticket_tools(scope)] == ["create_governed_incident_ticket", "read_file"]
     assert governed_ticket_tools({**scope, "tenant_id": "tenant-b"}) == []
     monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "off")
     assert governed_ticket_tools(scope) == []
@@ -463,3 +464,132 @@ async def test_diagnosis_card_status_reads_persisted_action_facts(ticket_setup, 
     assert error.value.status_code == 404
     monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "off")
     assert await alerts._governed_ticket_status("incident-1", "tenant-a") == {"enabled": False, "status": None}
+
+
+@pytest.mark.anyio
+async def test_diagnosis_read_file_records_policy_before_sandbox_read(ticket_setup, monkeypatch) -> None:
+    from langchain.tools import ToolRuntime
+
+    from app.alerting import governed_read_tool as read_action
+
+    make, _, _, _, _, decisions, audits, _, _ = ticket_setup
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    adapter = make("allow")
+    monkeypatch.setattr(read_action, "PolicyService", lambda: adapter._policy)
+    monkeypatch.setattr(read_action, "PolicyDecisionRepository", lambda: decisions)
+    monkeypatch.setattr(read_action, "AuditEventRepository", lambda: audits)
+
+    async def member(_tenant, _user):
+        return True
+
+    monkeypatch.setattr(read_action, "active_requester", member)
+    reads = []
+
+    def sandbox_read(**kwargs):
+        reads.append(kwargs["path"])
+        return "file contents"
+
+    monkeypatch.setattr(read_action.read_file_tool, "func", sandbox_read)
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-read-1",
+             "agent_name": "diagnosis", "incident_id": "incident-1"}
+    selected = read_action.governed_read_file_tool(scope)
+    runtime = ToolRuntime(state={}, context=scope, config={}, stream_writer=lambda _value: None,
+                          tool_call_id="call-1", store=None)
+    assert await selected.coroutine(runtime, "inspect logs", "/workspace/log.txt") == "file contents"
+    assert reads == ["/workspace/log.txt"]
+    request_id = "read-" + sha256(b"diagnosis-read-1:call-1").hexdigest()
+    decision = await decisions.get_by_request("tenant-a", request_id)
+    assert decision.action == "read_file" and decision.risk_class == "read_only"
+    assert decision.verdict == "allow" and decision.execution.actor.id == "user-1"
+    assert any(event.policy_decision_id == decision.decision_id and event.event_type == "action.policy_evaluated"
+               for event in await audits.list_recent("tenant-a"))
+    assert await selected.coroutine(runtime, "inspect logs", "/workspace/log.txt") == "file contents"
+    assert len(reads) == 2
+    assert sum(event.event_type == "action.read_result" for event in await audits.list_recent("tenant-a")) == 2
+    assert all("file contents" not in event.model_dump_json() for event in await audits.list_recent("tenant-a"))
+    wrong_runtime = ToolRuntime(state={}, context={**scope, "tenant_id": "tenant-b"}, config={},
+                                stream_writer=lambda _value: None, tool_call_id="call-other", store=None)
+    with pytest.raises(PermissionError, match="sandbox identity"):
+        await selected.coroutine(wrong_runtime, "inspect logs", "/workspace/log.txt")
+    with pytest.raises(ValueError, match="different Action context"):
+        await selected.coroutine(runtime, "inspect logs", "/workspace/other.txt")
+    assert len(reads) == 2
+
+
+@pytest.mark.anyio
+async def test_diagnosis_read_file_fails_closed_on_audit_failure(ticket_setup, monkeypatch) -> None:
+    from langchain.tools import ToolRuntime
+
+    from app.alerting import governed_read_tool as read_action
+
+    make, _, _, _, _, decisions, audits, _, _ = ticket_setup
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    adapter = make("allow")
+    monkeypatch.setattr(read_action, "PolicyService", lambda: adapter._policy)
+    monkeypatch.setattr(read_action, "PolicyDecisionRepository", lambda: decisions)
+    monkeypatch.setattr(read_action, "AuditEventRepository", lambda: audits)
+
+    async def member(_tenant, _user):
+        return True
+
+    monkeypatch.setattr(read_action, "active_requester", member)
+    reads = []
+    monkeypatch.setattr(read_action.read_file_tool, "func", lambda **_kwargs: reads.append(True))
+
+    async def failed_audit(*_args):
+        raise RuntimeError("audit storage failed")
+
+    monkeypatch.setattr(AuditEventRepository, "append_in_session", failed_audit)
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-read-2",
+             "agent_name": "diagnosis", "incident_id": "incident-1"}
+    selected = read_action.governed_read_file_tool(scope)
+    runtime = ToolRuntime(state={}, context=scope, config={}, stream_writer=lambda _value: None,
+                          tool_call_id="call-2", store=None)
+    with pytest.raises(RuntimeError, match="audit storage"):
+        await selected.coroutine(runtime, "inspect logs", "/workspace/log.txt")
+    assert reads == []
+
+
+@pytest.mark.anyio
+async def test_diagnosis_read_file_denied_without_sandbox_access(ticket_setup, monkeypatch) -> None:
+    from langchain.tools import ToolRuntime
+
+    from app.alerting import governed_read_tool as read_action
+
+    make, _, _, _, _, decisions, audits, _, _ = ticket_setup
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    adapter = make("allow")
+    monkeypatch.setattr(read_action, "PolicyService", lambda: adapter._policy)
+    monkeypatch.setattr(read_action, "PolicyDecisionRepository", lambda: decisions)
+    monkeypatch.setattr(read_action, "AuditEventRepository", lambda: audits)
+    configuration_type = read_action.PolicyConfiguration
+    monkeypatch.setattr(read_action, "PolicyConfiguration", lambda **_kwargs: configuration_type(
+        policy_id="read-test", version="v1",
+        rules={"read_file": PolicyRule(risk_class="read_only", verdict="deny")},
+    ))
+
+    async def member(_tenant, _user):
+        return True
+
+    monkeypatch.setattr(read_action, "active_requester", member)
+    reads = []
+    monkeypatch.setattr(read_action.read_file_tool, "func", lambda **_kwargs: reads.append(True))
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-read-3",
+             "agent_name": "diagnosis", "incident_id": "incident-1"}
+    selected = read_action.governed_read_file_tool(scope)
+    runtime = ToolRuntime(state={}, context=scope, config={}, stream_writer=lambda _value: None,
+                          tool_call_id="call-3", store=None)
+    with pytest.raises(PermissionError, match="denied"):
+        await selected.coroutine(runtime, "inspect logs", "/workspace/log.txt")
+    assert reads == []
+    request_id = "read-" + sha256(b"diagnosis-read-3:call-3").hexdigest()
+    decision = await decisions.get_by_request("tenant-a", request_id)
+    assert decision.verdict == "deny"
+    assert any(event.policy_decision_id == decision.decision_id and event.outcome == "denied"
+               for event in await audits.list_recent("tenant-a"))

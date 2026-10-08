@@ -83,4 +83,6 @@ def governed_ticket_tools(scope: dict[str, str]) -> list:
             "needs_reconciliation": outcome.needs_reconciliation,
         }
 
-    return [create_governed_incident_ticket]
+    from app.alerting.governed_read_tool import governed_read_file_tool
+
+    return [create_governed_incident_ticket, governed_read_file_tool(scope)]
