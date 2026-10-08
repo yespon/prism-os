@@ -45,3 +45,9 @@
 3. 仅对该租户启用 `ticket.create`，先以 `deny`、再以 `require_approval`、最后以受控 `allow` 验证真实模型 Tool 调用。每次规则变化提高 Policy version；核对 Decision、Approval、Audit、Submission、旧时间线和接收端调用次数。
 4. 注入撤权、审批超时、Policy/Audit 写失败、webhook 超时、重复请求、进程重启与旧审计投递失败；`unknown` 必须人工核对，不能自动再发。记录通过、失败、跳过、请求 ID、run ID、结果和耗时。
 5. 在 Gateway 与 LangGraph 同时关闭 Action 开关，确认旧诊断视图可用且没有新增副作用；再按备份和迁移回退规程演练。完成这些证据后重新裁定五道门，才可宣布 M1 退出并启动 M2。
+
+## 2026-10-08 凭据边界增量
+
+AlertSource 列表、创建和更新响应现统一隐藏工单 Header 值和 URL 中明显的凭据；编辑只从同租户同 Source 的旧配置回填占位符，目标改变时禁止复用旧 Header。数据库仍可保留旧明文配置，任意 URL 路径也可能包含 Secret；完整 SecretRef 及迁移仍待完成，专项 Security Gate 判定不变。后续任务与验收见[工单凭据增量设计](../superpowers/specs/2026-10-08-m1-ticket-secret-ref-design.md)。
+
+本轮 `test_ticket_config_redaction.py` 与 `test_incident_diagnosis.py` 合计 `16 passed`；Ruff 与 diff 检查通过。未重跑完整后端套件，上一轮 `1391 passed/18 skipped` 保留为历史基线。

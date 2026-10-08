@@ -56,3 +56,7 @@
 - P0 `task_id`/`run_id` 只作关联，不建状态机。Approval 状态不等于 Run 状态；LangGraph checkpoint 不等于审批事实。
 - 功能开关默认关闭。关闭后不删除平台审计；新路径的关键决策/审计失败时 fail closed，不能偷偷退回旧副作用路径。
 - 不把 `terminal.execute` fixture、独立 Terminal graph 或规则触发 `auto_ticket` 单独计作 AIOps Agent Golden Scenario。真实路径无法验证时维持开关关闭并先补有界 Action Adapter。
+
+## 2026-10-08 工作包 12 后续收口
+
+已实现工单配置响应脱敏、同源编辑回填及目标改变时阻止转发旧 Header。旧明文存储仍在；严格加密、租户/Source 范围 SecretRef、Provider 注入和迁移按[增量设计](../specs/2026-10-08-m1-ticket-secret-ref-design.md)的任务 2–7 继续。M1 仍未退出，试点开关默认关闭。

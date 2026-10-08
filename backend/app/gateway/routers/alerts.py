@@ -4,13 +4,14 @@ import logging
 import os
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
 from app.alerting.incident_manager import suppress_incident
 from app.alerting.ingest import process_alert
+from app.alerting.ticket_config import redact_ticket_config, restore_ticket_config
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.models.alerting import AlertingSettings, AlertRule, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
 from app.platform.execution.trust import attach_execution_capability
@@ -1821,6 +1822,11 @@ class AlertSourceCreate(BaseModel):
 
 
 class AlertSourceResponse(BaseModel):
+    @field_validator("config_json", mode="before")
+    @classmethod
+    def hide_ticket_credentials(cls, value: dict) -> dict:
+        return redact_ticket_config(value)
+
     id: str
     name: str
     type: str
@@ -1886,8 +1892,12 @@ async def create_alert_source(
     if body.diagnosis_agent_id:
         await _validate_diagnosis_agent(session, tenant_id, body.diagnosis_agent_id)
 
+    try:
+        source_config = restore_ticket_config(body.config_json)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
     merged_config = _merge_ai_analysis_into_config(
-        body.config_json, body.ai_analysis_enabled, body.ai_analysis_severities, body.ai_analysis_model,
+        source_config, body.ai_analysis_enabled, body.ai_analysis_severities, body.ai_analysis_model,
         body.diagnosis_agent_id,
     )
 
@@ -1967,7 +1977,10 @@ async def update_alert_source(
     if body.auth_mode is not None:
         source.auth_mode = body.auth_mode
     if body.config_json is not None:
-        source.config_json = body.config_json
+        try:
+            source.config_json = restore_ticket_config(body.config_json, source.config_json)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from None
 
     # Merge AI analysis fields into config_json
     source.config_json = _merge_ai_analysis_into_config(
