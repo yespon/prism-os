@@ -3,6 +3,7 @@ import asyncio
 
 from sqlmodel import select
 
+from app.alerting.ticket_secrets import TicketSecretRepository
 from deerflow.database.models import TenantMcpServer, TenantModelConfig, UserConfig
 from deerflow.database.secrets_crypto import (
     decrypt_app_payload_with_key,
@@ -70,6 +71,9 @@ async def _rotate(old_key: str, new_key: str, dry_run: bool) -> None:
                     row.oauth = new_oauth
                     session.add(row)
 
+        changed_ticket_secrets = await TicketSecretRepository().rotate_storage_key(
+            session, old_key, new_key, dry_run=dry_run,
+        )
         if not dry_run:
             await session.commit()
 
@@ -78,6 +82,7 @@ async def _rotate(old_key: str, new_key: str, dry_run: bool) -> None:
     print(f"user_configs_changed={changed_user_configs}")
     print(f"tenant_model_configs_changed={changed_models}")
     print(f"tenant_mcp_servers_changed={changed_mcp}")
+    print(f"ticket_secrets_changed={changed_ticket_secrets}")
 
 
 if __name__ == "__main__":

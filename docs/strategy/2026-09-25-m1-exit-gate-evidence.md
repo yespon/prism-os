@@ -51,3 +51,9 @@
 AlertSource 列表、创建和更新响应现统一隐藏工单 Header 值和 URL 中明显的凭据；编辑只从同租户同 Source 的旧配置回填占位符，目标改变时禁止复用旧 Header。数据库仍可保留旧明文配置，任意 URL 路径也可能包含 Secret；完整 SecretRef 及迁移仍待完成，专项 Security Gate 判定不变。后续任务与验收见[工单凭据增量设计](../superpowers/specs/2026-10-08-m1-ticket-secret-ref-design.md)。
 
 本轮 `test_ticket_config_redaction.py` 与 `test_incident_diagnosis.py` 合计 `16 passed`；Ruff 与 diff 检查通过。未重跑完整后端套件，上一轮 `1391 passed/18 skipped` 保留为历史基线。
+
+### SecretRef 存储增量
+
+严格加密与内部持久 SecretRef 已完成；18 项凭据/SQLite 迁移验证、130 项平台契约和 48 项相邻测试通过。新唯一 head 为 `n8h9i0j1k2l3`，表非空时禁止降级删除。新 PostgreSQL 迁移尚未验证；SecretRef 管理 API、Provider 注入和旧配置迁移未接入，不据此宣告 Secret Gate 或 M1 通过。
+
+本轮完整后端回归：`1411 passed, 18 skipped, 30 warnings`，零失败；Ruff 和 diff 检查通过。18 个跳过仍为未配置 live/LLM/S3 环境，不替代目标部署验收。

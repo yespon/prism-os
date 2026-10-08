@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, Column, DateTime, ForeignKey, Index, Integer, String, UniqueConstraint
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -135,3 +135,17 @@ class PlatformExecutionCapabilityRecord(SQLModel, table=True):
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     consumed_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))
+
+
+class PlatformTicketSecretRecord(SQLModel, table=True):
+    __tablename__ = "platform_ticket_secrets"
+    __table_args__ = (Index("ix_ticket_secret_tenant_source", "tenant_id", "source_id"),)
+
+    id: str = Field(sa_column=Column(String(255), primary_key=True))
+    tenant_id: str = Field(sa_column=Column(String(255), nullable=False))
+    source_id: str = Field(sa_column=Column(String(255), nullable=False))
+    purpose: str = Field(sa_column=Column(String(64), nullable=False))
+    version: int = Field(sa_column=Column(Integer, nullable=False))
+    encrypted_payload: str = Field(repr=False, sa_column=Column(Text, nullable=False))
+    active: bool = Field(default=True, sa_column=Column(Boolean, nullable=False))
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))

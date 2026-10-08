@@ -11,6 +11,7 @@ def test_public_contract_api_keeps_p0_and_adds_only_m1_facts() -> None:
         "ExecutionEnvelope",
         "IdentityRef",
         "ResourceMetadata",
+        "SecretRef",
         "PolicyDecision",
         "PolicyRequest",
         "hash_action_context",
