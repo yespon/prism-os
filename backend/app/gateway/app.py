@@ -28,6 +28,7 @@ from app.gateway.routers import (
     templates,
     tenants,
     threads,
+    ticket_secrets,
     uploads,
 )
 from app.gateway.routers import (
@@ -319,6 +320,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Approval API reads tenant-scoped durable facts; review uses current membership.
     app.include_router(approvals.router)
+    app.include_router(ticket_secrets.router)
 
     # Auth helpers (bootstrap-status, setup-bootstrap-admin)
     app.include_router(auth_routes.router)

@@ -51,3 +51,15 @@ def restore_ticket_config(config: dict, previous: dict | None = None) -> dict:
             raise ValueError("redacted ticket URL has no stored value")
         ticket["webhook_url"] = old_ticket["webhook_url"]
     return result
+
+
+def validate_ticket_ref_config(config: dict, previous: dict | None = None) -> None:
+    """Only the secret lifecycle API may bind, remove or replace a reference."""
+    ticket = config.get("ticket", {})
+    old_ticket = (previous or {}).get("ticket", {})
+    old_ref = old_ticket.get("secret_ref") if isinstance(old_ticket, dict) else None
+    ref = ticket.get("secret_ref") if isinstance(ticket, dict) else None
+    if ref != old_ref:
+        raise ValueError("ticket secret binding must be changed through the secret management API")
+    if ref is not None and ("webhook_url" in ticket or "headers" in ticket):
+        raise ValueError("referenced ticket configuration cannot contain inline credentials")

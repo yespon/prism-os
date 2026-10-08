@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
 from app.alerting.incident_manager import suppress_incident
 from app.alerting.ingest import process_alert
-from app.alerting.ticket_config import redact_ticket_config, restore_ticket_config
+from app.alerting.ticket_config import redact_ticket_config, restore_ticket_config, validate_ticket_ref_config
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.models.alerting import AlertingSettings, AlertRule, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
 from app.platform.execution.trust import attach_execution_capability
@@ -1894,6 +1894,7 @@ async def create_alert_source(
 
     try:
         source_config = restore_ticket_config(body.config_json)
+        validate_ticket_ref_config(source_config)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from None
     merged_config = _merge_ai_analysis_into_config(
@@ -1978,7 +1979,9 @@ async def update_alert_source(
         source.auth_mode = body.auth_mode
     if body.config_json is not None:
         try:
-            source.config_json = restore_ticket_config(body.config_json, source.config_json)
+            source_config = restore_ticket_config(body.config_json, source.config_json)
+            validate_ticket_ref_config(source_config, source.config_json)
+            source.config_json = source_config
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from None
 
