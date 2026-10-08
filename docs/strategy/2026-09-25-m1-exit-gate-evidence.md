@@ -57,3 +57,11 @@ AlertSource 列表、创建和更新响应现统一隐藏工单 Header 值和 UR
 严格加密与内部持久 SecretRef 已完成；18 项凭据/SQLite 迁移验证、130 项平台契约和 48 项相邻测试通过。新唯一 head 为 `n8h9i0j1k2l3`，表非空时禁止降级删除。新 PostgreSQL 迁移尚未验证；SecretRef 管理 API、Provider 注入和旧配置迁移未接入，不据此宣告 Secret Gate 或 M1 通过。
 
 本轮完整后端回归：`1411 passed, 18 skipped, 30 warnings`，零失败；Ruff 和 diff 检查通过。18 个跳过仍为未配置 live/LLM/S3 环境，不替代目标部署验收。
+
+### SecretRef 管理接口增量
+
+同租户管理员可创建、轮换、禁用和查询引用状态；Source 绑定、凭据记录及关键 Audit 同事务提交。接口响应与输入错误不回显 Secret，一般 Source 写入口拒绝引用替换及内联凭据混用。默认关闭的单租户管理开关保持关闭，未部署或放量。
+
+管理接口与脱敏定向测试 `17 passed`；完整后端 `1420 passed, 18 skipped, 30 warnings`，零失败；Ruff、Compose YAML 结构和 diff 检查通过。18 个跳过仍对应未配置 live/LLM/S3 条件。Provider 最小注入、旧配置迁移、新 head 的 PostgreSQL 迁移和 CAS、真实模型/webhook 与回退仍待验证；Security Gate 和 M1 退出判定不变。
+
+平台门禁脚本本轮通过：130 项契约测试、48 项相邻测试；Alembic 唯一 head 为 `n8h9i0j1k2l3`。

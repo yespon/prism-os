@@ -1,6 +1,6 @@
 # M1 工单凭据引用与迁移增量设计
 
-日期：2026-10-08。状态：响应脱敏、严格加密、持久 SecretRef 和存储密钥轮换已实现；管理员接口、旧配置迁移与运行时注入待实施。依据：M1 治理设计、能力路线 §12.4 和 M1 退出门复核。此设计仅覆盖工单 webhook；M6 的通用 Secret Provider 与 Connector 生命周期仍按原路线立项。
+日期：2026-10-08。状态：响应脱敏、严格加密、持久 SecretRef 和存储密钥轮换已实现；管理员接口与配置事务绑定已实现；旧配置迁移与运行时注入待实施。依据：M1 治理设计、能力路线 §12.4 和 M1 退出门复核。此设计仅覆盖工单 webhook；M6 的通用 Secret Provider 与 Connector 生命周期仍按原路线立项。
 
 ## 已完成的响应边界
 
@@ -43,3 +43,13 @@ Provider 的人工建单与规则 `auto_ticket` 必须能解析同样的引用�
 验证：严格加密、仓库及 SQLite 迁移合计 18 项通过；平台契约 130 项及相邻安全测试 48 项通过。SecretRef 尚未进入工单 Provider，旧明文配置仍存在，试点开关保持默认关闭，M1 未退出。
 
 本轮完整后端回归：`1411 passed, 18 skipped, 30 warnings`，零失败；Ruff 和 diff 检查通过。18 个跳过仍为未配置 live/LLM/S3 环境，不替代目标部署验收。
+
+## 任务 3 实施记录
+
+Gateway 新增 `/api/alert-sources/{source_id}/ticket-secret`：POST 创建，PUT 轮换，GET 查询引用及启用状态，DELETE 禁用。POST 接收 `webhook_url` 与可选 `headers`；PUT 还须提交 `expected_ref_id`，DELETE 通过查询参数提交该 ID。所有操作要求认证的同租户管理员；默认关闭的 `PRISMOS_TICKET_SECRET_ADMIN_TENANT` 只允许一个明确选定的租户。响应不含材料；输入通过有界解析和固定错误消息处理，避免校验错误回显 Secret。
+
+创建、轮换在同一事务写加密记录、绑定 Source、移除内联 URL/Header、写关键 Audit；轮换同时禁用旧引用。Source 行锁与完整配置 CAS 防止覆盖并发配置，失败整体回滚。禁用保留绑定与审计。一般告警源配置接口拒绝新增、替换或删除引用，也拒绝引用与内联凭据混用。GET 仅读元数据，不需要解密密钥。
+
+生产 Compose 将部署加密密钥传入 Gateway 与 LangGraph；开发 Compose 继续使用既有 env_file。管理员开关仅在 Gateway 声明。Provider 尚不能消费引用，当前保持管理开关关闭；只在隔离测试 Source/租户验证管理接口，不能在现有投递来源上启用。下一步按任务 4 接入 Provider 和受控 Adapter，随后实施旧配置迁移。
+
+验证：管理接口与响应脱敏定向测试 `17 passed`，包含跨租户、普通成员拒绝、错误不回显、缺密钥、关键审计失败回滚和并发轮换单胜者。完整后端 `1420 passed, 18 skipped, 30 warnings`；Ruff、Compose YAML 结构与 diff 检查通过。新 head 的 PostgreSQL 迁移及 JSON CAS 仍需目标数据库验证；未执行部署或放量，M1 未退出。
