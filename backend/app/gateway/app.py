@@ -11,6 +11,7 @@ from app.gateway.config import get_gateway_config, get_plugin_states, set_gatewa
 from app.gateway.routers import (
     admin,
     agents,
+    agent_catalog,
     announcements,
     approvals,
     artifacts,
@@ -284,6 +285,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # Include routers
     # Models API is mounted at /api/models
     app.include_router(models.router)
+    app.include_router(agent_catalog.router)
 
     # MCP API is mounted at /api/mcp
     app.include_router(mcp.router)

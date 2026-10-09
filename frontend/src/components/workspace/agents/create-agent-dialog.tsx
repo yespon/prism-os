@@ -19,12 +19,15 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useSkills, useCreateAgent } from "@/core/agents";
 import { checkAgentName } from "@/core/agents/api";
+import type { CreateAgentRequest } from "@/core/agents/types";
 import { useI18n } from "@/core/i18n/hooks";
 import { useAvailableMcpConfig } from "@/core/mcp/hooks";
 import { useAvailableModels } from "@/core/models/hooks";
 import { isTenantAdminRole } from "@/core/permissions/scope";
 import { useCurrentTenant } from "@/core/tenants/hooks";
 import { cn } from "@/lib/utils";
+
+import { AgentTemplatePicker } from "./agent-template-picker";
 
 interface CreateAgentDialogProps {
   open: boolean;
@@ -35,7 +38,10 @@ interface CreateAgentDialogProps {
 const NAME_RE = /^[A-Za-z0-9-]+$/;
 
 export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgentDialogProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const templateLocale = locale === "zh-CN" ? "zh" : "en";
+  const [templateId, setTemplateId] = useState("");
+  const [personaCode, setPersonaCode] = useState("");
 
   const { skills } = useSkills();
   const createAgent = useCreateAgent();
@@ -67,6 +73,8 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
   useEffect(() => {
     if (open) {
       setName("");
+      setTemplateId("");
+      setPersonaCode("");
       setDescription("");
       setSystemPrompt("");
       setSelectedModel("");
@@ -310,8 +318,11 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
 
     const toolGroupsList = Array.from(selectedToolGroups);
 
-    const request = {
+    const request: CreateAgentRequest = {
       name: trimmedName.toLowerCase(),
+      template_id: templateId || undefined,
+      template_locale: templateLocale,
+      persona_mbti: personaCode || undefined,
       description,
       model: selectedModel || null,
       system_prompt: systemPrompt,
@@ -375,6 +386,21 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
                 </div>
               </div>
             </div>
+
+            <AgentTemplatePicker
+              open={open}
+              locale={templateLocale}
+              templateId={templateId}
+              personaCode={personaCode}
+              onPersona={setPersonaCode}
+              onTemplate={template => {
+                setTemplateId(template?.id ?? "");
+                if (!template) return;
+                setSystemPrompt(template.system_prompt);
+                setDescription(template.description);
+                if (!name.trim()) setName(template.suggested_name);
+              }}
+            />
 
             {/* Name */}
             <div className="space-y-2 shrink-0">

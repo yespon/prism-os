@@ -4,6 +4,8 @@ import logging
 import re
 import uuid
 
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select as sa_select
@@ -66,6 +68,9 @@ class AgentCreateRequest(BaseModel):
     tags: list[str] = Field(default_factory=list, description="Filter labels")
     enabled: bool = Field(default=True, description="Enable or disable the agent")
     is_shared: bool = Field(default=False, description="Whether the agent is shared with the tenant")
+    template_id: str | None = Field(default=None, max_length=200)
+    template_locale: Literal["zh", "en"] = "zh"
+    persona_mbti: str | None = Field(default=None, max_length=4)
     # Deprecated field — accepted but mapped to system_prompt
     soul: str | None = Field(default=None, description="Deprecated — use system_prompt")
 
@@ -287,7 +292,9 @@ async def create_agent_endpoint(
 
     target_user_id = "tenant-shared" if body.is_shared else user_id
 
-    system_prompt = (body.system_prompt or body.soul or "").strip()
+    from app.integrations.octop.agents import resolve_agent_prompt
+
+    system_prompt, source_metadata = resolve_agent_prompt(body)
     if not system_prompt:
         raise HTTPException(status_code=422, detail="system_prompt is required and must not be empty")
 
@@ -315,6 +322,7 @@ async def create_agent_endpoint(
         tags=body.tags or [],
         enabled=body.enabled,
         created_by=user_id,
+        meta_info=source_metadata,
     )
 
     session.add(agent)

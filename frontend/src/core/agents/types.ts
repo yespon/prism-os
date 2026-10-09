@@ -24,6 +24,9 @@ export interface Skill {
 }
 
 export interface CreateAgentRequest {
+  template_id?: string;
+  template_locale?: "zh" | "en";
+  persona_mbti?: string;
   name: string;
   description?: string;
   model?: string | null;

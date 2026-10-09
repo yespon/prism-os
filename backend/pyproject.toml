@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "deerflow-harness",
+    "prismos-octop-capabilities",
     "fastapi>=0.141.1",
     "httpx>=0.28.0",
     "python-multipart>=0.0.20",
@@ -31,7 +32,8 @@ dependencies = [
 dev = ["pytest>=9.0.3", "ruff>=0.14.11"]
 
 [tool.uv.workspace]
-members = ["packages/harness"]
+members = ["packages/harness", "packages/octop-capabilities"]
 
 [tool.uv.sources]
 deerflow-harness = { workspace = true }
+prismos-octop-capabilities = { workspace = true }

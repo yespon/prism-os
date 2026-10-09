@@ -1,0 +1,64 @@
+name: Octop integration gates
+on:
+  push:
+    branches: [main, 'codex/octop-*']
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'vendor/octop/**'
+      - 'scripts/octop_*.py'
+      - 'Makefile'
+      - '.github/workflows/octop-integration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.26
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Verify upstream archive and imported bytes
+        run: make octop-verify
+      - name: Install locked backend
+        run: cd backend && uv sync --locked
+      - name: Run backend regression
+        run: cd backend && uv run --locked pytest tests/ -q
+      - name: Check host adapters
+        run: >-
+          cd backend && uv run --locked ruff check
+          app/integrations/octop app/runtime_adapters.py app/gateway/routers/agent_catalog.py
+          tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+          ../scripts/octop_sync.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+      - name: Real Gateway smoke with temporary databases
+        run: make octop-smoke
+      - name: Build capability distribution
+        run: cd backend && uv build --package prismos-octop-capabilities
+      - name: Verify installed wheel resources
+        run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl
+      - name: Install locked frontend
+        run: cd frontend && pnpm install --frozen-lockfile
+      - name: Typecheck and frontend regression
+        run: cd frontend && pnpm typecheck && pnpm test:unit
+      - name: Build production frontend
+        run: cd frontend && pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: octop-capability-distributions
+          path: backend/dist/*

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "O01",
+    "capability": "自托管、初始化、模型探测、首次成功对话",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O02",
+    "capability": "多用户、管理员、账号启停、邀请、角色模板、资源配额",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O03",
+    "capability": "本地登录、OIDC、飞书/钉钉/企微 OAuth SSO、LDAP、验证码",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O04",
+    "capability": "多 Agent 创建、启停、重载、独立配置及工作区",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O05",
+    "capability": "内置专家库、专家市场、共享专家、模板导入及复用",
+    "status": "partial: prompt catalog and source-tagged creation; market, publishing and full sharing pending",
+    "full_parity": false
+  },
+  {
+    "id": "O06",
+    "capability": "16 MBTI、人格测试、欢迎语、专家头像",
+    "status": "partial: 16 persona profiles; questionnaire, avatars and welcome flows pending",
+    "full_parity": false
+  },
+  {
+    "id": "O07",
+    "capability": "Skill 开关、技能包、共享池、复制策略、上传、分发",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O08",
+    "capability": "子智能体库、绑定与资源共享池",
+    "status": "partial: specialist prompt library; runtime member binding and shared pools pending",
+    "full_parity": false
+  },
+  {
+    "id": "O09",
+    "capability": "Agent 间问答/委派、AgentTeams 主持人、并行成员、成果回传",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O10",
+    "capability": "Web 工作台、CLI 对话、HTTP/SSE/WebSocket、斜杠命令",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O11",
+    "capability": "Ask/Plan/Craft、附件/文件提及、草稿、工具轨迹、通知、历史与重新加载",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O12",
+    "capability": "飞书、钉钉、QQ、微信、Telegram、Discord、企业微信",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O13",
+    "capability": "通用 cron/date、自然语言建任务、run-now、时区、执行结果及投递",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O14",
+    "capability": "主动关怀/推送、活跃时间窗和最小/最大间隔",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O15",
+    "capability": "模型供应商、模板、模型选择/连通性、上下文与运行参数",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O16",
+    "capability": "Ollama 本地模型发现/下载、目录/服务；本地 ONNX embedding 管理",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O17",
+    "capability": "图片/视频生成供应商、独立路由、预览/投递",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O18",
+    "capability": "STT/TTS、录音、语音供应商配置与测试",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O19",
+    "capability": "层级记忆、召回、压缩、便携迁移、memory slim/维护",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O20",
+    "capability": "知识库、共享语料、文件夹/文档、解析/索引/检索、引用、重建及删除",
+    "status": "source-only: chunk and citation helpers; knowledge API, indexing, ACL and retrieval pending",
+    "full_parity": false
+  },
+  {
+    "id": "O21",
+    "capability": "Agent 文件、workspace、上传下载、预览、文件搜索、导入导出",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O22",
+    "capability": "工作区 Local/Docker/PostgreSQL/COS-S3、宿主文件系统浏览",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O23",
+    "capability": "环境变量 preset、Agent 工具 env 注入",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O24",
+    "capability": "Connector 目录、实例、OAuth/API Key、刷新、健康及 MCP 装配",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O25",
+    "capability": "腾讯服务、企查查、OpenAlex、Agent Mail 等具体连接器",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O26",
+    "capability": "内部 MCP、工具发现/启停、Agent 工具与插件开关",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O27",
+    "capability": "ACP 入站服务、外部 IDE 使用 Agent",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O28",
+    "capability": "ACP 出站 OpenCode、CodeBuddy、Claude Code、Codex、Kimi Code、Cursor CLI、Pi，及自定义 Runner",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O29",
+    "capability": "交互式终端、AI 辅助命令与排障",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O30",
+    "capability": "浏览器会话、持久 profile、截图、远程操控与自动化",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O31",
+    "capability": "浏览器录制、回放、停止后生成 Skill 草稿",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O32",
+    "capability": "远程桌面：屏幕、键鼠、安装/卸载、隔离桌面、跨平台",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O33",
+    "capability": "Remote Phone：手机设备状态、绑定、看屏/操控、shell",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O34",
+    "capability": "Windows/macOS/Linux 桌面客户端及 FnOS/NAS 制品",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O35",
+    "capability": "移动 Web/PWA、原生移动客户端",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O36",
+    "capability": "插件安装/启停/重载/卸载、ZIP/URL、插件UI与工具",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O37",
+    "capability": "插件市场发现与安装",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O38",
+    "capability": "Shell守卫、HITL审批、PII处理、权限和配额配置",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O39",
+    "capability": "用量、Token配额、指标、Audit、轨迹及Langfuse配置",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O40",
+    "capability": "备份/恢复、升级/重启、系统服务、TLS自动签发/续期、健康、i18n/偏好",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O41",
+    "capability": "Octop↔Octop Bridge、多节点远程专家、聊天/工作区代理",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  },
+  {
+    "id": "O42",
+    "capability": "内置产品助手、自然语言操作管理界面/生成插件",
+    "status": "pending: full source archived; no new equivalence exit claimed",
+    "full_parity": false
+  }
+]

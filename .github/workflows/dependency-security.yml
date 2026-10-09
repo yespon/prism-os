@@ -71,7 +71,7 @@ jobs:
           import importlib.metadata as metadata
           from pathlib import Path
 
-          excluded = {"deerflow-harness"}
+          excluded = {"deerflow-harness", "prismos-octop-capabilities"}
           packages = []
           for distribution in metadata.distributions():
               name = distribution.metadata.get("Name")

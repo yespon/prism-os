@@ -43,7 +43,7 @@ def _load_agent(name: str, user_id: str | None, tenant_id: str | None) -> Custom
                 CustomAgent.name == name,
             )
             result = await session.exec(statement)
-            agents = result.all()
+            agents = result.scalars().all()
             for agent in agents:
                 if agent.user_id == user_id:
                     return agent
@@ -62,7 +62,7 @@ def _list_agents(user_id: str | None, tenant_id: str | None) -> list[CustomAgent
                 .order_by(CustomAgent.name)
             )
             result = await session.exec(statement)
-            return result.all()
+            return list(result.scalars().all())
 
     return _run_async(_query())
 

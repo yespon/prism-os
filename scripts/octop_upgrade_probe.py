@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Exercise old/new imported snapshots against the same PrismOS host contracts."""
+
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--previous-archive", required=True, type=Path)
+    parser.add_argument("--previous-revision", required=True)
+    parser.add_argument("--previous-release", required=True)
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+    manifest = json.loads((ROOT / "vendor/octop/manifest.json").read_text())
+    spec = importlib.util.spec_from_file_location(
+        "octop_sync", ROOT / "scripts/octop_sync.py"
+    )
+    sync = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sync)
+    evidence = {
+        "scope": "catalog, persona, imported pure modules and Agent host contracts",
+        "host_changed": False,
+        "versions": [],
+    }
+    with tempfile.TemporaryDirectory(prefix="prismos-octop-upgrade-") as directory:
+        stage = Path(directory)
+        package = stage / sync.PACKAGE
+        package.mkdir(parents=True)
+        for path in ["__init__.py", "catalog.py", "upstream/__init__.py"]:
+            (package / path).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / sync.PACKAGE / path, package / path)
+        sync.ROOT = stage
+        snapshots = [
+            (args.previous_archive, args.previous_revision, args.previous_release),
+            (
+                ROOT / "vendor/octop/upstream.tar.gz",
+                manifest["revision"],
+                manifest["release"],
+            ),
+        ]
+        for archive, revision, release in snapshots:
+            if evidence["versions"]:
+                evidence["diff"] = sync.compare(archive, revision, release)
+            imported = sync.sync(archive, revision, release)
+            verified = sync.verify()
+            environment = dict(os.environ)
+            environment["PYTHONPATH"] = (
+                str(package.parent) + os.pathsep + str(ROOT / "backend")
+            )
+            environment["PRISMOS_OCTOP_EXPECTED_REVISION"] = revision
+            result = subprocess.run(
+                [
+                    str(ROOT / "backend/.venv/bin/python"),
+                    "-m",
+                    "pytest",
+                    "tests/test_octop_integration.py",
+                    "-q",
+                ],
+                cwd=ROOT / "backend",
+                env=environment,
+                text=True,
+                capture_output=True,
+            )
+            evidence["versions"].append(
+                {
+                    "release": release,
+                    "revision": revision,
+                    "import": imported,
+                    "verify": verified,
+                    "returncode": result.returncode,
+                    "pytest": result.stdout,
+                }
+            )
+            if result.returncode:
+                raise RuntimeError(result.stdout + result.stderr)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n")
+    print(
+        json.dumps(
+            {
+                "passed": True,
+                "versions": [entry["release"] for entry in evidence["versions"]],
+                "imported_changed": len(evidence["diff"]["imported_changed"]),
+            }
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

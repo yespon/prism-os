@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "gateway": "real uvicorn process",
+  "auth": "real Better Auth session and tenant membership",
+  "migration_head": "n8h9i0j1k2l3",
+  "catalog": {
+    "release": "v1.0.2b6",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "templates": 290,
+    "personas": 16,
+    "integrity_verified": true,
+    "mode": "prompt_templates",
+    "automatic_resource_installation": false
+  },
+  "agent_created_and_reloaded": true,
+  "temporary_databases": true
+}
