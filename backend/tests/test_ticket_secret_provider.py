@@ -296,3 +296,34 @@ async def test_concurrent_governed_requests_claim_only_one_submission(setup):
     assert len(state.calls) == 1 and "submitted" in {result.status for result in results}
     final = await adapter.execute(state.execution, "request-a", "incident-a", at=NOW + timedelta(seconds=1))
     assert final.status == "submitted" and len(state.calls) == 1
+
+
+async def test_migration_invalidates_prior_approval_and_new_request_uses_reference(setup):
+    from sqlalchemy import text
+
+    from app.alerting.ticket_secret_migration import EXPECTED_HEAD, migrate_ticket_secret_refs
+
+    state = setup
+    async with state.factory() as session:
+        source = await session.get(AlertSource, "source-a")
+        source.config_json = {"ticket": {"provider": "webhook", "webhook_url": "https://tickets.example/create"}}
+        await session.exec(text("CREATE TABLE alembic_version (version_num VARCHAR(32) PRIMARY KEY)"))
+        await session.exec(text("INSERT INTO alembic_version VALUES (:head)"), params={"head": EXPECTED_HEAD})
+        await session.commit()
+    adapter = state.adapter("require_approval")
+    waiting = await adapter.execute(state.execution, "before-migration", "incident-a", at=NOW)
+    assert waiting.status == "awaiting_approval"
+    await state.approval_service.review("tenant-a", waiting.approval_id, "admin-a", "approve", at=NOW + timedelta(seconds=1))
+    report = await migrate_ticket_secret_refs(state.factory, "tenant-a", apply=True)
+    assert report.migrated == 1
+    with pytest.raises((ValueError, PermissionError)):
+        await adapter.execute(state.execution, "before-migration", "incident-a", at=NOW + timedelta(seconds=2))
+    assert not state.calls and await state.submissions.get("tenant-a", waiting.decision_id) is None
+    assert (await state.approvals.get("tenant-a", waiting.approval_id))[0].status == "approved"
+    new_waiting = await adapter.execute(state.execution, "after-migration", "incident-a", at=NOW + timedelta(seconds=3))
+    assert new_waiting.status == "awaiting_approval" and new_waiting.approval_id != waiting.approval_id
+    await state.approval_service.review("tenant-a", new_waiting.approval_id, "admin-a", "approve", at=NOW + timedelta(seconds=4))
+    outcome = await adapter.execute(state.execution, "after-migration", "incident-a", at=NOW + timedelta(seconds=5))
+    assert outcome.status == "submitted" and len(state.calls) == 1
+    assert str(state.calls[0].url) == "https://tickets.example/create"
+    await assert_no_persisted_material(state)

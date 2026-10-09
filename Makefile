@@ -207,7 +207,7 @@ octop-verify:
 	$(PYTHON) scripts/octop_sync.py verify
 octop-check: octop-verify
 	cd backend && $(UV) sync --locked
-	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py -q
+	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
 	cd frontend && $(PNPM) typecheck
 	cd frontend && $(PNPM) exec vitest run src/core/agents/catalog.test.ts
 octop-build: octop-check octop-smoke

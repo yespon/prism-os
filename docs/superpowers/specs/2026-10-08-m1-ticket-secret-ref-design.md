@@ -67,3 +67,11 @@ HTTPX/HTTPcore 的 request-context 日志隐藏请求细节，其他并发请求
 新增测试使用真实 SQLModel 持久事实、实际 HTTPX Client 与受控 MockTransport；覆盖 tenant/Source/引用绑定、坏密文/缺错密钥、审批后轮换/禁用/撤权/模板变更、claim 后再次核验、并发单提交、超时 unknown、日志/结果/存储及人工/规则兼容。本记录不代表真实模型/目标 webhook/PostgreSQL 或 M1 退出已通过；旧明文迁移另由任务 5 完成。
 
 任务 4 本地验证结果（2026-10-09）：新增 Provider 测试 24 项，相邻合计 83 项；完整后端 `1455 passed, 18 skipped, 30 warnings`；平台契约 130 项与相邻检查 48 项；`make octop-build`（92 项有界后端、类型、Gateway、wheel、生产构建）通过。任务 5 迁移和任务 7 真实环境门仍未完成。
+
+## 任务 5 的实施接缝
+
+命令 `backend/scripts/migrate_ticket_secret_refs.py` 默认 dry-run，要求显式配置、租户和已存在的指定迁移 head；`--source-id` 可重复，`--limit` 默认 100、最大 1,000。独立维护进程关闭查询/驱动日志并仅输出 ID、计数和固定状态。apply 对完整选中批次预检，Source 行锁加完整 JSON CAS，Secret/引用/明文移除/关键 Audit 同事务；其他配置和禁用状态保留。混合引用与明文、无效绑定、缺密钥、审计失败或 CAS 冲突拒绝整批。
+
+已迁移引用包括禁用状态仍可作为存储事实核对，重复 apply 不重新启用、不生成新记录；非 webhook 仅报告待处理，不计为已迁移。提交确认丢失明确返回 unknown/null 数量，重新 dry-run 核对事实；不宣称零写入。迁移前批准失效，新请求重新审批。备份、恢复与开关回退步骤见 [迁移操作规程](../../migrations/ticket-secret-refs.md)，真实环境验收仍待任务 7。
+
+任务 5 本地结果（2026-10-09）：新增迁移/迁移后受控行为 23 项，与相邻用例共 57 项通过；完整后端 `1478 passed, 18 skipped, 30 warnings`，完整前端 94 项；平台契约 130 项、相邻 48 项和唯一 head 通过；`make octop-build` 115 项有界后端及全部构建步骤通过。真实部署迁移、开关回退与 M1 五道门仍待 N04。
