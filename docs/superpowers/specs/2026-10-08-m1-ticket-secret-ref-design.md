@@ -1,6 +1,6 @@
 # M1 工单凭据引用与迁移增量设计
 
-日期：2026-10-08。状态：响应脱敏、严格加密、持久 SecretRef 和存储密钥轮换已实现；管理员接口与配置事务绑定已实现；旧配置迁移与运行时注入待实施。依据：M1 治理设计、能力路线 §12.4 和 M1 退出门复核。此设计仅覆盖工单 webhook；M6 的通用 Secret Provider 与 Connector 生命周期仍按原路线立项。
+日期：2026-10-08。状态：响应脱敏、严格加密、持久 SecretRef 和存储密钥轮换已实现；管理员接口与配置事务绑定已实现；Provider 引用注入进入验证，旧配置迁移待实施。依据：M1 治理设计、能力路线 §12.4 和 M1 退出门复核。此设计仅覆盖工单 webhook；M6 的通用 Secret Provider 与 Connector 生命周期仍按原路线立项。
 
 ## 已完成的响应边界
 
@@ -53,3 +53,17 @@ Gateway 新增 `/api/alert-sources/{source_id}/ticket-secret`：POST 创建，PU
 生产 Compose 将部署加密密钥传入 Gateway 与 LangGraph；开发 Compose 继续使用既有 env_file。管理员开关仅在 Gateway 声明。Provider 尚不能消费引用，当前保持管理开关关闭；只在隔离测试 Source/租户验证管理接口，不能在现有投递来源上启用。下一步按任务 4 接入 Provider 和受控 Adapter，随后实施旧配置迁移。
 
 验证：管理接口与响应脱敏定向测试 `17 passed`，包含跨租户、普通成员拒绝、错误不回显、缺密钥、关键审计失败回滚和并发轮换单胜者。完整后端 `1420 passed, 18 skipped, 30 warnings`；Ruff、Compose YAML 结构与 diff 检查通过。新 head 的 PostgreSQL 迁移及 JSON CAS 仍需目标数据库验证；未执行部署或放量，M1 未退出。
+
+## 任务 4 的实施接缝与验证边界
+
+工单目标解析现在返回服务端选定的 Source ID，所有 Signal/RawAlert/Source 查询保持 tenant 过滤且仅选择 active Source。请求上下文对引用配置摘要绑定不可变 SecretRef schema/ID/version/tenant/Source；不解密，也不生成凭据公开摘要。旧无凭据 canary 的 HTTPS/无 Header 限制保留。
+
+Policy 和关键 Audit 通过、审批处于可提交状态后，先检查当前 Source 绑定和凭据可解析，再消费批准/保留提交。Provider 创建客户端后重查请求者和实际目标，重新读取当前 Source 绑定与有效引用，解密仅用于该次 HTTP POST 的局部 URL/Header；配置对象保持引用形式。手工建单和 auto_ticket 复用同一解析路径与引用读取，但仍不计为受控 Agent Action 的治理证据。
+
+SecretRef 被撤销或改变若发生在最后核验之前，则不发送；在最后核验之后已经发出的请求无法撤销，网络/接收端的真实提交结果仍需幂等与 reconciliation。提交 claim 后再次核验失败时保留 unknown，不释放保留或自动重发；当前 M1 状态机不新造生命周期。
+
+HTTPX/HTTPcore 的 request-context 日志隐藏请求细节，其他并发请求的日志不受影响；HTTP 异常不向上暴露原请求链。Provider 回显已知 URL/Header 材料的结果字段被弃用，避免写回事件或 Incident。部署时仍需验证实际 tracing/exporter 与真实 Provider 的错误、响应和脱敏边界。
+
+新增测试使用真实 SQLModel 持久事实、实际 HTTPX Client 与受控 MockTransport；覆盖 tenant/Source/引用绑定、坏密文/缺错密钥、审批后轮换/禁用/撤权/模板变更、claim 后再次核验、并发单提交、超时 unknown、日志/结果/存储及人工/规则兼容。本记录不代表真实模型/目标 webhook/PostgreSQL 或 M1 退出已通过；旧明文迁移另由任务 5 完成。
+
+任务 4 本地验证结果（2026-10-09）：新增 Provider 测试 24 项，相邻合计 83 项；完整后端 `1455 passed, 18 skipped, 30 warnings`；平台契约 130 项与相邻检查 48 项；`make octop-build`（92 项有界后端、类型、Gateway、wheel、生产构建）通过。任务 5 迁移和任务 7 真实环境门仍未完成。

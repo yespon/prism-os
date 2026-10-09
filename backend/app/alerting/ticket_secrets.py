@@ -15,6 +15,7 @@ from app.models.alerting import AlertSource
 from app.models.governance import PlatformTicketSecretRecord
 from app.platform.contracts import SecretRef
 from deerflow.database.secrets_crypto import decrypt_text_strict, encrypt_text_strict
+from deerflow.database.session import get_session_factory
 
 
 @dataclass(frozen=True)
@@ -117,3 +118,38 @@ class TicketSecretRepository:
                 row.encrypted_payload = ciphertext
                 session.add(row)
         return len(rows)
+
+
+def ticket_secret_ref(config: dict, tenant_id: str, source_id: str | None) -> SecretRef | None:
+    """Validate an opaque reference against trusted context without echoing input."""
+    if "secret_ref" not in config:
+        return None
+    try:
+        ref = SecretRef.model_validate(config["secret_ref"])
+    except (ValueError, TypeError):
+        raise ValueError("invalid ticket secret reference") from None
+    if not source_id or ref.tenant_id != tenant_id or ref.source_id != source_id:
+        raise PermissionError("ticket secret unavailable")
+    if "webhook_url" in config or "headers" in config:
+        raise ValueError("referenced ticket configuration cannot contain inline credentials")
+    return ref
+
+
+async def resolve_ticket_material(tenant_id: str, source_id: str | None, config: dict) -> TicketSecretMaterial | None:
+    """Read current Source binding and decrypt locally; never change the config."""
+    ref = ticket_secret_ref(config, tenant_id, source_id)
+    if ref is None:
+        return None
+    async with get_session_factory()() as session:
+        source = (await session.exec(select(AlertSource).where(
+            AlertSource.tenant_id == tenant_id, AlertSource.id == source_id,
+            AlertSource.status == "active",
+        ))).first()
+        if source is None or (source.config_json or {}).get("ticket") != config:
+            raise PermissionError("ticket secret binding changed or unavailable")
+        return await TicketSecretRepository().read(session, tenant_id, source_id, ref)
+
+
+async def check_ticket_material(tenant_id: str, source_id: str | None, config: dict) -> None:
+    """Preflight before consuming approval/reserving submission; retain no material."""
+    await resolve_ticket_material(tenant_id, source_id, config)

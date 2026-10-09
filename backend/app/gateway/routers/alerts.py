@@ -1084,67 +1084,16 @@ async def create_incident_ticket(
     if incident.ticket_id:
         raise HTTPException(status_code=400, detail="Ticket already exists for this incident")
 
-    # Find the ticket config from the incident's alert source
-    links_result = await session.exec(
-        select(IncidentSignalLink).where(
-            IncidentSignalLink.incident_id == incident_id,
-            IncidentSignalLink.tenant_id == tenant_id,
-        )
-    )
-    signal_ids = [link.signal_id for link in links_result.scalars().all()]
-
-    ticket_config = {}
-    if signal_ids:
-        raw_ids_res = await session.exec(
-            select(Signal.raw_alert_id).where(
-                Signal.id.in_(signal_ids),
-                Signal.raw_alert_id.isnot(None),
-            )
-        )
-        raw_alert_ids = list({r for r in raw_ids_res.scalars().all()})
-        if raw_alert_ids:
-            src_ids_res = await session.exec(
-                select(RawAlert.source_id).where(
-                    RawAlert.id.in_(raw_alert_ids),
-                    RawAlert.source_id.isnot(None),
-                )
-            )
-            source_ids = list({r for r in src_ids_res.scalars().all()})
-            if source_ids:
-                src_result = await session.exec(
-                    select(AlertSource).where(
-                        AlertSource.tenant_id == tenant_id,
-                        AlertSource.id.in_(source_ids),
-                    )
-                )
-                for src in src_result.scalars().all():
-                    ticket_config = (src.config_json or {}).get("ticket", {})
-                    if ticket_config:
-                        break
-
-    if not ticket_config:
-        raise HTTPException(status_code=400, detail="No ticket provider configured for this incident's alert source")
-
-    # Collect signal data for ticket context
-    signals_data: list[dict] = []
-    if signal_ids:
-        sig_result = await session.exec(select(Signal).where(Signal.id.in_(signal_ids)))
-        for s in sig_result.scalars().all():
-            signals_data.append({
-                "title": s.title,
-                "severity": s.severity,
-                "source": s.source,
-                "status": s.status,
-            })
-
+    from app.alerting.governed_ticket import resolve_ticket_target
     from app.alerting.ticket_provider import create_ticket as do_create_ticket
 
     try:
-        ticket_result = await do_create_ticket(incident, ticket_config, signals_data)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except RuntimeError as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        target = await resolve_ticket_target(tenant_id, incident_id, session=session)
+        ticket_result = await do_create_ticket(incident, target.config, target.signals, source_id=target.source_id)
+    except (ValueError, PermissionError):
+        raise HTTPException(status_code=400, detail="Ticket configuration or credentials unavailable") from None
+    except RuntimeError:
+        raise HTTPException(status_code=502, detail="Ticket creation failed") from None
 
     incident.ticket_id = ticket_result.ticket_id
     incident.ticket_url = ticket_result.ticket_url

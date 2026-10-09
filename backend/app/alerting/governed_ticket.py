@@ -12,6 +12,7 @@ from sqlmodel import select
 
 from app.alerting.legacy_audit_delivery import LegacyAuditDeliveryService
 from app.alerting.ticket_provider import TicketResult, create_ticket, render_ticket_payload
+from app.alerting.ticket_secrets import check_ticket_material, ticket_secret_ref
 from app.models.alerting import AlertSource, Incident, IncidentSignalLink, RawAlert, Signal
 from app.platform.approval.repository import ApprovalRepository
 from app.platform.approval.service import ApprovalService
@@ -28,6 +29,7 @@ class TicketTarget:
     incident: Incident
     config: dict[str, Any]
     signals: list[dict[str, Any]]
+    source_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -46,35 +48,40 @@ TicketSender = Callable[..., Awaitable[TicketResult]]
 TicketLinker = Callable[[str, str, TicketResult], Awaitable[None]]
 
 
-async def resolve_ticket_target(tenant_id: str, incident_id: str) -> TicketTarget:
-    """Read the incident and its configured webhook from tenant-scoped tables."""
-    async with get_session_factory()() as session:
-        incident = (await session.exec(select(Incident).where(Incident.tenant_id == tenant_id, Incident.id == incident_id))).first()
-        if incident is None:
-            raise ValueError("incident unavailable")
-        links = (await session.exec(select(IncidentSignalLink).where(
-            IncidentSignalLink.tenant_id == tenant_id, IncidentSignalLink.incident_id == incident_id,
-        ))).all()
-        signal_ids = [link.signal_id for link in links]
-        signals = (await session.exec(select(Signal).where(
-            Signal.tenant_id == tenant_id, Signal.id.in_(signal_ids),
-        ).order_by(Signal.id))).all() if signal_ids else []
-        raw_ids = {signal.raw_alert_id for signal in signals if signal.raw_alert_id}
-        raw_alerts = (await session.exec(select(RawAlert).where(
-            RawAlert.tenant_id == tenant_id, RawAlert.id.in_(raw_ids),
-        ))).all() if raw_ids else []
-        source_ids = {alert.source_id for alert in raw_alerts if alert.source_id}
-        sources = (await session.exec(select(AlertSource).where(
-            AlertSource.tenant_id == tenant_id, AlertSource.status == "active", AlertSource.id.in_(source_ids),
-        ).order_by(AlertSource.id))).all() if source_ids else []
-        ticket_config = next(((source.config_json or {}).get("ticket") for source in sources
-                              if (source.config_json or {}).get("ticket")), None)
-        if not ticket_config or ticket_config.get("provider", "webhook") != "webhook" or not ticket_config.get("webhook_url"):
-            raise ValueError("incident has no configured webhook ticket provider")
-        summaries = [{"title": signal.title, "severity": signal.severity,
-                      "source": signal.source, "status": signal.status} for signal in signals]
-        return TicketTarget(incident=incident, config=ticket_config, signals=summaries)
+async def resolve_ticket_target(tenant_id: str, incident_id: str, *, session=None) -> TicketTarget:
+    """Resolve only tenant-scoped signals and active Source; never decrypt here."""
+    if session is not None:
+        return await _resolve_in_session(session, tenant_id, incident_id)
+    async with get_session_factory()() as value:
+        return await _resolve_in_session(value, tenant_id, incident_id)
 
+
+async def _resolve_in_session(session, tenant_id: str, incident_id: str) -> TicketTarget:
+    incident = (await session.exec(select(Incident).where(Incident.tenant_id == tenant_id, Incident.id == incident_id))).first()
+    if incident is None:
+        raise ValueError("incident unavailable")
+    links = (await session.exec(select(IncidentSignalLink).where(
+        IncidentSignalLink.tenant_id == tenant_id, IncidentSignalLink.incident_id == incident_id,
+    ))).all()
+    signal_ids = [link.signal_id for link in links]
+    signals = (await session.exec(select(Signal).where(
+        Signal.tenant_id == tenant_id, Signal.id.in_(signal_ids),
+    ).order_by(Signal.id))).all() if signal_ids else []
+    raw_ids = {signal.raw_alert_id for signal in signals if signal.raw_alert_id}
+    raw_alerts = (await session.exec(select(RawAlert).where(
+        RawAlert.tenant_id == tenant_id, RawAlert.id.in_(raw_ids),
+    ))).all() if raw_ids else []
+    source_ids = {alert.source_id for alert in raw_alerts if alert.source_id}
+    sources = (await session.exec(select(AlertSource).where(
+        AlertSource.tenant_id == tenant_id, AlertSource.status == "active", AlertSource.id.in_(source_ids),
+    ).order_by(AlertSource.id))).all() if source_ids else []
+    selected_source = next((source for source in sources if (source.config_json or {}).get("ticket")), None)
+    ticket_config = (selected_source.config_json or {}).get("ticket") if selected_source else None
+    if not isinstance(ticket_config, dict) or ticket_config.get("provider", "webhook") != "webhook" or not (ticket_config.get("webhook_url") or "secret_ref" in ticket_config):
+        raise ValueError("incident has no configured webhook ticket provider")
+    summaries = [{"title": signal.title, "severity": signal.severity,
+                  "source": signal.source, "status": signal.status} for signal in signals]
+    return TicketTarget(incident=incident, config=ticket_config, signals=summaries, source_id=selected_source.id)
 
 async def active_requester(tenant_id: str, user_id: str) -> bool:
     return await get_tenant(tenant_id) is not None and await get_membership(user_id, tenant_id) is not None
@@ -121,10 +128,13 @@ class TicketActionAdapter:
         self._link_ticket = link_ticket
 
     @staticmethod
-    def _validate_destination(config: dict[str, Any]) -> None:
+    def _validate_destination(config: dict[str, Any], *, tenant_id: str | None = None, source_id: str | None = None) -> None:
         """The M1 canary may use only credential-free HTTPS webhooks."""
         if config.get("provider", "webhook") != "webhook":
             raise ValueError("governed ticket requires a webhook provider")
+        if "secret_ref" in config:
+            ticket_secret_ref(config, tenant_id, source_id)
+            return
         url = config.get("webhook_url")
         if not isinstance(url, str):
             raise ValueError("governed ticket requires an HTTPS webhook URL")
@@ -142,6 +152,9 @@ class TicketActionAdapter:
         destination = {"provider": target.config.get("provider", "webhook"),
                        "webhook_url": target.config.get("webhook_url"),
                        "headers": target.config.get("headers", {})}
+        if "secret_ref" in target.config:
+            ref = ticket_secret_ref(target.config, execution.tenant_id, target.source_id)
+            destination = {"provider": "webhook", "reference": ref.model_dump(mode="json"), "source_id": target.source_id}
         destination_hash = sha256(json.dumps(destination, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
         context = ActionContextInput(
             tenant_id=execution.tenant_id, execution=execution, action="ticket.create",
@@ -179,7 +192,7 @@ class TicketActionAdapter:
         target = await self._resolve_target(execution.tenant_id, incident_id)
         if target.incident.tenant_id != execution.tenant_id or target.incident.id != incident_id:
             raise PermissionError("incident tenant or identity changed")
-        self._validate_destination(target.config)
+        self._validate_destination(target.config, tenant_id=execution.tenant_id, source_id=target.source_id)
         request = self._request(execution, request_id, target, instant)
         decision = await self._policy.evaluate_and_record(request, self._configuration, at=instant)
         if decision.verdict == "deny":
@@ -212,9 +225,10 @@ class TicketActionAdapter:
         if not await self._check_permission(execution.tenant_id, actor.id):
             raise PermissionError("requester authorization changed")
         current = await self._resolve_target(execution.tenant_id, incident_id)
-        self._validate_destination(current.config)
+        self._validate_destination(current.config, tenant_id=execution.tenant_id, source_id=current.source_id)
         if current.incident.ticket_id or self._request(execution, request_id, current, instant).context_hash != request.context_hash:
             raise ValueError("ticket Action context changed before submission")
+        await check_ticket_material(execution.tenant_id, current.source_id, current.config)
         if approval_id is not None:
             await self._approval_service.consume_for_request(decision.tenant_id, approval_id, request, at=instant)
         fact = await self._submissions.prepare(decision, approval_id, at=instant)
@@ -234,10 +248,18 @@ class TicketActionAdapter:
                 needs_reconciliation=latest.status == "submitted" and current.incident.ticket_id != latest.ticket_id,
             )
         try:
-            ticket = await self._send_ticket(
-                current.incident, current.config, current.signals,
-                idempotency_key=fact.idempotency_key,
-            )
+            arguments = {"idempotency_key": fact.idempotency_key}
+            if "secret_ref" in current.config:
+                async def before_send():
+                    if not await self._check_permission(execution.tenant_id, actor.id):
+                        raise PermissionError("requester authorization changed")
+                    final = await self._resolve_target(execution.tenant_id, incident_id)
+                    self._validate_destination(final.config, tenant_id=execution.tenant_id, source_id=final.source_id)
+                    if final.incident.ticket_id or self._request(execution, request_id, final, instant).context_hash != request.context_hash:
+                        raise ValueError("ticket Action context changed before submission")
+
+                arguments.update(source_id=current.source_id, before_send=before_send)
+            ticket = await self._send_ticket(current.incident, current.config, current.signals, **arguments)
         except Exception:
             unknown_audit = AuditEvent(
                 tenant_id=decision.tenant_id,
