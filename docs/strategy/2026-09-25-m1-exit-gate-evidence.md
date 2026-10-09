@@ -65,3 +65,19 @@ AlertSource 列表、创建和更新响应现统一隐藏工单 Header 值和 UR
 管理接口与脱敏定向测试 `17 passed`；完整后端 `1420 passed, 18 skipped, 30 warnings`，零失败；Ruff、Compose YAML 结构和 diff 检查通过。18 个跳过仍对应未配置 live/LLM/S3 条件。Provider 最小注入、旧配置迁移、新 head 的 PostgreSQL 迁移和 CAS、真实模型/webhook 与回退仍待验证；Security Gate 和 M1 退出判定不变。
 
 平台门禁脚本本轮通过：130 项契约测试、48 项相邻测试；Alembic 唯一 head 为 `n8h9i0j1k2l3`。
+
+## 2026-10-09 迁入分支的最新复核
+
+分支 `codex/octop-integration`；N02 提交 `194bcaa`，N03 提交 `17aff32`。本文前述数量与判定保留为历史记录；当前证据为完整后端 `1478 passed, 18 skipped, 30 warnings`、完整前端 40 文件/94 项、平台契约 130 项/相邻安全 48 项、唯一 head `n8h9i0j1k2l3`，以及 `make octop-build` 的来源、115 项有界后端、类型、真实认证 Gateway、wheel 和生产构建通过。
+
+Provider 的最小引用注入、人工/规则兼容与旧配置默认 dry-run 迁移已实施。迁移前批准失效、新请求重新审批，claim 后失败/网络超时不重发；迁移提交确认丢失明确 unknown。新增迁移/兼容定向 57 项通过，CLI 输出不含材料。实际部署尚未执行 apply，管理/Action 开关保持默认关闭。
+
+| 门 | 最新增量证据 | 仍待完成 / 当前判定 |
+| --- | --- | --- |
+| Contract | 130 契约、48 相邻、唯一新 head 通过 | Gateway/LangGraph 严格身份传播真实部署待验 |
+| Golden Scenario | 引用、旧批准、撤权、禁用、超时 unknown、并发单提交与迁移后三条路径自动化通过 | 真实模型→受控 Tool→接收端调用次数/审批/撤权仍待验 |
+| Quality | 后端 1,478、前端 94 与构建通过；未新增 skip | 历史 lint 债保留；远端 CI 尚无本轮实际运行证据 |
+| Migration | 隔离 PostgreSQL 16.15 全链/空表升降再升、JSON CAS、单胜者、整批回滚、重启、迁移前/加密后备份恢复和非空降级保护通过 | 目标数据库备份、迁移、投递及开关回退仍待验 |
+| Security | 最小局部注入、事务明文移除、引用撤销/轮换、日志与输出边界有本地测试 | 真实环境 exporter、Secret 与跨租户/副作用演练仍待验，未退出 |
+
+隔离 PostgreSQL 证据见 [N04 JSON](../superpowers/evidence/2026-10-09-octop-n04-postgres.json)，可重复入口 `make octop-postgres`；管理员身份为受控 ASGI fixture，不能替代认证传播。临时容器和卷已清理。M1 仍未退出、M2/N08 不启动；用户选择已有测试环境，地址/配置引用尚待补充，N05–N07 独立任务继续推进。

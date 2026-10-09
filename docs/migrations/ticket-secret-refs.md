@@ -35,3 +35,9 @@ uv run --locked python -m scripts.migrate_ticket_secret_refs \
 ## 本地验证边界
 
 SQLite 事务、CAS、CLI、干净错误、密钥缺失、批量/租户边界、幂等、禁用保持、审计失败整批回滚和丢失提交确认有自动化测试。人工/规则使用实际 HTTPX Client + MockTransport，受控路径检查迁移前批准拒绝、新批准单提交；它们不替代真实模型/网络 Provider/目标部署的验收。
+
+## 隔离 PostgreSQL 重复验证
+
+仓库根目录执行 `make octop-postgres`。默认使用已缓存的 `postgres:16-alpine`；若需固定其他已缓存镜像，在 backend 执行 `uv run --locked python -m scripts.verify_ticket_secret_postgres --image IMAGE_ID --output /path/to/evidence.json`。脚本只使用自己创建的容器、随机宿主端口、独立卷和临时配置，不接受目标部署数据库 URL；失败也清理本次资源。
+
+2026-10-09 的 PostgreSQL 16.15 结果包括全链/空表升级回退、真实 CLI、JSON CAS、轮换单胜者、审计整批回滚、重启、迁移前及加密后备份恢复、非空表降级保护，详见 `../superpowers/evidence/2026-10-09-octop-n04-postgres.json`。身份为受控 fixture，未执行真实模型/外发/目标部署验收。

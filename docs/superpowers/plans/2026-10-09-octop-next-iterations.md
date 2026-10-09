@@ -1,16 +1,16 @@
 # Octop 迁入接续实施计划
 
-日期：2026-10-09（Asia/Shanghai）。状态：执行中；N01–N03 已完成本地验证，N04 隔离验证进行中；基于用户“完整 Octop 能力、保留 PrismOS 规划、快速迁入且持续可运行可验证”的要求。本计划细化已讨论的 R0–R6 顺序，不覆盖原 Approved Capability Roadmap 的设计、不变量、完整退出门与 C1/C2 条件。
+日期：2026-10-09（Asia/Shanghai）。状态：执行中；N01–N03 已完成本地验证，N04 隔离 PostgreSQL 已验证，目标环境待验；N05–N07 接续；基于用户“完整 Octop 能力、保留 PrismOS 规划、快速迁入且持续可运行可验证”的要求。本计划细化已讨论的 R0–R6 顺序，不覆盖原 Approved Capability Roadmap 的设计、不变量、完整退出门与 C1/C2 条件。
 
 ## 1. 起点与本轮核对
 
 - 迁入分支 `codex/octop-integration`，已验证提交 `db64b7e`。Octop 来源固定 b6 / `eb28011249c02cafd389b2d424294c6c1b9cf422`；完整主仓归档、1,035 文件迁入、模板/人格闭环、源码/安装包/构建/真实 Gateway 冒烟及 b5→b6 同宿主目录升级已实现。
 - 该提交的后端 1,422 通过 / 18 跳过，前端 94 通过，作为历史基线；新提交必须重新记录结果，不能沿用这些数字宣布通过。真实模型/工具、PostgreSQL、容器部署及全量 Octop 等价尚未验证。
-- 原开发分支 `codex/octop-research-plan` 最新核对提交 `f860cba`，已完成租户管理员 SecretRef 生命周期 API、Source 事务绑定与审计；尚未整合进迁入分支。不能再次从零开发此接口。
-- M1 仍未退出：Provider 最小注入、旧明文配置迁移、新 head 的 PostgreSQL/CAS、真实模型/webhook 和目标部署回退尚待完成。两个分支的测试数量来自不同代码集合，不能相加或当作合并后的结果。
+- 原开发分支 `codex/octop-research-plan` 最新核对提交 `f860cba`，已完成租户管理员 SecretRef 生命周期 API、Source 事务绑定与审计；N01 已将其整合为 `0c3953b`，无需重复开发。
+- M1 仍未退出：Provider 注入、旧明文迁移本地实施与隔离 PostgreSQL/CAS 已验证；真实模型/webhook、严格身份传播和目标部署回退仍待完成。两个分支的测试数量来自不同代码集合，不能相加或当作合并后的结果。
 - 当前只有 ExecutionEnvelope、线程归属和一次性执行能力等接缝；没有持久 Task/Run/Attempt/Action 生命周期。模板 prompt 摘要也不等于不可变 AgentVersion。
 
-依据：[首批交付](../../strategy/2026-10-09-octop-import-delivery.md)、[42 项能力进度](../evidence/2026-10-09-octop-source-import/capability-ledger.json)、[交付顺序方案](../../strategy/2026-10-08-octop-integration-priority-and-delivery-plan.md)、[原 Capability Roadmap](../specs/2026-08-08-prismos-capability-roadmap-design.md)、[工单 SecretRef 设计](../specs/2026-10-08-m1-ticket-secret-ref-design.md)、[M1 门禁](../../strategy/2026-09-25-m1-exit-gate-evidence.md)。本分支中的 M1 文档仍是原基线版本，任务 N01 整合 `f860cba` 时一并更新其实施记录。
+依据：[首批交付](../../strategy/2026-10-09-octop-import-delivery.md)、[42 项能力进度](../evidence/2026-10-09-octop-source-import/capability-ledger.json)、[交付顺序方案](../../strategy/2026-10-08-octop-integration-priority-and-delivery-plan.md)、[原 Capability Roadmap](../specs/2026-08-08-prismos-capability-roadmap-design.md)、[工单 SecretRef 设计](../specs/2026-10-08-m1-ticket-secret-ref-design.md)、[M1 门禁](../../strategy/2026-09-25-m1-exit-gate-evidence.md)。M1 文档保留历史基线，并按本分支 N01–N04 的实际验证更新增量记录。
 
 ## 2. 推进原则与依赖
 
@@ -139,3 +139,11 @@ Provider 在最终身份/目标核验后以局部变量解密注入，人工与�
 新增迁移测试 22 项及受控路径迁移测试 1 项，与 Provider/管理/迁移契约共 `57 passed`；完整后端 `1478 passed, 18 skipped, 30 warnings`，完整前端 `40 files / 94 passed`。平台契约 130 项、相邻安全 48 项、唯一 head 与 Ruff 通过；`make octop-build`（115 项有界后端、3 项目录前端、类型、Gateway、wheel、生产构建）通过。证据 `../evidence/2026-10-09-octop-n03-migration.json`；操作与回退见 `../../migrations/ticket-secret-refs.md`。
 
 N03 的本地实施完成，未对已有部署执行 apply。N04 继续隔离 PostgreSQL/容器验证及已有测试环境验收；目标地址、配置引用、模型和可核对次数的接收端仍待补充。M1 未退出，N08 不启动；N05–N07 可继续独立实施。
+
+### N04：隔离 PostgreSQL 部分通过，真实环境门待验（2026-10-09）
+
+PostgreSQL 16.15 / 缓存镜像 ID、测试范围及结果见 `../evidence/2026-10-09-octop-n04-postgres.json`。全链 head、空表升降再升、CLI dry-run/apply/幂等、JSON CAS、轮换单胜者、审计整批回滚、租户隔离/禁用保持、重启、迁移前与加密后备份恢复、非空降级保护通过。可重复入口 `make octop-postgres`，仅创建和清理自己的容器与测试卷。最初 tmpfs/端口恢复的探针失败已修正，最终重新执行通过。
+
+该部分不是 N04 全部完成：ASGI 身份为 fixture，真实 Gateway/LangGraph 身份传播、模型与受控 Tool、可核对次数的真实接收端、实际 tracing、目标部署备份与开关回退仍缺证据。用户选择已有测试环境，但尚未补充地址或配置引用；待取得位置后按原五道门执行，不把选择视作已验证环境。
+
+下一项独立推进 N05 子能力/资源/外部包盘点，并据此继续 N06 内容体验与 N07 干净安装/容器/CI；N08 仍以完整 M1 退出为启动条件。完整 N01–N15 与 O01–O42/F01–F12 范围继续保留。

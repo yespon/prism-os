@@ -1,0 +1,42 @@
+{
+  "task": "N04",
+  "scope": "isolated PostgreSQL only",
+  "m1_exit": false,
+  "pending": [
+    "target deployment",
+    "real model and webhook",
+    "Gateway/LangGraph live identity",
+    "deployment tracing",
+    "feature-switch rollback"
+  ],
+  "image_id": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "image": "postgres:16-alpine",
+  "empty_downgrade_reupgrade": true,
+  "upgrade_head": "n8h9i0j1k2l3",
+  "server": "PostgreSQL 16.15",
+  "seeded": true,
+  "pre_migration_backup": true,
+  "cli_dry_run_apply_repeat": true,
+  "json_cas": true,
+  "rotation_single_winner": true,
+  "atomic_audit_rollback": true,
+  "binding": true,
+  "audit": true,
+  "tenant_isolation": true,
+  "disabled_preserved": true,
+  "restart_storage_verified": true,
+  "encrypted_backup_restore": true,
+  "nonempty_downgrade_blocked": true,
+  "pre_migration_backup_restore_remigrate": true,
+  "status": "passed",
+  "owned_container_removed": true,
+  "owned_volume_removed": true,
+  "date": "2026-10-09",
+  "runtime_commit": "17aff32",
+  "probe_sha256": "f021998fc9c8a9e8302d6289f6392d1e64aea187e3e0e5f268ae0fae0eff1bb7",
+  "identity": "controlled ASGI fixture; live Gateway/LangGraph propagation pending",
+  "prior_probe_failures": [
+    "image download TLS handshake timeout; used cached image",
+    "initial tmpfs probe unsuitable for restart persistence; replaced with owned volume and refreshed host port"
+  ]
+}

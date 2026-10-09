@@ -202,7 +202,7 @@ down:
 # Incremental Octop integration gates. Keep source-only imports distinct from runtime capability.
 UV ?= uv
 PNPM ?= pnpm
-.PHONY: octop-verify octop-check octop-build octop-smoke
+.PHONY: octop-verify octop-check octop-build octop-smoke octop-postgres
 octop-verify:
 	$(PYTHON) scripts/octop_sync.py verify
 octop-check: octop-verify
@@ -216,3 +216,7 @@ octop-build: octop-check octop-smoke
 	cd frontend && $(PNPM) build
 octop-smoke: octop-verify
 	cd backend && $(UV) run --locked python ../scripts/octop_gateway_smoke.py
+
+# Explicit isolated database probe; requires Docker and a cached PostgreSQL image.
+octop-postgres:
+	cd backend && $(UV) run --locked python -m scripts.verify_ticket_secret_postgres
