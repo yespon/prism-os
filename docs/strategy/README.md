@@ -12,6 +12,7 @@
 | [2026-09-24-octop-research-adoption-plan.md](./2026-09-24-octop-research-adoption-plan.md) | 外部项目调研与实施建议 | 基于 Octop 固定提交的代码调研，将可借鉴能力映射到 PrismOS 已批准路线、退出门和近期迭代。 |
 | [2026-10-08-octop-full-capability-roadmap-review.md](./2026-10-08-octop-full-capability-roadmap-review.md) | 全量覆盖与规划一致性复核 | 固定 Octop 最新源码和发布，盘点 42 组当前能力、12 项官方路线与 8 个配套工作包；保留 PrismOS 原平台阶段，明确新增产品范围与独立验收。 |
 | [2026-10-08-octop-integration-priority-and-delivery-plan.md](./2026-10-08-octop-integration-priority-and-delivery-plan.md) | 优先级与排期修订建议 | 在允许批量复用源码的前提下，提出纵向交付、必要平台切片提前与 R0–R6 节奏；保留原设计和最终退出门，明确候选排期与容量假设。 |
+| [2026-10-09-octop-next-iterations.md](../superpowers/plans/2026-10-09-octop-next-iterations.md) | 接续实施计划 | N01–N15 的顺序、依赖、容量与验收；先整合最新 SecretRef 并完成 M1，再推进执行、知识与自动化，全量目标保持。 |
 | [2026-10-09-octop-import-delivery.md](./2026-10-09-octop-import-delivery.md) | 首批实施与验证记录 | 固定源码、可用专家/人格路径、构建/升级证据与 42 项能力进度；保留全量目标和原里程碑退出门。 |
 | [agentos-whitepaper-original.md](./agentos-whitepaper-original.md) | 原始草稿归档副本 | 保留原始生成稿的正文内容；仅做 Markdown 行尾空白规范化，供追溯决策来源；不作为实施规范。 |
 
