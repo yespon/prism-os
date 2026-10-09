@@ -1,0 +1,21 @@
+{
+  "task": "N01",
+  "status": "local integration verified",
+  "cherry_pick": "0c3953b",
+  "source_commit": "f860cba",
+  "backend": {
+    "passed": 1431,
+    "skipped": 18,
+    "warnings": 30
+  },
+  "frontend": {
+    "files": 40,
+    "passed": 94,
+    "max_workers": 2
+  },
+  "octop_build": "passed",
+  "first_frontend_failure": "existing tenant-tools UI 5000ms timeout under parallel load; full rerun passed without changing tests",
+  "m1_exit": false,
+  "remote_ci": "not run",
+  "target_deployment": "pending"
+}
