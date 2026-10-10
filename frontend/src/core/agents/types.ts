@@ -1,4 +1,23 @@
+export interface AgentQuickPrompt {
+  title: string;
+  prompt: string;
+  description: string;
+}
+
+export interface AgentPresentation {
+  quick_prompts: AgentQuickPrompt[];
+  welcome_message: string;
+  avatar_id: string | null;
+  template_locale: "zh" | "en";
+  persona_mbti: string | null;
+  template_id: string | null;
+  bundled_resources_installed: boolean;
+  excluded_resources: string[];
+}
+
 export interface Agent {
+  presentation?: AgentPresentation;
+  base_system_prompt?: string;
   id: string;
   name: string;
   description: string;
@@ -24,6 +43,9 @@ export interface Skill {
 }
 
 export interface CreateAgentRequest {
+  quick_prompts?: AgentQuickPrompt[];
+  welcome_message?: string;
+  avatar_id?: string | null;
   template_id?: string;
   template_locale?: "zh" | "en";
   persona_mbti?: string;
@@ -41,6 +63,11 @@ export interface CreateAgentRequest {
 }
 
 export interface UpdateAgentRequest {
+  template_locale?: "zh" | "en";
+  persona_mbti?: string | null;
+  quick_prompts?: AgentQuickPrompt[];
+  welcome_message?: string;
+  avatar_id?: string | null;
   description?: string | null;
   model?: string | null;
   tool_groups?: string[] | null;

@@ -38,12 +38,19 @@ def verify_artifact_members(members, prefix):
     expected_data = {
         prefix + entry["target"]
         for entry in expected["imports"]
-        if entry["target"].startswith(("data/experts/", "data/subagents/"))
+        if entry["target"].startswith(
+            ("data/experts/", "data/subagents/", "data/avatars/", "data/personality/")
+        )
     }
     actual_data = {
         name
         for name in members
-        if name.startswith((prefix + "data/experts/", prefix + "data/subagents/"))
+        if name.startswith(
+            tuple(
+                prefix + "data/" + folder + "/"
+                for folder in ("experts", "subagents", "avatars", "personality")
+            )
+        )
     }
     if actual_data != expected_data:
         raise ValueError("Artifact resource inventory mismatch")
@@ -94,14 +101,18 @@ import json
 from pathlib import Path
 import prismos_octop.catalog as catalog
 assert Path(catalog.__file__).is_relative_to(Path.cwd())
+from prismos_octop.presentation import questionnaire, list_avatars, score_answers
 origin = catalog.provenance()
 assert len(origin['excluded_source_files']) > 0
+assert len(questionnaire("en")) == 28 and len(list_avatars()) == 52
+assert score_answers({str(i): "A" for i in range(1, 29)})["code"] == "ESTJ"
 print(json.dumps({
     "revision": origin["revision"], "verified_files": len(origin["imports"]),
     "excluded_source_files": len(origin['excluded_source_files']),
     "zh_templates": len(catalog.list_templates("zh")),
     "en_templates": len(catalog.list_templates("en")),
     "personas": len(catalog.list_personas()), "installed_wheel": True,
+    "questionnaire_questions": len(questionnaire("en")), "avatars": len(list_avatars()),
 }))
 """
             subprocess.run(

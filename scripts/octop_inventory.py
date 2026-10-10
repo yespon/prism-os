@@ -35,7 +35,7 @@ TARGET_ENVIRONMENT = {
 }
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "docs/superpowers/evidence/2026-10-10-octop-inventory"
+OUTPUT = ROOT / "docs/superpowers/evidence/2026-10-10-octop-n06-presentation/inventory"
 EXPERTS = "src/octop/infra/agents/experts/library/"
 SUBAGENTS = "src/octop/infra/agents/subagents/library/"
 CATALOG = "src/octop/infra/connectors/catalog.py"
@@ -944,6 +944,28 @@ def build() -> dict[str, dict | list]:
         f"O{number:02}" for number in range(1, 43)
     } or any(entry["full_parity"] for entry in ledger):
         raise ValueError("Original full capability scope mismatch")
+    for entry in persona:
+        if entry["dependencies"] == ["N06"]:
+            entry["stages"]["imported"] = entry["stages"]["imported"] or any(
+                ref.removeprefix("main:") in mappings for ref in entry["source_refs"]
+            )
+            entry["stages"]["adapted"] = True
+            entry["stages"]["verified"] = True
+            entry["status"] = "verified"
+            entry["verification_evidence"] = [
+                "backend/tests/test_octop_presentation.py",
+                "frontend/src/components/workspace/agents/agent-presentation.test.tsx",
+                "frontend/src/components/workspace/agents/agent-avatar.test.tsx",
+                "docs/superpowers/evidence/2026-10-10-octop-n06-presentation/validation.json",
+            ]
+            entry["implementation_scope"] = (
+                "bounded CustomAgent draft/persistence/chat welcome; no runtime/resource permissions granted"
+            )
+            entry["remaining"] = [
+                "target deployment and complete O06 acceptance remain pending",
+                "full O06 account and runtime behavior remains separately gated",
+            ]
+
     groups = {
         "experts": experts,
         "expert_resources": resources,
@@ -964,14 +986,25 @@ def build() -> dict[str, dict | list]:
     if any(ref not in source_ids for entry in entries for ref in entry["source_refs"]):
         raise ValueError("Inventory has an unresolved source reference")
     for capability in ledger:
+        if capability["id"] == "O06":
+            capability["status"] = (
+                "partial: N06 CustomAgent questionnaire, 16 personas, welcome, 52 avatars and starter drafts locally verified"
+            )
+            capability["remaining"] = [
+                "target deployment acceptance",
+                "complete O06 behavior beyond the bounded CustomAgent path",
+            ]
         capability["owner_role"] = "platform/product integration; role only"
         capability["permissions"] = [
             "tenant/actor/resource ACL",
             "each read/write tool uses platform governance",
         ]
-        capability["remaining"] = [
-            "all named subcapabilities and directory entries need behavior acceptance"
-        ]
+        capability.setdefault(
+            "remaining",
+            [
+                "all named subcapabilities and directory entries need behavior acceptance"
+            ],
+        )
         capability["children"] = sorted(
             entry["id"]
             for entry in entries

@@ -41,3 +41,15 @@ Makefile text eol=lf
 *.mov binary
 *.woff binary
 *.woff2 binary
+
+# Pinned third-party imports: preserve original bytes, including CRLF and spacing.
+# Host adapters and generated provenance remain covered by the normal text rules.
+backend/packages/octop-capabilities/src/prismos_octop/upstream/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+backend/packages/octop-capabilities/src/prismos_octop/data/experts/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+backend/packages/octop-capabilities/src/prismos_octop/data/subagents/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+backend/packages/octop-capabilities/src/prismos_octop/data/avatars/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+backend/packages/octop-capabilities/src/prismos_octop/data/personality/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+backend/packages/octop-capabilities/src/prismos_octop/LICENSE -text
+vendor/octop/LICENSE -text
+# Diagnostic receipts preserve captured output bytes, not normalized text.
+docs/superpowers/evidence/**/logs/*.log -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

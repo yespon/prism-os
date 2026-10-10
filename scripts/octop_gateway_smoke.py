@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import secrets
@@ -61,7 +62,7 @@ def main():
         )
         base = f"http://127.0.0.1:{port}"
 
-        def request(path, body=None, token=None):
+        def request(path, body=None, token=None, method=None, raw=False):
             headers = {"Content-Type": "application/json"}
             if token:
                 headers["Authorization"] = "Bearer " + token
@@ -69,10 +70,13 @@ def main():
                 base + path,
                 data=json.dumps(body).encode() if body is not None else None,
                 headers=headers,
+                method=method,
             )
             try:
                 with urllib.request.urlopen(req, timeout=10) as response:
-                    return response.status, json.load(response)
+                    return response.status, response.read() if raw else json.load(
+                        response
+                    )
             except urllib.error.HTTPError as exc:
                 return exc.code, json.load(exc)
 
@@ -153,6 +157,71 @@ def main():
                 assert code == 201 and "INTJ" in created["system_prompt"]
                 code, reloaded = request("/api/agents/catalog-smoke", token=token)
                 assert code == 200 and reloaded["id"] == created["id"]
+                assert reloaded["presentation"]["persona_mbti"] == "INTJ"
+                assert reloaded["presentation"]["welcome_message"]
+                assert reloaded["presentation"]["quick_prompts"]
+                base_prompt = "Gateway edited base prompt"
+                update = {
+                    "system_prompt": base_prompt,
+                    "persona_mbti": "ENFP",
+                    "template_locale": "en",
+                    "welcome_message": "Gateway welcome",
+                    "avatar_id": "personas:ENFP",
+                    "quick_prompts": [
+                        {
+                            "title": "Inspect",
+                            "prompt": "Inspect this draft",
+                            "description": "",
+                        }
+                    ],
+                }
+                for _ in range(2):
+                    code, edited = request(
+                        "/api/agents/catalog-smoke", update, token, method="PUT"
+                    )
+                    assert code == 200 and edited["base_system_prompt"] == base_prompt
+                code, reloaded = request("/api/agents/catalog-smoke", token=token)
+                assert (
+                    code == 200
+                    and reloaded["presentation"]["welcome_message"] == "Gateway welcome"
+                )
+                assert reloaded["presentation"]["avatar_id"] == "personas:ENFP"
+                assert (
+                    reloaded["presentation"]["quick_prompts"] == update["quick_prompts"]
+                )
+                assert reloaded["system_prompt"].count("## ENFP") == 1
+                assert reloaded["skills"] == [] and reloaded["tool_groups"] == []
+                code, test = request(
+                    "/api/agent-catalog/personality-test?locale=en", token=token
+                )
+                assert code == 200 and len(test["questions"]) == 28
+                code, scored = request(
+                    "/api/agent-catalog/personality-test",
+                    {"answers": {str(i): "A" for i in range(1, 29)}},
+                    token,
+                )
+                assert (
+                    code == 200
+                    and scored["code"] == "ESTJ"
+                    and scored["automatic_apply"] is False
+                )
+                assert (
+                    request("/api/agents/catalog-smoke", token=token)[1][
+                        "presentation"
+                    ]["persona_mbti"]
+                    == "ENFP"
+                )
+                assert request("/api/agent-catalog/avatars")[0] == 401
+                code, avatars = request("/api/agent-catalog/avatars", token=token)
+                assert code == 200 and len(avatars["avatars"]) == 52
+                code, image = request(
+                    "/api/agent-catalog/avatars/personas:ENFP", token=token, raw=True
+                )
+                assert code == 200 and hashlib.sha256(image).hexdigest() == next(
+                    item["sha256"]
+                    for item in avatars["avatars"]
+                    if item["id"] == "personas:ENFP"
+                )
                 with sqlite3.connect(directory / "tenant.db") as database:
                     source = json.loads(
                         database.execute(
@@ -171,6 +240,10 @@ def main():
                     "migration_head": migration,
                     "catalog": catalog,
                     "agent_created_and_reloaded": True,
+                    "presentation_edited_and_reopened": True,
+                    "duplicate_persona_prevented": True,
+                    "questionnaire_readonly": True,
+                    "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,
                 }
                 if args.output:

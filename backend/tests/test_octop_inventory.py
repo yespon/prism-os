@@ -20,7 +20,7 @@ def inventory():
 
 def test_named_catalogs_and_complete_scope_are_preserved(inventory):
     summary = inventory["summary.json"]
-    assert summary["main_source_files"] == 3771 and summary["imported_files"] == 849
+    assert summary["main_source_files"] == 3771 and summary["imported_files"] == 902
     assert summary["retained_main_source_files"] == 3585
     assert summary["excluded_main_source_files"] == 186 and summary["excluded_external_source_files"] == 51
     assert summary["current_capabilities"] == 42 and summary["future_capabilities"] == 12

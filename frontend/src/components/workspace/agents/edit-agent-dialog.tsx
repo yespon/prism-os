@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -25,6 +25,11 @@ import { useAvailableModels } from "@/core/models/hooks";
 import { isTenantAdminRole } from "@/core/permissions/scope";
 import { useCurrentTenant } from "@/core/tenants/hooks";
 import { cn } from "@/lib/utils";
+import { useTenantKey } from "@/core/agents/hooks";
+import type { AgentQuickPrompt } from "@/core/agents/types";
+import { useDraftIsCurrent } from "@/core/agents/draft-scope";
+import { AgentTemplatePicker } from "./agent-template-picker";
+import { AgentPresentationEditor } from "./agent-presentation-editor";
 
 interface EditAgentDialogProps {
   agentName: string | null;
@@ -33,8 +38,20 @@ interface EditAgentDialogProps {
   onSuccess?: () => void;
 }
 
-export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: EditAgentDialogProps) {
-  const { t } = useI18n();
+export function EditAgentDialog(props: EditAgentDialogProps) {
+  const tenant = useTenantKey();
+  const { locale } = useI18n();
+  return <EditAgentDialogFields key={`${tenant}:${locale}:${props.open}:${props.agentName ?? ""}`} {...props} />;
+}
+
+function EditAgentDialogFields({ agentName, open, onOpenChange, onSuccess }: EditAgentDialogProps) {
+  const { t, locale } = useI18n();
+  const templateLocale = locale === "en-US" ? "en" : "zh";
+  const isCurrent = useDraftIsCurrent();
+  const [personaCode, setPersonaCode] = useState("");
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [avatarId, setAvatarId] = useState("");
+  const [quickPrompts, setQuickPrompts] = useState<AgentQuickPrompt[]>([]);
 
   const { agent, isLoading } = useAgent(agentName ?? "");
   const { skills } = useSkills();
@@ -60,7 +77,11 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
   // Populate form when agent data loads
   useEffect(() => {
     if (agent && open) {
-      setSystemPrompt(agent.system_prompt ?? "");
+      setSystemPrompt(agent.base_system_prompt ?? agent.system_prompt ?? "");
+      setPersonaCode(agent.presentation?.persona_mbti ?? "");
+      setWelcomeMessage(agent.presentation?.welcome_message ?? "");
+      setAvatarId(agent.presentation?.avatar_id ?? "");
+      setQuickPrompts(agent.presentation?.quick_prompts ?? []);
       setDescription(agent.description ?? "");
       setSelectedModel(agent.model ?? "");
       setSelectedSkills(new Set(agent.skills ?? []));
@@ -249,21 +270,29 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
 
     const request: UpdateAgentRequest = {
       system_prompt: systemPrompt,
+      persona_mbti: personaCode || null,
+      template_locale: templateLocale,
+      welcome_message: welcomeMessage,
+      avatar_id: avatarId || null,
+      quick_prompts: quickPrompts,
       description,
       model: selectedModel || null,
       skills: Array.from(selectedSkills),
       tags,
       tool_groups: selectedToolGroups.size > 0 ? Array.from(selectedToolGroups) : null,
       enabled,
-      is_shared: isShared,
+      ...(isTenantAdmin ? { is_shared: isShared } : {}),
     };
 
     try {
+      if (!isCurrent()) return;
       await updateAgent.mutateAsync({ name: agentName, request });
+      if (!isCurrent()) return;
       toast.success(t.agents.edit.saveSuccess);
       onOpenChange(false);
       onSuccess?.();
     } catch (err) {
+      if (!isCurrent()) return;
       toast.error(
         err instanceof Error ? err.message : t.agents.edit.saveError,
       );
@@ -282,6 +311,7 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
             <DialogTitle className="text-base font-semibold text-foreground">
               {agent ? t.agents.edit.pageTitle.replace("{name}", agent.name) : "编辑智能体"}
             </DialogTitle>
+            <DialogDescription className="sr-only">{locale === "en-US" ? "Configure this agent’s instructions, personality and welcome content." : "配置智能体的提示词、人格和欢迎内容。"}</DialogDescription>
           </div>
         </header>
 
@@ -320,6 +350,10 @@ export function EditAgentDialog({ agentName, open, onOpenChange, onSuccess }: Ed
                     </div>
                   </div>
                 </div>
+
+                <AgentTemplatePicker templateReadOnly open={open} locale={templateLocale} templateId={agent.presentation?.template_id ?? ""} personaCode={personaCode} onPersona={setPersonaCode} onTemplate={() => {}} />
+                <AgentPresentationEditor quickPrompts={quickPrompts} onQuickPrompts={setQuickPrompts} open={open} locale={templateLocale} welcomeMessage={welcomeMessage} avatarId={avatarId} onWelcome={setWelcomeMessage} onAvatar={setAvatarId} onPersona={setPersonaCode} />
+                {agent.presentation?.excluded_resources?.length ? <p className="text-muted-foreground text-xs">{templateLocale === "zh" ? "配套能力待独立实现：" : "Independent implementations pending: "}{agent.presentation.excluded_resources.join(", ")}</p> : null}
 
                 {/* Read-only Identity Name */}
                 <div className="space-y-2 shrink-0">

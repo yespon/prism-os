@@ -36,6 +36,8 @@ import {
   useThreadChat,
 } from "@/components/workspace/chats";
 import { ContextWarningBanner } from "@/components/workspace/context-warning-banner";
+import { AgentWelcome } from "@/components/workspace/agent-welcome";
+import { useAgent } from "@/core/agents";
 import { InputBox } from "@/components/workspace/input-box";
 import { MessageList } from "@/components/workspace/messages";
 import { ThreadContext } from "@/components/workspace/messages/context";
@@ -73,9 +75,13 @@ interface ChatThreadContentProps {
   isTenantAdmin: boolean;
 }
 
-export function ChatThreadContent({ threadId, context, onContextChange, noAvailableModel, isTenantAdmin }: ChatThreadContentProps) {
+export function ChatThreadContent({ threadId, context: incomingContext, onContextChange, noAvailableModel, isTenantAdmin }: ChatThreadContentProps) {
   const { t } = useI18n();
   const searchParams = useSearchParams();
+  const selectedAgentName = searchParams.get("agent") || (typeof incomingContext.agent_name === "string" ? incomingContext.agent_name : undefined);
+  const { agent: selectedAgent, isLoading: agentLoading } = useAgent(selectedAgentName);
+  const context: ChatThreadContentProps["context"] = useMemo(() => ({ ...incomingContext, agent_name: selectedAgentName }), [incomingContext, selectedAgentName]);
+  const agentUnavailable = !!selectedAgentName && (!selectedAgent || !selectedAgent.enabled || agentLoading);
   const incidentId = searchParams.get("incident");
   const { data: sourceIncident } = useIncidentDetail(incidentId);
   const [incidentCardDismissed, setIncidentCardDismissed] = useState(false);
@@ -186,6 +192,7 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
 
   const handleSubmit = useCallback(
     (message: PromptInputMessage) => {
+      if (agentUnavailable) return;
       const selectedAttachments = threadAttachments.filter((file) =>
         selectedAttachmentIds.includes(file.attachment_id || `legacy:${file.filename}`),
       );
@@ -195,7 +202,7 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
         console.warn("Failed to send message", error);
       });
     },
-    [selectedAttachmentIds, sendMessage, threadAttachments, effectiveThreadId],
+    [agentUnavailable, selectedAttachmentIds, sendMessage, threadAttachments, effectiveThreadId],
   );
 
   useEffect(() => {
@@ -208,6 +215,7 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
 
   const handleRetryHumanMessage = useCallback(
     (message: Message) => {
+      if (agentUnavailable) return;
       const { text, attachments } = buildRetrySubmissionFromMessage(message);
       if (!text && attachments.length === 0) {
         return;
@@ -226,7 +234,7 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
         console.warn("Retry send failed", error);
       });
     },
-    [sendMessage, effectiveThreadId],
+    [agentUnavailable, sendMessage, effectiveThreadId],
   );
 
   const handleToggleAttachment = useCallback((attachmentId: string) => {
@@ -425,6 +433,7 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
                 {isNewThread && thread.messages.length === 0 && (
                   <div className="pointer-events-none absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 justify-center">
                     <div className="mx-auto flex w-full max-w-(--container-width-md) flex-col items-center justify-center rounded-3xl p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+                      {selectedAgentName ? <AgentWelcome disabled={agentUnavailable} agent={selectedAgent} agentName={selectedAgentName} /> : <>
                       <h2 className="text-xl font-semibold tracking-tight text-foreground">{t.chatHeader.startNewTask}</h2>
                       <p className="mt-2.5 max-w-sm text-sm leading-relaxed text-muted-foreground">
                         {t.chatHeader.startNewTaskDesc.split("<br />").map((line, i) => (
@@ -434,6 +443,8 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
                           </span>
                         ))}
                       </p>
+                      </>}
+                      {agentUnavailable && <p role="alert" className="text-muted-foreground mt-2 text-sm">{agentLoading ? t.common.loading : "智能体不可用，请返回智能体列表重新选择。"}</p>}
                     </div>
                   </div>
                 )}
@@ -557,7 +568,7 @@ export function ChatThreadContent({ threadId, context, onContextChange, noAvaila
                           : "ready"
                     }
                     context={context}
-                    disabled={env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" || isUploading || (isNewThread && noAvailableModel)}
+                    disabled={agentUnavailable || env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" || isUploading || (isNewThread && noAvailableModel)}
                     onContextChange={onContextChange}
                     onSubmit={handleSubmit}
                     onStop={handleStop}

@@ -13,8 +13,8 @@ import {
 } from "./api";
 import type { CreateAgentRequest, UpdateAgentRequest } from "./types";
 
-function useTenantKey() {
-  return useSyncExternalStore(subscribeTenantChange, () => getCurrentTenantId() ?? "_");
+export function useTenantKey() {
+  return useSyncExternalStore(subscribeTenantChange, () => getCurrentTenantId() ?? "_", () => "_");
 }
 
 export function useAgents() {

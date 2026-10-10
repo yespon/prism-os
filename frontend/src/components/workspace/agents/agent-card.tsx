@@ -12,6 +12,8 @@ import {
   CheckIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { AgentAvatar } from "./agent-avatar";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +50,8 @@ interface AgentCardProps {
 }
 
 export function AgentCard({ agent, onEdit }: AgentCardProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const router = useRouter();
   const deleteAgent = useDeleteAgent();
   const toggleAgent = useToggleAgent();
   const { skills } = useSkills();
@@ -132,7 +135,7 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
                     : "bg-zinc-100 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500 border-zinc-200/50 dark:border-zinc-700/50"
                 }`}
               >
-                <BotIcon className={`h-5 w-5 transition-transform duration-500 ${agent.enabled ? "group-hover:rotate-6" : ""}`} />
+                <AgentAvatar avatarId={agent.presentation?.avatar_id} className="h-9 w-9" />
               </div>
               <div className="min-w-0">
                 <CardTitle className="truncate text-sm font-semibold tracking-tight leading-none text-zinc-900 dark:text-zinc-100">
@@ -275,6 +278,7 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
 
         {/* Footer actions - Compact & sleek floating style */}
         <CardFooter className="px-4 pb-3.5 pt-1.5 flex items-center gap-2 mt-auto shrink-0 border-t-0">
+          <Button variant="outline" size="sm" disabled={!agent.enabled} onClick={() => router.push(`/workspace/chats/new?agent=${encodeURIComponent(agent.name)}`)}>{locale === "en-US" ? "Chat" : "对话"}</Button>
           <Button
             variant="outline"
             size="sm"

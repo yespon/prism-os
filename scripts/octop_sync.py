@@ -33,10 +33,13 @@ MODULES = {
     "src/octop/infra/utils/frontmatter.py": "upstream/frontmatter.py",
     "src/octop/infra/knowledge/chunk.py": "upstream/chunk.py",
     "src/octop/infra/knowledge/citations.py": "upstream/citations.py",
+    "src/octop/api/routers/mbti.py": "data/personality/mbti-source.py.txt",
 }
 LIBRARIES = {
     "src/octop/infra/agents/experts/library/": "data/experts/",
     "src/octop/infra/agents/subagents/library/": "data/subagents/",
+    "dashboard/public/assets/mbti/": "data/avatars/personas/",
+    "dashboard/public/experts/avatars/": "data/avatars/experts/",
 }
 
 
@@ -285,7 +288,7 @@ def verify() -> dict:
     }
     actual_data = {
         path.relative_to(ROOT).as_posix()
-        for directory in ("experts", "subagents")
+        for directory in ("experts", "subagents", "avatars", "personality")
         for path in (ROOT / PACKAGE / "data" / directory).rglob("*")
         if path.is_file() and path.suffix != ".pyc"
     }

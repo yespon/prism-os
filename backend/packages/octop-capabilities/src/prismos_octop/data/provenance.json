@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "repository": "https://github.com/TencentCloud/Octop",
-  "release": "v1.0.2b6",
+  "release": "b6",
   "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
   "archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
   "retained_archive_sha256": "5af171afd215f4b8199d7b5644218d25353c3275617fc336acdf54a04e582cdf",
@@ -197,6 +197,271 @@
     "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/recalc.py": "90cc7b6e76ebee17e049b5f84624eeaa3eca402aaabe224512ced9a759d51ab5"
   },
   "imports": [
+    {
+      "source": "dashboard/public/assets/mbti/ENFJ.svg",
+      "target": "data/avatars/personas/ENFJ.svg",
+      "sha256": "ecd6516c83a7d2dbaff94d97a32cbdda4c3f806e30476318b517d23492e25515"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ENFP.svg",
+      "target": "data/avatars/personas/ENFP.svg",
+      "sha256": "b7c0096b853dfd08df5d6b69dce8f7463b9bd87fb771bada15512f92d1ce7569"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ENTJ.svg",
+      "target": "data/avatars/personas/ENTJ.svg",
+      "sha256": "d2ef23e92d24afbe954275f11433e32917969b17461cf4d69b507c4e3f105d96"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ENTP.svg",
+      "target": "data/avatars/personas/ENTP.svg",
+      "sha256": "b3da3d5e5d6bdd46044c4a4f1fa068ab57b245c83e9b6144f8561437772dd443"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ESFJ.svg",
+      "target": "data/avatars/personas/ESFJ.svg",
+      "sha256": "c67be965b7cf13d9a5c596df76c60df27ae0c5251d9126b63774cf336fe344bc"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ESFP.svg",
+      "target": "data/avatars/personas/ESFP.svg",
+      "sha256": "f89dd9be276def38044413e98af59283a9a1943b5565810de6c5ada4e53c9f81"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ESTJ.svg",
+      "target": "data/avatars/personas/ESTJ.svg",
+      "sha256": "289cd1cca8ac604a06cd7524829824a9ab3fee5a5df2b5cf0080693a5fc4b025"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ESTP.svg",
+      "target": "data/avatars/personas/ESTP.svg",
+      "sha256": "82d2770536535064b676f07084f04d923b9bb25473f583cbf872657496c06fd1"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/INFJ.svg",
+      "target": "data/avatars/personas/INFJ.svg",
+      "sha256": "d84ed7b9507babddc90c619ab4d14c181560451e2418f5074f3ef5a7197f9d5e"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/INFP.svg",
+      "target": "data/avatars/personas/INFP.svg",
+      "sha256": "9f6a701b6147bed455287efa46ee1c72b641bbf19c4f142398b448444f3c8f1e"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/INTJ.svg",
+      "target": "data/avatars/personas/INTJ.svg",
+      "sha256": "b1148c48a7a92309c9935b2df45438694e5cc45eb88645c704dae43f2bf9ae48"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/INTP.svg",
+      "target": "data/avatars/personas/INTP.svg",
+      "sha256": "16c89cb5f146bb01c03721a7689aff9e64df393091bd5dca600a26921fc3ec5e"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ISFJ.svg",
+      "target": "data/avatars/personas/ISFJ.svg",
+      "sha256": "6211332ec6fd78a92b0a29a2b3d0cad00d04cbea9489d86647345b44ab83e8a7"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ISFP.svg",
+      "target": "data/avatars/personas/ISFP.svg",
+      "sha256": "c4ce262d43e25a6cd9b6ab3a4deb022820bc4bf93e094eb04979bab44e9bfa4f"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ISTJ.svg",
+      "target": "data/avatars/personas/ISTJ.svg",
+      "sha256": "db5126aaf37fe78408be390864b6dd6ba6568bdeb0c970c9acce6411214b6edd"
+    },
+    {
+      "source": "dashboard/public/assets/mbti/ISTP.svg",
+      "target": "data/avatars/personas/ISTP.svg",
+      "sha256": "d05aee5887d44443f7ccab709d9a138eb63a6b493f05424ba0b7a5cde6af65f3"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/ai-coding-coach.svg",
+      "target": "data/avatars/experts/ai-coding-coach.svg",
+      "sha256": "07e7ea5b26e4b939c77f4fc19912e06966213ed084a4333a16c1118c1bc87600"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/ai-safety-guardian.svg",
+      "target": "data/avatars/experts/ai-safety-guardian.svg",
+      "sha256": "824dc8f0fa39b4c25626e33e8d08291e47b94ea60ab24e2cb08fe3324aeb3051"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/clinical-learning-subscription.svg",
+      "target": "data/avatars/experts/clinical-learning-subscription.svg",
+      "sha256": "ffa5a09e4e31993e46083ee158895b706ab69c808a5c2b6e02c7ac48fad319fa"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/cvm-ai-doctor.svg",
+      "target": "data/avatars/experts/cvm-ai-doctor.svg",
+      "sha256": "3acc24b49ea4572ed0ff093b83721def20d9f44b3df3a894ea01648cf35c9c75"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/cvm-cluster-doctor.svg",
+      "target": "data/avatars/experts/cvm-cluster-doctor.svg",
+      "sha256": "1ded8be1ddc676185059bdc0c532bc445b8256454e75302923fd97c01a063782"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/default.svg",
+      "target": "data/avatars/experts/default.svg",
+      "sha256": "bee8ab5e5e412dcbfe8ac4f03f82aa980b9ff8317c6cc8e1e33fa149d58934a3"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/general-assistant.svg",
+      "target": "data/avatars/experts/general-assistant.svg",
+      "sha256": "f247fa0e4791a5b30c0a4487b7aad391d37a9994ac63207bd7c4399da7525f02"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/karpathy-knowledge-base.svg",
+      "target": "data/avatars/experts/karpathy-knowledge-base.svg",
+      "sha256": "c83656a09c880ecbac5ea4e21e52fc29f42ea8cb076ad7f470c9ce1934f20c58"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/meituan-living-assistant.svg",
+      "target": "data/avatars/experts/meituan-living-assistant.svg",
+      "sha256": "837aa3776bbc34e90e375ed2dc2e085046167154e51931b40d6329487f50252b"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/multi-agent-orchestrator.svg",
+      "target": "data/avatars/experts/multi-agent-orchestrator.svg",
+      "sha256": "286c72815b801a3108c964dd36e844499c2b210031294f756c485bb9f4fb143d"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/news-trend.svg",
+      "target": "data/avatars/experts/news-trend.svg",
+      "sha256": "f998030e14faf03e64ba07ac3f52f56803ae5a3ed1db97e7063c701f0437fb79"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/office-automation.svg",
+      "target": "data/avatars/experts/office-automation.svg",
+      "sha256": "99a71746085faeed12f097e8519c812981680ca5fad82f9ea1d87ecb5567ce37"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/ops-engineer.svg",
+      "target": "data/avatars/experts/ops-engineer.svg",
+      "sha256": "fe53d4f356d8787e58608e66c7951823518d902ef803c70bada2d22f5ed7adf5"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/parenting-companion.svg",
+      "target": "data/avatars/experts/parenting-companion.svg",
+      "sha256": "f2d68f5202cf1af61061c7f44223e2049e23631ddc1dbaa4a7b8a65f51112e81"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-academic.svg",
+      "target": "data/avatars/experts/scene-academic.svg",
+      "sha256": "3f0b5239cc78161a300c0fd76d47e6bcab47b62e7e4be0e6d9fc675d9ae3cd61"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-content-creation.svg",
+      "target": "data/avatars/experts/scene-content-creation.svg",
+      "sha256": "2880bb7eb5438f421893a7e92480351ae71d4a10cfdf1e9da4797a12a80972bc"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-data.svg",
+      "target": "data/avatars/experts/scene-data.svg",
+      "sha256": "1395ede493137d57b85e84686aabaef3b4f363865c73e07e3fa6a4b6782d5ceb"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-default.svg",
+      "target": "data/avatars/experts/scene-default.svg",
+      "sha256": "172cd41a755be74e3e0cbc4656500fd08a6a94262e3411171b3fb3a20d42079d"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-design.svg",
+      "target": "data/avatars/experts/scene-design.svg",
+      "sha256": "3a918a31f7f5543b1e8dfee8102f6aa04b991e8678dcfd33a8f3edd04b0af9df"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-ecommerce.svg",
+      "target": "data/avatars/experts/scene-ecommerce.svg",
+      "sha256": "57d68ae38b0a0ff0a3bf831ba6afdc97165cbdb9786ebd7c3615a41f78adbec4"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-education.svg",
+      "target": "data/avatars/experts/scene-education.svg",
+      "sha256": "481289c308ecf8818a16603be79e007cd0b9756ed2ad5acfe1e7b3f899a3f254"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-finance.svg",
+      "target": "data/avatars/experts/scene-finance.svg",
+      "sha256": "0a4a0c3b08947d82a9a5b0603802f493a067934904e46f54f6449c253d3a59f7"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-healthcare.svg",
+      "target": "data/avatars/experts/scene-healthcare.svg",
+      "sha256": "41e74835e3ea925846606c740bdac4b6f44baff630ba7f959801b06a2387d338"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-hr.svg",
+      "target": "data/avatars/experts/scene-hr.svg",
+      "sha256": "f27fd39ec237f0b3ecd26dd57326c2a4e6c9be20409d33d87ef0ba9ff036310a"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-legal.svg",
+      "target": "data/avatars/experts/scene-legal.svg",
+      "sha256": "2df59ed9208df8ae6dec35be56e05978e90dc7c2954e40ac0d5ce3b47504d55d"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-lifestyle.svg",
+      "target": "data/avatars/experts/scene-lifestyle.svg",
+      "sha256": "046638746202ef2e925565f82c81abad3eaab48e77741ab775386f92b19dc9ab"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-marketing.svg",
+      "target": "data/avatars/experts/scene-marketing.svg",
+      "sha256": "fbb839259b3760cd9f9fb2ac1e7195a4beab1478a6a8f250a113a398b12ee46a"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-media.svg",
+      "target": "data/avatars/experts/scene-media.svg",
+      "sha256": "6ca455432fb50b17fa76c12f46117fc8729a09bbfbf04f0c990dd8093aeb9234"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-mysticism.svg",
+      "target": "data/avatars/experts/scene-mysticism.svg",
+      "sha256": "a8d716f3a0bf79fce03a33078bbb66735866cf42e3ba4b7a0c43aea5a9ec3417"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-office.svg",
+      "target": "data/avatars/experts/scene-office.svg",
+      "sha256": "426b63e060bae77a8c4400659f8008c1e21bbe48612ef243dea2b727148c395d"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/scene-tech.svg",
+      "target": "data/avatars/experts/scene-tech.svg",
+      "sha256": "dde89220e368f47b65c101c8804fb45e4a98761e36bb9f00e78344729ea720ba"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/stock-assistant.svg",
+      "target": "data/avatars/experts/stock-assistant.svg",
+      "sha256": "b15cb4df598e3a92089b979198e992a3189c38ad345b72055473dbbb95f4e6c2"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/superpowers-methodology.svg",
+      "target": "data/avatars/experts/superpowers-methodology.svg",
+      "sha256": "69b7e82bb8efd48508267653680788e59e1b7f07984ac978996bb74c1396894f"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/team-host.svg",
+      "target": "data/avatars/experts/team-host.svg",
+      "sha256": "1d7889b0b9af5230273825b1f630ea8e0d8ea3a0051c0022c50e01c67890e6ae"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/tencentcloud-api.svg",
+      "target": "data/avatars/experts/tencentcloud-api.svg",
+      "sha256": "ec4c3442caf2108ceaf0bad21dbc3313d3828d2dff9ba56b5cbf3aa2dbb091c3"
+    },
+    {
+      "source": "dashboard/public/experts/avatars/wechat-ops.svg",
+      "target": "data/avatars/experts/wechat-ops.svg",
+      "sha256": "3953f02db726cd10eaa616d571f142bb320c58fadeb106ac9e5c409a358d6282"
+    },
+    {
+      "source": "src/octop/api/routers/mbti.py",
+      "target": "data/personality/mbti-source.py.txt",
+      "sha256": "13bdb99d3c75a69d7e2398c78125eed0169cd3120ff2306d420df405322a4aac"
+    },
     {
       "source": "src/octop/infra/agents/experts/library/README.md",
       "target": "data/experts/README.md",
@@ -4447,7 +4712,8 @@
     "src/octop/infra/agents/persona/mbti_profiles.py",
     "src/octop/infra/utils/frontmatter.py",
     "src/octop/infra/knowledge/chunk.py",
-    "src/octop/infra/knowledge/citations.py"
+    "src/octop/infra/knowledge/citations.py",
+    "src/octop/api/routers/mbti.py"
   ],
   "external_packages": [
     "octop-harness",

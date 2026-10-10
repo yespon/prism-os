@@ -3,7 +3,6 @@
 import logging
 import re
 import uuid
-
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -14,6 +13,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.authorization import _is_tenant_admin, require_tenant_context
 from app.gateway.config import get_plugin_states
+from app.integrations.octop.agents import AgentPresentation, AgentQuickPrompt, agent_content, update_agent_content
 from app.models.agents import CustomAgent
 from deerflow.config.paths import get_paths
 from deerflow.database.session import get_session
@@ -46,6 +46,8 @@ class AgentResponse(BaseModel):
     created_at: str | None = Field(default=None, description="ISO timestamp")
     updated_at: str | None = Field(default=None, description="ISO timestamp")
     is_shared: bool = Field(default=False, description="Whether the agent is shared with the tenant")
+    presentation: AgentPresentation = Field(default_factory=AgentPresentation)
+    base_system_prompt: str = ""
     # Deprecated alias
     soul: str | None = Field(default=None, description="Deprecated — use system_prompt")
 
@@ -71,6 +73,9 @@ class AgentCreateRequest(BaseModel):
     template_id: str | None = Field(default=None, max_length=200)
     template_locale: Literal["zh", "en"] = "zh"
     persona_mbti: str | None = Field(default=None, max_length=4)
+    quick_prompts: list[AgentQuickPrompt] = Field(default_factory=list, max_length=32)
+    welcome_message: str | None = Field(default=None, max_length=2000)
+    avatar_id: str | None = Field(default=None, max_length=100)
     # Deprecated field — accepted but mapped to system_prompt
     soul: str | None = Field(default=None, description="Deprecated — use system_prompt")
 
@@ -78,6 +83,11 @@ class AgentCreateRequest(BaseModel):
 class AgentUpdateRequest(BaseModel):
     """Request body for updating a custom agent. All fields optional."""
 
+    template_locale: Literal["zh", "en"] | None = None
+    persona_mbti: str | None = Field(default=None, max_length=4)
+    quick_prompts: list[AgentQuickPrompt] | None = Field(default=None, max_length=32)
+    welcome_message: str | None = Field(default=None, max_length=2000)
+    avatar_id: str | None = Field(default=None, max_length=100)
     description: str | None = Field(default=None, description="Updated description")
     model: str | None = Field(default=None, description="Updated model override")
     tool_groups: list[str] | None = Field(default=None, description="Updated tool group whitelist")
@@ -150,6 +160,8 @@ def _agent_to_response(agent: CustomAgent) -> AgentResponse:
         updated_at=agent.updated_at.isoformat() if agent.updated_at else None,
         is_shared=agent.user_id == "tenant-shared",
         soul=agent.system_prompt or None,
+        base_system_prompt=agent_content(agent)[0],
+        presentation=agent_content(agent)[1],
     )
 
 
@@ -187,9 +199,7 @@ async def list_agents(
     is_admin = _is_tenant_admin(request)
     if is_admin:
         if not show_all:
-            query = query.where(
-                (CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared")
-            )
+            query = query.where((CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared"))
     else:
         if show_all:
             query = query.where(CustomAgent.user_id != "tenant-shared")
@@ -334,6 +344,7 @@ async def create_agent_endpoint(
     await session.refresh(agent)
 
     from deerflow.config.agents_config import load_agent_config
+
     load_agent_config.cache_clear()
 
     logger.info(f"Created agent '{normalized_name}' (id={agent.id}) by user {user_id}")
@@ -412,16 +423,7 @@ async def update_agent(
     if "tags" in fields_set:
         agent.tags = body.tags or []
 
-    if body.system_prompt is not None:
-        trimmed = body.system_prompt.strip()
-        if not trimmed:
-            raise HTTPException(status_code=422, detail="system_prompt must not be empty or whitespace-only")
-        agent.system_prompt = trimmed
-    elif body.soul is not None:
-        trimmed = body.soul.strip()
-        if not trimmed:
-            raise HTTPException(status_code=422, detail="system_prompt (soul) must not be empty or whitespace-only")
-        agent.system_prompt = trimmed
+    update_agent_content(agent, body)
     if body.enabled is not None:
         agent.enabled = body.enabled
 
@@ -430,6 +432,7 @@ async def update_agent(
     await session.refresh(agent)
 
     from deerflow.config.agents_config import load_agent_config
+
     load_agent_config.cache_clear()
 
     logger.info(f"Updated agent '{name}' (id={agent.id}) by user {user_id}")
@@ -476,6 +479,7 @@ async def delete_agent(
     # Check if any alert sources reference this agent (only when alerting plugin is enabled)
     if get_plugin_states().get("ops-alerting", True):
         from app.models.alerting import AlertSource
+
         ref_result = await session.exec(
             sa_select(AlertSource).where(
                 AlertSource.tenant_id == tenant_id,
@@ -485,15 +489,13 @@ async def delete_agent(
         ref_sources = ref_result.scalars().all()
         if ref_sources:
             source_names = ", ".join(s.name for s in ref_sources)
-            raise HTTPException(
-                status_code=409,
-                detail=f"无法删除：告警源 ({source_names}) 正在使用此 Agent。请先在告警源中解除绑定后再删除。"
-            )
+            raise HTTPException(status_code=409, detail=f"无法删除：告警源 ({source_names}) 正在使用此 Agent。请先在告警源中解除绑定后再删除。")
 
     await session.delete(agent)
     await session.commit()
 
     from deerflow.config.agents_config import load_agent_config
+
     load_agent_config.cache_clear()
 
     logger.info(f"Deleted agent '{name}' (id={agent.id}) by user {user_id}")

@@ -26,8 +26,8 @@ def provenance() -> dict:
     exclusions = value["excluded_source_files"]
     if main_exclusions(exclusions) != exclusions or any(entry["source"] in exclusions for entry in value["imports"]):
         raise ValueError("Catalog source exclusion mismatch")
-    expected_data = {entry["target"] for entry in value["imports"] if entry["target"].startswith(("data/experts/", "data/subagents/"))}
-    actual_data = {path.relative_to(ROOT).as_posix() for folder in (DATA / "experts", DATA / "subagents") for path in folder.rglob("*") if path.is_file() and path.suffix != ".pyc"}
+    expected_data = {entry["target"] for entry in value["imports"] if entry["target"].startswith(("data/experts/", "data/subagents/", "data/avatars/", "data/personality/"))}
+    actual_data = {path.relative_to(ROOT).as_posix() for folder in (DATA / "experts", DATA / "subagents", DATA / "avatars", DATA / "personality") for path in folder.rglob("*") if path.is_file() and path.suffix != ".pyc"}
     if actual_data != expected_data:
         raise ValueError("Catalog source inventory mismatch")
     for entry in value["imports"]:
@@ -74,6 +74,9 @@ def _templates(locale: Locale) -> dict[str, dict]:
             "suggested_name": folder.name,
             "description": _localized(metadata.get("description"), locale),
             "locale": locale,
+            "welcome_message": _localized(metadata.get("welcome_message"), locale),
+            "quick_prompts": [{key: _localized(item.get(key), locale) for key in ("title", "description", "prompt")} for item in metadata.get("quick_prompts", [])],
+            "avatar_id": f"experts:{folder.name}" if (DATA / "avatars/experts" / (folder.name + ".svg")).is_file() else "experts:default",
             "division": "experts",
             "system_prompt": "\n\n".join(text),
             "bundled_resources": resources,
@@ -95,6 +98,9 @@ def _templates(locale: Locale) -> dict[str, dict]:
             "suggested_name": path.stem,
             "description": str(meta.get("description") or ""),
             "locale": locale,
+            "welcome_message": "",
+            "quick_prompts": [],
+            "avatar_id": "experts:default",
             "division": path.parent.name,
             "system_prompt": body.strip(),
             "bundled_resources": [],

@@ -40,7 +40,7 @@ def test_curated_reimport_is_byte_stable_and_preserves_original_receipt(stage):
     assert before == after
     assert after["archive_sha256"] != after["retained_archive_sha256"]
     assert len(after["source_files"]) == 3771
-    assert result["imported_files"] == 849 and result["excluded_source_files"] == 186
+    assert result["imported_files"] == 902 and result["excluded_source_files"] == 186
     assert sync.verify()["verified"]
 
 

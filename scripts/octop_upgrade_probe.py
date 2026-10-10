@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
@@ -28,9 +29,24 @@ def main():
     )
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
+    contract_paths = [
+        "backend/app/integrations/octop/agents.py",
+        "backend/app/gateway/routers/agents.py",
+        "backend/app/gateway/routers/agent_catalog.py",
+        "backend/tests/test_octop_integration.py",
+        "backend/tests/test_octop_presentation.py",
+        "backend/packages/octop-capabilities/src/prismos_octop/catalog.py",
+        "backend/packages/octop-capabilities/src/prismos_octop/presentation.py",
+        "backend/packages/octop-capabilities/src/prismos_octop/source_policy.py",
+    ]
+    contract_hashes = {
+        path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+        for path in contract_paths
+    }
     evidence = {
-        "scope": "curated source upgrade/rollback; catalog, persona, imported pure modules and Agent host contracts",
+        "scope": "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, imported pure modules and Agent host contracts",
         "host_changed": False,
+        "host_contract_sha256s": contract_hashes,
         "versions": [],
     }
     with tempfile.TemporaryDirectory(prefix="prismos-octop-upgrade-") as directory:
@@ -40,6 +56,7 @@ def main():
         for path in [
             "__init__.py",
             "catalog.py",
+            "presentation.py",
             "source_policy.py",
             "upstream/__init__.py",
         ]:
@@ -80,6 +97,7 @@ def main():
                     "-m",
                     "pytest",
                     "tests/test_octop_integration.py",
+                    "tests/test_octop_presentation.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",
@@ -99,6 +117,11 @@ def main():
             )
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
+    if contract_hashes != {
+        path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+        for path in contract_paths
+    }:
+        raise ValueError("Host contract changed during upgrade probe")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n")
     print(

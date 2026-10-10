@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-10",
+  "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "release": "b6",
+  "main_source_files": 3771,
+  "retained_main_source_files": 3585,
+  "excluded_main_source_files": 186,
+  "retained_external_source_files": 653,
+  "excluded_external_source_files": 51,
+  "imported_files": 902,
+  "counts": {
+    "experts": 18,
+    "expert_resources": 538,
+    "excluded_resources": 237,
+    "skills": 92,
+    "scripts": 241,
+    "subagents": 489,
+    "personality": 123,
+    "plugins": 31,
+    "connectors": 26,
+    "endpoints": 494
+  },
+  "current_catalog_counts": {
+    "zh": 290,
+    "en": 235
+  },
+  "current_capabilities": 42,
+  "future_capabilities": 12,
+  "runtime_permission_grants": false,
+  "external_runtime_integration": false,
+  "main_manifest_sha256": "d7fdd49296758eecff9577e63bce5e72347b20f60c3d00dcce0c2b189891e8c0",
+  "external_manifest_sha256": "f796d5e83d6b0446cb680e28c93878c05327a1c8d52a71e384e48421453face1",
+  "scope": "static source, dependency and content inventory; original full behavior scope remains pending"
+}

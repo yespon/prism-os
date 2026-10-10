@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -26,6 +26,10 @@ import { useAvailableModels } from "@/core/models/hooks";
 import { isTenantAdminRole } from "@/core/permissions/scope";
 import { useCurrentTenant } from "@/core/tenants/hooks";
 import { cn } from "@/lib/utils";
+import { useTenantKey } from "@/core/agents/hooks";
+import type { AgentQuickPrompt } from "@/core/agents/types";
+import { useDraftIsCurrent } from "@/core/agents/draft-scope";
+import { AgentPresentationEditor } from "./agent-presentation-editor";
 
 import { AgentTemplatePicker } from "./agent-template-picker";
 
@@ -37,11 +41,21 @@ interface CreateAgentDialogProps {
 
 const NAME_RE = /^[A-Za-z0-9-]+$/;
 
-export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgentDialogProps) {
+export function CreateAgentDialog(props: CreateAgentDialogProps) {
+  const tenant = useTenantKey();
+  const { locale } = useI18n();
+  return <CreateAgentDialogFields key={`${tenant}:${locale}:${props.open}`} {...props} />;
+}
+
+function CreateAgentDialogFields({ open, onOpenChange, onSuccess }: CreateAgentDialogProps) {
   const { t, locale } = useI18n();
   const templateLocale = locale === "zh-CN" ? "zh" : "en";
   const [templateId, setTemplateId] = useState("");
   const [personaCode, setPersonaCode] = useState("");
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [avatarId, setAvatarId] = useState("");
+  const [quickPrompts, setQuickPrompts] = useState<AgentQuickPrompt[]>([]);
+  const isCurrent = useDraftIsCurrent();
 
   const { skills } = useSkills();
   const createAgent = useCreateAgent();
@@ -75,6 +89,9 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
       setName("");
       setTemplateId("");
       setPersonaCode("");
+      setWelcomeMessage("");
+      setAvatarId("");
+      setQuickPrompts([]);
       setDescription("");
       setSystemPrompt("");
       setSelectedModel("");
@@ -93,14 +110,17 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
 
   // Real-time name checking with debounce/effect
   useEffect(() => {
+    let active = true;
     const trimmed = name.trim();
     if (!trimmed) {
+      setIsCheckingName(false);
       setNameError("");
       setIsNameAvailable(null);
       return;
     }
 
     if (!NAME_RE.test(trimmed)) {
+      setIsCheckingName(false);
       setNameError(t.agents.nameStepInvalidError);
       setIsNameAvailable(false);
       return;
@@ -114,6 +134,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
       void (async () => {
         try {
           const result = await checkAgentName(trimmed, isShared);
+          if (!active || !isCurrent()) return;
           if (result.available) {
             setIsNameAvailable(true);
             setNameError("");
@@ -122,16 +143,17 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
             setNameError(t.agents.nameStepAlreadyExistsError);
           }
         } catch {
+          if (!active || !isCurrent()) return;
           setNameError(t.agents.nameStepCheckError);
           setIsNameAvailable(false);
         } finally {
-          setIsCheckingName(false);
+          if (active && isCurrent()) setIsCheckingName(false);
         }
       })();
     }, 400);
 
-    return () => clearTimeout(delayDebounce);
-  }, [name, isShared, t.agents.nameStepInvalidError, t.agents.nameStepAlreadyExistsError, t.agents.nameStepCheckError]);
+    return () => { active = false; clearTimeout(delayDebounce); };
+  }, [name, isShared, isCurrent, t.agents.nameStepInvalidError, t.agents.nameStepAlreadyExistsError, t.agents.nameStepCheckError]);
 
   // Group skills by category
   const skillsByCategory = skills.reduce(
@@ -311,7 +333,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
       toast.error("Please enter a valid agent name");
       return;
     }
-    if (nameError || isNameAvailable === false) {
+    if (nameError || isNameAvailable !== true) {
       toast.error("Please resolve name validation errors before saving");
       return;
     }
@@ -323,6 +345,9 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
       template_id: templateId || undefined,
       template_locale: templateLocale,
       persona_mbti: personaCode || undefined,
+      welcome_message: welcomeMessage,
+      avatar_id: avatarId || null,
+      quick_prompts: quickPrompts,
       description,
       model: selectedModel || null,
       system_prompt: systemPrompt,
@@ -334,11 +359,14 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
     };
 
     try {
+      if (!isCurrent()) return;
       await createAgent.mutateAsync(request);
+      if (!isCurrent()) return;
       toast.success("智能体创建成功！");
       onOpenChange(false);
       onSuccess?.();
     } catch (err) {
+      if (!isCurrent()) return;
       toast.error(
         err instanceof Error ? err.message : "创建智能体失败"
       );
@@ -349,7 +377,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
     !name.trim() ||
     isCheckingName ||
     !!nameError ||
-    isNameAvailable === false ||
+    isNameAvailable !== true ||
     createAgent.isPending;
 
   return (
@@ -364,6 +392,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
             <DialogTitle className="text-base font-semibold text-foreground">
               新建智能体
             </DialogTitle>
+            <DialogDescription className="sr-only">{locale === "en-US" ? "Configure this agent’s instructions, personality and welcome content." : "配置智能体的提示词、人格和欢迎内容。"}</DialogDescription>
           </div>
         </header>
 
@@ -398,9 +427,14 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
                 if (!template) return;
                 setSystemPrompt(template.system_prompt);
                 setDescription(template.description);
+                setWelcomeMessage(template.welcome_message ?? "");
+                setAvatarId(template.avatar_id ?? "");
+                setQuickPrompts(template.quick_prompts ?? []);
                 if (!name.trim()) setName(template.suggested_name);
               }}
             />
+
+            <AgentPresentationEditor quickPrompts={quickPrompts} onQuickPrompts={setQuickPrompts} open={open} locale={templateLocale} welcomeMessage={welcomeMessage} avatarId={avatarId} onWelcome={setWelcomeMessage} onAvatar={setAvatarId} onPersona={setPersonaCode} />
 
             {/* Name */}
             <div className="space-y-2 shrink-0">
