@@ -7,6 +7,7 @@ on:
       - 'backend/**'
       - 'frontend/**'
       - 'vendor/octop/**'
+      - 'docs/superpowers/evidence/*octop*/**'
       - 'scripts/octop_*.py'
       - 'Makefile'
       - '.github/workflows/octop-integration.yml'
@@ -38,18 +39,21 @@ jobs:
         run: cd backend && uv sync --locked
       - name: Run backend regression
         run: cd backend && uv run --locked pytest tests/ -q
+      - name: Verify generated capability inventory
+        run: make octop-inventory
       - name: Check host adapters
         run: >-
           cd backend && uv run --locked ruff check
           app/integrations/octop app/runtime_adapters.py app/gateway/routers/agent_catalog.py
           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
-          ../scripts/octop_sync.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+          ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+          packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
       - name: Real Gateway smoke with temporary databases
         run: make octop-smoke
       - name: Build capability distribution
         run: cd backend && uv build --package prismos-octop-capabilities
       - name: Verify installed wheel resources
-        run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl
+        run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl --sdist dist/prismos_octop_capabilities-0.1.0.tar.gz
       - name: Install locked frontend
         run: cd frontend && pnpm install --frozen-lockfile
       - name: Typecheck and frontend regression

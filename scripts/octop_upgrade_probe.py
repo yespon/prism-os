@@ -29,7 +29,7 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     evidence = {
-        "scope": "catalog, persona, imported pure modules and Agent host contracts",
+        "scope": "curated source upgrade/rollback; catalog, persona, imported pure modules and Agent host contracts",
         "host_changed": False,
         "versions": [],
     }
@@ -37,22 +37,37 @@ def main():
         stage = Path(directory)
         package = stage / sync.PACKAGE
         package.mkdir(parents=True)
-        for path in ["__init__.py", "catalog.py", "upstream/__init__.py"]:
+        for path in [
+            "__init__.py",
+            "catalog.py",
+            "source_policy.py",
+            "upstream/__init__.py",
+        ]:
             (package / path).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / sync.PACKAGE / path, package / path)
         sync.ROOT = stage
         snapshots = [
-            (args.previous_archive, args.previous_revision, args.previous_release),
+            (
+                args.previous_archive,
+                args.previous_revision,
+                args.previous_release,
+                None,
+            ),
             (
                 ROOT / "vendor/octop/upstream.tar.gz",
                 manifest["revision"],
                 manifest["release"],
+                ROOT / "vendor/octop/manifest.json",
             ),
         ]
-        for archive, revision, release in snapshots:
+        snapshots.append(
+            snapshots[0]
+        )  # Exercise restoration to the previous curated source view.
+        for archive, revision, release, receipt in snapshots:
             if evidence["versions"]:
-                evidence["diff"] = sync.compare(archive, revision, release)
-            imported = sync.sync(archive, revision, release)
+                key = "diff" if len(evidence["versions"]) == 1 else "rollback_diff"
+                evidence[key] = sync.compare(archive, revision, release, receipt)
+            imported = sync.sync(archive, revision, release, receipt)
             verified = sync.verify()
             environment = dict(os.environ)
             environment["PYTHONPATH"] = (
@@ -90,6 +105,8 @@ def main():
         json.dumps(
             {
                 "passed": True,
+                "restricted_resource_excluded": True,
+                "rollback_verified": len(evidence["versions"]) == 3,
                 "versions": [entry["release"] for entry in evidence["versions"]],
                 "imported_changed": len(evidence["diff"]["imported_changed"]),
             }

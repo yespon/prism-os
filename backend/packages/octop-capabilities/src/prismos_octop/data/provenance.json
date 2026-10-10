@@ -1,9 +1,201 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "repository": "https://github.com/TencentCloud/Octop",
   "release": "v1.0.2b6",
   "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
   "archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+  "retained_archive_sha256": "5af171afd215f4b8199d7b5644218d25353c3275617fc336acdf54a04e582cdf",
+  "archive_kind": "deterministic filtered source view; not original upstream distribution",
+  "origin_verification": "original artifact and member hashes verified at import; offline retained bytes checked against receipt",
+  "exclusion_policy": "2026-10-10-office-resource-exclusions-v1",
+  "excluded_source_files": {
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/LICENSE.txt": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/SKILL.md": "db4fe7f65adda8a51a3f46ac7e39e8156987686e08272d2f7cc5f934ef4f0902",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/accept_changes.py": "70e5b5b03aff4a7f973db1c43f9cc2c85349a7f6912d9e80b114907fd4f901ff",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/comment.py": "8a19277f0abd8a501ece24c12d100a0cacfbdea2de29fd64e4a473257bec0814",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/helpers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/helpers/merge_runs.py": "2355f0cb5bb74c77935bbc0472ef05bea17a5639c9d41a412629b7f07ac40869",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/helpers/simplify_redlines.py": "91f0ff6e0c0b7b322b933458d97f8399c03b596748e8ec1ba78fc340f1b6e89d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/pack.py": "f048d58b86e7c6673fe23bd8e68f833351f3cb357b894802a4bb70cb3a3e32de",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/mce/mc.xsd": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2010.xsd": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2012.xsd": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2018.xsd": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-cex-2018.xsd": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-cid-2016.xsd": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-symex-2015.xsd": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/soffice.py": "20fd87c801b7932eb55c0c5fc42c4fb6e11bdb25f82ecf3cd41d158b4d99d53a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/unpack.py": "aed41122e1777274304cd95e3c26779e611f5a71ee4f94450e3c90e226487762",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validate.py": "c2179aee0d7f15fec7a12a80eb64985e8ecda1fca56162186f32dee15a59b40f",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/__init__.py": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/base.py": "7243387e387719c8057113ed4c99239b195a87641bce8d37ac17644008f89d47",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/docx.py": "8ee321a645178dbc056929c3af29e17da9d0c47ecf8a778181689a1960147230",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/pptx.py": "ee2245e34ff071c75718fc1092d522aa753858cb52b652c79e60f45a7bac03bd",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/redlining.py": "b5240abab2a9e79cd19b2750773c0095f6ff4998d112851252a2a3c04d25eb77",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/comments.xml": "a08ba83ee8790ac9e3dc61921f4988f19edd7e06ac09d6f1897a877c1581818d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/commentsExtended.xml": "544eeecfeceed4b468fff163cd9c366d33641c8b8ab691ce002576197846afe8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/commentsExtensible.xml": "bad10b3283e6ad6e7ef6d1ca5169683721ed690ee331282c65df04017e080631",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/commentsIds.xml": "db20f9616e004ec42ef736e80c2384e45db0f8d1194d31dc8b37c7d6ecdd6420",
+    "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/people.xml": "056f63aa1197fd8c9dda980c9f1b9ff016fd5fa4a462df8aec5f384f39d23e37",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/LICENSE.txt": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/SKILL.md": "a2bf001cddb3b84f54612af6704021456aaf6e709aa5cac7493b2ebf803b0fc2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/forms.md": "8a469eed0e3308e9c7a6d8263cec8e6c016eb9bd33d41d9a44952ee28aada573",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/reference.md": "d2a911f9c00b71fe8e51938320e715fa02d4b9f0ab354f839e0207b17a60dfff",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/check_bounding_boxes.py": "cc29c08235a3e82ce9117405f44d095b0ac66402b75dd2085e4cb8a101be7810",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/check_fillable_fields.py": "f28eb03441ee7f85792a5aff765555e44216a692452cab2921e1e0a54c2c6e6a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/convert_pdf_to_images.py": "3fc43b02a9b80f20bd0689b12882695ec32608e3e191079b1c48b7f867dbdb32",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/create_validation_image.py": "ddc404bfe9517d1c1dcfee3517892c90c2a2b1c4540ff5d8acc43c6cb2c95521",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/extract_form_field_info.py": "0d4441fcf8ec7f4397e8d1e7f0ceebcd0a9ec507908b553b564ff7604757adb0",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/extract_form_structure.py": "feb76b2f55bfc31d5f840c817ecd24f173141001a7b199de4018cee8328ab06d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/fill_fillable_fields.py": "d915ec23420f7dbbc07d86aadfba1aa7a753dbef3571ed5b72be86daa635853b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/fill_pdf_form_with_annotations.py": "2447cd6824504b2e0875cefb9c543ad24c3b81f69f6024be8f391b608235a413",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/LICENSE.txt": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/SKILL.md": "eeb5ccbff05a59419d77e51f20ea4d00bba3872e5f33954aaa4575fe31efc948",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/editing.md": "a846e0175a199cf69e8ac01f584426e173f77d573937d6efe23a4dc02d1c941c",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/pptxgenjs.md": "bbe2c8d06df5f804a81c9a96e4f6c23079952d10faad7d5283d0bd5a8bbcbd74",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/add_slide.py": "3ec896682469d74f28ae5facc7a4b34ac87dfda6e3e333356768aed506ecf68f",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/clean.py": "c628581576c1d441f02d078b2281273b9cb3c7d7a76b3be9b5b689f3b6167bba",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/helpers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/helpers/merge_runs.py": "2355f0cb5bb74c77935bbc0472ef05bea17a5639c9d41a412629b7f07ac40869",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/helpers/simplify_redlines.py": "91f0ff6e0c0b7b322b933458d97f8399c03b596748e8ec1ba78fc340f1b6e89d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/pack.py": "f048d58b86e7c6673fe23bd8e68f833351f3cb357b894802a4bb70cb3a3e32de",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/mce/mc.xsd": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2010.xsd": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2012.xsd": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2018.xsd": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-cex-2018.xsd": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-cid-2016.xsd": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-symex-2015.xsd": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/soffice.py": "80dbde8d969a91460238a482936fb59c4c77df8a24159e2a28dd646d26202972",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/unpack.py": "aed41122e1777274304cd95e3c26779e611f5a71ee4f94450e3c90e226487762",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validate.py": "c2179aee0d7f15fec7a12a80eb64985e8ecda1fca56162186f32dee15a59b40f",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/__init__.py": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/base.py": "7243387e387719c8057113ed4c99239b195a87641bce8d37ac17644008f89d47",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/docx.py": "8ee321a645178dbc056929c3af29e17da9d0c47ecf8a778181689a1960147230",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/pptx.py": "ee2245e34ff071c75718fc1092d522aa753858cb52b652c79e60f45a7bac03bd",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/redlining.py": "b5240abab2a9e79cd19b2750773c0095f6ff4998d112851252a2a3c04d25eb77",
+    "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/thumbnail.py": "fb34d459b00c93773c928d33929c7d41ae9adbb49459da1e6bd7517a6bf26a01",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/LICENSE.txt": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/SKILL.md": "c5f6e991f3d38a3ac36ddd47dce1debf3fb1055488931d23be9aa38ccfb3c8c8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/helpers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/helpers/merge_runs.py": "2355f0cb5bb74c77935bbc0472ef05bea17a5639c9d41a412629b7f07ac40869",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/helpers/simplify_redlines.py": "91f0ff6e0c0b7b322b933458d97f8399c03b596748e8ec1ba78fc340f1b6e89d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/pack.py": "f048d58b86e7c6673fe23bd8e68f833351f3cb357b894802a4bb70cb3a3e32de",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/mce/mc.xsd": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2010.xsd": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2012.xsd": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2018.xsd": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-cex-2018.xsd": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-cid-2016.xsd": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-symex-2015.xsd": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/soffice.py": "80dbde8d969a91460238a482936fb59c4c77df8a24159e2a28dd646d26202972",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/unpack.py": "aed41122e1777274304cd95e3c26779e611f5a71ee4f94450e3c90e226487762",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validate.py": "c2179aee0d7f15fec7a12a80eb64985e8ecda1fca56162186f32dee15a59b40f",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/__init__.py": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/base.py": "7243387e387719c8057113ed4c99239b195a87641bce8d37ac17644008f89d47",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/docx.py": "8ee321a645178dbc056929c3af29e17da9d0c47ecf8a778181689a1960147230",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/pptx.py": "ee2245e34ff071c75718fc1092d522aa753858cb52b652c79e60f45a7bac03bd",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/redlining.py": "b5240abab2a9e79cd19b2750773c0095f6ff4998d112851252a2a3c04d25eb77",
+    "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/recalc.py": "90cc7b6e76ebee17e049b5f84624eeaa3eca402aaabe224512ced9a759d51ab5"
+  },
   "imports": [
     {
       "source": "src/octop/infra/agents/experts/library/README.md",
@@ -1561,311 +1753,6 @@
       "sha256": "4bee7e88daa5bd0e2aa43edc1267fb0bf060201b1bce129e68349027f5e10435"
     },
     {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/LICENSE.txt",
-      "target": "data/experts/office-automation/skills/docx/LICENSE.txt",
-      "sha256": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/SKILL.md",
-      "target": "data/experts/office-automation/skills/docx/SKILL.md",
-      "sha256": "db4fe7f65adda8a51a3f46ac7e39e8156987686e08272d2f7cc5f934ef4f0902"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/__init__.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/__init__.py",
-      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/accept_changes.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/accept_changes.py",
-      "sha256": "70e5b5b03aff4a7f973db1c43f9cc2c85349a7f6912d9e80b114907fd4f901ff"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/comment.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/comment.py",
-      "sha256": "8a19277f0abd8a501ece24c12d100a0cacfbdea2de29fd64e4a473257bec0814"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/helpers/__init__.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/helpers/__init__.py",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/helpers/merge_runs.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/helpers/merge_runs.py",
-      "sha256": "2355f0cb5bb74c77935bbc0472ef05bea17a5639c9d41a412629b7f07ac40869"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/helpers/simplify_redlines.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/helpers/simplify_redlines.py",
-      "sha256": "91f0ff6e0c0b7b322b933458d97f8399c03b596748e8ec1ba78fc340f1b6e89d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/pack.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/pack.py",
-      "sha256": "f048d58b86e7c6673fe23bd8e68f833351f3cb357b894802a4bb70cb3a3e32de"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
-      "sha256": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
-      "sha256": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
-      "sha256": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
-      "sha256": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
-      "sha256": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
-      "sha256": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
-      "sha256": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
-      "sha256": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
-      "sha256": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
-      "sha256": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
-      "sha256": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
-      "sha256": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
-      "sha256": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
-      "sha256": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
-      "sha256": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
-      "sha256": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
-      "sha256": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
-      "sha256": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
-      "sha256": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
-      "sha256": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
-      "sha256": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
-      "sha256": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
-      "sha256": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
-      "sha256": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
-      "sha256": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
-      "sha256": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
-      "sha256": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
-      "sha256": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
-      "sha256": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
-      "sha256": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
-      "sha256": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/mce/mc.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/mce/mc.xsd",
-      "sha256": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2010.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2010.xsd",
-      "sha256": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2012.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2012.xsd",
-      "sha256": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2018.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-2018.xsd",
-      "sha256": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-cex-2018.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-cex-2018.xsd",
-      "sha256": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-cid-2016.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-cid-2016.xsd",
-      "sha256": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
-      "sha256": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-symex-2015.xsd",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/schemas/microsoft/wml-symex-2015.xsd",
-      "sha256": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/soffice.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/soffice.py",
-      "sha256": "20fd87c801b7932eb55c0c5fc42c4fb6e11bdb25f82ecf3cd41d158b4d99d53a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/unpack.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/unpack.py",
-      "sha256": "aed41122e1777274304cd95e3c26779e611f5a71ee4f94450e3c90e226487762"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validate.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/validate.py",
-      "sha256": "c2179aee0d7f15fec7a12a80eb64985e8ecda1fca56162186f32dee15a59b40f"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/__init__.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/validators/__init__.py",
-      "sha256": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/base.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/validators/base.py",
-      "sha256": "7243387e387719c8057113ed4c99239b195a87641bce8d37ac17644008f89d47"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/docx.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/validators/docx.py",
-      "sha256": "8ee321a645178dbc056929c3af29e17da9d0c47ecf8a778181689a1960147230"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/pptx.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/validators/pptx.py",
-      "sha256": "ee2245e34ff071c75718fc1092d522aa753858cb52b652c79e60f45a7bac03bd"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/office/validators/redlining.py",
-      "target": "data/experts/office-automation/skills/docx/scripts/office/validators/redlining.py",
-      "sha256": "b5240abab2a9e79cd19b2750773c0095f6ff4998d112851252a2a3c04d25eb77"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/comments.xml",
-      "target": "data/experts/office-automation/skills/docx/scripts/templates/comments.xml",
-      "sha256": "a08ba83ee8790ac9e3dc61921f4988f19edd7e06ac09d6f1897a877c1581818d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/commentsExtended.xml",
-      "target": "data/experts/office-automation/skills/docx/scripts/templates/commentsExtended.xml",
-      "sha256": "544eeecfeceed4b468fff163cd9c366d33641c8b8ab691ce002576197846afe8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/commentsExtensible.xml",
-      "target": "data/experts/office-automation/skills/docx/scripts/templates/commentsExtensible.xml",
-      "sha256": "bad10b3283e6ad6e7ef6d1ca5169683721ed690ee331282c65df04017e080631"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/commentsIds.xml",
-      "target": "data/experts/office-automation/skills/docx/scripts/templates/commentsIds.xml",
-      "sha256": "db20f9616e004ec42ef736e80c2384e45db0f8d1194d31dc8b37c7d6ecdd6420"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/docx/scripts/templates/people.xml",
-      "target": "data/experts/office-automation/skills/docx/scripts/templates/people.xml",
-      "sha256": "056f63aa1197fd8c9dda980c9f1b9ff016fd5fa4a462df8aec5f384f39d23e37"
-    },
-    {
       "source": "src/octop/infra/agents/experts/library/office-automation/skills/file_reader/SKILL.md",
       "target": "data/experts/office-automation/skills/file_reader/SKILL.md",
       "sha256": "ceaa0b9f7f0904e507fdeb087c91ab117b9e19f60511674b3e28ab782e19c21a"
@@ -1874,631 +1761,6 @@
       "source": "src/octop/infra/agents/experts/library/office-automation/skills/news/SKILL.md",
       "target": "data/experts/office-automation/skills/news/SKILL.md",
       "sha256": "9f6b2faad3c18372ef1118bd55a095af6eb07a5b2ca79c50409210a3732e8d56"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/LICENSE.txt",
-      "target": "data/experts/office-automation/skills/pdf/LICENSE.txt",
-      "sha256": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/SKILL.md",
-      "target": "data/experts/office-automation/skills/pdf/SKILL.md",
-      "sha256": "a2bf001cddb3b84f54612af6704021456aaf6e709aa5cac7493b2ebf803b0fc2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/forms.md",
-      "target": "data/experts/office-automation/skills/pdf/forms.md",
-      "sha256": "8a469eed0e3308e9c7a6d8263cec8e6c016eb9bd33d41d9a44952ee28aada573"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/reference.md",
-      "target": "data/experts/office-automation/skills/pdf/reference.md",
-      "sha256": "d2a911f9c00b71fe8e51938320e715fa02d4b9f0ab354f839e0207b17a60dfff"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/check_bounding_boxes.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/check_bounding_boxes.py",
-      "sha256": "cc29c08235a3e82ce9117405f44d095b0ac66402b75dd2085e4cb8a101be7810"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/check_fillable_fields.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/check_fillable_fields.py",
-      "sha256": "f28eb03441ee7f85792a5aff765555e44216a692452cab2921e1e0a54c2c6e6a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/convert_pdf_to_images.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/convert_pdf_to_images.py",
-      "sha256": "3fc43b02a9b80f20bd0689b12882695ec32608e3e191079b1c48b7f867dbdb32"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/create_validation_image.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/create_validation_image.py",
-      "sha256": "ddc404bfe9517d1c1dcfee3517892c90c2a2b1c4540ff5d8acc43c6cb2c95521"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/extract_form_field_info.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/extract_form_field_info.py",
-      "sha256": "0d4441fcf8ec7f4397e8d1e7f0ceebcd0a9ec507908b553b564ff7604757adb0"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/extract_form_structure.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/extract_form_structure.py",
-      "sha256": "feb76b2f55bfc31d5f840c817ecd24f173141001a7b199de4018cee8328ab06d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/fill_fillable_fields.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/fill_fillable_fields.py",
-      "sha256": "d915ec23420f7dbbc07d86aadfba1aa7a753dbef3571ed5b72be86daa635853b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pdf/scripts/fill_pdf_form_with_annotations.py",
-      "target": "data/experts/office-automation/skills/pdf/scripts/fill_pdf_form_with_annotations.py",
-      "sha256": "2447cd6824504b2e0875cefb9c543ad24c3b81f69f6024be8f391b608235a413"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/LICENSE.txt",
-      "target": "data/experts/office-automation/skills/pptx/LICENSE.txt",
-      "sha256": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/SKILL.md",
-      "target": "data/experts/office-automation/skills/pptx/SKILL.md",
-      "sha256": "eeb5ccbff05a59419d77e51f20ea4d00bba3872e5f33954aaa4575fe31efc948"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/editing.md",
-      "target": "data/experts/office-automation/skills/pptx/editing.md",
-      "sha256": "a846e0175a199cf69e8ac01f584426e173f77d573937d6efe23a4dc02d1c941c"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/pptxgenjs.md",
-      "target": "data/experts/office-automation/skills/pptx/pptxgenjs.md",
-      "sha256": "bbe2c8d06df5f804a81c9a96e4f6c23079952d10faad7d5283d0bd5a8bbcbd74"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/__init__.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/__init__.py",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/add_slide.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/add_slide.py",
-      "sha256": "3ec896682469d74f28ae5facc7a4b34ac87dfda6e3e333356768aed506ecf68f"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/clean.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/clean.py",
-      "sha256": "c628581576c1d441f02d078b2281273b9cb3c7d7a76b3be9b5b689f3b6167bba"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/helpers/__init__.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/helpers/__init__.py",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/helpers/merge_runs.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/helpers/merge_runs.py",
-      "sha256": "2355f0cb5bb74c77935bbc0472ef05bea17a5639c9d41a412629b7f07ac40869"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/helpers/simplify_redlines.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/helpers/simplify_redlines.py",
-      "sha256": "91f0ff6e0c0b7b322b933458d97f8399c03b596748e8ec1ba78fc340f1b6e89d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/pack.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/pack.py",
-      "sha256": "f048d58b86e7c6673fe23bd8e68f833351f3cb357b894802a4bb70cb3a3e32de"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
-      "sha256": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
-      "sha256": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
-      "sha256": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
-      "sha256": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
-      "sha256": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
-      "sha256": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
-      "sha256": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
-      "sha256": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
-      "sha256": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
-      "sha256": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
-      "sha256": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
-      "sha256": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
-      "sha256": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
-      "sha256": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
-      "sha256": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
-      "sha256": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
-      "sha256": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
-      "sha256": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
-      "sha256": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
-      "sha256": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
-      "sha256": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
-      "sha256": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
-      "sha256": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
-      "sha256": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
-      "sha256": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
-      "sha256": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
-      "sha256": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
-      "sha256": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
-      "sha256": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
-      "sha256": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
-      "sha256": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/mce/mc.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/mce/mc.xsd",
-      "sha256": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2010.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2010.xsd",
-      "sha256": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2012.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2012.xsd",
-      "sha256": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2018.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-2018.xsd",
-      "sha256": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-cex-2018.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-cex-2018.xsd",
-      "sha256": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-cid-2016.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-cid-2016.xsd",
-      "sha256": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
-      "sha256": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-symex-2015.xsd",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/schemas/microsoft/wml-symex-2015.xsd",
-      "sha256": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/soffice.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/soffice.py",
-      "sha256": "80dbde8d969a91460238a482936fb59c4c77df8a24159e2a28dd646d26202972"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/unpack.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/unpack.py",
-      "sha256": "aed41122e1777274304cd95e3c26779e611f5a71ee4f94450e3c90e226487762"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validate.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/validate.py",
-      "sha256": "c2179aee0d7f15fec7a12a80eb64985e8ecda1fca56162186f32dee15a59b40f"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/__init__.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/validators/__init__.py",
-      "sha256": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/base.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/validators/base.py",
-      "sha256": "7243387e387719c8057113ed4c99239b195a87641bce8d37ac17644008f89d47"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/docx.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/validators/docx.py",
-      "sha256": "8ee321a645178dbc056929c3af29e17da9d0c47ecf8a778181689a1960147230"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/pptx.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/validators/pptx.py",
-      "sha256": "ee2245e34ff071c75718fc1092d522aa753858cb52b652c79e60f45a7bac03bd"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/office/validators/redlining.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/office/validators/redlining.py",
-      "sha256": "b5240abab2a9e79cd19b2750773c0095f6ff4998d112851252a2a3c04d25eb77"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/pptx/scripts/thumbnail.py",
-      "target": "data/experts/office-automation/skills/pptx/scripts/thumbnail.py",
-      "sha256": "fb34d459b00c93773c928d33929c7d41ae9adbb49459da1e6bd7517a6bf26a01"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/LICENSE.txt",
-      "target": "data/experts/office-automation/skills/xlsx/LICENSE.txt",
-      "sha256": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/SKILL.md",
-      "target": "data/experts/office-automation/skills/xlsx/SKILL.md",
-      "sha256": "c5f6e991f3d38a3ac36ddd47dce1debf3fb1055488931d23be9aa38ccfb3c8c8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/helpers/__init__.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/helpers/__init__.py",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/helpers/merge_runs.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/helpers/merge_runs.py",
-      "sha256": "2355f0cb5bb74c77935bbc0472ef05bea17a5639c9d41a412629b7f07ac40869"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/helpers/simplify_redlines.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/helpers/simplify_redlines.py",
-      "sha256": "91f0ff6e0c0b7b322b933458d97f8399c03b596748e8ec1ba78fc340f1b6e89d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/pack.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/pack.py",
-      "sha256": "f048d58b86e7c6673fe23bd8e68f833351f3cb357b894802a4bb70cb3a3e32de"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
-      "sha256": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
-      "sha256": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
-      "sha256": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
-      "sha256": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
-      "sha256": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
-      "sha256": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
-      "sha256": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
-      "sha256": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
-      "sha256": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
-      "sha256": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
-      "sha256": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
-      "sha256": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
-      "sha256": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
-      "sha256": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
-      "sha256": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
-      "sha256": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
-      "sha256": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
-      "sha256": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
-      "sha256": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
-      "sha256": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
-      "sha256": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
-      "sha256": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
-      "sha256": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
-      "sha256": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
-      "sha256": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
-      "sha256": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
-      "sha256": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
-      "sha256": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
-      "sha256": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
-      "sha256": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
-      "sha256": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/mce/mc.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/mce/mc.xsd",
-      "sha256": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2010.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2010.xsd",
-      "sha256": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2012.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2012.xsd",
-      "sha256": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2018.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-2018.xsd",
-      "sha256": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-cex-2018.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-cex-2018.xsd",
-      "sha256": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-cid-2016.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-cid-2016.xsd",
-      "sha256": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
-      "sha256": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-symex-2015.xsd",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/schemas/microsoft/wml-symex-2015.xsd",
-      "sha256": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/soffice.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/soffice.py",
-      "sha256": "80dbde8d969a91460238a482936fb59c4c77df8a24159e2a28dd646d26202972"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/unpack.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/unpack.py",
-      "sha256": "aed41122e1777274304cd95e3c26779e611f5a71ee4f94450e3c90e226487762"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validate.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/validate.py",
-      "sha256": "c2179aee0d7f15fec7a12a80eb64985e8ecda1fca56162186f32dee15a59b40f"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/__init__.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/validators/__init__.py",
-      "sha256": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/base.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/validators/base.py",
-      "sha256": "7243387e387719c8057113ed4c99239b195a87641bce8d37ac17644008f89d47"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/docx.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/validators/docx.py",
-      "sha256": "8ee321a645178dbc056929c3af29e17da9d0c47ecf8a778181689a1960147230"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/pptx.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/validators/pptx.py",
-      "sha256": "ee2245e34ff071c75718fc1092d522aa753858cb52b652c79e60f45a7bac03bd"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/office/validators/redlining.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/office/validators/redlining.py",
-      "sha256": "b5240abab2a9e79cd19b2750773c0095f6ff4998d112851252a2a3c04d25eb77"
-    },
-    {
-      "source": "src/octop/infra/agents/experts/library/office-automation/skills/xlsx/scripts/recalc.py",
-      "target": "data/experts/office-automation/skills/xlsx/scripts/recalc.py",
-      "sha256": "90cc7b6e76ebee17e049b5f84624eeaa3eca402aaabe224512ced9a759d51ab5"
     },
     {
       "source": "src/octop/infra/agents/experts/library/ops-engineer/IDENTITY.md",

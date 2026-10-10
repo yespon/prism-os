@@ -9,6 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from .source_policy import OFFICE_ROOT, POLICY_ID, main_exclusions
 from .upstream.frontmatter import parse_frontmatter
 from .upstream.mbti_profiles import get_all_profiles, get_profile
 
@@ -20,6 +21,11 @@ DATA = ROOT / "data"
 @lru_cache(maxsize=1)
 def provenance() -> dict:
     value = json.loads((DATA / "provenance.json").read_text(encoding="utf-8"))
+    if value.get("schema_version") != 2 or value.get("exclusion_policy") != POLICY_ID:
+        raise ValueError("Catalog source policy mismatch")
+    exclusions = value["excluded_source_files"]
+    if main_exclusions(exclusions) != exclusions or any(entry["source"] in exclusions for entry in value["imports"]):
+        raise ValueError("Catalog source exclusion mismatch")
     expected_data = {entry["target"] for entry in value["imports"] if entry["target"].startswith(("data/experts/", "data/subagents/"))}
     actual_data = {path.relative_to(ROOT).as_posix() for folder in (DATA / "experts", DATA / "subagents") for path in folder.rglob("*") if path.is_file() and path.suffix != ".pyc"}
     if actual_data != expected_data:
@@ -71,6 +77,8 @@ def _templates(locale: Locale) -> dict[str, dict]:
             "division": "experts",
             "system_prompt": "\n\n".join(text),
             "bundled_resources": resources,
+            "excluded_resources": sorted({"skills/" + path[len(OFFICE_ROOT) :].split("/", 1)[0] for path in origin["excluded_source_files"] if folder.name == "office-automation" and path.startswith(OFFICE_ROOT)}),
+            "excluded_resources_status": "independent implementation pending",
             "source_path": f"src/octop/infra/agents/experts/library/{folder.name}/manifest.json",
             "revision": origin["revision"],
         }
@@ -90,6 +98,7 @@ def _templates(locale: Locale) -> dict[str, dict]:
             "division": path.parent.name,
             "system_prompt": body.strip(),
             "bundled_resources": [],
+            "excluded_resources": [],
             "source_path": f"src/octop/infra/agents/subagents/library/{locale}/{path.parent.name}/{path.name}",
             "revision": origin["revision"],
         }

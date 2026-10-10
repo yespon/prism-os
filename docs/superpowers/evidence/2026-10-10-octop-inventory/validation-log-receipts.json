@@ -1,0 +1,30 @@
+{
+  "prismos-n05-final-backend-full.log": {
+    "sha256": "457df661b8e3da244713087278c5bb1941cfff0a1fdd28ee534ed6f39c847617",
+    "scope": "local completed validation log; summary in validation.json"
+  },
+  "prismos-n05-final-frontend-full.log": {
+    "sha256": "44d3418a30428bdd7489a08bbe4ff72051efecde9823369d4cea0501335c0b5e",
+    "scope": "local completed validation log; summary in validation.json"
+  },
+  "prismos-n05-curation-targeted-final.log": {
+    "sha256": "519bef141384ff76c8485553b31cc5885b2c09e3731c3be911e148766d592d84",
+    "scope": "local completed validation log; summary in validation.json"
+  },
+  "prismos-n05-curation-build.log": {
+    "sha256": "545de34742847f0d01d5a61e523267aa300787c8bdaa230443b8eb5dca679569",
+    "scope": "local completed validation log; summary in validation.json"
+  },
+  "prismos-n05-final-inventory.log": {
+    "sha256": "aab3d2d0bc098161f33e8d8a902e8b150f182221cd5f4d1b5d0900b3d8d11cf6",
+    "scope": "local completed validation log; summary in validation.json"
+  },
+  "prismos-n05-final-artifacts.log": {
+    "sha256": "d7f1acc96616501e91aa6de846bd2e90325a924eb92d62c25ce0bcdc0c70a2b5",
+    "scope": "local completed validation log; summary in validation.json"
+  },
+  "prismos-n05-final-upgrade.log": {
+    "sha256": "35e8c7de98bd9864bfe4c7a14e58eec83ffee9e9f74a9f712d61101298066d11",
+    "scope": "local completed validation log; summary in validation.json"
+  }
+}

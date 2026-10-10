@@ -202,17 +202,19 @@ down:
 # Incremental Octop integration gates. Keep source-only imports distinct from runtime capability.
 UV ?= uv
 PNPM ?= pnpm
-.PHONY: octop-verify octop-check octop-build octop-smoke octop-postgres
+.PHONY: octop-verify octop-check octop-build octop-smoke octop-postgres octop-inventory
 octop-verify:
 	$(PYTHON) scripts/octop_sync.py verify
+	$(PYTHON) scripts/octop_external.py verify
 octop-check: octop-verify
 	cd backend && $(UV) sync --locked
-	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
+	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_octop_inventory.py tests/test_octop_source_curation.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
+	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py verify
 	cd frontend && $(PNPM) typecheck
 	cd frontend && $(PNPM) exec vitest run src/core/agents/catalog.test.ts
 octop-build: octop-check octop-smoke
 	cd backend && $(UV) build --package prismos-octop-capabilities
-	cd backend && $(UV) run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl
+	cd backend && $(UV) run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl --sdist dist/prismos_octop_capabilities-0.1.0.tar.gz
 	cd frontend && $(PNPM) build
 octop-smoke: octop-verify
 	cd backend && $(UV) run --locked python ../scripts/octop_gateway_smoke.py
@@ -220,3 +222,7 @@ octop-smoke: octop-verify
 # Explicit isolated database probe; requires Docker and a cached PostgreSQL image.
 octop-postgres:
 	cd backend && $(UV) run --locked python -m scripts.verify_ticket_secret_postgres
+
+# Static item/dependency inventories; no upstream code or plugins are activated.
+octop-inventory: octop-verify
+	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py verify

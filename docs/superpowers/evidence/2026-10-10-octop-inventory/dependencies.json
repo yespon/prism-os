@@ -1,0 +1,882 @@
+{
+  "host_lock_sha256": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+  "upstream_lock_sha256": "9dd1e05b55d10383a0cfd575d19af05c05d616ed257eb148eb59bca28b62de2e",
+  "marker_environment": {
+    "python_version": "3.12",
+    "sys_platform": "linux",
+    "platform_machine": "x86_64"
+  },
+  "packages": [
+    {
+      "name": "octop-browser",
+      "version": "1.0.0",
+      "license_declared": "MIT",
+      "source_urls": [
+        "Homepage, https://github.com/TencentCloud/octop-browser",
+        "Repository, https://github.com/TencentCloud/octop-browser",
+        "Issues, https://github.com/TencentCloud/octop-browser/issues"
+      ],
+      "requires_python": ">=3.11",
+      "core": [
+        {
+          "requirement": "aiohttp>=3.9",
+          "name": "aiohttp",
+          "host_locked": "3.14.3",
+          "upstream_locked": "3.14.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "mcp<2,>=1.9",
+          "name": "mcp",
+          "host_locked": "1.29.0",
+          "upstream_locked": "1.28.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "pydantic>=2.0",
+          "name": "pydantic",
+          "host_locked": "2.12.5",
+          "upstream_locked": "2.13.4",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "websockets>=12.0",
+          "name": "websockets",
+          "host_locked": "15.0.1",
+          "upstream_locked": "15.0.1",
+          "host_check": "compatible"
+        }
+      ],
+      "extras": {
+        "dev": [
+          {
+            "requirement": "coverage[toml]>=7.5; extra == 'dev'",
+            "name": "coverage",
+            "host_locked": null,
+            "upstream_locked": "7.14.3",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "mypy>=1.9; extra == 'dev'",
+            "name": "mypy",
+            "host_locked": null,
+            "upstream_locked": "2.1.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pre-commit>=3.7; extra == 'dev'",
+            "name": "pre-commit",
+            "host_locked": null,
+            "upstream_locked": null,
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pytest-asyncio>=0.23; extra == 'dev'",
+            "name": "pytest-asyncio",
+            "host_locked": null,
+            "upstream_locked": "1.4.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pytest-cov>=5.0; extra == 'dev'",
+            "name": "pytest-cov",
+            "host_locked": null,
+            "upstream_locked": "7.1.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pytest>=8.0; extra == 'dev'",
+            "name": "pytest",
+            "host_locked": "9.1.1",
+            "upstream_locked": "9.1.1",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "ruff>=0.4; extra == 'dev'",
+            "name": "ruff",
+            "host_locked": "0.14.11",
+            "upstream_locked": "0.15.20",
+            "host_check": "compatible"
+          }
+        ]
+      },
+      "owner_role": "tools and devices",
+      "dependencies": [
+        "N12"
+      ],
+      "runtime_integrated": false,
+      "coupling_review": "AST imports in source-index.json; runtime semantics not tested",
+      "decision": "explicit host adapter or isolated worker; preserve PrismOS runtime and facts"
+    },
+    {
+      "name": "octop-gateway",
+      "version": "1.0.0",
+      "license_declared": "MIT",
+      "source_urls": [
+        "Homepage, https://github.com/TencentCloud/octop-gateway",
+        "Repository, https://github.com/TencentCloud/octop-gateway",
+        "Issues, https://github.com/TencentCloud/octop-gateway/issues",
+        "Changelog, https://github.com/TencentCloud/octop-gateway/blob/main/CHANGELOG.md"
+      ],
+      "requires_python": ">=3.12",
+      "core": [
+        {
+          "requirement": "aiohttp>=3.9",
+          "name": "aiohttp",
+          "host_locked": "3.14.3",
+          "upstream_locked": "3.14.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "cryptography>=42.0",
+          "name": "cryptography",
+          "host_locked": "50.0.0",
+          "upstream_locked": "49.0.0",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "dingtalk-stream>=0.24.3",
+          "name": "dingtalk-stream",
+          "host_locked": null,
+          "upstream_locked": "0.24.3",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "discord-py>=2.3",
+          "name": "discord-py",
+          "host_locked": null,
+          "upstream_locked": "2.7.1",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "httpx>=0.27.0",
+          "name": "httpx",
+          "host_locked": "0.28.1",
+          "upstream_locked": "0.28.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "lark-oapi>=1.5.3",
+          "name": "lark-oapi",
+          "host_locked": "1.5.3",
+          "upstream_locked": "1.7.3",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "paho-mqtt>=2.0.0",
+          "name": "paho-mqtt",
+          "host_locked": null,
+          "upstream_locked": "2.1.0",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "pydantic>=2.0",
+          "name": "pydantic",
+          "host_locked": "2.12.5",
+          "upstream_locked": "2.13.4",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "python-dotenv>=1.0",
+          "name": "python-dotenv",
+          "host_locked": "1.2.2",
+          "upstream_locked": "1.2.2",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "python-socketio[asyncio-client]>=5.0",
+          "name": "python-socketio",
+          "host_locked": null,
+          "upstream_locked": "5.16.3",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "python-telegram-bot>=21.0",
+          "name": "python-telegram-bot",
+          "host_locked": "22.6",
+          "upstream_locked": "22.8",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "websocket-client>=1.6.0",
+          "name": "websocket-client",
+          "host_locked": "1.9.0",
+          "upstream_locked": "1.9.0",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "websockets>=12.0",
+          "name": "websockets",
+          "host_locked": "15.0.1",
+          "upstream_locked": "15.0.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "wecom-aibot-sdk>=1.0.7",
+          "name": "wecom-aibot-sdk",
+          "host_locked": null,
+          "upstream_locked": "1.0.8",
+          "host_check": "missing"
+        }
+      ],
+      "extras": {
+        "dev": [
+          {
+            "requirement": "langchain-core>=1.4.0; extra == 'dev'",
+            "name": "langchain-core",
+            "host_locked": "1.5.3",
+            "upstream_locked": "1.6.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "langchain-openai>=1.2.2; extra == 'dev'",
+            "name": "langchain-openai",
+            "host_locked": "1.4.3",
+            "upstream_locked": "1.3.3",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "langgraph>=1.2.1; extra == 'dev'",
+            "name": "langgraph",
+            "host_locked": "1.2.10",
+            "upstream_locked": "1.2.11",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "mypy>=1.9; extra == 'dev'",
+            "name": "mypy",
+            "host_locked": null,
+            "upstream_locked": "2.1.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "octop-harness>=0.9.9; extra == 'dev'",
+            "name": "octop-harness",
+            "host_locked": null,
+            "upstream_locked": "1.0.1",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "openai>=2.38.0; extra == 'dev'",
+            "name": "openai",
+            "host_locked": "2.53.0",
+            "upstream_locked": "2.44.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "pre-commit>=3.7; extra == 'dev'",
+            "name": "pre-commit",
+            "host_locked": null,
+            "upstream_locked": null,
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pytest-asyncio>=0.23; extra == 'dev'",
+            "name": "pytest-asyncio",
+            "host_locked": null,
+            "upstream_locked": "1.4.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pytest-cov>=5.0; extra == 'dev'",
+            "name": "pytest-cov",
+            "host_locked": null,
+            "upstream_locked": "7.1.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pytest>=8.0; extra == 'dev'",
+            "name": "pytest",
+            "host_locked": "9.1.1",
+            "upstream_locked": "9.1.1",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "ruff>=0.8; extra == 'dev'",
+            "name": "ruff",
+            "host_locked": "0.14.11",
+            "upstream_locked": "0.15.20",
+            "host_check": "compatible"
+          }
+        ],
+        "examples": [
+          {
+            "requirement": "langchain-core>=1.4.0; extra == 'examples'",
+            "name": "langchain-core",
+            "host_locked": "1.5.3",
+            "upstream_locked": "1.6.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "langchain-openai>=1.2.2; extra == 'examples'",
+            "name": "langchain-openai",
+            "host_locked": "1.4.3",
+            "upstream_locked": "1.3.3",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "langgraph>=1.2.1; extra == 'examples'",
+            "name": "langgraph",
+            "host_locked": "1.2.10",
+            "upstream_locked": "1.2.11",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "octop-harness>=0.9.9; extra == 'examples'",
+            "name": "octop-harness",
+            "host_locked": null,
+            "upstream_locked": "1.0.1",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "openai>=2.38.0; extra == 'examples'",
+            "name": "openai",
+            "host_locked": "2.53.0",
+            "upstream_locked": "2.44.0",
+            "host_check": "compatible"
+          }
+        ]
+      },
+      "owner_role": "automation and channels",
+      "dependencies": [
+        "N11"
+      ],
+      "runtime_integrated": false,
+      "coupling_review": "AST imports in source-index.json; runtime semantics not tested",
+      "decision": "explicit host adapter or isolated worker; preserve PrismOS runtime and facts"
+    },
+    {
+      "name": "octop-harness",
+      "version": "1.0.1",
+      "license_declared": "MIT",
+      "source_urls": [
+        "Homepage, https://github.com/TencentCloud/octop-harness",
+        "Repository, https://github.com/TencentCloud/octop-harness",
+        "Issues, https://github.com/TencentCloud/octop-harness/issues",
+        "Changelog, https://github.com/TencentCloud/octop-harness/blob/main/CHANGELOG.md"
+      ],
+      "requires_python": ">=3.12",
+      "core": [
+        {
+          "requirement": "deepagents<0.8,>=0.7",
+          "name": "deepagents",
+          "host_locked": null,
+          "upstream_locked": "0.7.9",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "httpx>=0.27",
+          "name": "httpx",
+          "host_locked": "0.28.1",
+          "upstream_locked": "0.28.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "langchain-anthropic<2.0,>=1.5.4",
+          "name": "langchain-anthropic",
+          "host_locked": "1.5.4",
+          "upstream_locked": "1.7.0",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "langchain-core<2.0,>=1.5.0",
+          "name": "langchain-core",
+          "host_locked": "1.5.3",
+          "upstream_locked": "1.6.0",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "langchain-mcp-adapters>=0.3.0",
+          "name": "langchain-mcp-adapters",
+          "host_locked": "0.2.1",
+          "upstream_locked": "0.3.0",
+          "host_check": "conflict"
+        },
+        {
+          "requirement": "langchain-openai<2.0,>=1.2.2",
+          "name": "langchain-openai",
+          "host_locked": "1.4.3",
+          "upstream_locked": "1.3.3",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "langchain<2.0,>=1.3.14",
+          "name": "langchain",
+          "host_locked": "1.3.14",
+          "upstream_locked": "1.3.18",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "langgraph-checkpoint-sqlite>=2.0",
+          "name": "langgraph-checkpoint-sqlite",
+          "host_locked": "3.1.1",
+          "upstream_locked": "3.1.0",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "langgraph<2.0,>=1.0",
+          "name": "langgraph",
+          "host_locked": "1.2.10",
+          "upstream_locked": "1.2.11",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "markdownify>=0.13",
+          "name": "markdownify",
+          "host_locked": "1.2.2",
+          "upstream_locked": "1.2.2",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "mcp<3,>=1.27.1",
+          "name": "mcp",
+          "host_locked": "1.29.0",
+          "upstream_locked": "1.28.1",
+          "host_check": "compatible"
+        },
+        {
+          "requirement": "octop-browser>=0.9.9",
+          "name": "octop-browser",
+          "host_locked": null,
+          "upstream_locked": "1.0.0",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "octop-memory>=0.9.9",
+          "name": "octop-memory",
+          "host_locked": null,
+          "upstream_locked": "1.0.0",
+          "host_check": "missing"
+        },
+        {
+          "requirement": "pyyaml>=6.0",
+          "name": "pyyaml",
+          "host_locked": "6.0.3",
+          "upstream_locked": "6.0.3",
+          "host_check": "compatible"
+        }
+      ],
+      "extras": {
+        "acp": [
+          {
+            "requirement": "agent-client-protocol>=0.9.0; extra == 'acp'",
+            "name": "agent-client-protocol",
+            "host_locked": null,
+            "upstream_locked": "0.11.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "psutil>=5.9; extra == 'acp'",
+            "name": "psutil",
+            "host_locked": null,
+            "upstream_locked": "7.2.2",
+            "host_check": "missing"
+          }
+        ],
+        "all": [
+          {
+            "requirement": "agent-client-protocol>=0.9.0; extra == 'all'",
+            "name": "agent-client-protocol",
+            "host_locked": null,
+            "upstream_locked": "0.11.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "cos-python-sdk-v5>=1.9; extra == 'all'",
+            "name": "cos-python-sdk-v5",
+            "host_locked": null,
+            "upstream_locked": "1.9.44",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "deepagents-backends>=0.2; (python_version >= '3.12') and extra == 'all'",
+            "name": "deepagents-backends",
+            "host_locked": null,
+            "upstream_locked": "0.2.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "docker>=7.0; extra == 'all'",
+            "name": "docker",
+            "host_locked": null,
+            "upstream_locked": "7.2.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "esdk-obs-python>=3.24; extra == 'all'",
+            "name": "esdk-obs-python",
+            "host_locked": null,
+            "upstream_locked": "3.26.6",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "google-api-python-client>=2.0; extra == 'all'",
+            "name": "google-api-python-client",
+            "host_locked": null,
+            "upstream_locked": "2.198.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "langchain-aws>=0.2; extra == 'all'",
+            "name": "langchain-aws",
+            "host_locked": null,
+            "upstream_locked": "1.1.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "langchain-community>=0.3; extra == 'all'",
+            "name": "langchain-community",
+            "host_locked": null,
+            "upstream_locked": "0.4.2",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "langchain-tavily>=0.1; extra == 'all'",
+            "name": "langchain-tavily",
+            "host_locked": null,
+            "upstream_locked": "0.2.18",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "langfuse>=4.9.0; extra == 'all'",
+            "name": "langfuse",
+            "host_locked": null,
+            "upstream_locked": "4.14.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "mss>=9.0; extra == 'all'",
+            "name": "mss",
+            "host_locked": null,
+            "upstream_locked": "10.2.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "oss2>=2.18; extra == 'all'",
+            "name": "oss2",
+            "host_locked": null,
+            "upstream_locked": "2.19.1",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pillow>=10.0; extra == 'all'",
+            "name": "pillow",
+            "host_locked": "12.3.0",
+            "upstream_locked": "12.3.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "psutil>=5.9; extra == 'all'",
+            "name": "psutil",
+            "host_locked": null,
+            "upstream_locked": "7.2.2",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "psycopg[binary]>=3.2; extra == 'all'",
+            "name": "psycopg",
+            "host_locked": "3.3.4",
+            "upstream_locked": "3.3.4",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "pynput>=1.7; extra == 'all'",
+            "name": "pynput",
+            "host_locked": null,
+            "upstream_locked": "1.8.2",
+            "host_check": "missing"
+          }
+        ],
+        "bedrock": [
+          {
+            "requirement": "langchain-aws>=0.2; extra == 'bedrock'",
+            "name": "langchain-aws",
+            "host_locked": null,
+            "upstream_locked": "1.1.0",
+            "host_check": "missing"
+          }
+        ],
+        "cli": [
+          {
+            "requirement": "click>=8.1; extra == 'cli'",
+            "name": "click",
+            "host_locked": "8.4.2",
+            "upstream_locked": "8.4.2",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "prompt-toolkit>=3.0; extra == 'cli'",
+            "name": "prompt-toolkit",
+            "host_locked": null,
+            "upstream_locked": "3.0.52",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "python-dotenv>=1.0; extra == 'cli'",
+            "name": "python-dotenv",
+            "host_locked": "1.2.2",
+            "upstream_locked": "1.2.2",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "rich>=13.0; extra == 'cli'",
+            "name": "rich",
+            "host_locked": null,
+            "upstream_locked": "15.0.0",
+            "host_check": "missing"
+          }
+        ],
+        "desktop": [
+          {
+            "requirement": "mss>=9.0; extra == 'desktop'",
+            "name": "mss",
+            "host_locked": null,
+            "upstream_locked": "10.2.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "pillow>=10.0; extra == 'desktop'",
+            "name": "pillow",
+            "host_locked": "12.3.0",
+            "upstream_locked": "12.3.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "pynput>=1.7; extra == 'desktop'",
+            "name": "pynput",
+            "host_locked": null,
+            "upstream_locked": "1.8.2",
+            "host_check": "missing"
+          }
+        ],
+        "docker": [
+          {
+            "requirement": "docker>=7.0; extra == 'docker'",
+            "name": "docker",
+            "host_locked": null,
+            "upstream_locked": "7.2.0",
+            "host_check": "missing"
+          }
+        ],
+        "object-storage": [
+          {
+            "requirement": "cos-python-sdk-v5>=1.9; extra == 'object-storage'",
+            "name": "cos-python-sdk-v5",
+            "host_locked": null,
+            "upstream_locked": "1.9.44",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "esdk-obs-python>=3.24; extra == 'object-storage'",
+            "name": "esdk-obs-python",
+            "host_locked": null,
+            "upstream_locked": "3.26.6",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "oss2>=2.18; extra == 'object-storage'",
+            "name": "oss2",
+            "host_locked": null,
+            "upstream_locked": "2.19.1",
+            "host_check": "missing"
+          }
+        ],
+        "observability": [
+          {
+            "requirement": "langfuse>=4.9.0; extra == 'observability'",
+            "name": "langfuse",
+            "host_locked": null,
+            "upstream_locked": "4.14.0",
+            "host_check": "missing"
+          }
+        ],
+        "opensandbox": [
+          {
+            "requirement": "opensandbox<1.2,>=0.1.16; extra == 'opensandbox'",
+            "name": "opensandbox",
+            "host_locked": null,
+            "upstream_locked": null,
+            "host_check": "missing"
+          }
+        ],
+        "remote-backends": [
+          {
+            "requirement": "deepagents-backends>=0.2; (python_version >= '3.12') and extra == 'remote-backends'",
+            "name": "deepagents-backends",
+            "host_locked": null,
+            "upstream_locked": "0.2.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "psycopg[binary]>=3.2; extra == 'remote-backends'",
+            "name": "psycopg",
+            "host_locked": "3.3.4",
+            "upstream_locked": "3.3.4",
+            "host_check": "compatible"
+          }
+        ],
+        "web-search-all": [
+          {
+            "requirement": "google-api-python-client>=2.0; extra == 'web-search-all'",
+            "name": "google-api-python-client",
+            "host_locked": null,
+            "upstream_locked": "2.198.0",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "langchain-community>=0.3; extra == 'web-search-all'",
+            "name": "langchain-community",
+            "host_locked": null,
+            "upstream_locked": "0.4.2",
+            "host_check": "missing"
+          },
+          {
+            "requirement": "langchain-tavily>=0.1; extra == 'web-search-all'",
+            "name": "langchain-tavily",
+            "host_locked": null,
+            "upstream_locked": "0.2.18",
+            "host_check": "missing"
+          }
+        ]
+      },
+      "owner_role": "runtime integration",
+      "dependencies": [
+        "N09"
+      ],
+      "runtime_integrated": false,
+      "coupling_review": "AST imports in source-index.json; runtime semantics not tested",
+      "decision": "explicit host adapter or isolated worker; preserve PrismOS runtime and facts"
+    },
+    {
+      "name": "octop-memory",
+      "version": "1.0.0",
+      "license_declared": "MIT",
+      "source_urls": [
+        "Homepage, https://github.com/TencentCloud/octop-memory",
+        "Repository, https://github.com/TencentCloud/octop-memory",
+        "Issues, https://github.com/TencentCloud/octop-memory/issues",
+        "Changelog, https://github.com/TencentCloud/octop-memory/blob/main/CHANGELOG.md"
+      ],
+      "requires_python": ">=3.12",
+      "core": [],
+      "extras": {
+        "chroma": [
+          {
+            "requirement": "chromadb>=0.4; extra == 'chroma'",
+            "name": "chromadb",
+            "host_locked": null,
+            "upstream_locked": null,
+            "host_check": "missing"
+          }
+        ],
+        "cli": [
+          {
+            "requirement": "click>=8.0; extra == 'cli'",
+            "name": "click",
+            "host_locked": "8.4.2",
+            "upstream_locked": "8.4.2",
+            "host_check": "compatible"
+          }
+        ],
+        "dashboard": [
+          {
+            "requirement": "click>=8.0; extra == 'dashboard'",
+            "name": "click",
+            "host_locked": "8.4.2",
+            "upstream_locked": "8.4.2",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "fastapi>=0.110; extra == 'dashboard'",
+            "name": "fastapi",
+            "host_locked": "0.141.1",
+            "upstream_locked": "0.138.2",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "uvicorn[standard]>=0.29; extra == 'dashboard'",
+            "name": "uvicorn",
+            "host_locked": "0.40.0",
+            "upstream_locked": "0.49.0",
+            "host_check": "compatible"
+          }
+        ],
+        "embeddings": [
+          {
+            "requirement": "sentence-transformers>=2.2; extra == 'embeddings'",
+            "name": "sentence-transformers",
+            "host_locked": null,
+            "upstream_locked": null,
+            "host_check": "missing"
+          }
+        ],
+        "langgraph": [
+          {
+            "requirement": "langgraph-checkpoint-sqlite>=2.0; extra == 'langgraph'",
+            "name": "langgraph-checkpoint-sqlite",
+            "host_locked": "3.1.1",
+            "upstream_locked": "3.1.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "langgraph-checkpoint>=2.0; extra == 'langgraph'",
+            "name": "langgraph-checkpoint",
+            "host_locked": "4.2.0",
+            "upstream_locked": "4.1.1",
+            "host_check": "compatible"
+          }
+        ],
+        "langgraph-postgres": [
+          {
+            "requirement": "langgraph-checkpoint-postgres>=2.0; extra == 'langgraph-postgres'",
+            "name": "langgraph-checkpoint-postgres",
+            "host_locked": "3.1.2",
+            "upstream_locked": "3.1.0",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "langgraph-checkpoint>=2.0; extra == 'langgraph-postgres'",
+            "name": "langgraph-checkpoint",
+            "host_locked": "4.2.0",
+            "upstream_locked": "4.1.1",
+            "host_check": "compatible"
+          },
+          {
+            "requirement": "psycopg[binary]>=3.1; extra == 'langgraph-postgres'",
+            "name": "psycopg",
+            "host_locked": "3.3.4",
+            "upstream_locked": "3.3.4",
+            "host_check": "compatible"
+          }
+        ],
+        "postgres": [
+          {
+            "requirement": "psycopg[binary]>=3.1; extra == 'postgres'",
+            "name": "psycopg",
+            "host_locked": "3.3.4",
+            "upstream_locked": "3.3.4",
+            "host_check": "compatible"
+          }
+        ],
+        "qdrant": [
+          {
+            "requirement": "qdrant-client>=1.7; extra == 'qdrant'",
+            "name": "qdrant-client",
+            "host_locked": null,
+            "upstream_locked": null,
+            "host_check": "missing"
+          }
+        ]
+      },
+      "owner_role": "knowledge and data",
+      "dependencies": [
+        "N10"
+      ],
+      "runtime_integrated": false,
+      "coupling_review": "AST imports in source-index.json; runtime semantics not tested",
+      "decision": "explicit host adapter or isolated worker; preserve PrismOS runtime and facts"
+    }
+  ],
+  "full_upstream_lock_installed": false,
+  "host_lock_modified": false
+}
