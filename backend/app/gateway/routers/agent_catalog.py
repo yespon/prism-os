@@ -1,18 +1,22 @@
-"""Authenticated read-only catalog; creation goes through the existing Agent API."""
+"""Authenticated catalog and explicit fixed-source import through native Skill registration."""
 
 from __future__ import annotations
 
+import tempfile
+from pathlib import Path
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 from prismos_octop.catalog import get_template, list_personas, list_templates, provenance
 from prismos_octop.presentation import avatar, list_avatars, questionnaire, score_answers
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
-from app.gateway.authorization import require_tenant_context
+from app.gateway.authorization import require_tenant_admin, require_tenant_context
+from app.integrations import skill_imports
 from app.integrations.octop.resource_installations import scoped_resource_preflight
 from app.integrations.octop.resources import resource_preflight
 from app.integrations.octop.skill_packages import SkillPackageUnavailable, prepare_skill_package, skill_archive
+from deerflow.skills.installer import SkillAlreadyExistsError
 
 router = APIRouter(prefix="/api/agent-catalog", tags=["agents"])
 
@@ -130,3 +134,44 @@ async def resource_archive(template_id: str, resource_id: str, request: Request,
     except ValueError:
         raise HTTPException(503, "Resource source integrity unavailable") from None
     return Response(data, media_type="application/zip", headers={"Content-Disposition": f'attachment; filename="{package["name"]}.zip"', "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})
+
+
+class ResourceInstallRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    scope: Literal["personal", "tenant"] = "personal"
+    bundle_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
+@router.post("/templates/{template_id}/resources/{resource_id}/install", status_code=201)
+async def install_source_resource(template_id: str, resource_id: str, body: ResourceInstallRequest, request: Request, locale: Literal["zh", "en"] = "zh") -> dict:
+    _authorize(request)
+    shared = body.scope == "tenant"
+    if shared:
+        require_tenant_admin(request)
+    try:
+        declaration = resource_preflight(template_id, locale)
+        if not declaration["template_source"]["source"].startswith("src/octop/infra/agents/experts/library/"):
+            raise HTTPException(409, "Only retained upstream Skill sources can be installed")
+        resource = next((r for r in declaration["resources"] if r["id"] == resource_id), None)
+        if resource is None:
+            raise HTTPException(404, "Resource not found")
+        if resource["bundle_sha256"] != body.bundle_sha256:
+            raise HTTPException(409, "Resource source changed; check and confirm again")
+        package = prepare_skill_package(declaration, resource)
+    except KeyError:
+        raise HTTPException(404, "Agent template not found") from None
+    except SkillPackageUnavailable as error:
+        raise HTTPException(409, str(error)) from None
+    except ValueError:
+        raise HTTPException(503, "Resource source integrity unavailable") from None
+    with tempfile.TemporaryDirectory(prefix="prismos-source-import-") as directory:
+        archive = Path(directory) / "source.zip"
+        archive.write_bytes(skill_archive(package))
+        try:
+            result, row = await skill_imports.import_archive(archive, require_tenant_context(request), request.state.user_id, shared)
+        except SkillAlreadyExistsError:
+            raise HTTPException(409, "Skill already exists; installed contents were preserved") from None
+        except Exception as error:
+            operation = getattr(error, "skill_operation_id", None)
+            raise HTTPException(503, {"message": "Source import outcome requires reconciliation", "operation_id": operation}) from None
+    return {"operation_id": result["operation_id"], "name": row.name, "scope": body.scope, "registered": True, "execution_ready": False, "permission_grants": False}

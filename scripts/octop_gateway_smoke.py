@@ -34,10 +34,7 @@ def main():
         config = yaml.safe_load((ROOT / "config.example.yaml").read_text())
         config["database"]["url"] = f"sqlite+aiosqlite:///{directory}/tenant.db"
         config["database"]["auth"]["url"] = f"sqlite+aiosqlite:///{directory}/auth.db"
-        config["plugins"] = {
-            key: {"enabled": False}
-            for key in ["ops-alerting", "ops-assets", "ops-terminal"]
-        }
+        config["plugins"] = {key: {"enabled": False} for key in ["ops-alerting", "ops-assets", "ops-terminal"]}
         (directory / "config.yaml").write_text(yaml.safe_dump(config))
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
@@ -62,6 +59,18 @@ def main():
             AUTH_DB_URL=f"sqlite+pysqlite:///{directory}/auth.db",
             PYTHONPATH=str(ROOT / "backend"),
         )
+        isolated_skills = directory / "skills"
+        (directory / "gateway_probe_entry.py").write_text(f"""
+from pathlib import Path
+from app.gateway.app import app
+from app.gateway.routers import skills
+from app.integrations import skill_imports
+from app.integrations.octop import resource_installations
+from deerflow.skills import loader,installer
+for module in (loader,skills,skill_imports,resource_installations,installer):
+    module.get_skills_root_path = lambda: Path({str(isolated_skills)!r})
+""")
+        environment["PYTHONPATH"] = str(directory) + os.pathsep + str(ROOT / "backend")
         base = f"http://127.0.0.1:{port}"
 
         def request(path, body=None, token=None, method=None, raw=False):
@@ -76,9 +85,7 @@ def main():
             )
             try:
                 with urllib.request.urlopen(req, timeout=10) as response:
-                    return response.status, response.read() if raw else json.load(
-                        response
-                    )
+                    return response.status, response.read() if raw else json.load(response)
             except urllib.error.HTTPError as exc:
                 return exc.code, json.load(exc)
 
@@ -88,7 +95,7 @@ def main():
                     str(ROOT / "backend/.venv/bin/python"),
                     "-m",
                     "uvicorn",
-                    "app.gateway.app:app",
+                    "gateway_probe_entry:app",
                     "--host",
                     "127.0.0.1",
                     "--port",
@@ -142,11 +149,7 @@ def main():
                         ),
                     )
                 code, catalog = request("/api/agent-catalog/status", token=token)
-                assert (
-                    code == 200
-                    and catalog["integrity_verified"]
-                    and catalog["personas"] == 16
-                )
+                assert code == 200 and catalog["integrity_verified"] and catalog["personas"] == 16
                 code, created = request(
                     "/api/agents",
                     {
@@ -178,52 +181,28 @@ def main():
                     ],
                 }
                 for _ in range(2):
-                    code, edited = request(
-                        "/api/agents/catalog-smoke", update, token, method="PUT"
-                    )
+                    code, edited = request("/api/agents/catalog-smoke", update, token, method="PUT")
                     assert code == 200 and edited["base_system_prompt"] == base_prompt
                 code, reloaded = request("/api/agents/catalog-smoke", token=token)
-                assert (
-                    code == 200
-                    and reloaded["presentation"]["welcome_message"] == "Gateway welcome"
-                )
+                assert code == 200 and reloaded["presentation"]["welcome_message"] == "Gateway welcome"
                 assert reloaded["presentation"]["avatar_id"] == "personas:ENFP"
-                assert (
-                    reloaded["presentation"]["quick_prompts"] == update["quick_prompts"]
-                )
+                assert reloaded["presentation"]["quick_prompts"] == update["quick_prompts"]
                 assert reloaded["system_prompt"].count("## ENFP") == 1
                 assert reloaded["skills"] == [] and reloaded["tool_groups"] == []
-                code, test = request(
-                    "/api/agent-catalog/personality-test?locale=en", token=token
-                )
+                code, test = request("/api/agent-catalog/personality-test?locale=en", token=token)
                 assert code == 200 and len(test["questions"]) == 28
                 code, scored = request(
                     "/api/agent-catalog/personality-test",
                     {"answers": {str(i): "A" for i in range(1, 29)}},
                     token,
                 )
-                assert (
-                    code == 200
-                    and scored["code"] == "ESTJ"
-                    and scored["automatic_apply"] is False
-                )
-                assert (
-                    request("/api/agents/catalog-smoke", token=token)[1][
-                        "presentation"
-                    ]["persona_mbti"]
-                    == "ENFP"
-                )
+                assert code == 200 and scored["code"] == "ESTJ" and scored["automatic_apply"] is False
+                assert request("/api/agents/catalog-smoke", token=token)[1]["presentation"]["persona_mbti"] == "ENFP"
                 assert request("/api/agent-catalog/avatars")[0] == 401
                 code, avatars = request("/api/agent-catalog/avatars", token=token)
                 assert code == 200 and len(avatars["avatars"]) == 52
-                code, image = request(
-                    "/api/agent-catalog/avatars/personas:ENFP", token=token, raw=True
-                )
-                assert code == 200 and hashlib.sha256(image).hexdigest() == next(
-                    item["sha256"]
-                    for item in avatars["avatars"]
-                    if item["id"] == "personas:ENFP"
-                )
+                code, image = request("/api/agent-catalog/avatars/personas:ENFP", token=token, raw=True)
+                assert code == 200 and hashlib.sha256(image).hexdigest() == next(item["sha256"] for item in avatars["avatars"] if item["id"] == "personas:ENFP")
                 assert request("/api/agent-catalog/templates/expert:cvm-ai-doctor/resources")[0] == 401
                 resource_files = 0
                 for template in request("/api/agent-catalog/templates?kind=expert", token=token)[1]["templates"]:
@@ -247,6 +226,30 @@ def main():
                     assert any(name.endswith("/LICENSE.octop") for name in archive.namelist())
                 with sqlite3.connect(directory / "tenant.db") as database:
                     assert database.execute("SELECT count(*) FROM user_configs").fetchone()[0] == config_count_before
+                install_url = archive_url.removesuffix("/archive") + "/install"
+                install_body = {"scope": "personal", "bundle_sha256": source_skill["bundle_sha256"]}
+                assert request(install_url, install_body)[0] == 401
+                assert request(install_url, {**install_body, "scope": "tenant"}, token)[0] == 403
+                code, imported = request(install_url, install_body, token)
+                assert code == 201 and imported["registered"] and not imported["execution_ready"]
+                operation_url = "/api/skills/personal/imports/" + imported["operation_id"]
+                assert request(operation_url)[0] == 401
+                operation_status = request(operation_url, token=token)
+                if operation_status[0] != 200:
+                    with sqlite3.connect(directory / "tenant.db") as database:
+                        rows = database.execute("SELECT tenant_id,user_id,name,install_dir FROM tenant_skills").fetchall()
+                    receipts = [str(path.relative_to(directory)) for path in directory.rglob(".prismos-import-*.json")]
+                    raise AssertionError({"operation_response": operation_status, "probe_rows": rows, "probe_receipts": receipts})
+                assert operation_status[1]["registered"]
+                assert request(operation_url + "/recover", token=token, method="POST")[1]["registered"]
+                assert request(install_url, install_body, token)[0] == 409
+                code, after_install = request("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", token=token)
+                assert code == 200
+                installed = next(r for r in after_install["resources"] if r["id"] == source_skill["id"])
+                assert installed["installation"]["status"] == "source_match"
+                with sqlite3.connect(directory / "tenant.db") as database:
+                    assert database.execute("SELECT count(*) FROM tenant_skills").fetchone()[0] == 1
+                assert request("/api/agents/catalog-smoke", token=token)[1]["skills"] == []
                 with sqlite3.connect(directory / "tenant.db") as database:
                     source = json.loads(
                         database.execute(
@@ -254,9 +257,7 @@ def main():
                             (created["id"],),
                         ).fetchone()[0]
                     )
-                    migration = database.execute(
-                        "SELECT version_num FROM alembic_version"
-                    ).fetchone()[0]
+                    migration = database.execute("SELECT version_num FROM alembic_version").fetchone()[0]
                 assert source["octop_source"]["revision"] == catalog["revision"]
                 result = {
                     "passed": True,
@@ -271,10 +272,13 @@ def main():
                     "resource_preflight_all_experts_readonly": True,
                     "scoped_installation_checks_without_config_creation": True,
                     "fixed_upstream_skill_archive_authenticated": True,
-            "upstream_license_in_skill_archive": True,
+                    "upstream_license_in_skill_archive": True,
                     "declared_resource_members": resource_files,
                     "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,
+                    "temporary_skill_root": True,
+                    "explicit_source_install_and_recovery": True,
+                    "installation_does_not_bind_agent_or_grant_execution": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

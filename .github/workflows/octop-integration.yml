@@ -55,6 +55,8 @@ jobs:
           app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
           ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
           packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py
+          app/integrations/skill_imports.py packages/harness/deerflow/skills/install_receipts.py packages/harness/deerflow/skills/installer.py
+          tests/test_skill_import_recovery.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
       - name: Pinned previous source and host upgrade rollback
         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
       - name: Real Gateway smoke with temporary databases
@@ -77,6 +79,8 @@ jobs:
           path: backend/dist/*
       - name: Production Docker and isolated PostgreSQL Compose
         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+      - name: Native Skill recovery against isolated PostgreSQL
+        run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -84,3 +88,4 @@ jobs:
           path: |
             ${{ runner.temp }}/octop-upgrade/upgrade.json
             ${{ runner.temp }}/octop-compose/*
+            ${{ runner.temp }}/octop-skill-postgres/*

@@ -1,0 +1,116 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+____________ test_partial_copy_never_leaves_visible_final_directory ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-116/test_partial_copy_never_leaves0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7dbf2c4ca840>
+
+    def test_partial_copy_never_leaves_visible_final_directory(tmp_path, monkeypatch):
+        path = archive_file(tmp_path)
+        root = tmp_path / "skills"
+    
+        def partial(source, target, **kwargs):
+            target.mkdir(parents=True, exist_ok=True)
+            (target / "SKILL.md").write_bytes((source / "SKILL.md").read_bytes())
+            raise OSError("injected copy failure")
+    
+        monkeypatch.setattr(installer.shutil, "copytree", partial)
+        with pytest.raises(OSError, match="injected copy failure"):
+            installer.install_skill_from_archive(path, skills_root=root, target_relative_path="tenant-a/user-a")
+>       assert not (root / "custom/tenant-a/user-a/demo-skill").exists()
+E       AssertionError: assert not True
+E        +  where True = exists()
+E        +    where exists = (PosixPath('/tmp/pytest-of-root/pytest-116/test_partial_copy_never_leaves0/skills') / 'custom/tenant-a/user-a/demo-skill').exists
+
+tests/test_skill_import_recovery.py:44: AssertionError
+______ test_concurrent_same_name_reports_conflict_without_partial_content ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-116/test_concurrent_same_name_repo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7dbf2c4caf90>
+
+    def test_concurrent_same_name_reports_conflict_without_partial_content(tmp_path, monkeypatch):
+        path = archive_file(tmp_path)
+        root = tmp_path / "skills"
+        barrier = threading.Barrier(2)
+        original = installer.shutil.copytree
+    
+        def concurrent(source, target, **kwargs):
+            barrier.wait(timeout=5)
+            return original(source, target, **kwargs)
+    
+        monkeypatch.setattr(installer.shutil, "copytree", concurrent)
+    
+        def install():
+            try:
+                installer.install_skill_from_archive(path, skills_root=root, target_relative_path="tenant-a/user-a")
+                return "success"
+            except Exception as error:
+                return type(error).__name__
+    
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(lambda _: install(), range(2)))
+>       assert sorted(results) == ["SkillAlreadyExistsError", "success"]
+E       AssertionError: assert ['FileExistsError', 'success'] == ['SkillAlread...r', 'success']
+E         
+E         At index 0 diff: 'FileExistsError' != 'SkillAlreadyExistsError'
+E         Use -v to get more diff
+
+tests/test_skill_import_recovery.py:68: AssertionError
+________ test_response_failure_after_commit_preserves_registered_files _________
+
+client = (<starlette.testclient.TestClient object at 0x7dbf2b23a9f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-116/test_response_failure_after_co0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7dbf2c4cbdd0>
+
+    def test_response_failure_after_commit_preserves_registered_files(client, monkeypatch):
+        http, factory, root = client
+    
+        def fail_response(**kwargs):
+            raise RuntimeError("injected response failure")
+    
+        monkeypatch.setattr(skills, "_build_skill_response", fail_response)
+        response = http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes())})
+        assert response.status_code in {409, 500}
+    
+        async def rows():
+            async with factory() as session:
+                result = await session.exec(select(TenantSkill).where(TenantSkill.name == "demo-skill"))
+                return result.scalars().all()
+    
+        assert len(asyncio.run(rows())) == 1
+>       assert (root / "custom/tenant-a/user-a/demo-skill/payload.txt").read_text() == "complete contents"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_import_recovery.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-116/test_response_failure_after_co0/skills/custom/tenant-a/user-a/demo-skill/payload.txt')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-root/pytest-116/test_response_failure_after_co0/skills/custom/tenant-a/user-a/demo-skill/payload.txt'
+
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_import_recovery.py::test_partial_copy_never_leaves_visible_final_directory
+FAILED tests/test_skill_import_recovery.py::test_concurrent_same_name_reports_conflict_without_partial_content
+FAILED tests/test_skill_import_recovery.py::test_response_failure_after_commit_preserves_registered_files
+3 failed, 1 warning in 8.57s

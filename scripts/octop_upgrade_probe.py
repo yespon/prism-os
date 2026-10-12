@@ -25,9 +25,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     manifest = json.loads((ROOT / "vendor/octop/manifest.json").read_text())
-    spec = importlib.util.spec_from_file_location(
-        "octop_sync", ROOT / "scripts/octop_sync.py"
-    )
+    spec = importlib.util.spec_from_file_location("octop_sync", ROOT / "scripts/octop_sync.py")
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
@@ -35,6 +33,8 @@ def main():
         "backend/app/integrations/octop/resources.py",
         "backend/app/integrations/octop/resource_installations.py",
         "backend/app/integrations/octop/skill_packages.py",
+        "backend/app/integrations/skill_imports.py",
+        "backend/packages/harness/deerflow/skills/install_receipts.py",
         "backend/app/gateway/routers/agents.py",
         "backend/app/gateway/routers/agent_catalog.py",
         "backend/app/gateway/routers/skills.py",
@@ -45,15 +45,13 @@ def main():
         "backend/tests/test_octop_resources.py",
         "backend/tests/test_octop_resource_installations.py",
         "backend/tests/test_octop_skill_packages.py",
+        "backend/tests/test_skill_import_recovery.py",
         "backend/packages/octop-capabilities/src/prismos_octop/catalog.py",
         "backend/packages/octop-capabilities/src/prismos_octop/presentation.py",
         "backend/packages/octop-capabilities/src/prismos_octop/resources.py",
         "backend/packages/octop-capabilities/src/prismos_octop/source_policy.py",
     ]
-    contract_hashes = {
-        path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-        for path in contract_paths
-    }
+    contract_hashes = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in contract_paths}
     evidence = {
         "scope": (
             "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, "
@@ -93,9 +91,7 @@ def main():
                 ROOT / "vendor/octop/manifest.json",
             ),
         ]
-        snapshots.append(
-            snapshots[0]
-        )  # Exercise restoration to the previous curated source view.
+        snapshots.append(snapshots[0])  # Exercise restoration to the previous curated source view.
         for archive, revision, release, receipt in snapshots:
             if evidence["versions"]:
                 key = "diff" if len(evidence["versions"]) == 1 else "rollback_diff"
@@ -103,9 +99,7 @@ def main():
             imported = sync.sync(archive, revision, release, receipt)
             verified = sync.verify()
             environment = dict(os.environ)
-            environment["PYTHONPATH"] = (
-                str(package.parent) + os.pathsep + str(ROOT / "backend")
-            )
+            environment["PYTHONPATH"] = str(package.parent) + os.pathsep + str(ROOT / "backend")
             environment["PRISMOS_OCTOP_EXPECTED_REVISION"] = revision
             result = subprocess.run(
                 [
@@ -117,6 +111,7 @@ def main():
                     "tests/test_octop_resources.py",
                     "tests/test_octop_resource_installations.py",
                     "tests/test_octop_skill_packages.py",
+                    "tests/test_skill_import_recovery.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",
@@ -136,10 +131,7 @@ def main():
             )
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
-    if contract_hashes != {
-        path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-        for path in contract_paths
-    }:
+    if contract_hashes != {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in contract_paths}:
         raise ValueError("Host contract changed during upgrade probe")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n")

@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.gateway.path_utils import resolve_thread_virtual_path
+from app.integrations import skill_imports
 from deerflow.database.user_config_service import (
     create_tenant_personal_skill,
     create_tenant_shared_skill,
@@ -25,7 +26,7 @@ from deerflow.database.user_config_service import (
     update_tenant_shared_skill_settings,
 )
 from deerflow.skills import Skill, get_skills_root_path, load_skills
-from deerflow.skills.installer import SkillAlreadyExistsError, install_skill_from_archive
+from deerflow.skills.installer import SkillAlreadyExistsError
 
 logger = logging.getLogger(__name__)
 
@@ -167,6 +168,7 @@ class SkillInstallResponse(BaseModel):
     success: bool = Field(..., description="Whether the installation was successful")
     skill_name: str = Field(..., description="Name of the installed skill")
     message: str = Field(..., description="Installation result message")
+    operation_id: str | None = Field(default=None, description="Owned Skill import operation for reconciliation")
 
 
 def _skill_to_response(skill: Skill) -> SkillResponse:
@@ -770,6 +772,80 @@ async def delete_personal_skill(skill_name: str, request: Request):
         shutil.rmtree(skill_dir, ignore_errors=True)
 
 
+
+def _import_error_detail(error: Exception, result: dict | None = None):
+    operation_id = getattr(error, "skill_operation_id", None) or (result or {}).get("operation_id")
+    if operation_id:
+        return {"message": "Import outcome requires reconciliation; published files were preserved", "operation_id": operation_id, "recovery_available": True}
+    return str(error)
+
+
+def _import_identity(request: Request) -> tuple[str, str]:
+    tenant = require_tenant_context(request)
+    user = getattr(request.state, "user_id", "")
+    if not user:
+        raise HTTPException(401, "User ID is required")
+    return tenant, user
+
+
+async def _import_operations(request: Request, shared: bool):
+    tenant, user = _import_identity(request)
+    return {"operations": await skill_imports.list_operations(tenant, user, shared, root=get_skills_root_path())}
+
+
+async def _import_operation(request: Request, operation_id: str, shared: bool, recover: bool = False, abort: bool = False):
+    tenant, user = _import_identity(request)
+    try:
+        callback = skill_imports.abort_operation if abort else skill_imports.recover_operation if recover else skill_imports.observe_operation
+        return await callback(operation_id, tenant, user, shared, root=get_skills_root_path())
+    except FileNotFoundError:
+        raise HTTPException(404, "Skill import operation not found") from None
+    except (ValueError, RuntimeError):
+        raise HTTPException(409, "Skill import state or contents conflict; files were preserved") from None
+    except Exception:
+        logger.exception("Skill import reconciliation did not complete")
+        raise HTTPException(503, "Registration outcome is uncertain; inspect current import state before retrying") from None
+
+
+@router.get("/skills/personal/imports")
+async def personal_import_operations(request: Request):
+    return await _import_operations(request, False)
+
+
+@router.get("/skills/personal/imports/{operation_id}")
+async def personal_import_operation(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, False)
+
+
+@router.post("/skills/personal/imports/{operation_id}/recover")
+async def recover_personal_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, False, True)
+
+
+@router.post("/skills/personal/imports/{operation_id}/abort")
+async def abort_personal_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, False, abort=True)
+
+
+@router.get("/tenants/skills/imports", dependencies=[Depends(require_tenant_admin)])
+async def tenant_import_operations(request: Request):
+    return await _import_operations(request, True)
+
+
+@router.get("/tenants/skills/imports/{operation_id}", dependencies=[Depends(require_tenant_admin)])
+async def tenant_import_operation(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, True)
+
+
+@router.post("/tenants/skills/imports/{operation_id}/recover", dependencies=[Depends(require_tenant_admin)])
+async def recover_tenant_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, True, True)
+
+@router.post("/tenants/skills/imports/{operation_id}/abort", dependencies=[Depends(require_tenant_admin)])
+async def abort_tenant_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, True, abort=True)
+
+
 @router.post(
     "/skills/personal/import",
     response_model=SkillResponse,
@@ -788,29 +864,14 @@ async def import_personal_skill(request: Request, archive: UploadFile = File(...
         raise HTTPException(status_code=400, detail="File must have .skill or .zip extension")
 
     temp_path: Path | None = None
-    installed_dir: Path | None = None
+    result: dict | None = None
     try:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
             temp_path = Path(temp_file.name)
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        target_rel = f"{tenant_id}/{user_id}"
-        result = install_skill_from_archive(
-            temp_path,
-            target_relative_path=target_rel,
-        )
-        skill_name = str(result.get("skill_name") or "").strip()
-        installed_dir = Path(str(result.get("install_dir") or str(get_skills_root_path() / "custom" / tenant_id / user_id / skill_name)))
-        row = await create_tenant_personal_skill(
-            tenant_id,
-            user_id,
-            enabled=True,
-            skill_name=skill_name,
-            category=str(result.get("category") or "personal"),
-            relative_path=str(result.get("relative_path") or f"{user_id}/{skill_name}"),
-            install_dir=str(installed_dir),
-        )
+        result, row = await skill_imports.import_archive(temp_path, tenant_id, user_id, False, root=get_skills_root_path())
         return _build_skill_response(
             tenant_id=tenant_id,
             row_name=row.name,
@@ -823,20 +884,14 @@ async def import_personal_skill(request: Request, archive: UploadFile = File(...
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except SkillAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except RuntimeError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except ValueError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=_import_error_detail(e, result))
     except Exception as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
         logger.error("Failed to import personal skill: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to import skill: {str(e)}")
+        raise HTTPException(status_code=500, detail=_import_error_detail(e, result))
     finally:
         await archive.close()
         if temp_path is not None:
@@ -858,27 +913,14 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
         raise HTTPException(status_code=400, detail="File must have .skill or .zip extension")
 
     temp_path: Path | None = None
-    installed_dir: Path | None = None
+    result: dict | None = None
     try:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
             temp_path = Path(temp_file.name)
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        result = install_skill_from_archive(
-            temp_path,
-            target_relative_path=tenant_id,
-        )
-        skill_name = str(result.get("skill_name") or "").strip()
-        installed_dir = Path(str(result.get("install_dir") or _tenant_skill_dir(tenant_id, skill_name)))
-        row = await create_tenant_shared_skill(
-            tenant_id,
-            enabled=True,
-            skill_name=skill_name,
-            category=str(result.get("category") or "custom"),
-            relative_path=str(result.get("relative_path") or _tenant_skill_relative_path(tenant_id, skill_name)),
-            install_dir=str(installed_dir),
-        )
+        result, row = await skill_imports.import_archive(temp_path, tenant_id, getattr(request.state, "user_id", ""), True, root=get_skills_root_path())
         settings = await get_tenant_shared_skill_settings(tenant_id)
         return _build_skill_response(
             tenant_id=tenant_id,
@@ -892,20 +934,14 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except SkillAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except RuntimeError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except ValueError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=_import_error_detail(e, result))
     except Exception as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
         logger.error("Failed to import tenant skill: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to import skill: {str(e)}")
+        raise HTTPException(status_code=500, detail=_import_error_detail(e, result))
     finally:
         await archive.close()
         if temp_path is not None:
@@ -944,6 +980,7 @@ async def get_skill(skill_name: str, request: Request) -> SkillResponse:
 )
 async def install_skill(request: SkillInstallRequest, api_request: Request) -> SkillInstallResponse:
     tenant_id = require_tenant_context(api_request)
+    result = None
     try:
         skill_file_path = resolve_thread_virtual_path(
             api_request.state.user_id,
@@ -951,35 +988,21 @@ async def install_skill(request: SkillInstallRequest, api_request: Request) -> S
             request.path,
             tenant_id=getattr(api_request.state, "tenant_id", None),
         )
-        target_relative_path = tenant_id
-        result = install_skill_from_archive(
-            skill_file_path,
-            target_relative_path=target_relative_path,
-        )
-        skill_name = result.get("skill_name")
-        if isinstance(skill_name, str) and skill_name:
-            await create_tenant_shared_skill(
-                tenant_id,
-                enabled=True,
-                skill_name=skill_name,
-                category=str(result.get("category") or "custom"),
-                relative_path=str(result.get("relative_path") or target_relative_path),
-                install_dir=str(result.get("install_dir") or ""),
-            )
+        result, _ = await skill_imports.import_archive(skill_file_path, tenant_id, api_request.state.user_id, True, root=get_skills_root_path())
         return SkillInstallResponse(**result)
     except FileNotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=_import_error_detail(e, result))
     except SkillAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except RuntimeError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=_import_error_detail(e, result))
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Failed to install skill: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to install skill: {str(e)}")
+        raise HTTPException(status_code=500, detail=_import_error_detail(e, result))
 
 
 @router.get(
