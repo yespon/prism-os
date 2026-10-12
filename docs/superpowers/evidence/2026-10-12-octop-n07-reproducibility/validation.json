@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-12",
+  "scope": "N07 independent locked install, source upgrade/rollback, artifact build and isolated production Compose; original full N01-N15/O01-O42/F01-F12 retained",
+  "baseline": "a4c153151cae81e2f01fe709485bc9ce3482aed4",
+  "local_verified": true,
+  "remote_ci_verified": false,
+  "target_environment_verified": false,
+  "m1_exit": false,
+  "n08_persistent_implementation_started": false,
+  "backend_full": {
+    "passed": 1550,
+    "skipped": 18,
+    "warnings": 30
+  },
+  "frontend_full": {
+    "files": 43,
+    "passed": 128
+  },
+  "octop_build": {
+    "backend_passed": 187,
+    "frontend_passed": 37,
+    "typecheck": true,
+    "real_gateway": true,
+    "wheel_sdist": true,
+    "production_build": true
+  },
+  "source_upgrade": {
+    "fixed_origin_reacquired": true,
+    "raw_artifact_retained": false,
+    "steps": [
+      "b5",
+      "b6",
+      "b5"
+    ],
+    "host_contract_tests_per_step": 53,
+    "host_contract_sha256s_unchanged": true
+  },
+  "docker_compose": {
+    "passed": true,
+    "verified_source_members": 902,
+    "bootstrap_real_http": true,
+    "gateway_langgraph_thread_proxy": true,
+    "postgres_restart_session_agent_preserved": true,
+    "backup_restored_agent": true,
+    "owned_runtime_resources_cleaned": true,
+    "image_ids": {
+      "db-init": "sha256:67ce806629677e07c0712800745ace6e313849c564cc9c8a79156916d372ca22",
+      "gateway": "sha256:67ce806629677e07c0712800745ace6e313849c564cc9c8a79156916d372ca22",
+      "langgraph": "sha256:67ce806629677e07c0712800745ace6e313849c564cc9c8a79156916d372ca22",
+      "frontend": "sha256:3fe1c169f168f8158906d67866918dec469792f56a5cfa57ead30e4e69d84fba",
+      "nginx": "sha256:6769dc3a703c719c1d2756bda113659be28ae16cf0da58dd5fd823d6b9a050ea",
+      "postgres": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+    }
+  },
+  "dependencies": {
+    "locks_unchanged": true,
+    "lock_sha256": {
+      "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+      "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+    },
+    "runtime_origins_independent": true,
+    "foreign_octop_runtime_packages_installed": false
+  },
+  "warnings_and_limits": [
+    "18 backend skips are not passes",
+    "Existing backend deprecation warnings preserved",
+    "Two full 28-question UI workflows have explicit bounded 15 second test budgets after observed 5 second timeouts; all assertions retained",
+    "LangGraph dev/no-reload and allow-blocking remain original behavior",
+    "adelete_for_runs/aprune missing: no M2 rollback/pruning claim",
+    "Legacy config alias precedence diagnostics retained with one bounded verification-artifact brand entry",
+    "Three external-environment ops plugins disabled only in isolated smoke",
+    "No live model, webhook, strict graph identity or target deployment gate claim",
+    "Git history not rewritten and no remote push"
+  ],
+  "artifact_sha256": {
+    "prismos_octop_capabilities-0.1.0-py3-none-any.whl": "285a902dc80d75a94c0a486c7f6e0283d1effcfd48c7c0a9a2dd84365ea46203",
+    "prismos_octop_capabilities-0.1.0.tar.gz": "0a5b4c918e671ed1befaad2903a3fed70715092fb3bb5bb50c34a0c1fde52f11"
+  },
+  "evidence_sha256": {
+    "image-source-match.json": "5655eb2d596dfc76b88bc342f1e309dd4da1fa445582128cff0d60ed71015945",
+    "compose.json": "19c602e1f7412c49dba09b27ebe9b5df36b3a7149423e0bae1c12495741d7171",
+    "gateway.json": "e4900d785987ff5dfd06530a2850014f62fb4d3d1e952a82ffdb3f92423cfd45",
+    "upgrade.json": "05129da39acd54246e5928eb0c001dbc27732df78c12e8732edc0b01b4adde47",
+    "diagnostic-proxy.json": "38980850d934209bde8dadab4b9a3123a7f37f198841ac9660df07fb831a6e52",
+    "diagnostic-auth.json": "3ab0a676b7b7446b928e56d3c923108da142c4bd66dc0b4cf414ed9c634e9ec9",
+    "runtime-origins.json": "0cb2c65ab4dfbd6d17ee803e56e6102b1ec0877c7a0cf840817a902e09f790d7",
+    "independence.json": "f8c861e51fb0c3467d307647ba965077c7abaab5ae2037419ca2b99254b42f58",
+    "candidate-code.json": "118f31aaea63bf2c6e6323ccf95f799f2d4404dfba20876349cca93253d7e5a4"
+  },
+  "log_sha256": {
+    "distribution.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "ci-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "frontend-image.log": "2c01e58088d6ce8160e81320aae0065f50a2db64f492ef8959541ef97b413061",
+    "brand-contracts.log": "22dd0c62627bab2e59d897d144787cbc5739e962cdbdb0cb1119ee695b3fe482",
+    "compose-up.log": "7b5858a027490b747de60e7d557e9268e60d52903dfae931295c8b29f3b74769",
+    "brand.log": "0199343e9ed2e28b6c2caa0c181ad1c07231e860b76b475022ebdc383745d702",
+    "services.log": "5e325eb2f8648bea043b6597a4441f3cd17cb0214d6c48ec1ebca72e8a4fd5e6",
+    "demo-contracts.log": "336bbbdc82e7988a6a450644869db0a311699c2d2ecd01ee92b640fb16188a7a",
+    "diagnostic-ui-timeout.log": "e4ced9bd06a6df707740775accd6544168e57095d1ce98e836513236d55e8f1a",
+    "octop-build.log": "3cfb377dae4f4e319e0b502658f9a4c44029e02274b6f647a6d82d1f1bbfd7f7",
+    "backend-image.log": "2fe5b0e2bf1822a55329643e57d6a030dd24239f5e2b1b35957669035b937246",
+    "source-contracts.log": "4033b68d6563e3ea88fb4a1eae0f04371b0ae83f8a6adea3244bce1747c74d58",
+    "source-fetch.log": "d2561d16ae2b492d879c087ec3602d342fa3edd75ccaf8e46a2894ed0437042c",
+    "diagnostic-nodesource-tls.log": "5165c8beb6751a9137f60ba172ddef85164af7379500ee06217c3f5b07300699",
+    "local-nginx-syntax.log": "c1d95d6441adac8d73265f026042743581500b1133052abc44ed98cf52bb6618",
+    "backend-full.log": "e23679d85b29380b9b11c9fa4afe346b8bcf60b0c3e4717a2358862d0f27655d",
+    "wheel.log": "e1fb7e44cc2d71cd2dbf4905cdbf6be4cb3427b0f288357ca41aec2977b1413e",
+    "compose-down.log": "be7a10a1481200efa3869620de88041c277aed951c4a6891cc1ffe3089bfcabc",
+    "gateway.log": "091065e7ba663e55ca739dd247b578efe8b4734558c0d1db003f85c122198641",
+    "upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "frontend-install.log": "b51d5a2efaec1e7e8a3e1a6bcc004d65793fc7eb93af710254ebe0503555eacf",
+    "frontend-full.log": "746a7f3c01f9db2dc9c1eeb5008f8fc641429109baecb678387f342d809d938c",
+    "backend-install.log": "6aa29f93aa529c0dd06419aa75adf60cc0b88fa65861cbb25f146858a9dd7bfc",
+    "diagnostic-ui-timeout-recheck.log": "40da2c2cf41840d1520a4a2fe6d55b23d776e46f68703e1309ebfcf04ecbf155"
+  }
+}

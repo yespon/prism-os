@@ -1,0 +1,129 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.15kB done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/node:22-alpine
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 1.18kB done
+#3 DONE 0.0s
+
+#4 [base 1/5] FROM docker.io/library/node:22-alpine
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 6.88MB 0.9s done
+#5 DONE 1.0s
+
+#6 [base 5/5] COPY frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml frontend/package.json frontend/.npmrc ./frontend/
+#6 CACHED
+
+#7 [base 2/5] RUN corepack enable && corepack install -g pnpm@10.26.2
+#7 CACHED
+
+#8 [base 3/5] RUN pnpm config set store-dir /root/.local/share/pnpm/store
+#8 CACHED
+
+#9 [base 4/5] WORKDIR /app
+#9 CACHED
+
+#10 [builder 1/3] RUN cd /app/frontend && pnpm config set registry https://registry.npmjs.org && pnpm install --frozen-lockfile
+#10 CACHED
+
+#11 [builder 2/3] COPY frontend ./frontend
+#11 DONE 0.6s
+
+#12 [builder 3/3] RUN cd /app/frontend && SKIP_ENV_VALIDATION=1 pnpm build
+#12 1.292 
+#12 1.292 > prismos-frontend@0.2.0-alpha.1 build /app/frontend
+#12 1.292 > next build
+#12 1.292 
+#12 3.800 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+#12 3.800 This information is used to shape Next.js' roadmap and prioritize features.
+#12 3.801 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#12 3.801 https://nextjs.org/telemetry
+#12 3.801 
+#12 3.981 ▲ Next.js 16.2.11 (Turbopack)
+#12 3.983 
+#12 4.138   Creating an optimized production build ...
+#12 135.5 ✓ Compiled successfully in 2.2min
+#12 135.5   Running TypeScript ...
+#12 178.0   Finished TypeScript in 42s ...
+#12 178.0   Collecting page data using 3 workers ...
+#12 179.3   Generating static pages using 3 workers (0/42) ...
+#12 179.7   Generating static pages using 3 workers (10/42) 
+#12 179.8   Generating static pages using 3 workers (20/42) 
+#12 179.9   Generating static pages using 3 workers (31/42) 
+#12 180.7 ✓ Generating static pages using 3 workers (42/42) in 1401ms
+#12 180.7   Finalizing page optimization ...
+#12 180.7 
+#12 180.7 Route (app)
+#12 180.7 ┌ ƒ /
+#12 180.7 ├ ƒ /_not-found
+#12 180.7 ├ ƒ /admin
+#12 180.7 ├ ƒ /admin/announcements
+#12 180.7 ├ ƒ /admin/audit
+#12 180.7 ├ ƒ /admin/models
+#12 180.7 ├ ƒ /admin/security
+#12 180.7 ├ ƒ /admin/tenants
+#12 180.7 ├ ƒ /admin/tools
+#12 180.7 ├ ƒ /admin/users
+#12 180.7 ├ ƒ /api/terminal/chat
+#12 180.7 ├ ƒ /api/terminal/chat/approve
+#12 180.7 ├ ƒ /change-password
+#12 180.7 ├ ○ /icon.svg
+#12 180.7 ├ ƒ /mock/api/mcp/config
+#12 180.7 ├ ƒ /mock/api/models
+#12 180.7 ├ ƒ /mock/api/skills
+#12 180.7 ├ ƒ /mock/api/threads/[thread_id]/artifacts/[[...artifact_path]]
+#12 180.7 ├ ƒ /mock/api/threads/[thread_id]/history
+#12 180.7 ├ ƒ /mock/api/threads/search
+#12 180.7 ├ ƒ /select-workspace
+#12 180.7 ├ ƒ /setup
+#12 180.7 ├ ƒ /sign-in
+#12 180.7 ├ ƒ /sign-up
+#12 180.7 ├ ƒ /tenant-admin
+#12 180.7 ├ ƒ /tenant-admin/agents
+#12 180.7 ├ ƒ /tenant-admin/alerts
+#12 180.7 ├ ƒ /tenant-admin/audit
+#12 180.7 ├ ƒ /tenant-admin/im
+#12 180.7 ├ ƒ /tenant-admin/members
+#12 180.7 ├ ƒ /tenant-admin/models
+#12 180.7 ├ ƒ /tenant-admin/settings
+#12 180.7 ├ ƒ /tenant-admin/settings/[section]
+#12 180.7 ├ ƒ /tenant-admin/skills
+#12 180.7 ├ ƒ /tenant-admin/tools
+#12 180.7 ├ ƒ /workspace
+#12 180.7 ├ ƒ /workspace/agents
+#12 180.7 ├ ƒ /workspace/announcements
+#12 180.7 ├ ƒ /workspace/chats
+#12 180.7 ├ ƒ /workspace/chats/[thread_id]
+#12 180.7 ├ ƒ /workspace/files
+#12 180.7 ├ ƒ /workspace/incidents
+#12 180.7 ├ ƒ /workspace/incidents/[incident_id]
+#12 180.7 ├ ƒ /workspace/overview
+#12 180.7 ├ ƒ /workspace/skills
+#12 180.7 ├ ƒ /workspace/skills/[name]
+#12 180.7 └ ƒ /workspace/terminal
+#12 180.7 
+#12 180.7 
+#12 180.7 ○  (Static)   prerendered as static content
+#12 180.7 ƒ  (Dynamic)  server-rendered on demand
+#12 180.7 
+#12 DONE 181.4s
+
+#9 [base 4/5] WORKDIR /app
+#9 CACHED
+
+#13 [prod 5/5] COPY --from=builder /app/frontend ./frontend
+#13 DONE 23.4s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 33.8s done
+#14 writing image sha256:3fe1c169f168f8158906d67866918dec469792f56a5cfa57ead30e4e69d84fba done
+#14 naming to docker.io/library/prismos-n07-frontend:20261012-accepted done
+#14 DONE 33.8s

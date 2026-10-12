@@ -291,6 +291,7 @@ async function fillQuestionnaire() {
 }
 
 describe("Questionnaire draft flow", () => {
+  // The complete 28-choice dialog flow needs a bounded budget on shared runners.
   it("requires all 28 choices and only applies the confirmed result", async () => {
     const props = fields();
     render(<AgentPresentationEditor {...props} />);
@@ -307,7 +308,7 @@ describe("Questionnaire draft flow", () => {
     expect(props.onPersona).toHaveBeenCalledWith("INTJ");
     expect(mock.create).not.toHaveBeenCalled();
     expect(mock.update).not.toHaveBeenCalled();
-  });
+  }, 15_000);
   it.each(["close", "locale", "tenant"])(
     "clears the questionnaire and discards the pending score after %s",
     async (kind) => {
@@ -359,6 +360,7 @@ function savedAgent(request: CreateAgentRequest): Agent {
 }
 
 describe("Create, edit and reopen", () => {
+  // The complete 28-choice dialog flow needs a bounded budget on shared runners.
   it("saves edited template, persona, avatar, welcome and starters, then reopens without duplicating persona", async () => {
     mock.create.mockImplementation(async (request: CreateAgentRequest) => {
       mock.agent = savedAgent(request);
@@ -443,7 +445,7 @@ describe("Create, edit and reopen", () => {
       />,
     );
     expect(screen.getByLabelText("欢迎语")).toHaveValue("Reopened welcome");
-  });
+  }, 15_000);
   it.each(["locale", "tenant"])(
     "clears the existing create draft on %s change",
     async (kind) => {

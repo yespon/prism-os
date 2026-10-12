@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import { listDemoThreads, readDemoFile } from "@/server/demo-files";
 
 type ThreadSearchRequest = {
   limit?: number;
@@ -14,7 +13,8 @@ type MockThreadSearchResult = Record<string, unknown> & {
 };
 
 export async function POST(request: Request) {
-  const body = ((await request.json().catch(() => ({}))) ?? {}) as ThreadSearchRequest;
+  const body = ((await request.json().catch(() => ({}))) ??
+    {}) as ThreadSearchRequest;
 
   const rawLimit = body.limit;
   let limit = 50;
@@ -36,26 +36,18 @@ export async function POST(request: Request) {
   const sortBy = body.sortBy ?? "updated_at";
   const sortOrder = body.sortOrder ?? "desc";
 
-  const threadsDir = fs.readdirSync(
-    path.resolve(process.cwd(), "public/demo/threads"),
-    {
-      withFileTypes: true,
-    },
-  );
-
-  const threadData = threadsDir
+  const threadData = listDemoThreads()
     .map<MockThreadSearchResult | null>((threadId) => {
-      if (threadId.isDirectory() && !threadId.name.startsWith(".")) {
-        const threadData = JSON.parse(
-          fs.readFileSync(
-            path.resolve(`public/demo/threads/${threadId.name}/thread.json`),
-            "utf8",
-          ),
-        ) as Record<string, unknown>;
+      const data = readDemoFile(threadId, ["thread.json"]);
+      if (data) {
+        const threadData = JSON.parse(data.toString("utf8")) as Record<
+          string,
+          unknown
+        >;
 
         return {
           ...threadData,
-          thread_id: threadId.name,
+          thread_id: threadId,
           updated_at:
             typeof threadData.updated_at === "string"
               ? threadData.updated_at

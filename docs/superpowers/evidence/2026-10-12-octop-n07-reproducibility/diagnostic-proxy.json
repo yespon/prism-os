@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "m1_exit": false,
+  "real_model_webhook": "not exercised",
+  "remote_ci": "not run",
+  "error": "RuntimeError: /api/agent-catalog/status: expected HTTP 401, got 404",
+  "cleanup_returncode": 0,
+  "remaining_owned_containers": []
+}

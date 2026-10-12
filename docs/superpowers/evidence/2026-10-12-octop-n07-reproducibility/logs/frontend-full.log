@@ -1,0 +1,13 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /tmp/prismos-n07-clean-05dlf1ee/src/frontend
+> vitest run --maxWorkers=2
+
+
+ RUN  v4.1.2 /tmp/prismos-n07-clean-05dlf1ee/src/frontend
+
+
+ Test Files  43 passed (43)
+      Tests  128 passed (128)
+   Start at  12:09:20
+   Duration  59.77s (transform 2.79s, setup 4.94s, import 19.95s, tests 21.47s, environment 61.13s)
+

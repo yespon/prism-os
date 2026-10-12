@@ -63,6 +63,7 @@
     {"path": "scripts/test-prismos-product-identity.sh", "classification": "test-fixture", "reason": "Tests public identity and explicit legacy compatibility boundaries.", "owner": "brand-gate", "remove_by": "0.3.0", "max_matches": 7},
     {"path": "docker/docker-compose.yaml", "classification": "compatibility-code", "reason": "Provides the bounded 0.2.x legacy environment aliases still consumed by the runtime compatibility adapter.", "owner": "deployment", "remove_by": "0.3.0", "max_matches": 15},
     {"path": "docs/strategy/agentos-prismos-gap-roadmap-review.md", "classification": "migration-document", "reason": "Records the bounded legacy compatibility boundary in the strategic roadmap review.", "owner": "documentation", "remove_by": "0.3.0", "max_matches": 2},
-    {"path": "docs/superpowers/plans/2026-08-10-prismos-branch-integration.md", "classification": "migration-document", "reason": "Records the bounded legacy compatibility decision for the local branch integration.", "owner": "documentation", "remove_by": "0.3.0", "max_matches": 13}
+    {"path": "docs/superpowers/plans/2026-08-10-prismos-branch-integration.md", "classification": "migration-document", "reason": "Records the bounded legacy compatibility decision for the local branch integration.", "owner": "documentation", "remove_by": "0.3.0", "max_matches": 13},
+    {"path": "docs/superpowers/evidence/2026-10-12-octop-n07-reproducibility/logs/services.log", "classification": "verification-artifact", "reason": "Preserves actual N07 deployment diagnostics for legacy environment-alias precedence; no product branding is introduced.", "owner": "verification", "remove_by": "offline-tool-retained", "max_matches": 8}
   ]
 }

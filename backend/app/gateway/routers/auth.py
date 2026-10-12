@@ -397,7 +397,7 @@ def signup(body: SignupRequest, response: Response) -> AuthResponse:
 
 @router.get("/bootstrap-status", response_model=BootstrapStatusResponse)
 def get_bootstrap_status() -> BootstrapStatusResponse:
-    # On PostgreSQL, tables are created by Better Auth. bootstrap_admin
+    # Gateway initializes identity tables in both supported databases. bootstrap_admin
     # runs at gateway startup but may fail because the tables don't exist yet.
     # Retry here — by now the frontend has started and tables should exist.
     bootstrap_admin()

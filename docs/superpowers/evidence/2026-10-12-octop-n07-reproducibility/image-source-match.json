@@ -1,0 +1,15 @@
+{
+  "frontend_source_sha256": {
+    "next.config.js": "6d373fdb3e214624d2605cc89c74a0d28ce400d3aee28c6222fa4780500cd42d",
+    "src/server/demo-files.ts": "a05a28bd49381f8dc8d8d126231dc90284fe5caefe1e60a25f394de510b37f72",
+    "src/app/workspace/page.tsx": "fb9b112bc93edd69c690b03b2545d66109f3e03d19fc57d13ca2b44879e42176",
+    "src/app/mock/api/threads/search/route.ts": "6831549e58659f8c3a66d748be8fcd9d7477ee95ec3d76ccd43baf70322f2d45",
+    "src/app/mock/api/threads/[thread_id]/artifacts/[[...artifact_path]]/route.ts": "b6e1333e1b39b7e30edad298acd272b729b04fed6f4c32f936c49ba810ed1035",
+    "src/app/mock/api/threads/[thread_id]/history/route.ts": "084e62112834d1b56d9b511ad0e9581957f72ea0d6ef3663b91046eced6b7b5c"
+  },
+  "backend_source_sha256": {
+    "app/gateway/bootstrap_admin.py": "903019cc1ad4932e1236e6fdda234f304a418c25641e4121e7cde413d543f40e",
+    "app/gateway/routers/auth.py": "54a8617e9786e365a1277cc4d677c7b0b3a7f70b382b6e7e4604149b89fb1bba"
+  },
+  "candidate_sources_match_images": true
+}

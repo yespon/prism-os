@@ -1,0 +1,8 @@
+{
+  "independent_checkout": "/tmp/prismos-n07-clean-05dlf1ee/src",
+  "frontend_node_modules_is_symlink": false,
+  "backend_venv_is_symlink": false,
+  "nft_trace_files": 50,
+  "nft_references": 16995,
+  "outside_frontend_references": []
+}

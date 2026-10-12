@@ -10,6 +10,9 @@ on:
       - 'docs/superpowers/evidence/*octop*/**'
       - 'scripts/octop_*.py'
       - 'Makefile'
+      - '.dockerignore'
+      - 'docker/docker-compose.yaml'
+      - 'docker/nginx/**'
       - '.github/workflows/octop-integration.yml'
   workflow_dispatch:
 permissions:
@@ -49,6 +52,10 @@ jobs:
           ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
           packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
           packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+          app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+          ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+      - name: Pinned previous source and host upgrade rollback
+        run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
       - name: Real Gateway smoke with temporary databases
         run: make octop-smoke
       - name: Build capability distribution
@@ -58,7 +65,7 @@ jobs:
       - name: Install locked frontend
         run: cd frontend && pnpm install --frozen-lockfile
       - name: Typecheck and frontend regression
-        run: cd frontend && pnpm typecheck && pnpm test:unit
+        run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
       - name: Build production frontend
         run: cd frontend && pnpm build
         env:
@@ -67,3 +74,12 @@ jobs:
         with:
           name: octop-capability-distributions
           path: backend/dist/*
+      - name: Production Docker and isolated PostgreSQL Compose
+        run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: octop-runtime-verification
+          path: |
+            ${{ runner.temp }}/octop-upgrade/upgrade.json
+            ${{ runner.temp }}/octop-compose/*

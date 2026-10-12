@@ -32,7 +32,7 @@ services:
       dockerfile: backend/Dockerfile
     image: prismos-db-init:latest
     container_name: prismos-db-init
-    command: sh -c "cd backend && PYTHONPATH=. uv run alembic upgrade head"
+    command: sh -c "cd backend && PYTHONPATH=. uv run --frozen alembic upgrade head"
     volumes:
       - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/backend/config.yaml:ro
       - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
@@ -141,7 +141,7 @@ services:
       dockerfile: backend/Dockerfile
     image: prismos-gateway:latest
     container_name: prismos-gateway
-    command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
+    command: sh -c "cd backend && PYTHONPATH=. uv run --frozen uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes:
       - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/backend/config.yaml:ro
       - ../skills:/app/skills:ro
@@ -195,7 +195,7 @@ services:
       dockerfile: backend/Dockerfile
     image: prismos-langgraph:latest
     container_name: prismos-langgraph
-    command: sh -c "cd /app/backend && uv run langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
+    command: sh -c "cd /app/backend && uv run --frozen langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
     volumes:
       - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/config.yaml:ro
       - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos

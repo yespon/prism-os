@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--previous-archive", required=True, type=Path)
+    parser.add_argument("--previous-receipt", type=Path)
     parser.add_argument("--previous-revision", required=True)
     parser.add_argument("--previous-release", required=True)
     parser.add_argument("--output", required=True, type=Path)
@@ -68,7 +69,7 @@ def main():
                 args.previous_archive,
                 args.previous_revision,
                 args.previous_release,
-                None,
+                args.previous_receipt,
             ),
             (
                 ROOT / "vendor/octop/upstream.tar.gz",

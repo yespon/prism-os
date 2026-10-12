@@ -1,0 +1,5 @@
+{
+  "compose_services_healthy": true,
+  "bootstrap_status_http": 500,
+  "authentication_tables_missing": true
+}
