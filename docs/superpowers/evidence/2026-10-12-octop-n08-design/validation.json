@@ -1,0 +1,42 @@
+{
+  "baseline": "fddc307",
+  "status": "design candidate; persistence implementation not started",
+  "links_verified": true,
+  "required_design_terms_present": [
+    "Task",
+    "Run",
+    "Attempt",
+    "Action",
+    "Event",
+    "Snapshot",
+    "RuntimeSegment",
+    "Unknown",
+    "Orphaned",
+    "Cancelled",
+    "TimedOut",
+    "CAS",
+    "fencing",
+    "outbox",
+    "Secret",
+    "M1",
+    "SQLite",
+    "PostgreSQL",
+    "n8h9i0j1k2l3",
+    "AIOps",
+    "Terminal",
+    "start",
+    "stream",
+    "pause",
+    "resume",
+    "cancel",
+    "get_state"
+  ],
+  "changed_platform_models_migrations": [],
+  "m1_exit": false,
+  "source_sha256": {
+    "docs/superpowers/specs/2026-10-12-octop-n08-execution-design.md": "0f62a772dbe164dd0bbcb9896096542ff02fdf45636ba80a1403a7ea88339e9a",
+    "docs/strategy/adr/2026-10-12-n08-platform-execution-facts.md": "520247928d2e6411ea19c63a377bc98a648746c25e1938460f2771a669f450ab",
+    "docs/superpowers/plans/2026-10-12-octop-n08-execution-plan.md": "95f1808216a80c101de5c54dcf11436626575753c85add5bdc9245eb0f8975ad"
+  },
+  "verification_boundary": "document trace/link review and local pinned SDK discovery, not behavioral/M1/M2 exit evidence"
+}

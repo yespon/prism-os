@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-12",
+  "baseline": "fddc307bc15edfe2e13d8ba5b1e27f0275556a6d",
+  "scope": "N09-A read-only complete retained source declaration and existing native Skill frontmatter checks; N08 design preparation only",
+  "local_verified": true,
+  "full_n09_complete": false,
+  "m1_exit": false,
+  "m2_persistent_implementation_started": false,
+  "remote_ci_verified": false,
+  "live_model_tool_webhook_verified": false,
+  "backend_full": {
+    "passed": 1577,
+    "skipped": 18,
+    "warnings": 30
+  },
+  "frontend_full": {
+    "files": 43,
+    "passed": 128
+  },
+  "octop_build": {
+    "backend": 214,
+    "frontend": 37,
+    "real_gateway": true,
+    "all_expert_preflight_readonly": true,
+    "typecheck": true,
+    "wheel_sdist_members": 902,
+    "resource_members": 297,
+    "verified_expert_source_members": 352,
+    "production_build": true,
+    "independent_locked_build": true
+  },
+  "source_declarations": {
+    "experts": 18,
+    "resource_groups": 60,
+    "resource_members": 297,
+    "additional_members": 27,
+    "template_members": 55,
+    "verified_expert_source_members": 352,
+    "host_format": {
+      "compatible": 24,
+      "binding_required": 33,
+      "needs_adapter": 3
+    }
+  },
+  "upgrade": {
+    "fresh_origin_acquired": true,
+    "steps": [
+      "b5",
+      "b6",
+      "b5"
+    ],
+    "tests_each": 80,
+    "host_files_fixed": 11,
+    "host_changed": false
+  },
+  "locks_sha256": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifacts_sha256": {
+    "prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "code_sha256": {
+    "backend/app/integrations/octop/resources.py": "bc7f880606e3db9d01ede6fe4eb0f4cb4f35ec7ce160fd2f9c593d0a932ed7c4",
+    "backend/packages/octop-capabilities/src/prismos_octop/resources.py": "4324a0910356b20530fca82d8f71eebd3344e8e9415c6f88821e065ca48aac79",
+    "backend/tests/test_octop_resources.py": "2909962749e3f02038df78677755dd0b9b2f812cda6591a14dded4b3d355452d",
+    ".github/workflows/octop-integration.yml": "4c5e7af187092ad05911b7d2a7386e871400e0d70b61cea3ba067a835c96d11a",
+    "Makefile": "eefd1b639cac8e6ce991ea8ffb62f5f2058c0d0c80620705528b2062bba1e554",
+    "backend/app/gateway/routers/agent_catalog.py": "554dd98a6892d5200b47f183d8fb861bb7375fea1de8706af2643287b1e50d18",
+    "scripts/octop_gateway_smoke.py": "ba75d6e0cca5fe7da29c3e8ee4918588d7069766b45127d5c123d21a83ca5fd1",
+    "scripts/octop_upgrade_probe.py": "2e8516170dc004caaac1b9ab17514a3171d7760fa67a802c9731718fe65b68ac",
+    "scripts/octop_wheel_verify.py": "a9aef41b5e1a89612e51a0740407c181097bb710bb44834b9e386ad9b0156654"
+  },
+  "log_sha256": {
+    "clean-backend-install.log": "cd7c7b426f07ac55853ce5de37391a675d9175724d5305f478478ec508577730",
+    "ci-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "brand.log": "934ec5dd838629061a24a5047f0bc042091281b14f8585289cf8fdfcc78214b6",
+    "resources.log": "3f4f33314546fee298c48da5e9fc3302bf4aca4c3f664d0a80d05454f7c4ff4c",
+    "clean-build.log": "40c6f40ed08950de4a29f4ff08917dfcdd6c54ce04ea266e74a0dcb9765520ec",
+    "source-fetch.log": "d2561d16ae2b492d879c087ec3602d342fa3edd75ccaf8e46a2894ed0437042c",
+    "backend-full.log": "fb84b2f6f5ae85f531c556872f55ea56f608ffa366f27a0eb9703e203b68ca1f",
+    "gateway.log": "0c712e21bb283f2acac3229aba6f4c3fc431a1a75ea2d496fe4adca6bcc9f128",
+    "upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "clean-frontend-install.log": "dea632222380c413f454d9ee4f949b8c5547210a5929c108f84be5587c788a58",
+    "frontend-full.log": "584a346c6017c8f0fa59079f315e81f5c6a0420e6df9bb7c43129635422d7313",
+    "build.log": "9dfbb58845e933b5638af2efaf0f81aa685c653510fd8015780ba08c4856d837"
+  },
+  "evidence_sha256": {
+    "declarations.json": "2cae248a2e913064792ce7e3527006e2173f593817eb2812db6be41db894f553",
+    "gateway.json": "760a6b22730d31f788e464c708ed9e918177c7a954e645d19b5f61aa34d44815",
+    "upgrade.json": "c513948775ad89b9a0ca1a36c32a55fbe4e189be6ff47affeafd3b742d219d39",
+    "independence.json": "1b2c99237c77b005d82323c184b84061dcc98abe120e10419308c0dc9b7273b4",
+    "candidate-code.json": "578a2210a2d352b3ca456486674bfdaa8858d2820bfe3e2c726bdc7bc998c2f2",
+    "summary.json": "da5a67b67e316606b309035b02aa15032a5849cf31679e3fa481dee424918a5e"
+  },
+  "remaining": [
+    "UI preflight/install state projection",
+    "tenant/personal ownership, sharing, copying and revoke",
+    "three native format derived adapters",
+    "atomic install/conflict/source match/recovery",
+    "actual tool/schema/PEP/Sandbox and resource ACL",
+    "N08 snapshot execution binding and subagent delegation",
+    "all 18 experts actual behavior; Office independent implementation",
+    "N07 remote CI and N04 live M1 gates"
+  ]
+}

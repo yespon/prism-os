@@ -1,0 +1,7 @@
+{
+  "source": "fresh fddc307 checkout plus recorded candidate overlay",
+  "backend_venv_is_symlink": false,
+  "frontend_node_modules_is_symlink": false,
+  "nft_receipts": 50,
+  "outside_frontend_references": []
+}

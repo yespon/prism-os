@@ -222,6 +222,14 @@ def main():
                     for item in avatars["avatars"]
                     if item["id"] == "personas:ENFP"
                 )
+                assert request("/api/agent-catalog/templates/expert:cvm-ai-doctor/resources")[0] == 401
+                resource_files = 0
+                for template in request("/api/agent-catalog/templates?kind=expert", token=token)[1]["templates"]:
+                    code, resources = request("/api/agent-catalog/templates/" + template["id"] + "/resources", token=token)
+                    assert code == 200 and resources["source_verified"] and not resources["permission_grants"]
+                    assert not resources["installation_checked"] and not resources["execution_ready"]
+                    resource_files += resources["member_count"]
+                assert resource_files == 297
                 with sqlite3.connect(directory / "tenant.db") as database:
                     source = json.loads(
                         database.execute(
@@ -243,6 +251,8 @@ def main():
                     "presentation_edited_and_reopened": True,
                     "duplicate_persona_prevented": True,
                     "questionnaire_readonly": True,
+                    "resource_preflight_all_experts_readonly": True,
+                    "declared_resource_members": resource_files,
                     "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,
                 }

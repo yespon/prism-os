@@ -10,6 +10,7 @@ from prismos_octop.presentation import avatar, list_avatars, questionnaire, scor
 from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_context
+from app.integrations.octop.resources import resource_preflight
 
 router = APIRouter(prefix="/api/agent-catalog", tags=["agents"])
 
@@ -91,3 +92,14 @@ async def avatar_image(request: Request, avatar_id: str) -> Response:
     return Response(
         data, media_type="image/svg+xml", headers={"ETag": '"' + digest + '"', "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'; style-src 'none'; sandbox"}
     )
+
+
+@router.get("/templates/{template_id}/resources")
+async def template_resources(template_id: str, request: Request, locale: Literal["zh", "en"] = "zh") -> dict:
+    _authorize(request)
+    try:
+        return resource_preflight(template_id, locale)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Agent template not found") from None
+    except ValueError:
+        raise HTTPException(status_code=503, detail="Resource source integrity unavailable") from None

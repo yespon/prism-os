@@ -32,12 +32,15 @@ def main():
     spec.loader.exec_module(sync)
     contract_paths = [
         "backend/app/integrations/octop/agents.py",
+        "backend/app/integrations/octop/resources.py",
         "backend/app/gateway/routers/agents.py",
         "backend/app/gateway/routers/agent_catalog.py",
         "backend/tests/test_octop_integration.py",
         "backend/tests/test_octop_presentation.py",
+        "backend/tests/test_octop_resources.py",
         "backend/packages/octop-capabilities/src/prismos_octop/catalog.py",
         "backend/packages/octop-capabilities/src/prismos_octop/presentation.py",
+        "backend/packages/octop-capabilities/src/prismos_octop/resources.py",
         "backend/packages/octop-capabilities/src/prismos_octop/source_policy.py",
     ]
     contract_hashes = {
@@ -45,7 +48,7 @@ def main():
         for path in contract_paths
     }
     evidence = {
-        "scope": "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, imported pure modules and Agent host contracts",
+        "scope": "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, complete resource declarations/native format preflight, imported pure modules and Agent host contracts",
         "host_changed": False,
         "host_contract_sha256s": contract_hashes,
         "versions": [],
@@ -58,6 +61,7 @@ def main():
             "__init__.py",
             "catalog.py",
             "presentation.py",
+            "resources.py",
             "source_policy.py",
             "upstream/__init__.py",
         ]:
@@ -99,6 +103,7 @@ def main():
                     "pytest",
                     "tests/test_octop_integration.py",
                     "tests/test_octop_presentation.py",
+                    "tests/test_octop_resources.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",

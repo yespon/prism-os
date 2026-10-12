@@ -1,0 +1,3553 @@
+[
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:ai-coding-coach",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/ai-coding-coach/manifest.json",
+      "target": "data/experts/ai-coding-coach/manifest.json",
+      "sha256": "27952f834c6c826025c8f3e3236041dbba1ba629e5d7ef32e78a1407bd4f990b"
+    },
+    "prompt_sha256": "4fe65ce03ca353a91539362217da1f6d1f3e348ad8f8393036e36ac2fbb02dde",
+    "source_verified": true,
+    "declaration_sha256": "2cc3b0792c81d8790b390e95c3c98338576d5705bbed27093bfe64e0ac1bdf60",
+    "resources": [
+      {
+        "id": "resource:dc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab",
+        "kind": "skill_bundle",
+        "root": "skills/cheatsheet",
+        "bundle_sha256": "2cc3b0792c81d8790b390e95c3c98338576d5705bbed27093bfe64e0ac1bdf60",
+        "members": [
+          {
+            "path": "skills/cheatsheet/SKILL.md",
+            "sha256": "684a8f5e968c111b392191013ad0e524b69d763d2a0d3870c4bb39011cfe52d9",
+            "source_path": "src/octop/infra/agents/experts/library/ai-coding-coach/skills/cheatsheet/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "cheatsheet",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 1,
+    "legacy_bundle_member_count": 1,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "SOUL.md",
+        "sha256": "9671aa9fb139e95bf7585f71c0e7659b10b84b1f6ce5fa5ef58fc357f35d0fd6",
+        "source_path": "src/octop/infra/agents/experts/library/ai-coding-coach/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "27952f834c6c826025c8f3e3236041dbba1ba629e5d7ef32e78a1407bd4f990b",
+        "source_path": "src/octop/infra/agents/experts/library/ai-coding-coach/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 3,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:ai-safety-guardian",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/ai-safety-guardian/manifest.json",
+      "target": "data/experts/ai-safety-guardian/manifest.json",
+      "sha256": "90fab86028fce49a55b5c38cb2ead14bd87b946429586908b39d6c64918053fd"
+    },
+    "prompt_sha256": "d6c81c9013f9899d12573242261e0ce37993bdbd8bf5679b42d16320b224cb7f",
+    "source_verified": true,
+    "declaration_sha256": "aeea48bafbcd3d91791f8928311f2535b13c207cdefacf628060d8a212fa6dae",
+    "resources": [
+      {
+        "id": "resource:f90abc43cab15b04b522b1072767405b0a04933229245211c9b5324919de0bf4",
+        "kind": "skill_bundle",
+        "root": "skills/security-guide",
+        "bundle_sha256": "aeea48bafbcd3d91791f8928311f2535b13c207cdefacf628060d8a212fa6dae",
+        "members": [
+          {
+            "path": "skills/security-guide/SKILL.md",
+            "sha256": "c83ef1e6039d07603ea4bf03488f854ce19198f38aadbb723ba92bccbb614c3b",
+            "source_path": "src/octop/infra/agents/experts/library/ai-safety-guardian/skills/security-guide/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "security-guide",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 1,
+    "legacy_bundle_member_count": 1,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "SOUL.md",
+        "sha256": "30d4e19bc34407152c05addb48cbc3e6ca7a1d900825044f0e3774414c565304",
+        "source_path": "src/octop/infra/agents/experts/library/ai-safety-guardian/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "90fab86028fce49a55b5c38cb2ead14bd87b946429586908b39d6c64918053fd",
+        "source_path": "src/octop/infra/agents/experts/library/ai-safety-guardian/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 3,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:clinical-learning-subscription",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/clinical-learning-subscription/manifest.json",
+      "target": "data/experts/clinical-learning-subscription/manifest.json",
+      "sha256": "89bd0c54e9031228933b9ef04485b4c4c71eee4a9ee509b7b74e5d752d57fe5c"
+    },
+    "prompt_sha256": "4d4b01585f60075f4828ef9a22631aec03b3b70c3201a39789ea9f3368a5e454",
+    "source_verified": true,
+    "declaration_sha256": "91156be034a732ab09dfd99147a195d6385518275e6bdd2478b1b0a24e2559f4",
+    "resources": [
+      {
+        "id": "resource:a9e505a6a8e5add73e7775022d23622e62749d3f6fde5f27d3aad4916ba40789",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "bc4d585ddcc0c643b218469209f3a675f29c0eac61b2bf05ebdb35bab1222c30",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "019a57373912a65deb592fe3068dc6911d294b74eb08c4f996bee23b637a0495",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:3873951acab04fb3d0abaccf0800add880cdd1b048657592b37d6915fd93a60a",
+        "kind": "reference_asset",
+        "root": "references/compliance-boundary.md",
+        "bundle_sha256": "0ba16f0636ff53dd1b66d66e2e278ee032cc0a8f81f60cc2ed262147621d3453",
+        "members": [
+          {
+            "path": "references/compliance-boundary.md",
+            "sha256": "1c5dea64dba5b83f6cb0a5cb70397c2fea93b5e4444c37064124d1f139f0f458",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/compliance-boundary.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:802cdd8703554f082d2732f6b3857284589a361b540667038e9647e11765da5a",
+        "kind": "reference_asset",
+        "root": "references/cron-presets.json",
+        "bundle_sha256": "8de3ac4355495ab0a82a8b423777c05cc6b65ff80f26f64d24e4fd9660289ff5",
+        "members": [
+          {
+            "path": "references/cron-presets.json",
+            "sha256": "e8797d1810cfaa8ac28cd4bf2899b86defe827b13ddbb787f591f9c04ef0ee11",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/cron-presets.json"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:a37d5d14b08d8840c826e36b6a43f58556a991fb3245551f032b94f913f2abef",
+        "kind": "reference_asset",
+        "root": "references/daily-learning-template.md",
+        "bundle_sha256": "4489e6406227a0a63d99fe1139c9e5f6fddd888c922791f27a77fca53094b350",
+        "members": [
+          {
+            "path": "references/daily-learning-template.md",
+            "sha256": "ca2881f83065a7bf833c0b4eed9effa0f343896dbcf0f1c30fa61b10667f9131",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/daily-learning-template.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:10a774af6a49b8a452304ffca44303ed59f221c5823e1a0d9f119c881eb39d99",
+        "kind": "reference_asset",
+        "root": "references/department-queues.md",
+        "bundle_sha256": "4e437ab22f20eb6ba19f06bc5ea4c73053ad03baaf98e1f02d6f11df4eaef79c",
+        "members": [
+          {
+            "path": "references/department-queues.md",
+            "sha256": "29d9100c8582a3a93eb45c09fa4b5eb558a311f4f7b247bdaac988b0498ef5df",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/department-queues.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:2efbe71d8710243d5f2cce66508ac62f551b6d695a8757759f3b91d5177d6b99",
+        "kind": "reference_asset",
+        "root": "references/international-guideline-source-routes.yaml",
+        "bundle_sha256": "2bc293047c6943e9b258c6643417168236b77f48a68610d49df53b07870b9f25",
+        "members": [
+          {
+            "path": "references/international-guideline-source-routes.yaml",
+            "sha256": "aed850933bb4f4e8b40a0ef02c893d34c84fa5a17cddef5c4f419d37ca02c110",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/international-guideline-source-routes.yaml"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:3a0126446fadf140cd2c6df40e57a562b827e2b8ac01b99247986e5bc62ac5fc",
+        "kind": "reference_asset",
+        "root": "references/learning-diagnosis-template.md",
+        "bundle_sha256": "1e0da6b38fcaac8e2d98eb940a29b1040473be7de2d8e5723a05f94d7798a284",
+        "members": [
+          {
+            "path": "references/learning-diagnosis-template.md",
+            "sha256": "4c0c4539840bf5495b626830832403898ba8a8bcc1effe0d7b0b76866a1e2184",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/learning-diagnosis-template.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:d48845a0b3320a0741fd760d70eccd7defdb9d980207d1e15f46e9272b834191",
+        "kind": "reference_asset",
+        "root": "references/learning-operations.md",
+        "bundle_sha256": "9a77c90ccdc73c0a268e2cac92d8e0c9e25a5a3c4db8d2644e24ffb065019626",
+        "members": [
+          {
+            "path": "references/learning-operations.md",
+            "sha256": "93934619c08cbc49a88bfe412ec23e48924b8782a2bb3d92c5251d9d73a5c197",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/learning-operations.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:cf9b140eb29a8db61319ddd1102a4d45ff2dd4b140950aac969c5ad32855ab4b",
+        "kind": "reference_asset",
+        "root": "references/learning-track-template.md",
+        "bundle_sha256": "00fc1de40e85d4566346d998a0eb297dd465c0e70e14dabda5e684540e768566",
+        "members": [
+          {
+            "path": "references/learning-track-template.md",
+            "sha256": "b15212587ff448667b2ba4daa6475936facab3be88511041526ec61d3c6fbe5b",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/learning-track-template.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:99cda71004d8e4c0b8189371e6a9bc88fa3d562677cf382bd2e5d804ab93382a",
+        "kind": "reference_asset",
+        "root": "references/output-templates.md",
+        "bundle_sha256": "33568c7eeece07cee363a8b4b2a9b0cc9219fe510571ed496120080237360b67",
+        "members": [
+          {
+            "path": "references/output-templates.md",
+            "sha256": "24a0de7369fea1de8d61206d37698023fa7f972dcc15f8f2c25994a93aed07b9",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/output-templates.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:79440e3180ca70011f8795fc52d4e59d4d108ce19d8d5afb13858d104dd81128",
+        "kind": "reference_asset",
+        "root": "references/professional-society-source-routes.yaml",
+        "bundle_sha256": "1c8db37f0952c7db6ae6bd318b41c9ba239903d4a06a9b8fc9a5e9cb2b9ed8dc",
+        "members": [
+          {
+            "path": "references/professional-society-source-routes.yaml",
+            "sha256": "6758e57a854f529ef756c28f02e6d5cc656ec92377cd3dd932ea158c305fa51a",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/professional-society-source-routes.yaml"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:e21b33ab2d7b2abb8e2967a3acb608f8a045d1d9280bc8e10ef8cc39e66f9d05",
+        "kind": "reference_asset",
+        "root": "references/source-policy.yaml",
+        "bundle_sha256": "fd1a94d8a9ad5847e933a5342e3760faef0ecc50b99928ed63de99a2811ca032",
+        "members": [
+          {
+            "path": "references/source-policy.yaml",
+            "sha256": "380ae4f93a026977777a058fff988b410a6092327ff477cd21ef265fd1e925a4",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/source-policy.yaml"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:59143e01a51ca0852ff74c681313f136b8145fbf58fbb56ed212573b3bf74e3e",
+        "kind": "reference_asset",
+        "root": "references/verified-source-entrypoints.yaml",
+        "bundle_sha256": "8110db1ac8bc3a9fc9a5987c11cb2e87715fd9670b9dd2d527f421e9e0f4eea2",
+        "members": [
+          {
+            "path": "references/verified-source-entrypoints.yaml",
+            "sha256": "67e1e777cae6d286235a547eb9f23a9ff76c1f8e092b50027ccdd673d7586f90",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/references/verified-source-entrypoints.yaml"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:faf36fda5b67c6792ec4b2940f2b7c0734b7455701dc50d1a41b62bd15fbdbdd",
+        "kind": "script",
+        "root": "scripts/clinical_profile.py",
+        "bundle_sha256": "0b14f88be0f6e38d0e4e8a38a6f1b232669ba890096ed54cc0152dc4888f8464",
+        "members": [
+          {
+            "path": "scripts/clinical_profile.py",
+            "sha256": "ae98989ce153eb4235a8935894cc7c601beea8463ae80d11bb91d5e672a23184",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/scripts/clinical_profile.py"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:f45007a8ebebd003cd5c88d2422fd943a5691e228f3842b55bbb7a600507cad5",
+        "kind": "script",
+        "root": "scripts/simulate_weixin_flow.py",
+        "bundle_sha256": "7618566a3daa6d85626870386ef29075a41032c9fe0778718dc9f1cd9ed2243e",
+        "members": [
+          {
+            "path": "scripts/simulate_weixin_flow.py",
+            "sha256": "d4f8859d3001471e7bdcccd0448f1a63741f7bc04d499f9625b18b2e7a3f6a58",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/scripts/simulate_weixin_flow.py"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:43148836d4b4b0783ac43d62f2e8a9df8f4fb038f5a8425fe326e401d4147129",
+        "kind": "script",
+        "root": "scripts/validate_output.py",
+        "bundle_sha256": "453f9ac8e0aa4ff51878fc44b8c15a15a50446cb5f9143880bc1d6b6f759d3be",
+        "members": [
+          {
+            "path": "scripts/validate_output.py",
+            "sha256": "6c154896789f8a35049d400bce4c9e563dcef18ce8eef71fec52c75c6d515292",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/scripts/validate_output.py"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:7e72918bbb3f8b3d500d14351974b2145279e78559fa99314b59e0f4d3440a69",
+        "kind": "skill_bundle",
+        "root": "skills/clinical-q-and-a",
+        "bundle_sha256": "12d3b747fea9d971c3fb807db4068a04279629ad95bdcafa5db5b3e37f06750b",
+        "members": [
+          {
+            "path": "skills/clinical-q-and-a/SKILL.md",
+            "sha256": "82257b637e6b2fb776ec182fa7ef541b3ce7cec08912bd7f097235e33242d7f2",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/clinical-q-and-a/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "clinical-q-and-a",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:9ecbe90a51981e26395902e101217db9ec8a8fb7009e3611203af1ecc573d0bf",
+        "kind": "skill_bundle",
+        "root": "skills/doctor-registration",
+        "bundle_sha256": "6470f35ece040b98b6b4a95dd9c5af3eda482d3cb39552cd2e572e2720367305",
+        "members": [
+          {
+            "path": "skills/doctor-registration/SKILL.md",
+            "sha256": "9fac7a15b1ac2027624d107fcf758be3204c6bbeff87856ce1df42a0162b4837",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/doctor-registration/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "doctor-registration",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:82063e854970c739b3a22cd8603f4d3308641008e2619016aeab6206912aff79",
+        "kind": "skill_bundle",
+        "root": "skills/exam-material-recommendation",
+        "bundle_sha256": "90a6fd3059ce63ebfc083ce50371983bc8f8b9e5f9a31e52d6eb7b772ea15199",
+        "members": [
+          {
+            "path": "skills/exam-material-recommendation/SKILL.md",
+            "sha256": "9e4dffa7d4533f1398779b0bcad272de72c4c9b4b9c917de6e7574e4a172b583",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/exam-material-recommendation/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "exam-material-recommendation",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:9413a84fa79bac4c129d315a01af4414729fa4bac31c09ebe2341218b525108f",
+        "kind": "skill_bundle",
+        "root": "skills/guideline-learning",
+        "bundle_sha256": "97e11ac272c9791125c11af36ceead025ee24b76de27bb28b2a5b9350ca2e311",
+        "members": [
+          {
+            "path": "skills/guideline-learning/SKILL.md",
+            "sha256": "1689891064ad52ed3830eb0f8550db0e04f904b861d6f49a366e812bc285ece3",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-learning/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "guideline-learning",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:f9d232d2c4fc0442255a151703f13edde11680102cd185548f669eaf183d7a1c",
+        "kind": "skill_bundle",
+        "root": "skills/guideline-learning-diagnosis",
+        "bundle_sha256": "067eb0d652f2435edff0261ee17bc09408950f96ac8c50e8dc4d569b2feb06b5",
+        "members": [
+          {
+            "path": "skills/guideline-learning-diagnosis/SKILL.md",
+            "sha256": "20f1b6d82ebe260b7cbf06bf6a1aa47b5fe27242be7230201fb98815616d1a3d",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-learning-diagnosis/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "guideline-learning-diagnosis",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:67e450df47b9eb3593a249b1ab6e90280efbae85d4553601b855b759e4419d74",
+        "kind": "skill_bundle",
+        "root": "skills/guideline-section-expansion",
+        "bundle_sha256": "ed85f35156ab088de04abfd1f7e7ce41389c237207023146ad67739ff1c0f781",
+        "members": [
+          {
+            "path": "skills/guideline-section-expansion/SKILL.md",
+            "sha256": "c92d781f0d5c925f65ffde6e4a05510fbebc94d4bfae8b1181e01c9110ae2e11",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-section-expansion/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "guideline-section-expansion",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:8a82646e09d9b975e2884ca714424d25c7b7200d34ea6238ccdac1a9bb822557",
+        "kind": "skill_bundle",
+        "root": "skills/guideline-update-reminder",
+        "bundle_sha256": "9e52aea98ff2a631efc53428a0935c4b9ff7f41d002181068f2a03a090c7e016",
+        "members": [
+          {
+            "path": "skills/guideline-update-reminder/SKILL.md",
+            "sha256": "8702a461765da49e5ac86c4d7a0d018edee6a4963e9fc8a69879563beaf89202",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-update-reminder/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "guideline-update-reminder",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:f77e05fe46a636f05dacb100d8e30674c6078c32f3824c7067aa2d38535f4ba0",
+        "kind": "skill_bundle",
+        "root": "skills/insurance-policy-learning",
+        "bundle_sha256": "0c8a6d5c7c12c4f37c3fa9d391f536fb6241ab1638252b82c6a5483a35f77933",
+        "members": [
+          {
+            "path": "skills/insurance-policy-learning/SKILL.md",
+            "sha256": "2a6d6ab86f4b10376c1afcb7224e11081654b22d995e0c424173393c428c6e21",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/insurance-policy-learning/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "insurance-policy-learning",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:9301161148e6e896d231b0e0827d19c26d0d0dcc966723bbb2156f8b0c190464",
+        "kind": "skill_bundle",
+        "root": "skills/intent-routing",
+        "bundle_sha256": "604b31721bc68ea46fb9d68dbf1cefdc13a7313aaff04d99f5ab12aa83c3aba0",
+        "members": [
+          {
+            "path": "skills/intent-routing/SKILL.md",
+            "sha256": "9be77ee3642485d2a6ab52cf140731554ccd49f5fd5648220c4e09e11c1bbcb7",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/intent-routing/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "intent-routing",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:312644393c8b898b5fb553ca6a464284ec17a97d3ed2a280157003b3b17d02cf",
+        "kind": "skill_bundle",
+        "root": "skills/medical-source-failover",
+        "bundle_sha256": "0083ec3566a95e5ec70424894f83a7fc1ad7b59dfcb4718e37ebe804284cab99",
+        "members": [
+          {
+            "path": "skills/medical-source-failover/SKILL.md",
+            "sha256": "fe0ab6e8f87a01948b41cc3633bbfb9a49e4e28eda4cce61317fcef1a730b1d6",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/SKILL.md"
+          },
+          {
+            "path": "skills/medical-source-failover/references/document-identity.md",
+            "sha256": "815a3189f8abeed44db502ecb042946594389dc2b32533a271e8736c868b190e",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/references/document-identity.md"
+          },
+          {
+            "path": "skills/medical-source-failover/references/domestic-source-registry.md",
+            "sha256": "b94ee5ae2e818de7aece4feb81850aef9a01fb8200b6d20158dc1f4104ad8bb0",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/references/domestic-source-registry.md"
+          },
+          {
+            "path": "skills/medical-source-failover/references/failover-policy.md",
+            "sha256": "639d06a581a5655e245c0c61fa15a7ae41692c9c6553dcfcde17cc0825c990a3",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/references/failover-policy.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "medical-source-failover",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:ffe8983c10e59d9b346b4667ca2d02e7af7e6d1a898fd62919e8d96300d74c93",
+        "kind": "skill_bundle",
+        "root": "skills/output-format",
+        "bundle_sha256": "44b3730e237560c220fc3e89890eb6788a49a48e9cb49ddcbd74d8ce798834a1",
+        "members": [
+          {
+            "path": "skills/output-format/SKILL.md",
+            "sha256": "12425021d7e3bf7d3b18715d82453cd1e555753e11acbb29a27136db09d6eac7",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/output-format/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "output-format",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:0e52e9cca3b55a27c3a78e4bc2b9a5cabe269da969455dd625fc6bfcfb295109",
+        "kind": "skill_bundle",
+        "root": "skills/source-verify",
+        "bundle_sha256": "c2fe6f12cde2bd2e3d20aedde4d0090bf410a50ae355a1811aa5fa5a2e442fcc",
+        "members": [
+          {
+            "path": "skills/source-verify/SKILL.md",
+            "sha256": "b3532a727150297634cdd6ad89126005971ab350ac05c0c352be8b53ad89f322",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/source-verify/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "source-verify",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:be5b9c44efb5cbda34717916ffb642fac9a13d0d4483a29e0062a723f3d7b98e",
+        "kind": "skill_bundle",
+        "root": "skills/subscription-setup",
+        "bundle_sha256": "bca5b41aace61706e5508213e3d400401f5d5545f32203edb78992204b0a6ade",
+        "members": [
+          {
+            "path": "skills/subscription-setup/SKILL.md",
+            "sha256": "5542e1a1bb7455de28394525bc2a07154cafd387183f30dbf88b823ebc97d2ce",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/subscription-setup/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "subscription-setup",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:cbbb9279a539abd02140b67b7f5664d1c313dadc2ef24d64b3d77d0bf532c154",
+        "kind": "subagent_definition",
+        "root": "agents/guideline-learning-designer.md",
+        "bundle_sha256": "f345302c50bde20b9373eabad0231f27b455252c92bccf334d12e36da025eb00",
+        "members": [
+          {
+            "path": "agents/guideline-learning-designer.md",
+            "sha256": "fcb31d4ceb62a5b8478588a6446429bb8012de6c9d71291c877e6e8a1c295045",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/agents/guideline-learning-designer.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:d4d18de6f4fe36d9d4e00cf6d315f57840d96553580168b97159313dcb26838b",
+        "kind": "subagent_definition",
+        "root": "agents/medical-learning-safety-reviewer.md",
+        "bundle_sha256": "9031d39a198b81e8ad72856a89b84fd726dd749b6e674c4a9abc7627b528e8ec",
+        "members": [
+          {
+            "path": "agents/medical-learning-safety-reviewer.md",
+            "sha256": "7821352512a86f2d857346e02ace33b53f3784b885b025d3063a50b52620d2a7",
+            "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/agents/medical-learning-safety-reviewer.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 34,
+    "legacy_bundle_member_count": 21,
+    "additional_member_count": 13,
+    "template_members": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "aad0f82dbc3c535525b5c05ad4b3e3d68c7a587d6f7fb0a8b4be67b3c29f59cb",
+        "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/AGENTS.md"
+      },
+      {
+        "path": "BOOTSTRAP.md",
+        "sha256": "308397bbcfa201cf80b369ffe16f3e4fa14b3b5bb4d5483e04b56b37ea42a618",
+        "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/BOOTSTRAP.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "6e0cd3fb7eaf2d73495a0e49be267afb55623bd38c022102c6b346b841760249",
+        "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "89bd0c54e9031228933b9ef04485b4c4c71eee4a9ee509b7b74e5d752d57fe5c",
+        "source_path": "src/octop/infra/agents/experts/library/clinical-learning-subscription/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 38,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:cvm-ai-doctor",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/cvm-ai-doctor/manifest.json",
+      "target": "data/experts/cvm-ai-doctor/manifest.json",
+      "sha256": "8926d749b6da265c1bf836cf59ac963ca9a292aa9d0f1e9f47a9281d800e31d2"
+    },
+    "prompt_sha256": "88d41073220473f2bd2b2c4e74ebce3a0751b71856a70edb4b8b7a6b103a9a43",
+    "source_verified": true,
+    "declaration_sha256": "4723f5705a9a5f12262f29ebe51f6cff17da1cd2ec303e7a638993d2e17c2f5f",
+    "resources": [
+      {
+        "id": "resource:87ba6e736a2d4ccf71148c916a8693c83470d3e4c30bb122417241c27fe2c144",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "a938eac8af981085ee0321d79d11fec6d5f3aa5b19ab842a215a5664a4b6db9d",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "d5c1a4e2d3bc7de9a1bd6473127ad2a6aab2c703fa1cf510e780e20f3d6efa11",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:6540280b74c6b7c8075b92c5e8ce24082817dae31225d2bc1cb9410af73d3710",
+        "kind": "skill_bundle",
+        "root": "skills/cvm-ai-doctor",
+        "bundle_sha256": "6ca7edc48bb19093ec07839190a0eec447e5ed2701bd33f1864bf136bb200a0e",
+        "members": [
+          {
+            "path": "skills/cvm-ai-doctor/API.md",
+            "sha256": "c50deb0bd9bb9d93eabbb5e1bc2d7c17640b8f5f9e6bf9f2407a043f682a9d88",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/API.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/AUDIT-INDEX.txt",
+            "sha256": "3f7f5e71937e7494100b176ce008e03da4ea7227864d910e9dfa6159003dee5f",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/AUDIT-INDEX.txt"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/AUDIT-REPORT-2026-05-09.md",
+            "sha256": "dfd7b2f7266e12333efe395b8706e799891caaef650989bd4f8c84cdd7eb36b2",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/AUDIT-REPORT-2026-05-09.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/AUDIT-SUMMARY.txt",
+            "sha256": "986251dd654dfc683de2df2731de80bea54a0dfc0a55cb47f357d861ae698db5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/AUDIT-SUMMARY.txt"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/COMMAND-SAMPLING-AUDIT.txt",
+            "sha256": "c5c102b27d43f67283485b1b0161aa566469dee158a5daf31ec5eb4db367358c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/COMMAND-SAMPLING-AUDIT.txt"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/README.md",
+            "sha256": "2731462c8eea68f7c0b47e60a5f529bb1e8ed8c70e3eae3c0e931873bfac9061",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/README.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/SKILL.md",
+            "sha256": "69eb113e6787d3843b954ed00f57c276cac761fa3e00c7186595b507b6e48e0d",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/SKILL.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_archived/SKILL-v1-original.md.bak",
+            "sha256": "6ec07308c5a2654920089f33715a480bcc1cc554293508550876086dcd5162f1",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_archived/SKILL-v1-original.md.bak"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_archived/SKILL-v3-lean.md",
+            "sha256": "b34030b149de099a584d68624806bf24c6c2a2e169ec7825d89e3378bb80f74a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_archived/SKILL-v3-lean.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/00-quick-reference.md",
+            "sha256": "81f29c81f844bc62d3dd1609a6874a0f4942796d10f80cde64093f843722c989",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/00-quick-reference.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/00-scenario-index.md",
+            "sha256": "726cfd35b84bbf50eb15cd6050f7242481f0b002c33760eb73c58ec8f3c4387e",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/00-scenario-index.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/disk-smart.md",
+            "sha256": "cb03a5a3c89467c6e8a6f3320433a68bbe4eb2afc6c499f818c9206ccae3d26f",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/disk-smart.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/hardware-other.md",
+            "sha256": "76ed4deb13e1d36b3a6d5bc772efb7dd2297516212018e68d2b6000173cfccf9",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/hardware-other.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/resource-saturation.md",
+            "sha256": "94cc667dae3f905265282fa682fbc1b26fb0f7e7a9a44937babb7cd6610621c4",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/resource-saturation.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/system-logs.md",
+            "sha256": "cb8c8f48a1e3ad98c5b71b16d593f77a9da3df702aaaf8c928db36c5965e9d61",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/system-logs.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/_backup/time-sync.md",
+            "sha256": "164e77520a8d73028648ceaf34f80201a9ecadfef8f972cf22045647a915dd72",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/time-sync.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/cli-seeders/ai-clis.md",
+            "sha256": "5a09c3708ffd5f2f7976223f747eacdf9b134be036f8a3383f224f24082106aa",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/cli-seeders/ai-clis.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/cli-seeders/evaltools.md",
+            "sha256": "112e77848d0319bba07ea00c0881b3b8e547fc53ab37c36010c56910a2992282",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/cli-seeders/evaltools.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/local-ai/audit-local-ai-packages.md",
+            "sha256": "b685bfb6f9929df039a12374b63310972e2da28b55b448a1d0ba28c94eb9d670",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/audit-local-ai-packages.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/local-ai/comfyui/setup-comfyui.md",
+            "sha256": "76f659d46b11e49fd6cfecca432f42f9f3fa7f2ebf1691bc1bd0cf999a8c58f9",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/comfyui/setup-comfyui.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/local-ai/gpu-ai-ml-assessment.md",
+            "sha256": "f82e928777ae70d60fde789072897506804602f5acef9662f18fae5758ef24d7",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/gpu-ai-ml-assessment.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/local-ai/ollama/prune-ollama.md",
+            "sha256": "fe66d9684c4ecae748eeeacb1968e26d69710207e9a68781bd6a736298cc3637",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/ollama/prune-ollama.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/local-ai/ollama/setup-ollama.md",
+            "sha256": "3e8e133320cf64bd93d3f54d4c945504a0dedcf7698fed5a7728178ac897fa61",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/ollama/setup-ollama.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/local-ai/ollama/suggest-ollama-models.md",
+            "sha256": "25afa4b82c05bf2949aa5c74a157f905551ea81195a429cd405807a2e4c124d5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/ollama/suggest-ollama-models.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/mcp/manage-mcp-servers.md",
+            "sha256": "752c1064c88d00e1d0b700323e31ba014ffd64a9e9fcf42f8c91576a3cce92e3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/mcp/manage-mcp-servers.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/ai/stt/setup-speech-to-text.md",
+            "sha256": "d023788325c28ddc37455cffbcd25fe4e4c7d8e1ffb6bd727f3b6cac5d49b543",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/stt/setup-speech-to-text.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/audio/mic-always-100.md",
+            "sha256": "6b844984eafad3c8113f10489682ff4ec026e231a468c985e7bc7e2713f70546",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/audio/mic-always-100.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/audio/set-as-default-mic.md",
+            "sha256": "3c18aabd8b530322c91fae1cf88ead56d5a377aa6b86746d838e925633f7d712",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/audio/set-as-default-mic.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/backup/identify-backup-targets.md",
+            "sha256": "43c6369c33904b632966c891da558cf12f1cbce60d2f88c961ab52b455d66f94",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/backup/identify-backup-targets.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/bluetooth/reset-bluetooth.md",
+            "sha256": "55be386065927d4335dc468231bfae87b7f73274537b48d7b501ef1a67be29cb",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/bluetooth/reset-bluetooth.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/bluetooth/troubleshoot-bluetooth.md",
+            "sha256": "60b3b3bf14d7265c93f00d5a5cab9275f61bbf2027ef48abe9e677d7a3177298",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/bluetooth/troubleshoot-bluetooth.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/bash/add-bash-alias.md",
+            "sha256": "3b9e9b9217fe82b631ffbd936d238b81f92df720725aff59721eea10937a7008",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/bash/add-bash-alias.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/bash/validate-bashrc.md",
+            "sha256": "1e210fe7a5a26d0ab429db418f091efd1055a73ebf7fb07ad7b908c4d80051e1",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/bash/validate-bashrc.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/check-path.md",
+            "sha256": "1141ecf24c8b4a88e18a65e404997f75eb5269ec6b7af6b259768299f4b9a8a9",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/check-path.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/git/check-git-config.md",
+            "sha256": "a572c8f7603666c3e99a87f1adcca525d1cddd0b36553ab02f0e9a640901948a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/git/check-git-config.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/git/check-global-gitignore.md",
+            "sha256": "be7ebdb77caf9016890501dd6fb38f7ed2738f55c81746e2cfaf0236bb7999f3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/git/check-global-gitignore.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/permissions/debug-folder-permissions.md",
+            "sha256": "363e47b2f186026e3d6f03fd3a9e3e2b442712da2f0a3c578e36b49480f3da6b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/permissions/debug-folder-permissions.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/ssh/list-ssh-connections.md",
+            "sha256": "7c5ab5e091e97c449e6dcf7dcf3ebdfe69103033e0be269c2999c8284901c32f",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/ssh/list-ssh-connections.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/configuration/ssh/manage-ssh-keys.md",
+            "sha256": "b90a75afdc2758888343d7cd30c4ca8f99e67779cf6a07d018abeaf5958456d7",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/ssh/manage-ssh-keys.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/debugging/boot/check-boot-logs.md",
+            "sha256": "0b58f84b5980e9db871df5d34c965f8a37b75ccabe8343f317abd57505905bf6",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/boot/check-boot-logs.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/debugging/boot/failed-boot-services.md",
+            "sha256": "48b583fc9af2ef10e3b769fe4703bf7259ccfb3fe7d5d1f77d4a3650b628bb96",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/boot/failed-boot-services.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/debugging/boot/review-boot.md",
+            "sha256": "feea92b1728cc17c1fc788c150d153b20ad9e1a9cb7e4b071c51d809dd8f9a34",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/boot/review-boot.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/debugging/diagnose-crash.md",
+            "sha256": "9c57468275b12dae9d9cd5c509cd7fe34ea75215cf89f67f6f2d74d5e8454e4c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/diagnose-crash.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/debugging/diagnose-slowdown.md",
+            "sha256": "55047df31df6ab9e4e3404be69f15869f7e946f75ec2ef1a335eadc46db3d6db",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/diagnose-slowdown.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/docker/setup-docker.md",
+            "sha256": "c48f267a8b569ee335c91ac961d68ea098420b02cfffa1a9f48b8d66962d9230",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/docker/setup-docker.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/ides/optimize-vscode-installation.md",
+            "sha256": "76a88b960ddb012fe8cbf2ed34e156e72121b3b07a509cc6c6c8d7449f02a500",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/ides/optimize-vscode-installation.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/node/node-version-check.md",
+            "sha256": "29634b9c92e17b6c5a7f46f9bb131ec5fd7b62a8a8bfe367f5f3fcb8f0c64367",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/node/node-version-check.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/node/npm-install.md",
+            "sha256": "6ba7c3aeaa71696db51a4f5cb4a459d06ca350b2982b92c90c61c1eb8b080dc1",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/node/npm-install.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/conda/manage-conda-environments.md",
+            "sha256": "b4121e7ca27070d974b6e0ddf69804b7a1363da89cfd6920ede6653038ed6949",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/manage-conda-environments.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-data-analysis.md",
+            "sha256": "f6230c2b383cce0b90cfcbe2efa07233d32857afbc544bb16bfbbf7accb1aed7",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-data-analysis.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-llm-finetune.md",
+            "sha256": "6c75edc7813b7070eb432e36a28b8393fc844d09b09ea192300f91fb7f149218",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-llm-finetune.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-rocm.md",
+            "sha256": "e6f16108f23d8e4571f8d36b81d3f97f632079c3930a7266cfeab9f49361a601",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-rocm.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-stt-finetune.md",
+            "sha256": "5712359b6b71478a6f0de15052f208f24545da345019596d5bedf86b93eb7445",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-stt-finetune.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/identify-python-environments.md",
+            "sha256": "cdc7ded54e2cae3557266db174674d27a04c0247d44e70c82cf3c3722850c087",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/identify-python-environments.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/python/pyenv/setup-pyenv.md",
+            "sha256": "5e904d4797f5ed5166e1acaddfdcf7ef03aa9cb5e4241b6ec03722faba500de5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/pyenv/setup-pyenv.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/sdks/sdk-check.md",
+            "sha256": "8ea347750846aa8db02ee11661b9bdcc3a07d960f51f452ad46aee19142d688c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/sdks/sdk-check.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/suggest-ides.md",
+            "sha256": "d82c4452a30fdc03efa34fc6de13b41b5be0c0350ca98b24a45522490c0ebe12",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/suggest-ides.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/yadm/check-yadm.md",
+            "sha256": "cf6b556faba87b1a4425f013e15e0fd75b544695c334b1a8306d6ae6b37b1985",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/yadm/check-yadm.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/dev-tools/yadm/manually-update-yadm.md",
+            "sha256": "4c4695dfca51616c4edc361c4886ebb72805f69e20dc9673d6a6e0929768db27",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/yadm/manually-update-yadm.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/display/capture-current-config.md",
+            "sha256": "492dfbc297e73d3151d9b3a0c9ff03258057c19bf99ed8b0c56f49b12adba2a8",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/capture-current-config.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/display/list-connected-displays.md",
+            "sha256": "e7bff97495648a89d5fd1c77e99d32fa5b88e8b22f5ecb4b02c288e8d064f3ad",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/list-connected-displays.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/display/optimize-display-scaling.md",
+            "sha256": "33256de62c956388e52aed801c7bc735df7455a57e55e491656fa5466e8578a3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/optimize-display-scaling.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/display/setup-multi-monitor.md",
+            "sha256": "1d67431b5b4950bb3b1bfe6894c81b08d28963e2c5b572cc422a27faac2ab9fe",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/setup-multi-monitor.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/display/switch-display-profile.md",
+            "sha256": "196a4eb15672eed50a441a816d19d9b0f5afba4b0370b314cfa1f88a8607a565",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/switch-display-profile.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fonts/install-google-fonts.md",
+            "sha256": "d3d869e01924e80aec65b60b900dbfc0af3447df2bd47ba61eeb6f7ce046cda9",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fonts/install-google-fonts.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fonts/list-fonts.md",
+            "sha256": "4dec96969985b708d7433425e173df3f7a7f3e1919d946b01208fafc8f72c951",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fonts/list-fonts.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/chunk/chunk-this-dir.md",
+            "sha256": "da35539424d9e9b6560c4c7f6dea9da295ef7a6d1ec79a12964728cba0541c28",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/chunk/chunk-this-dir.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/consolidate/consolidate-folders.md",
+            "sha256": "5c424ce3b4f7eb0a2007178bdd7b08276608038ac505ed4ead780d4c63ce1ca2",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/consolidate/consolidate-folders.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/flatten/flatten.md",
+            "sha256": "894d07119a40bcbf928b1a6dca0791a0e26bcfd06d6d83bb064bb15f0ddd3eae",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/flatten/flatten.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/idate/suggest-folder-structure.md",
+            "sha256": "558ca81aa1631f570426c516874754f009cca9d55aafc91502745e525bf5dc80",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/idate/suggest-folder-structure.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/separate/separate-by-filetype.md",
+            "sha256": "e79559d3c523471e4af91985f6907e2c450d01587bd4dbb1997d4bda83e6ec4c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/separate/separate-by-filetype.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/separate/separate-photos-and-video.md",
+            "sha256": "2497b7a9aff26c4ff0659326b405832a42aacbe47f72cc09d613c3860381ba34",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/separate/separate-photos-and-video.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/tidy-up/desktop-tidy.md",
+            "sha256": "5d4afb518394505480bea982503d5d3ea67182acb20f8cd3d21556caf49b85d3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/tidy-up/desktop-tidy.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/fs-optimisation/tidy-up/organize-loose-files.md",
+            "sha256": "2cf1bdebcf9a8c786cfd0b6ff6be7eaa029d97f6087402796156a02d0aae5b6b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/tidy-up/organize-loose-files.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/check-gpu-os-optimization.md",
+            "sha256": "69a3ba3c1e318b50fff458c25afddaac436b91e2afc578d17873caeb4ecf4ef4",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/check-gpu-os-optimization.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/evaluate-wake-devices.md",
+            "sha256": "2dd55a944f1b1d9697c5c546c8851a4dc85569b062d4899f1235b92796372827",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/evaluate-wake-devices.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-cpu.md",
+            "sha256": "930bd880c3da932e51d06832a0a064f48e32690c9b7813a3791f47091ee3f9fb",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-cpu.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-gpu.md",
+            "sha256": "fb59180d59bade5cc7b3cab239adc5dfa0d59ccbbd806261ec070a77fed7e768",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-gpu.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-motherboard.md",
+            "sha256": "870aba497b7ac69f5bbf12b7e3113bff70a79f1afd495268c05a5fd04585287b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-motherboard.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-ram.md",
+            "sha256": "79d4d3b9bdd1c38a5a0337d7cb07b4998f867700a0ca58ba003ed0f56d08fcce",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-ram.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/hardware-profilers/hardware-identity.md",
+            "sha256": "0118bd7aac2d9e5f9d6d64f66515ed675f0b5460d985b7a2ff646abb741fce9d",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/hardware-identity.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/hardware-profilers/hardware-profile.md",
+            "sha256": "ee7aec1102c43f0521cf8b8bb2ab33002db0e2cba8cd95fd47dbc17a5d189ffb",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/hardware-profile.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/hardware/review-gpu-settings.md",
+            "sha256": "ccbec0708b6c3a57822c2e5d48ed712d1f6385c55c4c4c346005e7b2e75eac35",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/review-gpu-settings.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/install-brew.md",
+            "sha256": "979916fdc8cb5235effda3f0b6da4cb4e2c5a46bcc478f46f68a452bfd7965bc",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-brew.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/install-gh-cli.md",
+            "sha256": "42eafba9fa562122988f4b1249415fd58a80b107f515a2f8e666470947f63fd9",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-gh-cli.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/install-pipx.md",
+            "sha256": "e9b76273191e45ec5944041d6a25b88d629a07fbd104672aa1d16c9e663bb4d4",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-pipx.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/install-sdkman.md",
+            "sha256": "c9b33e64f6ffbb256bf82e91e550b366e2f01c7781bbbaf3e3bb4976d6da25ba",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-sdkman.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/install-yadm.md",
+            "sha256": "384bcc6e21497319f2b68353d387c777cd6fc2e29cbe539af1b8419c6e12579e",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-yadm.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/setup-aws-cli.md",
+            "sha256": "14a58181d751cf859432fe814688e40732902cfa4fa99a1f9bfba6e4cd0efb01",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/setup-aws-cli.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/setup-b2-cli.md",
+            "sha256": "22847341a4797ad8132b3a898c1c8f22ade582775c203e13d53b11332c26deec",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/setup-b2-cli.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/clis/setup-rclone.md",
+            "sha256": "d23d85415813d34705d9a3d0a3add770c1f827a8a5f94dc9c71238f6b0721b18",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/setup-rclone.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/guis/input-remapper.md",
+            "sha256": "30139141b38d13e3fb4d9ec1637d10fa6c47f2a123bfd35cecbf22e3e79e9d0a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/guis/input-remapper.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/install-from-gh.md",
+            "sha256": "3e0f3d3e58e07696e4d848a030cf3cfceef6f31e86153efa5fbbaa0a20fc871b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/install-from-gh.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/installation/install-this.md",
+            "sha256": "4095a683ef2e4162be6e2b3f709d32abbbb6b84db296ee825f93af8d262d2a51",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/install-this.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/kde/backup-kde-settings.md",
+            "sha256": "aa6e4ffd0c2af77b4c009fbe4a642dffb2b495ccc31d03fefaf418edbc830f1c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/backup-kde-settings.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/kde/list-kde-shortcuts.md",
+            "sha256": "7a294251680d4a1093596e8cc3d81f419216c3c10b582f7274e4fc7e5f3e3318",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/list-kde-shortcuts.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/kde/optimize-kde-performance.md",
+            "sha256": "5cb4dc85d410d37662e0761be5dd4d07b7d5f88235196857fdc7e421f82b4312",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/optimize-kde-performance.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/kde/reset-plasma-config.md",
+            "sha256": "dfb032bb655fde3f52fd60afdb866d97901d839984bc548a1f462ef987592158",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/reset-plasma-config.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/logging/analyze-journal-errors.md",
+            "sha256": "5c9fab92b076834dfb2b6cd895ca1c199ee9975e8fd2781189fb905f9dec2717",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/analyze-journal-errors.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/logging/check-failed-units.md",
+            "sha256": "3ffaf293ba4f6fd9ea9bec09930c2078ab9435b011d4ab3fef0771cffc95dc71",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/check-failed-units.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/logging/monitor-system-resources.md",
+            "sha256": "32c27aebf31d33b0f85454506566651117729639378ddbe6c889e5352863a8c5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/monitor-system-resources.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/logging/tail-system-logs.md",
+            "sha256": "a3a0a8dec75986dd888d90d51aaed726eb165c2fa39e038a703e9d0b5a16b9c2",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/tail-system-logs.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/media/check-codecs.md",
+            "sha256": "99f34d924b4255e11217b522cf35ef5fa27093fb82f98d4028f25ed48d8e2d52",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/media/check-codecs.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/network/diagnose-network-issues.md",
+            "sha256": "044e8b4efd8cd123453b6f65996a4d13513853a69331ca3f7e9f526c8008c88a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/diagnose-network-issues.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/network/lan/diagnose-lan-connectivity.md",
+            "sha256": "2e2b9797b94f73ee6a321af68d3d75b6325a6f842df61d5ed5971f94fd63f976",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/diagnose-lan-connectivity.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/network/lan/lan-ssh-setup.md",
+            "sha256": "50dab58d7b202694a976ea3fb3e5f11a54f7bfaae8c23a5f85474ec17a691016",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/lan-ssh-setup.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/network/lan/scan-lan.md",
+            "sha256": "48ff8b00ab80ac134a0e5538a4c92be9f2101018b4994b9dc5661e4ed7811ee8",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/scan-lan.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/network/lan/smart-arp.md",
+            "sha256": "6165cb4df2ee258925c2b2a5a012275386d374aff4e08fa5888af23928bead64",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/smart-arp.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/optimisation/large-files.md",
+            "sha256": "26570633705f923d1eed0679452203ae79225df22f6a806722941b8fac3fe405",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/optimisation/large-files.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/optimisation/optimize-boot-speed.md",
+            "sha256": "9885049f07700958c29b10feabb3c01d536b5341397279cef2cb6eab7ce1809a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/optimisation/optimize-boot-speed.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/package-management/check-apt-health.md",
+            "sha256": "dec11806edfb1b7d481c417b3b9e8e6ca1dc9a339f47088cc35be35730d70b49",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/check-apt-health.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/package-management/check-third-party-repos.md",
+            "sha256": "c1366dabaed8f463ac50e5bd6ecf3166f9bcd4c7c2303f5e964860a711cec125",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/check-third-party-repos.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/package-management/configure-auto-updates.md",
+            "sha256": "978de38c69a543a38fce06a4476ec1e792ae7e20d3ccde5b429db5819d473fdd",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/configure-auto-updates.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/package-management/evaluate-installed-software.md",
+            "sha256": "fc69476c8e827835ca6f62490200d13143bd178e66b231d3047ecb47e618ce00",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/evaluate-installed-software.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/package-management/identify-unused-packages.md",
+            "sha256": "1702241408c62b057ba4616fc3c029c93b9882495b5f3d19a0e07b69d522b2d4",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/identify-unused-packages.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/package-management/install-brew.md",
+            "sha256": "6ccb6f7f2d0dfbd322703357846349a63d5b2805b1d5e8e4580b9318c2c78072",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/install-brew.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/peripherals/evtest.md",
+            "sha256": "5319b74d00281636d2ad81a0dbdda18e1c9b6549105194dc6a4342a7e5b31a89",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/peripherals/evtest.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/peripherals/list-usb-devices.md",
+            "sha256": "dd3da658346476380a9fe8c71508246558ac44df31e24e4d2e68ddb744c26057",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/peripherals/list-usb-devices.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/power-mgmt/hibernation.md",
+            "sha256": "e5de67b7c8a16e7eb59b371b1b0891b25b83c36e0402797f5e88b2f7d3a47e0b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/power-mgmt/hibernation.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/power-mgmt/wol-setup.md",
+            "sha256": "c08e0ba514e071647d445b312c774536c8c490fd73cc8d72786ea72162bf2758",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/power-mgmt/wol-setup.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/program-management/install-github-program.md",
+            "sha256": "d122aa441d057e855db13fcfba39ec4e92e38c8dce7b6ac8bcc0bd839ef3b3fb",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/program-management/install-github-program.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/repositories/delete-old-repos.md",
+            "sha256": "80c53e18fd397a7d16675242c31b0db59718e0ecfee7539b8829d3bdcf0c00e5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/repositories/delete-old-repos.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/repositories/organise-repos.md",
+            "sha256": "98fa8417c6d81bbf8966ea926c50fd9db600038e04d2d4549eec1a38aa6b1cfc",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/repositories/organise-repos.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/audits/probe-vulnerabilities.md",
+            "sha256": "cb14957ccbbf664d59bef61a0c5e6722affe9f711b3ca562093fdcced676c16f",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/audits/probe-vulnerabilities.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/audits/write-audit.md",
+            "sha256": "8b943f704473b5830baeebb561f9203fc95d26aa236d5e83f43a26421bb0ac0f",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/audits/write-audit.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/auth/yubi-setup.md",
+            "sha256": "6b6c0e6a93ce8e4c1e181d94c744da5994b326a5409b4e7041e72cf98fa79814",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/auth/yubi-setup.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/av/install-clamav.md",
+            "sha256": "89f642f7adb22f2d9b459346333b4fb5278acd3e0a36b48a4575e486ca228720",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/av/install-clamav.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/detect-spyware.md",
+            "sha256": "41e93dc8ae8185b0860dc3e2ed780ee43ce3d8fe602bed3c1f4347eead302eff",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/detect-spyware.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/firewall/analyze-firewall.md",
+            "sha256": "140541f897bede73853cb4a894e3343d48d569650d2a715699a67e989e01f4c3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/firewall/analyze-firewall.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/security/posture-diagnostics/security-posture-check.md",
+            "sha256": "8688d8cc6a98343c8a8373553003d6cab2e32221c9b4459b268a92c1f1fb6768",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/posture-diagnostics/security-posture-check.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/health-checks/btrfs-snapper-health.md",
+            "sha256": "7dbdf341266c85d8d7904f4ea78f290fb67ef38e25f261730214acb1578d1786",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/health-checks/btrfs-snapper-health.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/health-checks/check-drive-health.md",
+            "sha256": "b49d5dfad7eaa2e2da484e9f723b61a8cb3556f1ffc5177de394e24c4bbe4381",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/health-checks/check-drive-health.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/health-checks/smart-status.md",
+            "sha256": "a3c85661c7b5a24359b09d3daf6b7c911d95ee011acc7f93794357473399a1a7",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/health-checks/smart-status.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/network-mounts/setup-nfs-mounts.md",
+            "sha256": "ab3f27150be24c16753f0f79d06d3f6eda30541a62a0f6bf46d13865cd9225f8",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/network-mounts/setup-nfs-mounts.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/network-mounts/setup-smb-mounts.md",
+            "sha256": "86046fc58e7f888f9f0e0e0fff93ff1643e2d4f1be94fb792714f55f2899f8b2",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/network-mounts/setup-smb-mounts.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/raid/check-raid-config.md",
+            "sha256": "19e4a1083c05d305bee3bec8802b553b27df36f63d6a9059d5ae0d26c5eb36aa",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/raid/check-raid-config.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/storage/storage-deep-dive.md",
+            "sha256": "df6532bf4f9e51f2ffd1177d8ad463ba06ed3767f84426731e06e20a8e70aff3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/storage-deep-dive.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/system-health/optimize-pipewire.md",
+            "sha256": "ef78f695934869ecccfed32158fb7c8dc4b00cd399961364fca30e3738d60414",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/optimize-pipewire.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/system-health/review-startup-services.md",
+            "sha256": "fcc253766d2722be84b53ece7dedd13402fb457b63bea97e51f46e6ee7bbbb36",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/review-startup-services.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/system-health/system-health-checkup.md",
+            "sha256": "9b1cbfb80c0a7732c16566c3ab20b13522cdd2e4197e32d67985e8c077c0823f",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/system-health-checkup.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/system-health/system-upgrade.md",
+            "sha256": "6673e2379dd95ee0a928721f2df09ccb47b2878492acafeeaa21a795150268d5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/system-upgrade.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/utilities/diagnose-printers.md",
+            "sha256": "e50ce22ab4b37cfe213178b151b0b8e3d9cde356adb7439fb25f72c3f7ad19dd",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/utilities/diagnose-printers.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/video/codecs.md",
+            "sha256": "cbc518e5f96fad37511a1942d1638d146471a7d5b41fb17d4cc2480d00596046",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/video/codecs.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/commands/virtualization/check-virtualization.md",
+            "sha256": "b35130f018dc1493c3efda3cbe154b2c3005ab24683623ff8a1061670f7a3c40",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/virtualization/check-virtualization.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/docs/architecture.md",
+            "sha256": "6a443871693052d62ac60a1e0bdae500faa8915a13bee3cb7152de0b666a3736",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/architecture.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/docs/cvm-doctor-report.html",
+            "sha256": "30e9740d1a7a6705733b1077d0ee93449133f6a3ae591c7086eeb8377276749e",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/cvm-doctor-report.html"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/docs/scenario-decision-guide.md",
+            "sha256": "4d9696058f8307860338ab3516cce58b4c092696d590b237ee6bd65b9224beed",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/scenario-decision-guide.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/docs/scenario-index-maintenance.md",
+            "sha256": "56c129a27174e2011bbce8721d907593ebdc8e383deb17986876de0ecb04f26b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/scenario-index-maintenance.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/examples/cron-job-spec.json",
+            "sha256": "5c8291be5cbc90d7616c73acd329dea06bef8b96f9ba774f5d5dfb92be366a6d",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/examples/cron-job-spec.json"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/00-scenario-index.md",
+            "sha256": "71bee64214cbc14f1d0573354fad15f52ac2ae7be4d3a76759408191c29cc86a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/00-scenario-index.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/cluster-deep-analysis.md",
+            "sha256": "936fd61dbcf371fb78911a1b594118e4cb15e6b166230897dd2c6f8afcaeb47a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-deep-analysis.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/cluster-discovery.md",
+            "sha256": "d41564e284944f759026c43057d83034864cfb06f694f34e4cdfa5d6090823cb",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-discovery.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/cluster-health-score.md",
+            "sha256": "48bee87ab10d745b4a6ef8e557bec7a8725e2d7a9343737a03991782ca10aed7",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-health-score.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/cluster-quick-check.md",
+            "sha256": "7a3a744b30349462eb4db9d7495f92963a5ad5a6bf5833489c77ef89899c5375",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-quick-check.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/cluster-remediation.md",
+            "sha256": "e8261d761a3f0669d929757bf0ff1ecead45413de059166a206b156a96d9a032",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-remediation.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/cvm-self-diagnosis-repair.md",
+            "sha256": "6d33e75892b4b00dbdc2d13e76d4e3b488668002ad7aaba746885ffa7cb21a2c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cvm-self-diagnosis-repair.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/disk-smart-deep.md",
+            "sha256": "ff24b2fb8e1dba16c73b2217fbcb8f9e1365a70e83eb7cc30c605d0c1c41292a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/disk-smart-deep.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/disk-smart-quick.md",
+            "sha256": "d088767e63fdbb0fa2cad2cef8bbfbe872ef82943bc2b6d2a60884ed7c29999a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/disk-smart-quick.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/hardware-health-deep.md",
+            "sha256": "d69c5c3f3e0e1f790a1719290b702199e48ebf1fbe31c000efa9aa5fcabc8661",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/hardware-health-deep.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/hardware-health-quick.md",
+            "sha256": "4e7059e0f00dbb8de74f17032ac0c931e9bda9a2dad03eee8c9e963c585677ba",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/hardware-health-quick.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/resource-saturation-deep-combined.md",
+            "sha256": "c4103d6fcac9cee5d3b369bce639b2dc2f67630e060a2a9ec4cfb36a61312f49",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-combined.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/resource-saturation-deep-cpu.md",
+            "sha256": "b4410f99d0c795339a6eb7d9e025526c8d9e4774ff1ec9b5c1fad5fc70d612ab",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-cpu.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/resource-saturation-deep-disk.md",
+            "sha256": "5671931020749e96ba2bf1a18fc9c2fdf4d74cfbd5a89349e21dec845fa2b8bf",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-disk.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/resource-saturation-deep-memory.md",
+            "sha256": "e29cd98434e68f8d73e19da27ede7f2d16c6f9787530cc135a4cecebcb2bc692",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-memory.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/resource-saturation-deep-network.md",
+            "sha256": "3298462493614ccb8841df6d51050b7321493be300d161e8140ff8955148e454",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-network.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/resource-saturation-quick.md",
+            "sha256": "08514d6c2c3ea8e38982cf83310ac7b9382406027878f7e22da4eea3ce5a666b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-quick.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/skill-collaboration-tencentcloud.md",
+            "sha256": "a5b10002e642bd4cf663b6b5db119e4826f7ea465f605b5bab971241f9ae2e63",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/skill-collaboration-tencentcloud.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/skill-collaboration.md",
+            "sha256": "506a475f35abe9cc88e76130dc4195f8d79a8b4a5332655ea3671ff81102de6c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/skill-collaboration.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/system-logs-deep-auth.md",
+            "sha256": "a2fbca86bde34eb400d192a1d45dc1ee5f257ed62214871dabf3eb848b8e6209",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-auth.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/system-logs-deep-fs.md",
+            "sha256": "2356d350bc60508c228941a134fb138fd93295a12d8bd5aeb6c2dba060542d56",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-fs.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/system-logs-deep-kernel.md",
+            "sha256": "c60d99ee52ba028f8fe3826b31ba1f937ff6e31542359ed07084fd81bef8821c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-kernel.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/system-logs-deep-oom.md",
+            "sha256": "fc20b4bd659cb79bbbef6bf50439a89cfd041f202a321af1f291dadafb405d56",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-oom.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/system-logs-deep-service.md",
+            "sha256": "8be817059d921ea95c5a91f48fd983a8458a17baeb5ab7aff670c16d0cec2a62",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-service.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/system-logs-quick.md",
+            "sha256": "68251387f438ca5c55291905659e176af347701f5c955679906d732afa64fee1",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-quick.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/references/time-sync.md",
+            "sha256": "164e77520a8d73028648ceaf34f80201a9ecadfef8f972cf22045647a915dd72",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/time-sync.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/README.md",
+            "sha256": "64947bacbcb1a69ce321f376c0c92352c0394614e92e7d19f73939da4943da7a",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/README.md"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/analyze_stats.sh",
+            "sha256": "a49efa8e6b05cb04a1006db8ebb80c931d2b645265e93cac9ef417284dce2819",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/analyze_stats.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_deep_cpu.sh",
+            "sha256": "46ac09715eacdd95f9813e2d9cd23beaeddee7c85554ccce7444db8a34b04749",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_cpu.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_deep_disk.sh",
+            "sha256": "85ba1c8f5081c1418332840f893ebc90f2c672337a7a3712395076c409c56999",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_disk.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_deep_memory.sh",
+            "sha256": "3c4c6b642a8abe7d6d0028be2bf47f66996f2419d5204cd341aca622d46b0b4c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_memory.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_deep_network.sh",
+            "sha256": "1eb5911b0f3ff2390af11ecdab70ccd8b7c3ce3f14040837d60b71db6eb5d44c",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_network.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_deep_ssh.sh",
+            "sha256": "1f01b4feb7299c16f7f20c1b211b61e2f12696491cad1fa1ef29d5efd021af91",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_ssh.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_os_snapshot.sh",
+            "sha256": "52e7d2c6b6b33c58c959175bfe5489f2560e7615a38e31405dae31da345f9b7e",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_os_snapshot.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_patrol_record.py",
+            "sha256": "7d563730227276876d253260137df6678094cae13c08cc9324dd4fb20d1e09a6",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_patrol_record.py"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_patrol_server.py",
+            "sha256": "63ba4521d8de74c3e3d2e2769648dfea5558f462734716c8340ceb6c3a7699a4",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_patrol_server.py"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/cluster_score.sh",
+            "sha256": "4347a32d0eedc57023aeb6adffd47cacb5fed9b7d76ac2d2fe5ab7fc24b9e6df",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_score.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/combined_analysis.sh",
+            "sha256": "3299330494b8a48c18bbc9c89c55ef9d8881a5a1ae8bb33ad406f173c07912db",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/combined_analysis.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/deep_scan.sh",
+            "sha256": "e6b1cd3a490f1e86c585233ff7ef98e24c62883a956af5f72ff9114f6e67fbb2",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/deep_scan.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/generate_promo.py",
+            "sha256": "a2c6af556b9b42003a06e3b4b66d26b0f0089438e533c99aec7bb47814859d0b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/generate_promo.py"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/log_stats.sh",
+            "sha256": "70a4c7a51e1b7091bc0f9a7ab3fa16c06d07a2f6fbf3827a1810dc2b4c7e7520",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/log_stats.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/patrol.sh",
+            "sha256": "a59cd95b5e4e535bf98fea1b1869b9aebcb9f5abe095499bd09c6f9749f1ef67",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/patrol.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/patrol_server.py",
+            "sha256": "f6a7924b80e053630bae3862c8f59cdcd23c9bf089900c477c9e6f235623c1da",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/patrol_server.py"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/quick_scan.ps1",
+            "sha256": "cdeac06ef469ffe37c20238f8fe420716d325040f56125cb0a8ad9660f060f5e",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/quick_scan.ps1"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/quick_scan.sh",
+            "sha256": "9c064149478726a128934960e9681387d78ddf144e483b090cb909effe0df6da",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/quick_scan.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/serve_dashboard.sh",
+            "sha256": "e5988cabcd0754a223b33dd7495f7cb0e9f57fafb6c511e5f3d408a7e1d31c29",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/serve_dashboard.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/setup-lightclaw-cron.sh",
+            "sha256": "9200c5b75a1e61516002ea21908abb8c9e885bbeadcd282383d6b2b54ca7d4e0",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/setup-lightclaw-cron.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/scripts/sync_skill.sh",
+            "sha256": "6dc2c353426dfc044ed568c764da7531e7089030184ff7844469ee3d69a27059",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/sync_skill.sh"
+          },
+          {
+            "path": "skills/cvm-ai-doctor/version.ini",
+            "sha256": "27ebe32cb157c570d424a9f987c00d91425b168393b431b86012cb3340bbcae5",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/version.ini"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "cvm-ai-doctor",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 199,
+    "legacy_bundle_member_count": 198,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "HEARTBEAT.md",
+        "sha256": "7be4c3928a75a4f260f1528f2c2a75506cf17ee046ce33c55ece75ae4f1a5dbb",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/HEARTBEAT.md"
+      },
+      {
+        "path": "IDENTITY.md",
+        "sha256": "9408052e0555f0d9b83ba31928386d60fd605b1b7920947a9065ec3a43ed18b4",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "46379853e297fe09fb7b6428df6a72a6579cf26a45892c7f1e9c567c13b3ebcc",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "8926d749b6da265c1bf836cf59ac963ca9a292aa9d0f1e9f47a9281d800e31d2",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-ai-doctor/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 203,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:cvm-cluster-doctor",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/manifest.json",
+      "target": "data/experts/cvm-cluster-doctor/manifest.json",
+      "sha256": "1a277411eb1f6a9b72f1ea08038d218e95a60adfc454bbda68aed17497fffa66"
+    },
+    "prompt_sha256": "aa5ae0a9fb8885aef6409af1f1eea920a1216b71a6847a2a76bbc208870d2ee9",
+    "source_verified": true,
+    "declaration_sha256": "555a08d35f43ea76f3e149f005bd790633813bc3de051ae2cb1046632a834d5f",
+    "resources": [
+      {
+        "id": "resource:15dc1e29ede2450c52d62b6dedecb5ff24b654183b9070adf7e7eb4bdb033da4",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "6e71ba29ce561253168f4f5b4ae875da42f5cefe60d545ea0ed20df16c196bdd",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "cfb698297eff2857c1ac8d3fb7d3965d524dc9d36af61a68f8734661641fb077",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:321ffae09f33770f3f2eb1d3c0940b577006230c6717645fdf85456fbe71b7c5",
+        "kind": "skill_bundle",
+        "root": "skills/tencentcloud-infra",
+        "bundle_sha256": "27c8356acecdc81dd9b91fcd3aa310baad1c748815e46e3b875be45aaf6dfcd9",
+        "members": [
+          {
+            "path": "skills/tencentcloud-infra/SKILL.md",
+            "sha256": "86a72524afcfdef6d1bb26819072d38c0c6d3113e4b2d0b544d6c2497bfd80ee",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/SKILL.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/_meta.json",
+            "sha256": "5599c5375f13b96791ed01a87f7cf0393eea4d13989550477cb8c03a848a8c3e",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/_meta.json"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/auto-check-resource.md",
+            "sha256": "849c1bfe5dd84ebe00699f89bfa3a0d91fb3524e14190b8cef6ad0eaabc65757",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/auto-check-resource.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/cbs-bindto-cvm.md",
+            "sha256": "7e438a5480ead12288571de85606eac4b73b71529ebc38fa70c9c852430a5ab1",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/cbs-bindto-cvm.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/cloud-service-healthcheck.md",
+            "sha256": "db4b4714d67b7a7cabc11e0f34a1f1b36023af286c89949fefd4539cffbda569",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/cloud-service-healthcheck.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/cvm-security-check.md",
+            "sha256": "77edfa0eaa53ea81cfe9e255e345a490a1429440a96681d2ce7564073b56dec9",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/cvm-security-check.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/lighthouse-app-deploy.md",
+            "sha256": "c07b70dcd869e8666d073f94959d0f06bd7fc6957ae9ce6fa1f41ab473e04dd3",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/lighthouse-app-deploy.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/lighthouse-openclaw-setup.md",
+            "sha256": "bcc06aa89cd71ef1651c516faa6e8381af192ef50a998472fa8748b05b78408b",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/lighthouse-openclaw-setup.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/references/lighthouse-website-setup.md",
+            "sha256": "a4570425e3ac53b8ed6f724796ecaf2580c4c174e2569e957f70c618a7053ab2",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/lighthouse-website-setup.md"
+          },
+          {
+            "path": "skills/tencentcloud-infra/scripts/tccli-oauth-helper.py",
+            "sha256": "3d98bd006253ccbdcfe099662887550f0c5bb52456b38b8f3ae77d0aa5692b86",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/scripts/tccli-oauth-helper.py"
+          },
+          {
+            "path": "skills/tencentcloud-infra/scripts/whoami.sh",
+            "sha256": "ae144795d0e08d3dd88229117875886ebb970cd31e080a60194bca5589a63835",
+            "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/scripts/whoami.sh"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "needs_adapter",
+          "skill_name": null,
+          "detail": "Name 'Tencent Cloud Infra' should be hyphen-case (lowercase letters, digits, and hyphens only)"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 12,
+    "legacy_bundle_member_count": 11,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "HEARTBEAT.md",
+        "sha256": "dbad113f103a1ddc5f72f0a0e32dd5c002ee3aa8350d34a391006d43bec8cd7d",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/HEARTBEAT.md"
+      },
+      {
+        "path": "IDENTITY.md",
+        "sha256": "cfb698297eff2857c1ac8d3fb7d3965d524dc9d36af61a68f8734661641fb077",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "a01211c5f52326e8d736ec775f2394a2d9abbf14397c600e73732aa380c45c7b",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "1a277411eb1f6a9b72f1ea08038d218e95a60adfc454bbda68aed17497fffa66",
+        "source_path": "src/octop/infra/agents/experts/library/cvm-cluster-doctor/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 16,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:default",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/default/manifest.json",
+      "target": "data/experts/default/manifest.json",
+      "sha256": "7b92b4387c790a803065ecd4ca376c6e97784f08959e819309f9dfaf43c4419b"
+    },
+    "prompt_sha256": "6c73dea49e545853da36ed13951c82bb3a664834cb472aca0cac21d843aae7f7",
+    "source_verified": true,
+    "declaration_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "resources": [],
+    "member_count": 0,
+    "legacy_bundle_member_count": 0,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "8e0635d0a75ee5cc680940764e24d3a06b2e227e6e212f7bac29d126c64b1c15",
+        "source_path": "src/octop/infra/agents/experts/library/default/AGENTS.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "7b92b4387c790a803065ecd4ca376c6e97784f08959e819309f9dfaf43c4419b",
+        "source_path": "src/octop/infra/agents/experts/library/default/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 2,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:general-assistant",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/general-assistant/manifest.json",
+      "target": "data/experts/general-assistant/manifest.json",
+      "sha256": "6d1ac87a7bc865e65e0f758ef5ae979053a3d99b12b622f20bc86ad34ca2647f"
+    },
+    "prompt_sha256": "b89177f54a5677f63b0145b1728e8721e8616f2b967272684120ee0015f250b2",
+    "source_verified": true,
+    "declaration_sha256": "1fe4bee37b439b5e2766225ac161fb6677806f487398cbfacc506c7880ef02fb",
+    "resources": [
+      {
+        "id": "resource:cd2e2e006f296a25a8fc27192091862c43743e414e998e6bd2c5a68551f1a926",
+        "kind": "skill_bundle",
+        "root": "skills/octop-assistant",
+        "bundle_sha256": "1fe4bee37b439b5e2766225ac161fb6677806f487398cbfacc506c7880ef02fb",
+        "members": [
+          {
+            "path": "skills/octop-assistant/SKILL.md",
+            "sha256": "db056bf5af921b4fd3c8013039e60cee070bfbc6f4f9f86599d659d0d22e6318",
+            "source_path": "src/octop/infra/agents/experts/library/general-assistant/skills/octop-assistant/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "octop-assistant",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 1,
+    "legacy_bundle_member_count": 1,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "SOUL.md",
+        "sha256": "1ad64f06205019fe795241367188b39b86e3768af71ca6064e597b9e6e1ada6d",
+        "source_path": "src/octop/infra/agents/experts/library/general-assistant/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "6d1ac87a7bc865e65e0f758ef5ae979053a3d99b12b622f20bc86ad34ca2647f",
+        "source_path": "src/octop/infra/agents/experts/library/general-assistant/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 3,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:karpathy-knowledge-base",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/manifest.json",
+      "target": "data/experts/karpathy-knowledge-base/manifest.json",
+      "sha256": "b972bcde727969a86dd484f67fbeed63cd281600e20d6ea624c31acde7c8444b"
+    },
+    "prompt_sha256": "665959e1e57a3d844695ffb073337ae0cc1764eb6762a4cc349c2ceaa678ace8",
+    "source_verified": true,
+    "declaration_sha256": "18225a3b729292e8897410f94d972cd6f5fe9dd322fc13e87602242174b1ec9d",
+    "resources": [
+      {
+        "id": "resource:c2e3fcc45675f61535ed5003bc000c2199b7d17101fe8c2c8eddae2d6e08c309",
+        "kind": "reference_asset",
+        "root": "MEMORY.md",
+        "bundle_sha256": "8b89b6a6dda9f85d045c89047bf5d5402b8be501e131b7c0fb19c66ddb95678d",
+        "members": [
+          {
+            "path": "MEMORY.md",
+            "sha256": "55495cfd3a03614c586c7b12e26574b351ff9915c04de10b3801f7a03a532a30",
+            "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/MEMORY.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:efc2ef844c98b98137368df344ac781dedcfcfd2176f5fc6c291ee6054a6e5c2",
+        "kind": "reference_asset",
+        "root": "knowledge-base/raw/README.md",
+        "bundle_sha256": "228590b7a28e86123adffeae75daa2628224a4c4ae1b3f8b4342b8a983b57ec2",
+        "members": [
+          {
+            "path": "knowledge-base/raw/README.md",
+            "sha256": "230f80096038ce962c6da819f8e57666588e1e8e8da1d8b50559acc61d33e93c",
+            "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/knowledge-base/raw/README.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:7c1a9134f714c98044da917bc4099c3a45b562a8ca0ae47598b7d7611e97b4aa",
+        "kind": "reference_asset",
+        "root": "knowledge-base/wiki/index.md",
+        "bundle_sha256": "53a68591b6943ac54b505b4caf563a8da1b93554fc38d97d08e3b1968b09910e",
+        "members": [
+          {
+            "path": "knowledge-base/wiki/index.md",
+            "sha256": "0b72feb02f9b37a576558c64f1df67659212511d1823cdcfda82fe0eb3a9f310",
+            "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/knowledge-base/wiki/index.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:98e3a651ea45a3df8414439f52c9846f24bcb154f09731e4d1f62febe84a27ad",
+        "kind": "reference_asset",
+        "root": "knowledge-base/wiki/log.md",
+        "bundle_sha256": "505c2fa6a026508ae40ebe2a2ef7d2d84e4e12b3bec1a472c5ddb5d7e833838f",
+        "members": [
+          {
+            "path": "knowledge-base/wiki/log.md",
+            "sha256": "f7eae9881a324a11dfa7ba51cc06d41d676024e1b97c8a9815a1181f29375c32",
+            "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/knowledge-base/wiki/log.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:6e31996c4b1126816dda5b424e074cc7e5d0db02f41e63c110d705cf5e9a6f7c",
+        "kind": "reference_asset",
+        "root": "knowledge-base/wiki/overview.md",
+        "bundle_sha256": "27606017eeb25c51c0aadf67f7a00b8e42ee48357366f984e3461bae3b9fae58",
+        "members": [
+          {
+            "path": "knowledge-base/wiki/overview.md",
+            "sha256": "28d3e272d0de5e7f72305f39b374bd63bceb57a57939b68259fa932bc1be6f9e",
+            "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/knowledge-base/wiki/overview.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:f15fee97275f7d047cbc8e3c08e0a5ed5c0e8cd8bf148e55dc67a5c7781afc86",
+        "kind": "skill_bundle",
+        "root": "skills/llm-wiki",
+        "bundle_sha256": "4ada8145960f7303fd73e2e0e6d10674d15e12cab9ecf9542c847f60b691ae9c",
+        "members": [
+          {
+            "path": "skills/llm-wiki/SKILL.md",
+            "sha256": "3e50faf0d125ecb00400baa8bcde76b0c0325afef86f0419a28fa7d5cba3587d",
+            "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/skills/llm-wiki/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "llm-wiki",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 6,
+    "legacy_bundle_member_count": 1,
+    "additional_member_count": 5,
+    "template_members": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "f429cd324802cb01e2e1ed05ba499d10e2e76700479a90e650bef61d98b58dab",
+        "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/AGENTS.md"
+      },
+      {
+        "path": "BOOTSTRAP.md",
+        "sha256": "02b5e7309dcaa6177a3ba439cebd8003c3e696b2edbaa42c35c8915c0a2c6d90",
+        "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/BOOTSTRAP.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "115f5a2a537f3d598908326cc7b78343f3772a380b8f0d9e3ac1e64db1823cfc",
+        "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "b972bcde727969a86dd484f67fbeed63cd281600e20d6ea624c31acde7c8444b",
+        "source_path": "src/octop/infra/agents/experts/library/karpathy-knowledge-base/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 10,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:meituan-living-assistant",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/meituan-living-assistant/manifest.json",
+      "target": "data/experts/meituan-living-assistant/manifest.json",
+      "sha256": "b59f4155d5eccb58bc4d26518e8e0d87c2ef4c14c9220f49d7527a1214dde09a"
+    },
+    "prompt_sha256": "dc280d3f3f77b34746f45c64ef200bca158ec2f8dbf00131a7ad2d9eeafed0ec",
+    "source_verified": true,
+    "declaration_sha256": "e1e3786195c4a9b145c525bfdd032494424782fac932c4ed91f336c9b3b588da",
+    "resources": [
+      {
+        "id": "resource:ac229da518cd19293fcf0a17f2ad42788cce9da030dae0bd2ce0c6294a557198",
+        "kind": "skill_bundle",
+        "root": "skills/meituan-deals",
+        "bundle_sha256": "e1e3786195c4a9b145c525bfdd032494424782fac932c4ed91f336c9b3b588da",
+        "members": [
+          {
+            "path": "skills/meituan-deals/SKILL.md",
+            "sha256": "10069c8f4a9bb60aeb8029b09e61bb669b8d2a21266084e88cdb8ee940b4f88b",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/SKILL.md"
+          },
+          {
+            "path": "skills/meituan-deals/references/DOCTOR.md",
+            "sha256": "cea166a598861169651d7fa058b81b69628bd6bd94724b9749e54583a97b4591",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/references/DOCTOR.md"
+          },
+          {
+            "path": "skills/meituan-deals/references/mt_login.png",
+            "sha256": "7582d3c7049e9bd74841d0d2d57827e922977f73c40e8e77ece4e606e40f3700",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/references/mt_login.png"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/auth.py",
+            "sha256": "37f3297427ac50dc3958b40140ac1d2ec4969d397ab5e89c4bbc514b49de1f55",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/auth.py"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/config.json",
+            "sha256": "a3baefdcd9d15da38713dd05f9564773c7ee092231cd4abb0969ea28f4c11d04",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/config.json"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/diag_auth_log.py",
+            "sha256": "e47ca2fa51ae15f850781a07d0be58cf36ad6bb7a3147d89ac8aea106deed063",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/diag_auth_log.py"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/diag_issue_log.py",
+            "sha256": "ef7fcc9b85de5b490665591281c8a8b8c6b723a99d689be73e33f6491dd4dc7b",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/diag_issue_log.py"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/mtuser-pt-passport-0.1.4.tgz",
+            "sha256": "e405f9f7ff234c7d09f111a53fd5cb6a369ba402e5d0d338fd4fdd93dfd5cf48",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/mtuser-pt-passport-0.1.4.tgz"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/package-lock.json",
+            "sha256": "72b30cc232ea5c3e419ab64b395d92d1728f2362168487a6ced3f8499b868cf0",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/package-lock.json"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/package.json",
+            "sha256": "3b3be096cc0d367506136d2a3450074b22b0718045fb198aa88c89212b4ac029",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/package.json"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/plugin_version_lite.py",
+            "sha256": "69e1db6a4134eb4e723a1715501336e9f358fc659addcba628fc1c98bbde9466",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/plugin_version_lite.py"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/qr_local.py",
+            "sha256": "b2c2060770ffce986facbbe20c74cc588e5815d1216d83f2c2ed8aff50b2e1ef",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/qr_local.py"
+          },
+          {
+            "path": "skills/meituan-deals/scripts/run.js",
+            "sha256": "dba663a5e1c976349f17924c39f175330a83f81bac32564c9a35a6127670f5d4",
+            "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/run.js"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "meituan-deals",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 13,
+    "legacy_bundle_member_count": 13,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "SOUL.md",
+        "sha256": "6ebe78246448f30ba7b747a47ff00a70b89b2ee4dad78138370f2ade611b408f",
+        "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "b59f4155d5eccb58bc4d26518e8e0d87c2ef4c14c9220f49d7527a1214dde09a",
+        "source_path": "src/octop/infra/agents/experts/library/meituan-living-assistant/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 15,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:multi-agent-orchestrator",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/multi-agent-orchestrator/manifest.json",
+      "target": "data/experts/multi-agent-orchestrator/manifest.json",
+      "sha256": "c6f796decf93e86d0d3bbbee44ec0aa2e975c2da6257376a0d20b8e7cdefa77d"
+    },
+    "prompt_sha256": "b5cdb53c7ad8a5669527fcc2bb03da651a71e57c6d51d3f22bc20ac43a90e4ce",
+    "source_verified": true,
+    "declaration_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "resources": [],
+    "member_count": 0,
+    "legacy_bundle_member_count": 0,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "1095504d417b0b13bf9911b040c65e26e1e67b888872324bf052d2b637c6163f",
+        "source_path": "src/octop/infra/agents/experts/library/multi-agent-orchestrator/AGENTS.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "63ecc52a7ae50784596715f484f494dcc5f906860c2bd83f820bfcdebd528d18",
+        "source_path": "src/octop/infra/agents/experts/library/multi-agent-orchestrator/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "c6f796decf93e86d0d3bbbee44ec0aa2e975c2da6257376a0d20b8e7cdefa77d",
+        "source_path": "src/octop/infra/agents/experts/library/multi-agent-orchestrator/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 3,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:news-trend",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/news-trend/manifest.json",
+      "target": "data/experts/news-trend/manifest.json",
+      "sha256": "f275c1ba21555fe99e8a21d22cc127c5af77d94855ed23317458ea3af5e42d6c"
+    },
+    "prompt_sha256": "b912c2afe974d5a5d49b3aa74a17f1f9af412774928d057f3d5c19ce596f7a22",
+    "source_verified": true,
+    "declaration_sha256": "783ebeec365523cc5b9bf98b5a3d2ce27c5bd268027337a8b5edb99e2ea13de3",
+    "resources": [
+      {
+        "id": "resource:7adf4d8221cab3359743da89e100e6a30336a8e3eb04eac2f5a50842feeff143",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "a7fe20b939f2523bae2eaad11e97d8b5f4a129edd8194e328168fcbe4f29bd5f",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "ec379dd084b3ef66c5da357dc6b838f51b037ce9a2211823249db7eb2b119a33",
+            "source_path": "src/octop/infra/agents/experts/library/news-trend/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:66faa2c406061fde73c80fbbcb1ae1a2b1e7bce0072be410301d2c2a6d9d365f",
+        "kind": "skill_bundle",
+        "root": "skills/daily-hot-news",
+        "bundle_sha256": "c8020ac7db959ce10dbb4973cdcfb4302f5833e0c30ec594a354d7f10060aa2e",
+        "members": [
+          {
+            "path": "skills/daily-hot-news/SKILL.md",
+            "sha256": "3dac38822563feafb5b02ede22088600f384dcc3dd20691d047406f12d17790f",
+            "source_path": "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/SKILL.md"
+          },
+          {
+            "path": "skills/daily-hot-news/references/api-formats.md",
+            "sha256": "592ff98f9bcddb4bb36c92950356e0573c5bbefca4d7f9db2ef06c35b529e35f",
+            "source_path": "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/references/api-formats.md"
+          },
+          {
+            "path": "skills/daily-hot-news/references/dailyhot-api.md",
+            "sha256": "03ed544dc621f4e714f547941ffd5d8c47eb01cb970804d2e0fb3931942d383b",
+            "source_path": "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/references/dailyhot-api.md"
+          },
+          {
+            "path": "skills/daily-hot-news/references/sources.md",
+            "sha256": "f01c841a09f18bf94373f99f69ea356f02c459cfb0d62b349ae4286f91e87103",
+            "source_path": "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/references/sources.md"
+          },
+          {
+            "path": "skills/daily-hot-news/scripts/fetch_dailyhot.mjs",
+            "sha256": "9a3a85ff0d66b6cfd2b4bfe0eea3546cc5464616e10850bdcd632d2b1829b114",
+            "source_path": "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/scripts/fetch_dailyhot.mjs"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "daily-hot-news",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 6,
+    "legacy_bundle_member_count": 5,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "HEARTBEAT.md",
+        "sha256": "705ba3bbfe75f12f92c14a16e13b21de45e507e5384dd0a11b0180fa1da87fa0",
+        "source_path": "src/octop/infra/agents/experts/library/news-trend/HEARTBEAT.md"
+      },
+      {
+        "path": "IDENTITY.md",
+        "sha256": "ec379dd084b3ef66c5da357dc6b838f51b037ce9a2211823249db7eb2b119a33",
+        "source_path": "src/octop/infra/agents/experts/library/news-trend/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "3590998b85499a805e362ea4e3715be4485b868a3d8bcdf697e1c2c4f8afec52",
+        "source_path": "src/octop/infra/agents/experts/library/news-trend/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "f275c1ba21555fe99e8a21d22cc127c5af77d94855ed23317458ea3af5e42d6c",
+        "source_path": "src/octop/infra/agents/experts/library/news-trend/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 10,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:office-automation",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/office-automation/manifest.json",
+      "target": "data/experts/office-automation/manifest.json",
+      "sha256": "4bee7e88daa5bd0e2aa43edc1267fb0bf060201b1bce129e68349027f5e10435"
+    },
+    "prompt_sha256": "c0003a4adefb5d98a5988c46052062d1906ca87e48eea441b496d0b733bb0ab5",
+    "source_verified": true,
+    "declaration_sha256": "d6dd645cee1cd3067544e5d26d1ea1106f675b9cf9859d0c3ab552c38c4366a5",
+    "resources": [
+      {
+        "id": "resource:bf5af028abb77506b43f27949cdf5509fb638ea23e52563e38f057f678ea04cb",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "f7df660c0f74ad485edfde88c287ec9ad2a49acc01df6488e820c5b6e3c40112",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "820229992cb6bae7449c000ac48cee3a76d10d237be943dfe64dc5dd7884e31d",
+            "source_path": "src/octop/infra/agents/experts/library/office-automation/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:3375eddfc889b1f341ff388a8431621e30511f0e15ee8f9f5d01519ce541fbd0",
+        "kind": "skill_bundle",
+        "root": "skills/file_reader",
+        "bundle_sha256": "3651c222ca785a9c68fde39939ba9228499536db76a5bf95becf98366fff0dde",
+        "members": [
+          {
+            "path": "skills/file_reader/SKILL.md",
+            "sha256": "ceaa0b9f7f0904e507fdeb087c91ab117b9e19f60511674b3e28ab782e19c21a",
+            "source_path": "src/octop/infra/agents/experts/library/office-automation/skills/file_reader/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "needs_adapter",
+          "skill_name": null,
+          "detail": "Name 'file_reader' should be hyphen-case (lowercase letters, digits, and hyphens only)"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:3e7521ac71c26e39d2899828d86c1c2dbfc08d719942e9af457128fd88c17d57",
+        "kind": "skill_bundle",
+        "root": "skills/news",
+        "bundle_sha256": "ba43d73fd94baddb7707f22d0841b9909da1db1a57cc6d5e79ef1520d6a873ce",
+        "members": [
+          {
+            "path": "skills/news/SKILL.md",
+            "sha256": "9f6b2faad3c18372ef1118bd55a095af6eb07a5b2ca79c50409210a3732e8d56",
+            "source_path": "src/octop/infra/agents/experts/library/office-automation/skills/news/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "news",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 3,
+    "legacy_bundle_member_count": 2,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "IDENTITY.md",
+        "sha256": "820229992cb6bae7449c000ac48cee3a76d10d237be943dfe64dc5dd7884e31d",
+        "source_path": "src/octop/infra/agents/experts/library/office-automation/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "1e05490a254dbe7b8f1164eaa52cf05257c8c570b592aa9cef04c93e6c55db4a",
+        "source_path": "src/octop/infra/agents/experts/library/office-automation/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "4bee7e88daa5bd0e2aa43edc1267fb0bf060201b1bce129e68349027f5e10435",
+        "source_path": "src/octop/infra/agents/experts/library/office-automation/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 6,
+    "excluded_resources": [
+      "skills/docx",
+      "skills/pdf",
+      "skills/pptx",
+      "skills/xlsx"
+    ],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:ops-engineer",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/ops-engineer/manifest.json",
+      "target": "data/experts/ops-engineer/manifest.json",
+      "sha256": "73defe8156242d3597ac74f26104ec3ad4870fd5b213e3f9e57b39bfe149aa22"
+    },
+    "prompt_sha256": "c9b6cb64d1dff350fc303cd1192988237409adf885aaa4fa5416fd1324ca3236",
+    "source_verified": true,
+    "declaration_sha256": "17ee0c8a1e102adb1e4b32e7f258c45386bec3b02dd51c767dfe88de74a68d3c",
+    "resources": [
+      {
+        "id": "resource:8e725653e24c78545000f237c7dbc1330f7e078018d3540b8239a3e800afaf66",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "17ee0c8a1e102adb1e4b32e7f258c45386bec3b02dd51c767dfe88de74a68d3c",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "052b6ce417eb2616d15d0ac3b616740d6684352027233fce431ebc1fec305484",
+            "source_path": "src/octop/infra/agents/experts/library/ops-engineer/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 1,
+    "legacy_bundle_member_count": 0,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "IDENTITY.md",
+        "sha256": "052b6ce417eb2616d15d0ac3b616740d6684352027233fce431ebc1fec305484",
+        "source_path": "src/octop/infra/agents/experts/library/ops-engineer/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "814dba0b7bc9f2e4e682a63c32292ea9b8612207f180131e7dd53123d1db5e93",
+        "source_path": "src/octop/infra/agents/experts/library/ops-engineer/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "73defe8156242d3597ac74f26104ec3ad4870fd5b213e3f9e57b39bfe149aa22",
+        "source_path": "src/octop/infra/agents/experts/library/ops-engineer/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 4,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:parenting-companion",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/parenting-companion/manifest.json",
+      "target": "data/experts/parenting-companion/manifest.json",
+      "sha256": "35cfd55043d592481c7e841ddd3f92dde402d3e48e719e9e61db843690dce197"
+    },
+    "prompt_sha256": "348bc29404c3b574842a3b42cb808b04b492cf000a27fcd2d85fc2c5d3c973ed",
+    "source_verified": true,
+    "declaration_sha256": "8149c89d9631711187a5a885fc662f0140a7b077f201bee37693e545cd1bbbd2",
+    "resources": [
+      {
+        "id": "resource:3710af9f1a0cf2737a4dcf8ecb32937174ae3370418e2a5890ffdcc19ac5e074",
+        "kind": "reference_asset",
+        "root": "AGENTS.md",
+        "bundle_sha256": "a5ae64784ce64a53d964993bad5cea65b379d854097415008161c5aa05cb7ebe",
+        "members": [
+          {
+            "path": "AGENTS.md",
+            "sha256": "4da36ffd516ab8c6818e6d7eadfe8b356c5916fdb4e28bebf7ef97b7a404a12b",
+            "source_path": "src/octop/infra/agents/experts/library/parenting-companion/AGENTS.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:903ae2b3953a32be78d413b116ccba60bebb692943787a1e66a638a38b4467ba",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "be1a4c409247dd79c59c9a89a95bce8bd177536e4e8244d85f1c1a412f0e952a",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "57371a8272ee104be339f259e19ece1dc18754f3fc11c61dffbe9e5be929f3ef",
+            "source_path": "src/octop/infra/agents/experts/library/parenting-companion/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:8c4fb9608263f1ea43c42e2902383276d8dc941182a2bc430fdb2681db3c7118",
+        "kind": "script",
+        "root": "scripts/check_memory_freshness.sh",
+        "bundle_sha256": "977a025f352236aed16e21b4bf5b6e4060c5d2fad8025db3e04863bf521e52ac",
+        "members": [
+          {
+            "path": "scripts/check_memory_freshness.sh",
+            "sha256": "b67bb80f7d43556cc20034b6e372c6f3f9317e97f7e67c41da31faedc6b7810c",
+            "source_path": "src/octop/infra/agents/experts/library/parenting-companion/scripts/check_memory_freshness.sh"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 3,
+    "legacy_bundle_member_count": 1,
+    "additional_member_count": 2,
+    "template_members": [
+      {
+        "path": "BOOTSTRAP.md",
+        "sha256": "d0d3b87484658d9065b2570f6450e34ff2f9621f7bebf3f02b58e7f16535bf20",
+        "source_path": "src/octop/infra/agents/experts/library/parenting-companion/BOOTSTRAP.md"
+      },
+      {
+        "path": "HEARTBEAT.md",
+        "sha256": "3a8406812b547990f3df7a4b410b6f2b392ebdbe253a39768f77fb73ae60dbf7",
+        "source_path": "src/octop/infra/agents/experts/library/parenting-companion/HEARTBEAT.md"
+      },
+      {
+        "path": "IDENTITY.md",
+        "sha256": "57371a8272ee104be339f259e19ece1dc18754f3fc11c61dffbe9e5be929f3ef",
+        "source_path": "src/octop/infra/agents/experts/library/parenting-companion/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "400338535dc6e24410899b92f67e25b33a1a818edc419bb39e2d8886c1958fba",
+        "source_path": "src/octop/infra/agents/experts/library/parenting-companion/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "35cfd55043d592481c7e841ddd3f92dde402d3e48e719e9e61db843690dce197",
+        "source_path": "src/octop/infra/agents/experts/library/parenting-companion/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 8,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:stock-assistant",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/stock-assistant/manifest.json",
+      "target": "data/experts/stock-assistant/manifest.json",
+      "sha256": "ed6ea3628ac774ce8273f015d6b94460021702be34eec467d4dc0e7a82238158"
+    },
+    "prompt_sha256": "bfec91d254e0ddd7ef6a5cedadf212173c248d15c893283e97bb1f2ed42094ef",
+    "source_verified": true,
+    "declaration_sha256": "fc657d773d8f1f0b315e86f1ee571a8c1c48c35c5085e0e90c68f673d75ec55b",
+    "resources": [
+      {
+        "id": "resource:2c901ff53fd40d0344b9213492940f176bb61cd189d0acc78fb77e9c905f5547",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "b2a71fa7db63de5a7cfd350dec8f1a9b27bf8250882a47d99a7062122aa6fe1f",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "0e18840bdc69b74e6cd12da81118ac37fe1e608d283159159757584d637755dc",
+            "source_path": "src/octop/infra/agents/experts/library/stock-assistant/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:dc631792503557a02c86d064d95cfac1f23a82d196c519a70358d09e645aa25e",
+        "kind": "skill_bundle",
+        "root": "skills/stock-info",
+        "bundle_sha256": "f9b10362c178282367f25ca31fd444ebb80688088e03e8b2fd545b639ddd72f9",
+        "members": [
+          {
+            "path": "skills/stock-info/SKILL.md",
+            "sha256": "68c3cdee587f258875622627a2df52421ff7aefea614e56a3adbefe6996a1642",
+            "source_path": "src/octop/infra/agents/experts/library/stock-assistant/skills/stock-info/SKILL.md"
+          },
+          {
+            "path": "skills/stock-info/references/examples.md",
+            "sha256": "42159e8e9dff453c4df054be8d2e3a3a01ed40851601f4e83fce112745aa20af",
+            "source_path": "src/octop/infra/agents/experts/library/stock-assistant/skills/stock-info/references/examples.md"
+          },
+          {
+            "path": "skills/stock-info/references/known-issues.md",
+            "sha256": "f84e68dfa9c2246646a0bc3e6e0166eaa58bab866c49ddc8e35e3d48273de5b3",
+            "source_path": "src/octop/infra/agents/experts/library/stock-assistant/skills/stock-info/references/known-issues.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "akshare-data",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 4,
+    "legacy_bundle_member_count": 3,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "HEARTBEAT.md",
+        "sha256": "9af41161df0c0ae2c94bf60a5ea78f3399ed628e339ef0d7c9773e6ff32b0ace",
+        "source_path": "src/octop/infra/agents/experts/library/stock-assistant/HEARTBEAT.md"
+      },
+      {
+        "path": "IDENTITY.md",
+        "sha256": "0e18840bdc69b74e6cd12da81118ac37fe1e608d283159159757584d637755dc",
+        "source_path": "src/octop/infra/agents/experts/library/stock-assistant/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "97db7aa1f7cdee0832c798fbec78277963f3b303162479d751347b5ba21dcbf5",
+        "source_path": "src/octop/infra/agents/experts/library/stock-assistant/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "ed6ea3628ac774ce8273f015d6b94460021702be34eec467d4dc0e7a82238158",
+        "source_path": "src/octop/infra/agents/experts/library/stock-assistant/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 8,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:superpowers-methodology",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/superpowers-methodology/manifest.json",
+      "target": "data/experts/superpowers-methodology/manifest.json",
+      "sha256": "28a69fa36752fca1f5a6df0a8676f93296bb985c8717917fd4d8f2d10c8326d0"
+    },
+    "prompt_sha256": "71ddaefa8f8437ade82ca7011167421eca98ce173739829615289ddce95698f2",
+    "source_verified": true,
+    "declaration_sha256": "64899e1016c7832251c4ea6f2eef72ad328e02a04c7a46a5bd3d01c98a4ec640",
+    "resources": [
+      {
+        "id": "resource:853299639592b3fc6526cda5d0df684abbaeb5d328cccf2d40458a9cfac4b66f",
+        "kind": "skill_bundle",
+        "root": "skills/engineering-workflow",
+        "bundle_sha256": "64899e1016c7832251c4ea6f2eef72ad328e02a04c7a46a5bd3d01c98a4ec640",
+        "members": [
+          {
+            "path": "skills/engineering-workflow/SKILL.md",
+            "sha256": "a56d0c0dafcc9f4c0e9c44694528182178348fb13e5a1fb41ac96d416ebb5c17",
+            "source_path": "src/octop/infra/agents/experts/library/superpowers-methodology/skills/engineering-workflow/SKILL.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "engineering-workflow",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 1,
+    "legacy_bundle_member_count": 1,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "SOUL.md",
+        "sha256": "1472c26b5740a2c42d7a3f87cbb1cf0df29a95f0cbe9991b4b770fc4cf07b053",
+        "source_path": "src/octop/infra/agents/experts/library/superpowers-methodology/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "28a69fa36752fca1f5a6df0a8676f93296bb985c8717917fd4d8f2d10c8326d0",
+        "source_path": "src/octop/infra/agents/experts/library/superpowers-methodology/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 3,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:tencentcloud-api",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/tencentcloud-api/manifest.json",
+      "target": "data/experts/tencentcloud-api/manifest.json",
+      "sha256": "aeff6b90282ce97a6b1d9609a8236adca2c847bddc5520b4533b36b673f2405d"
+    },
+    "prompt_sha256": "ac480f6f9af2e9bcc87ece63073fdfe88cc66b8eda310ff011f0de806621d0a8",
+    "source_verified": true,
+    "declaration_sha256": "864c916520e5f958ee0ad9c3aa46f3a9852bf724159f07fb10e1bf9e5b7c83df",
+    "resources": [
+      {
+        "id": "resource:47b9d545b3cd8136afc00cd0962c4b64d30f6ab41cb37aadfa6d3595a6c2b176",
+        "kind": "skill_bundle",
+        "root": "skills/tcapi",
+        "bundle_sha256": "864c916520e5f958ee0ad9c3aa46f3a9852bf724159f07fb10e1bf9e5b7c83df",
+        "members": [
+          {
+            "path": "skills/tcapi/SKILL.md",
+            "sha256": "171be35eabb750a972e61f8084375d69422e87273f7381211ff5b757b67f5e60",
+            "source_path": "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/SKILL.md"
+          },
+          {
+            "path": "skills/tcapi/references/auth.md",
+            "sha256": "6c8ea0b947c94564c06ef5b7b398bcdd2a0bad0cd505de05e338581a35d05d4d",
+            "source_path": "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/references/auth.md"
+          },
+          {
+            "path": "skills/tcapi/references/install.md",
+            "sha256": "7de956822a9541c0c5e052677731d2536e99998bf6863f1a141718db82646694",
+            "source_path": "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/references/install.md"
+          },
+          {
+            "path": "skills/tcapi/references/refs.md",
+            "sha256": "8549dae8ac8735b425663304a8a7fd3487774cb02eeeff17e4973299219fc203",
+            "source_path": "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/references/refs.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "needs_adapter",
+          "skill_name": null,
+          "detail": "Unexpected key(s) in SKILL.md frontmatter: display_name, examples, keywords, prompt_template, tags"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 4,
+    "legacy_bundle_member_count": 4,
+    "additional_member_count": 0,
+    "template_members": [
+      {
+        "path": "SOUL.md",
+        "sha256": "4a9831058380392d43fe1c28657651901ebabb5f00857db0c987784a6fcdc822",
+        "source_path": "src/octop/infra/agents/experts/library/tencentcloud-api/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "aeff6b90282ce97a6b1d9609a8236adca2c847bddc5520b4533b36b673f2405d",
+        "source_path": "src/octop/infra/agents/experts/library/tencentcloud-api/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 6,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  },
+  {
+    "schema_version": "octop.resources.v1",
+    "template_id": "expert:wechat-ops",
+    "locale": "zh",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "template_source": {
+      "source": "src/octop/infra/agents/experts/library/wechat-ops/manifest.json",
+      "target": "data/experts/wechat-ops/manifest.json",
+      "sha256": "ed7dcf4a1de02cd0be3cd7bad0b784486be873567018288c3a37039125960019"
+    },
+    "prompt_sha256": "733bf8b4974f9aba2686075efaddb009dfa422fee611457a513df922f8d4dc73",
+    "source_verified": true,
+    "declaration_sha256": "89ef16151f640621b95a2eeb929ced15301d970a49775062a2b754b180de977c",
+    "resources": [
+      {
+        "id": "resource:4f2231f24adb2835b9a442bb8a938ccfada74816df16ecf82bff561c5ed18661",
+        "kind": "reference_asset",
+        "root": "USER.md",
+        "bundle_sha256": "d08d027e067b883570ef2dbc33064020544ae4396ece1e1c6ccefea38765d64e",
+        "members": [
+          {
+            "path": "USER.md",
+            "sha256": "cd59bfceaee2c19da0762d40b527a6bc4a19aaccefc03b0dd0fb5f5d92cec020",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/USER.md"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "binding_required"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "runtime_dependencies",
+          "tool_or_delegation_binding",
+          "execution_pep_and_isolation"
+        ]
+      },
+      {
+        "id": "resource:59a3d9e3ac23d8801c4850961d325c5193e90b40e538ee24adf48a20fde81327",
+        "kind": "skill_bundle",
+        "root": "skills/publisher-multi-platform",
+        "bundle_sha256": "5b7dbc3835fad6e1d3dfd0117f4d7593298bcdcca2b7734a12a0098c7b8ea1a5",
+        "members": [
+          {
+            "path": "skills/publisher-multi-platform/IDENTITY.md",
+            "sha256": "60eca38745a2386b410791f855ebe74fc006dfd3c396aba618dd8ab1442b3ea8",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/IDENTITY.md"
+          },
+          {
+            "path": "skills/publisher-multi-platform/SKILL.md",
+            "sha256": "b5e420d64b77d67a2e7c5434781d53dbc398b02859c7554201ca8eeaac554483",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/SKILL.md"
+          },
+          {
+            "path": "skills/publisher-multi-platform/SOUL.md",
+            "sha256": "ad8a559327b88cd5649f3b1421244e4aac6d7939e4e4d0d2ff0edf805189ddf8",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/SOUL.md"
+          },
+          {
+            "path": "skills/publisher-multi-platform/manifest.yaml",
+            "sha256": "5edde18745d0bba48c5e326684d975fad2be9c2d77f851aea6556f3dca58d1c5",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/manifest.yaml"
+          },
+          {
+            "path": "skills/publisher-multi-platform/scripts/setup_server.sh",
+            "sha256": "9341f33ceec771ff0237a5d1b77b201367ebdb973ae9ac8b59953c6328b8517d",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/scripts/setup_server.sh"
+          },
+          {
+            "path": "skills/publisher-multi-platform/scripts/wechat_publish.py",
+            "sha256": "6056899e76fbdda4a84d2fc3bf5153e339b6c12129c5b2095cd4b0710b4d5068",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/scripts/wechat_publish.py"
+          },
+          {
+            "path": "skills/publisher-multi-platform/scripts/xhs_publish.py",
+            "sha256": "8e525c5e3109e8782a42f51ffa149a4072dadb6c5d8901e90fcfb360bd999779",
+            "source_path": "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/scripts/xhs_publish.py"
+          }
+        ],
+        "installation_status": "not_checked",
+        "execution_ready": false,
+        "host_format": {
+          "status": "compatible",
+          "skill_name": "wechat-publisher-personal",
+          "detail": "Skill is valid!"
+        },
+        "remaining_checks": [
+          "current_resource_acl",
+          "name_and_source_collision",
+          "runtime_dependencies",
+          "tool_mcp_bindings",
+          "atomic_install_and_recovery",
+          "execution_pep_and_isolation"
+        ]
+      }
+    ],
+    "member_count": 8,
+    "legacy_bundle_member_count": 7,
+    "additional_member_count": 1,
+    "template_members": [
+      {
+        "path": "IDENTITY.md",
+        "sha256": "cd59bfceaee2c19da0762d40b527a6bc4a19aaccefc03b0dd0fb5f5d92cec020",
+        "source_path": "src/octop/infra/agents/experts/library/wechat-ops/IDENTITY.md"
+      },
+      {
+        "path": "SOUL.md",
+        "sha256": "ad8a559327b88cd5649f3b1421244e4aac6d7939e4e4d0d2ff0edf805189ddf8",
+        "source_path": "src/octop/infra/agents/experts/library/wechat-ops/SOUL.md"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "ed7dcf4a1de02cd0be3cd7bad0b784486be873567018288c3a37039125960019",
+        "source_path": "src/octop/infra/agents/experts/library/wechat-ops/manifest.json"
+      }
+    ],
+    "verified_source_member_count": 11,
+    "excluded_resources": [],
+    "excluded_resources_status": "independent implementation pending",
+    "installation_checked": false,
+    "execution_ready": false,
+    "preflight_scope": "pinned source and native Skill frontmatter format only",
+    "runtime_dependencies_checked": false,
+    "permission_grants": false
+  }
+]

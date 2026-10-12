@@ -1,0 +1,13 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run --maxWorkers=2
+
+
+ RUN  v4.1.2 /root/.codex/worktrees/octop-integration/prism-os/frontend
+
+
+ Test Files  43 passed (43)
+      Tests  128 passed (128)
+   Start at  16:14:18
+   Duration  83.86s (transform 5.24s, setup 6.86s, import 35.04s, tests 29.16s, environment 79.15s)
+

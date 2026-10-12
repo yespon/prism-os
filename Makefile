@@ -208,7 +208,7 @@ octop-verify:
 	$(PYTHON) scripts/octop_external.py verify
 octop-check: octop-verify
 	cd backend && $(UV) sync --locked
-	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_octop_presentation.py tests/test_octop_inventory.py tests/test_octop_source_curation.py tests/test_octop_source_fetch.py tests/test_bootstrap_identity_schema.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
+	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_octop_presentation.py tests/test_octop_resources.py tests/test_octop_inventory.py tests/test_octop_source_curation.py tests/test_octop_source_fetch.py tests/test_bootstrap_identity_schema.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
 	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py verify
 	cd frontend && $(PNPM) typecheck
 	cd frontend && $(PNPM) exec vitest run src/core/agents/catalog.test.ts src/components/workspace/agents/agent-presentation.test.tsx src/components/workspace/agents/agent-avatar.test.tsx src/server/demo-files.test.ts --maxWorkers=2

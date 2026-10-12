@@ -54,6 +54,7 @@ jobs:
           packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
           app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
           ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+          packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py
       - name: Pinned previous source and host upgrade rollback
         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
       - name: Real Gateway smoke with temporary databases

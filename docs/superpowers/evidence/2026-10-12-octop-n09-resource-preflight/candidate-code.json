@@ -1,0 +1,15 @@
+{
+  "baseline": "fddc307bc15edfe2e13d8ba5b1e27f0275556a6d",
+  "independent_checkout": "/tmp/prismos-n09a-clean-pwuwhvk5/src",
+  "source_sha256": {
+    "backend/app/integrations/octop/resources.py": "bc7f880606e3db9d01ede6fe4eb0f4cb4f35ec7ce160fd2f9c593d0a932ed7c4",
+    "backend/packages/octop-capabilities/src/prismos_octop/resources.py": "4324a0910356b20530fca82d8f71eebd3344e8e9415c6f88821e065ca48aac79",
+    "backend/tests/test_octop_resources.py": "2909962749e3f02038df78677755dd0b9b2f812cda6591a14dded4b3d355452d",
+    ".github/workflows/octop-integration.yml": "4c5e7af187092ad05911b7d2a7386e871400e0d70b61cea3ba067a835c96d11a",
+    "Makefile": "eefd1b639cac8e6ce991ea8ffb62f5f2058c0d0c80620705528b2062bba1e554",
+    "backend/app/gateway/routers/agent_catalog.py": "554dd98a6892d5200b47f183d8fb861bb7375fea1de8706af2643287b1e50d18",
+    "scripts/octop_gateway_smoke.py": "ba75d6e0cca5fe7da29c3e8ee4918588d7069766b45127d5c123d21a83ca5fd1",
+    "scripts/octop_upgrade_probe.py": "2e8516170dc004caaac1b9ab17514a3171d7760fa67a802c9731718fe65b68ac",
+    "scripts/octop_wheel_verify.py": "a9aef41b5e1a89612e51a0740407c181097bb710bb44834b9e386ad9b0156654"
+  }
+}

@@ -179,3 +179,10 @@ N05 完成的是逐项盘点及来源交付修正，完整专家/工具/Connecto
 实际 Dockerfile/Compose 验证 6 服务与新 PostgreSQL，补齐此前健康检查漏掉的 PostgreSQL 身份表初始化及 Nginx 目录 API 转发。真实首次设置/登录/租户、Agent 编辑重开、问卷/鉴权头像、Gateway/LangGraph 线程代理、重启、pg_dump/restore head 与 Agent 数据通过。容器成员与运行源码摘要核对；唯一测试容器/网络/卷已清理。Next 根目录/NFT warning 消失，demo 根/线程及文件读取边界测试通过。旧 checkpointer 取消回退/历史修剪与 allow-blocking 限制进入 N08 设计，不据空线程请求宣称 M2 完成。
 
 详见 [N07 证据](../evidence/2026-10-12-octop-n07-reproducibility/README.md)。N07-B 远端 CI 未运行，分支未推送；N04 目标环境位置/配置引用、真实模型与工单仍待补充，M1 未退出，N08 持久执行不实施。完整 N01–N15、O01–O42/F01–F12、原 PrismOS 不变量与退出门继续保留。
+
+
+### N08 设计准备与 N09-A 资源声明（2026-10-12）
+
+基于 `fddc307` 形成 [N08 Spec](../specs/2026-10-12-octop-n08-execution-design.md)、[ADR](../../strategy/adr/2026-10-12-n08-platform-execution-facts.md)、[实施队列](2026-10-12-octop-n08-execution-plan.md) 与锁定 SDK 能力发现。Platform Run/Attempt/Native Segment、快照与当前授权、Command/Transition、幂等/lease/outbox、未知派发对账、协作取消/恢复与旧数据兼容明确；M1 未退出，持久模型/Worker/迁移未启动。
+
+N09-A 先实现原计划中的最小资源声明和来源 digest，并以现有 Skill validator 做只读格式预检。全 18 专家的 352 个保留源成员纳入核对，资源 297 个，比原 bundle 列表补齐 27 个参考资料/知识种子/USER/AGENTS 模板；persona/manifest 另列 55 个。4 个受限 Office 子树继续保持独立实现待完成。新 GET 入口不安装、授权、调用网络或执行脚本，不能由 format compatible 推断执行可用。具体结果与后续缺口见 [N09-A 证据](../evidence/2026-10-12-octop-n09-resource-preflight/README.md)。完整 N09 的资源 ACL/复制/安装恢复、18 专家实际行为、两个有资源专家与子 Agent 委派仍待后续切片；绑定执行依赖 N08。
