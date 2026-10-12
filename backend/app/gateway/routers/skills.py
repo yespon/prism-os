@@ -3,6 +3,7 @@ import re
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
@@ -27,6 +28,7 @@ from deerflow.database.user_config_service import (
 )
 from deerflow.skills import Skill, get_skills_root_path, load_skills
 from deerflow.skills.installer import SkillAlreadyExistsError
+from deerflow.skills.resource_identity import resource_directory
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +62,9 @@ class SkillsListResponse(BaseModel):
 
 
 class AvailableSkillResponse(SkillResponse):
+    resource_id: str | None = None
+    owner_kind: str | None = None
+    files_status: str | None = None
     scope: str = Field(..., description="Resource scope: global or tenant")
     source: str = Field(..., description="Skill source classification")
     managed_by_current_user: bool = Field(..., description="Whether current user can manage this skill")
@@ -111,6 +116,9 @@ class GenerateInstructionsResponse(BaseModel):
 
 
 class SkillDetailResponse(SkillResponse):
+    resource_id: str | None = None
+    owner_kind: str | None = None
+    files_status: str | None = None
     """Extended response for skill detail view."""
     references: dict[str, str] | None = Field(None, description="Reference documents (Tier 3)")
     scope: str = Field(..., description="Scope of the skill (global, tenant, personal)")
@@ -399,14 +407,9 @@ async def list_available_skills(request: Request) -> AvailableSkillsListResponse
         )
         enriched_rows = []
         for row in rows:
-            if row.get("scope") == "tenant":
+            if row.get("scope") in {"tenant", "personal"} and row.get("files_status") == "verified":
                 description, instructions = _read_skill_file_payload(
-                    _resolve_skill_runtime_dir(
-                        tenant_id,
-                        str(row.get("name") or ""),
-                        row.get("install_dir"),
-                        row.get("relative_path"),
-                    )
+                    resource_directory(get_skills_root_path(), tenant_id, request.state.user_id, row)
                 )
                 if description:
                     row["description"] = description
@@ -1019,7 +1022,7 @@ async def install_skill(request: SkillInstallRequest, api_request: Request) -> S
     summary="Get Skill Detail",
     description="Return full detail for any available skill (global, tenant, or personal).",
 )
-async def get_skill_detail(skill_name: str, request: Request) -> SkillDetailResponse:
+async def get_skill_detail(skill_name: str, request: Request, scope: Literal["global", "tenant", "personal"] | None = None, resource_id: str | None = Query(default=None, max_length=128)) -> SkillDetailResponse:
     tenant_id = require_tenant_context(request)
     user_id = request.state.user_id
     
@@ -1030,16 +1033,14 @@ async def get_skill_detail(skill_name: str, request: Request) -> SkillDetailResp
         is_platform_admin=_is_platform_admin(request),
     )
     
-    row = next((r for r in rows if r.get("name") == skill_name), None)
+    row = next((r for r in rows if r.get("name") == skill_name and (scope is None or r.get("scope") == scope) and (resource_id is None or r.get("resource_id") == resource_id)), None)
     if row is None:
         raise HTTPException(status_code=404, detail=f"Skill '{skill_name}' not found or you don't have access")
 
-    skill_dir = _resolve_skill_runtime_dir(
-        tenant_id, 
-        skill_name,
-        row.get("install_dir"),
-        row.get("relative_path"),
-    )
+    try:
+        skill_dir = resource_directory(get_skills_root_path(), tenant_id, user_id, row)
+    except ValueError:
+        raise HTTPException(409, "Skill resource location cannot be verified; contents were preserved") from None
     skill_file = skill_dir / "SKILL.md"
     file_description: str | None = None
     if skill_file.exists():
@@ -1052,6 +1053,9 @@ async def get_skill_detail(skill_name: str, request: Request) -> SkillDetailResp
         instructions = ""
 
     return SkillDetailResponse(
+        resource_id=row.get("resource_id"),
+        owner_kind=row.get("owner_kind"),
+        files_status=row.get("files_status"),
         name=row.get("name") or skill_name,
         description=row.get("description") or file_description or "",
         license=row.get("license"),

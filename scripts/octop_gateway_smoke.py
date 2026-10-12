@@ -67,7 +67,8 @@ from app.gateway.routers import skills
 from app.integrations import skill_imports
 from app.integrations.octop import resource_installations
 from deerflow.skills import loader,installer
-for module in (loader,skills,skill_imports,resource_installations,installer):
+from deerflow.database import user_config_service
+for module in (loader,skills,skill_imports,resource_installations,installer,user_config_service):
     module.get_skills_root_path = lambda: Path({str(isolated_skills)!r})
 """)
         environment["PYTHONPATH"] = str(directory) + os.pathsep + str(ROOT / "backend")
@@ -243,6 +244,15 @@ for module in (loader,skills,skill_imports,resource_installations,installer):
                 assert operation_status[1]["registered"]
                 assert request(operation_url + "/recover", token=token, method="POST")[1]["registered"]
                 assert request(install_url, install_body, token)[0] == 409
+                code, available = request("/api/skills/available", token=token)
+                assert code == 200
+                own = next(item for item in available["skills"] if item["name"] == imported["name"] and item["scope"] == "personal")
+                assert own["resource_id"].startswith("skill:") and own["owner_kind"] == "user" and own["files_status"] == "verified"
+                detail_url = "/api/skills/" + imported["name"] + "/detail?scope=personal&resource_id=" + own["resource_id"]
+                assert request(detail_url)[0] == 401
+                code, detail = request(detail_url, token=token)
+                assert code == 200 and detail["resource_id"] == own["resource_id"] and detail["instructions"]
+                assert request(detail_url.replace("scope=personal", "scope=global"), token=token)[0] == 404
                 list_url = "/api/skills/personal/imports?page_size=1"
                 assert request(list_url)[0] == 401
                 code, first_page = request(list_url, token=token)
@@ -288,7 +298,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer):
                     "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,
                     "temporary_skill_root": True,
-                    "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True,
+                    "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True, "concrete_skill_identity_and_detail": True,
                     "installation_does_not_bind_agent_or_grant_execution": True,
                 }
                 if args.output:

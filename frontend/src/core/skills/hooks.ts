@@ -13,42 +13,65 @@ import {
   deletePersonalSkill,
   importPersonalSkill,
 } from "./api";
+import { useSkillQueryIdentity } from "./query-identity";
 
 import { loadSkills } from ".";
 
 export function useSkills() {
+  const identity = useSkillQueryIdentity();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["skills"],
-    queryFn: () => loadSkills(),
+    queryKey: ["skills", identity.key],
+    enabled: identity.identityReady,
+    retry: false,
+    queryFn: async ({signal}) => {
+      if (!identity.isCurrent()) throw new Error("Skill read identity changed");
+      const result = await loadSkills(signal);
+      if (!identity.isCurrent() || signal.aborted) throw new Error("Skill read identity changed");
+      return result;
+    },
   });
-  return { skills: data ?? [], isLoading, error };
+  return { skills: identity.identityReady ? data ?? [] : [], isLoading, error };
 }
 
 export function useAvailableSkills({ enabled = true }: { enabled?: boolean } = {}) {
+  const identity = useSkillQueryIdentity();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["availableSkills"],
-    queryFn: () => loadAvailableSkills(),
-    enabled,
+    queryKey: ["availableSkills", identity.key],
+    queryFn: async ({signal}) => {
+      if (!identity.isCurrent()) throw new Error("Skill read identity changed");
+      const result = await loadAvailableSkills(signal);
+      if (!identity.isCurrent() || signal.aborted) throw new Error("Skill read identity changed");
+      return result;
+    },
+    enabled: enabled && identity.identityReady,
+    retry: false,
     refetchOnWindowFocus: false,
   });
 
   return {
-    skills: data ?? [],
+    skills: identity.identityReady ? data ?? [] : [],
     isLoading,
     error,
   };
 }
 
 export function useTenantSkills({ enabled = true }: { enabled?: boolean } = {}) {
+  const identity = useSkillQueryIdentity();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["tenantSkills"],
-    queryFn: () => loadTenantSkills(),
-    enabled,
+    queryKey: ["tenantSkills", identity.key],
+    queryFn: async ({signal}) => {
+      if (!identity.isCurrent()) throw new Error("Skill read identity changed");
+      const result = await loadTenantSkills(signal);
+      if (!identity.isCurrent() || signal.aborted) throw new Error("Skill read identity changed");
+      return result;
+    },
+    enabled: enabled && identity.identityReady,
+    retry: false,
     refetchOnWindowFocus: false,
   });
 
   return {
-    skills: data ?? [],
+    skills: identity.identityReady ? data ?? [] : [],
     isLoading,
     error,
   };

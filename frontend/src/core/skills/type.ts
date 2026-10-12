@@ -17,6 +17,9 @@ export interface Skill {
 
 
 export interface AvailableSkillResponse extends Skill {
+  resource_id?: string | null;
+  owner_kind?: string | null;
+  files_status?: string | null;
   scope: string; // "global" | "tenant"
   source: string; // Skill source classification
   managed_by_current_user: boolean; // Whether current user can manage this skill
@@ -24,6 +27,9 @@ export interface AvailableSkillResponse extends Skill {
 }
 
 export interface SkillDetail extends Skill {
+  resource_id?: string | null;
+  owner_kind?: string | null;
+  files_status?: string | null;
   references?: Record<string, string> | null;
   scope: string;
   managed_by_current_user: boolean;

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSyncExternalStore } from "react";
 
+import { useSkillQueryIdentity } from "@/core/skills/query-identity";
 import { getCurrentTenantId, subscribeTenantChange } from "@/core/tenants/store";
 
 import {
@@ -37,12 +38,19 @@ export function useAgent(name: string | null | undefined) {
 }
 
 export function useSkills() {
-  const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["skills", tenantKey],
-    queryFn: () => listSkills(),
+    queryKey: ["skills", identity.key],
+    enabled: identity.identityReady,
+    retry: false,
+    queryFn: async ({signal}) => {
+      if (!identity.isCurrent()) throw new Error("Skill read identity changed");
+      const result = await listSkills(signal);
+      if (!identity.isCurrent() || signal.aborted) throw new Error("Skill read identity changed");
+      return result;
+    },
   });
-  return { skills: data ?? [], isLoading, error };
+  return { skills: identity.identityReady ? data ?? [] : [], isLoading, error };
 }
 
 export function useCreateAgent() {

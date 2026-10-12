@@ -7,7 +7,7 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
+import { useSkillQueryIdentity } from "@/core/skills/query-identity";
 import { useAvailableModels } from "@/core/models/hooks";
 import {
   getSkillDetail,
@@ -32,9 +33,24 @@ import type { TerminalMessagePart, TerminalToolCall } from "@/core/terminal-agen
 import { useTerminalAgent } from "@/core/terminal-agent/useTerminalAgent";
 
 export default function SkillDetailPage() {
+  const identity = useSkillQueryIdentity();
+  const params = useParams();
+  const search = useSearchParams();
+  return <SkillDetailContent key={JSON.stringify([identity.key, params.name, search.get("scope"), search.get("resource_id")])} />;
+}
+
+function SkillDetailContent() {
   const params = useParams();
   const router = useRouter();
   const skillName = params.name as string;
+  const identity = useSkillQueryIdentity();
+  const search = useSearchParams();
+  const scope = search.get("scope") ?? undefined;
+  const resourceId = search.get("resource_id") ?? undefined;
+  const contextKey = JSON.stringify([identity.key, skillName, scope, resourceId]);
+  const liveContext = useRef(contextKey);
+  liveContext.current = contextKey;
+  const [loadedContext, setLoadedContext] = useState("");
   const isNew = skillName === "new";
 
   const [skill, setSkill] = useState<SkillDetail | null>(null);
@@ -81,9 +97,18 @@ export default function SkillDetailPage() {
   });
 
   const instructionsRef = useRef<HTMLTextAreaElement>(null);
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const currentView = () => mounted.current && liveContext.current === contextKey && identity.isCurrent();
 
   useEffect(() => {
-    if (!skillName) return;
+    if (!skillName || !identity.identityReady) return;
+    const controller = new AbortController();
+    const valid = () => !controller.signal.aborted && liveContext.current === contextKey && identity.isCurrent();
+    setSkill(null);
+    setInstructions("");
+    setDescription("");
+    setDirty(false);
 
     if (isNew) {
       setSkill({
@@ -98,24 +123,28 @@ export default function SkillDetailPage() {
         license: "private",
       } as unknown as SkillDetail);
       setLoading(false);
-      return;
+      setLoadedContext(contextKey);
+      return () => controller.abort();
     }
 
     setLoading(true);
-    getSkillDetail(skillName)
+    getSkillDetail(skillName, {scope, resourceId, signal: controller.signal})
       .then((data) => {
+        if (!valid()) return;
+        setLoadedContext(contextKey);
         setSkill(data);
         setInstructions(data.instructions ?? "");
         setDescription(data.description ?? "");
         setBoundToolsText((data.bound_tools ?? []).join(", "));
         setStrategy(data.strategy ?? "default");
       })
-      .catch(() => toast.error("加载 Skill 详情失败"))
-      .finally(() => setLoading(false));
-  }, [skillName, isNew]);
+      .catch(() => { if (valid()) toast.error("加载 Skill 详情失败"); })
+      .finally(() => { if (valid()) setLoading(false); });
+    return () => controller.abort();
+  }, [contextKey, identity.identityReady, skillName, isNew, scope, resourceId]);
 
   const handleSave = async () => {
-    if (!skill) return;
+    if (!skill || loadedContext !== contextKey || !currentView()) return;
     if (isNew) {
       if (!newName.trim()) {
         toast.error("请输入 Skill 英文名称");
@@ -143,6 +172,7 @@ export default function SkillDetailPage() {
           bound_tools: boundToolsText.split(",").map((t) => t.trim()).filter(Boolean),
           strategy: strategy || null,
         });
+        if (!currentView()) return;
         toast.success("创建成功");
         setDirty(false);
         router.push("/workspace/skills");
@@ -165,17 +195,19 @@ export default function SkillDetailPage() {
         await patchTenantSkill(skill.name, payload);
       }
 
+      if (!currentView()) return;
       setDirty(false);
       toast.success("保存成功");
       router.push("/workspace/skills");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "保存失败");
+      if (currentView()) toast.error(err instanceof Error ? err.message : "保存失败");
     } finally {
-      setSaving(false);
+      if (currentView()) setSaving(false);
     }
   };
 
   const handleAIGenerate = async () => {
+    if (!currentView()) return;
     if (!genPrompt.trim()) {
       toast.error("请输入你想让 Skill 做什么");
       return;
@@ -183,23 +215,24 @@ export default function SkillDetailPage() {
     setAiLoading(true);
     try {
       const result = await generateInstructions(genPrompt.trim(), selectedModel);
+      if (!currentView()) return;
       setInstructions(result.instructions);
       setDirty(true);
       toast.success("AI 已生成 Instructions，请检查并调整");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "生成失败");
+      if (currentView()) toast.error(err instanceof Error ? err.message : "生成失败");
     } finally {
-      setAiLoading(false);
+      if (currentView()) setAiLoading(false);
     }
   };
 
   const handleTest = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!testInput.trim() || testLoading) return;
+    if (!currentView() || !testInput.trim() || testLoading) return;
     void sendMessage({ text: testInput.trim() });
   };
 
-  if (loading) {
+  if (loading || !identity.identityReady || (skill !== null && loadedContext !== contextKey)) {
     return (
       <div className="flex size-full items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

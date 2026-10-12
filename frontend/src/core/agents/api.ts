@@ -72,8 +72,8 @@ export async function checkAgentName(
 }
 
 
-export async function listSkills(): Promise<Skill[]> {
-  const res = await fetchAuthApi("/api/skills");
+export async function listSkills(signal?: AbortSignal): Promise<Skill[]> {
+  const res = await fetchAuthApi("/api/skills", {signal});
   if (!res.ok) throw new Error(`Failed to load skills: ${res.statusText}`);
   const data = (await res.json()) as { skills: Skill[] };
   return data.skills;

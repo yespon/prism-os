@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "files": {
+    "README.md": {
+      "bytes": 1597,
+      "sha256": "475f122a2103f57701a9b5b9d7aeedd4f20d55448a4f2e77548916a6a256a265"
+    },
+    "build-exit.json": {
+      "bytes": 642,
+      "sha256": "43c748704b1f7e316b3ef5664f958b3e64fd65d4b8dbb4b6ad56d19a081efd35"
+    },
+    "c2-audit.md": {
+      "bytes": 2624,
+      "sha256": "67a0bfcad8cb5a6e0f04367c09690a08ae6c9ca7bf8be1892f2aa4ebb83355bd"
+    },
+    "candidate.json": {
+      "bytes": 2552,
+      "sha256": "1ed2ae0e453eb3723ff08b30d05188bb44509324ddcb59c46f64da3b2f46ec97"
+    },
+    "capability-delta.json": {
+      "bytes": 894,
+      "sha256": "ec019deac0a1408209ef2c95ef442e30ee9486e8a9c7cb60be2aabb2f9c089c9"
+    },
+    "logs/backend-baseline-faults.log": {
+      "bytes": 7094,
+      "sha256": "5cebddee24f1b546fc20b788a9ff6aeb36ee74c1d9cb13bd02435fb3a39cf985"
+    },
+    "logs/backend-before-generation-review.log": {
+      "bytes": 1864,
+      "sha256": "3ba35d45d715ddcb5f8568d639347c43b5d55fd57ffb5fb26e11b6eff2b15c85"
+    },
+    "logs/backend-full.log": {
+      "bytes": 9011,
+      "sha256": "34ee0958ecbcf9caed7ae71d297fd3209740a5cd0a0c63beb52277bc0aadb24e"
+    },
+    "logs/backend-lint-generation.log": {
+      "bytes": 38,
+      "sha256": "aac3a0503d8b95052cc85fb9f1717dc82b74aa55853a5aa9749b41e30275d472"
+    },
+    "logs/backend-resource-identity.log": {
+      "bytes": 1459,
+      "sha256": "0a0e03f4e8dcea167179f04546382db739a57f953c2e84f6c836362c2c02a568"
+    },
+    "logs/brand.log": {
+      "bytes": 72,
+      "sha256": "fd269afe209acd2c652a817fb481d52e3b0a31fb4b4acc5ea1a14daa73a7efa7"
+    },
+    "logs/build-current.log": {
+      "bytes": 11249,
+      "sha256": "3d1cc20928554d5e2cae6892f89fb8e1c7b75e713a2026306ab8fa52fec9b5e5"
+    },
+    "logs/build-independent.log": {
+      "bytes": 11154,
+      "sha256": "b813b5aafd4cd0ce010b558ac8a600ceec111b040799f907a91f0c5a7d24fc5b"
+    },
+    "logs/detail-renderer-test-diagnostic.log": {
+      "bytes": 738,
+      "sha256": "a44b8db1d28db402b44040ead2ecededef45e0c218b2876d68a0e7323bc39672"
+    },
+    "logs/frontend-adjacent.log": {
+      "bytes": 248,
+      "sha256": "e39521793eca86bb0adf82b175ce5d1ced43f5273ff258a9e678d69a700c303a"
+    },
+    "logs/frontend-cache-baseline-faults.log": {
+      "bytes": 1379,
+      "sha256": "f7e45723b36e6dd980780229a72d618ed04cd6c648ad8d3ad735cd3a189fcb61"
+    },
+    "logs/frontend-full.log": {
+      "bytes": 256,
+      "sha256": "1403a358fac2c54329ca0a16380502633ae31186c7f1a7a142ca710fe34acc71"
+    },
+    "logs/frontend-independent.log": {
+      "bytes": 243,
+      "sha256": "e683c8c3ff3fb540a11ea60a2039b0ccdaf2d8be369316b4f59748a1c35612ae"
+    },
+    "logs/frontend-lint.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "logs/postgres.log": {
+      "bytes": 1470,
+      "sha256": "2c9dac2bcb47ace710dabc0761f743728690f4b8a914387171bf891d48dfd6bd"
+    },
+    "logs/reproduce.sh": {
+      "bytes": 2221,
+      "sha256": "7705349031f269f957b868efaba15403473a86902fd66141a7c90c40aa6b9277"
+    },
+    "logs/upgrade.log": {
+      "bytes": 1235,
+      "sha256": "037dafd35def02d578a5f1720b284076ebd6716f0c5dc06c81616679a26a49a8"
+    },
+    "logs/uv-build-index.sh": {
+      "bytes": 198,
+      "sha256": "134e1fb226d097debbb71741ffc7d32ff3ec479897611d3f15e345053bf7cf44"
+    },
+    "postgres.json": {
+      "bytes": 550,
+      "sha256": "7b1bfa32465c09fdab3dd53dd8e829d539161bcd2d26b921835fdf50628b43d5"
+    },
+    "previous-source-receipt.json": {
+      "bytes": 1306239,
+      "sha256": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068"
+    },
+    "source-index.json": {
+      "bytes": 78,
+      "sha256": "0b7e4f5183cc4cf47b8be3a8d0ab9f4cf47f5497e852461b680d9be1c1ed3a08"
+    },
+    "upgrade.json": {
+      "bytes": 89467,
+      "sha256": "e2dc0439b3dfcde05cce022221efb101daeeffec78d245eaa77d9928312c2663"
+    },
+    "validation.json": {
+      "bytes": 3569,
+      "sha256": "0e50ccd552683f723e70b36ba306ff2def93842569813ca155b1b618a56828fc"
+    }
+  }
+}

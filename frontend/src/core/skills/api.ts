@@ -4,10 +4,12 @@ import { getBackendBaseURL } from "@/core/config";
 
 import type { Skill, AvailableSkillResponse, SummarizeDiagnosisRequest, SummarizeDiagnosisResponse } from "./type";
 
-export async function loadSkills() {
+export async function loadSkills(signal?: AbortSignal) {
   const skills = await fetch(`${getBackendBaseURL()}/api/skills`, {
     headers: await getAuthHeaders(),
+    signal,
   });
+  if (!skills.ok) throw new Error(`Failed to load skills: ${skills.status}`);
   const json = await skills.json();
   return json.skills as Skill[];
 }
@@ -43,9 +45,10 @@ export async function installSkill(
   }
 }
 
-export async function loadAvailableSkills() {
+export async function loadAvailableSkills(signal?: AbortSignal) {
   const response = await fetch(`${getBackendBaseURL()}/api/skills/available`, {
     headers: await getAuthHeaders(),
+    signal,
   });
 
   if (!response.ok) {
@@ -56,9 +59,10 @@ export async function loadAvailableSkills() {
   return json.skills as AvailableSkillResponse[];
 }
 
-export async function loadTenantSkills() {
+export async function loadTenantSkills(signal?: AbortSignal) {
   const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills`, {
     headers: await getAuthHeaders(),
+    signal,
   });
 
   if (!response.ok) {
@@ -265,11 +269,15 @@ export async function deleteTenantSkill(skillName: string) {
   }
 }
 
-export async function getSkillDetail(skillName: string) {
+export async function getSkillDetail(skillName: string, options: {scope?: string; resourceId?: string; signal?: AbortSignal} = {}) {
+  const query = new URLSearchParams();
+  if (options.scope) query.set("scope", options.scope);
+  if (options.resourceId) query.set("resource_id", options.resourceId);
   const response = await fetch(
-    `${getBackendBaseURL()}/api/skills/${skillName}/detail`,
+    `${getBackendBaseURL()}/api/skills/${encodeURIComponent(skillName)}/detail${query.size ? `?${query}` : ""}`,
     {
       headers: await getAuthHeaders(),
+      signal: options.signal,
     }
   );
   if (!response.ok) {

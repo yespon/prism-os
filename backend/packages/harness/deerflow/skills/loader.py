@@ -122,6 +122,11 @@ def load_skills(skills_path: Path | None = None, use_config: bool = True, enable
                 continue
 
             existing = skills_by_name.get(name)
+            if existing is not None and existing.category == "public" and category != "public":
+                # Unqualified legacy names retain the public default. A custom
+                # same-name registration is a different resource, not a toggle.
+                continue
+
             if existing is not None:
                 existing.enabled = bool(record.get("enabled", True))
                 continue

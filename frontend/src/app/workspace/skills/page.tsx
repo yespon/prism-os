@@ -212,9 +212,9 @@ export default function SkillsCenterPage() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {filteredSkills.map((skill) => (
               <SkillCard
-                key={skill.name}
+                key={skill.resource_id ?? `${skill.scope}:${skill.name}`}
                 skill={skill}
-                onClick={() => router.push(`/workspace/skills/${skill.name}`)}
+                onClick={() => router.push(`/workspace/skills/${encodeURIComponent(skill.name)}?${new URLSearchParams({scope: skill.scope, ...(skill.resource_id ? {resource_id: skill.resource_id} : {})})}`)}
                 onDelete={skill.scope === "personal" ? (e: React.MouseEvent) => handleDelete(skill.name, e) : undefined}
                 isDeleting={deletingSkill === skill.name}
               />

@@ -69,7 +69,7 @@ def main():
         url = make_url("postgresql+asyncpg://prismos_test@127.0.0.1/prismos_skill_probe").set(password=password, port=int(port)).render_as_string(hide_password=False)
         environment = dict(os.environ, PRISMOS_SKILL_TEST_DB_URL=url)
         with (args.output_dir / "pytest.log").open("w") as log:
-            run = subprocess.run([sys.executable, "-m", "pytest", "tests/test_skill_import_recovery.py", "-q"], cwd=ROOT / "backend", env=environment, stdout=log, stderr=subprocess.STDOUT)
+            run = subprocess.run([sys.executable, "-m", "pytest", "tests/test_skill_import_recovery.py", "tests/test_skill_resource_identity.py", "-q"], cwd=ROOT / "backend", env=environment, stdout=log, stderr=subprocess.STDOUT)
         version = subprocess.check_output(["docker", "exec", name, "psql", "-U", "prismos_test", "-d", "prismos_skill_probe", "-At", "-c", "select version()"], text=True).strip()
         evidence = {
             "passed": run.returncode == 0,
@@ -78,7 +78,7 @@ def main():
             "loopback_only": True,
             "owned_tmpfs_database": True,
             "schema": "existing SQLModel metadata including native TenantSkill uniqueness; no production database",
-            "cases": "full versioned test_skill_import_recovery module",
+            "cases": "full versioned import recovery and concrete resource identity modules",
             "credentials_in_evidence": False,
             "returncode": run.returncode,
         }

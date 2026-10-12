@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-13",
+  "baseline": "006c0db88a5ec1beb6b88206ce35ba4bc239c4da",
+  "scope": "C2-A resource read identity and scoped UI queries",
+  "delivered": [
+    "native scoped and public resource identity",
+    "creation/owner generation prevents primary-key rebind",
+    "same-name resources kept distinct",
+    "exact-scope details and own-directory read checks",
+    "public toggle and unqualified public default retained",
+    "current-session query cache and detail UI lifecycle guards",
+    "C2 write/runtime gaps explicitly audited"
+  ],
+  "complete": false,
+  "copy_share_implemented": false,
+  "new_schema": false,
+  "execution_permission_grants": false,
+  "remaining": [
+    "C2-B/C2-C",
+    "C3-C5",
+    "full N09",
+    "N04/M1",
+    "remote CI"
+  ],
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

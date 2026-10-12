@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, it, vi } from "vitest";
 
-import { installSkill } from "./api";
+import { installSkill, getSkillDetail } from "./api";
 import {
   SkillImportError,
   readSkillImportResponse,
@@ -125,3 +125,11 @@ it.each([
     ).rejects.toMatchObject({ status: 503 });
   },
 );
+
+it("preserves explicit resource identity and cancellation when reading detail", async () => {
+  const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({name: "collision", scope: "personal"})));
+  vi.stubGlobal("fetch", fetch);
+  const controller = new AbortController();
+  await getSkillDetail("collision/name", {scope: "personal", resourceId: "skill:42", signal: controller.signal});
+  expect(fetch).toHaveBeenCalledWith("http://localhost:8001/api/skills/collision%2Fname/detail?scope=personal&resource_id=skill%3A42", {headers: expect.any(Object), signal: controller.signal});
+});
