@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-13",
+  "baseline": "70853b871f45c822c911065ef13c59cdc73570c6",
+  "scope": "N09-C1 installation and recovery controls plus bounded build resource fix",
+  "delivered": [
+    "explicit personal/current-tenant-admin fixed-source install confirmation",
+    "installation facts refreshed without execution grant",
+    "on-demand current-scope receipt inspection",
+    "separate recover and owned-stage abort confirmation",
+    "unknown recovery invalidates actionable stale records until inspection",
+    "session/tenant/close/resource/locale late-response isolation",
+    "legacy archive dialog response isolation and typed thread error compatibility",
+    "phase retains historical receipt status apart from current state",
+    "default webpack with strict pre-compilation route checks"
+  ],
+  "complete": false,
+  "remaining": [
+    "stable pagination above 100 receipts",
+    "explicit retention and maintenance policy",
+    "original N09-C2 through C5",
+    "N04/M1 and remote CI"
+  ],
+  "execution_permission_grants": false,
+  "new_schema": false,
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

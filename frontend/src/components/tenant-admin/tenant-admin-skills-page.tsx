@@ -1,9 +1,12 @@
 "use client";
 
 import { Pencil, Plus, Trash2, Upload, SearchIcon } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
+import { skillImportErrorMessage } from "@/core/skills/imports";
+import { useSkillImportContext } from "@/core/skills/import-context";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -22,7 +25,14 @@ import {
 import type { AvailableSkillResponse } from "@/core/skills/type";
 
 export function TenantAdminSkillsPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const importContext = useSkillImportContext();
+  const importIdentity = useRef(importContext.key);
+  importIdentity.current = importContext.key;
+  const archiveBusy = useRef(false);
+  const archiveGeneration = useRef(0);
+  const changeArchiveOpen = (value: boolean) => { archiveGeneration.current += 1; archiveBusy.current = false; setOpen(value); };
+  const [operationsOpen, setOperationsOpen] = useState(false);
   const { skills, isLoading, error } = useAvailableSkills();
   const { mutateAsync: updateTenantSkill } = useUpdateTenantSkill();
   const { mutateAsync: deleteTenantSkill } = useDeleteTenantSkill();
@@ -44,6 +54,7 @@ export function TenantAdminSkillsPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "enabled" | "disabled">("all");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => { setOpen(false); setImportError(null); setArchiveFile(null); archiveBusy.current = false; }, [importContext.key]);
 
   const builtInSkills = useMemo(() => skills.filter((item) => item.scope === "global"), [skills]);
   const customSkills = useMemo(() => skills.filter((item) => item.scope === "tenant"), [skills]);
@@ -93,7 +104,7 @@ export function TenantAdminSkillsPage() {
     setStrategy("default");
     setArchiveFile(null);
     setImportError(null);
-    setOpen(true);
+    changeArchiveOpen(true);
   };
 
   const openEdit = (skill: {
@@ -114,7 +125,7 @@ export function TenantAdminSkillsPage() {
     setStrategy(skill.strategy ?? "default");
     setArchiveFile(null);
     setImportError(null);
-    setOpen(true);
+    changeArchiveOpen(true);
   };
 
   const parseBoundTools = () =>
@@ -148,6 +159,12 @@ export function TenantAdminSkillsPage() {
   };
 
   const save = async () => {
+    const importing = dialogMode === "import" && !editingName;
+    if (importing && (!importContext.canShare || !importContext.isCurrent() || archiveBusy.current)) return;
+    const identity = importContext.key;
+    const generation = archiveGeneration.current;
+    const current = () => archiveGeneration.current === generation && importIdentity.current === identity && importContext.isCurrent();
+    if (importing) archiveBusy.current = true;
     try {
       setImportError(null);
       if (dialogMode === "import" && !editingName) {
@@ -156,6 +173,7 @@ export function TenantAdminSkillsPage() {
           return;
         }
         await importTenantSkill(archiveFile);
+        if (!current()) return;
         toast.success(t.tenantAdmin.skills.importSuccess);
         setOpen(false);
         return;
@@ -194,11 +212,14 @@ export function TenantAdminSkillsPage() {
       }
       setOpen(false);
     } catch (err) {
-      const message = err instanceof Error ? err.message : t.tenantAdmin.skills.importError;
+      if (importing && !current()) return;
+      const message = skillImportErrorMessage(err, locale === "zh-CN");
       if (dialogMode === "import" && !editingName) {
         setImportError(message);
       }
       toast.error(message);
+    } finally {
+      if (importing && current()) archiveBusy.current = false;
     }
   };
 
@@ -213,6 +234,10 @@ export function TenantAdminSkillsPage() {
         </div>
       </div>
 
+      <details onToggle={event => setOperationsOpen(event.currentTarget.open)}>
+        <summary>{locale === "zh-CN" ? "共享 Skill 导入记录与恢复" : "Shared Skill import records and recovery"}</summary>
+        {operationsOpen && <SkillImportOperations scope="tenant" locale={locale === "zh-CN" ? "zh" : "en"} />}
+      </details>
       <Tabs defaultValue="builtin" className="space-y-2">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-1 items-center gap-3">
@@ -281,7 +306,7 @@ export function TenantAdminSkillsPage() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={changeArchiveOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>{editingName ? t.tenantAdmin.skills.editTitle : dialogMode === "import" ? t.tenantAdmin.skills.importTitle : t.tenantAdmin.skills.createTitle}</DialogTitle>
@@ -441,7 +466,7 @@ export function TenantAdminSkillsPage() {
           </Tabs>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => changeArchiveOpen(false)}>
               {t.common.cancel}
             </Button>
             <Button
@@ -486,7 +511,7 @@ function SkillSection({
   onEdit?: (skill: AvailableSkillResponse) => void;
   onDelete?: (skillName: string) => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const rows = skills.length;
   const hasOperations = allowEditing;
 

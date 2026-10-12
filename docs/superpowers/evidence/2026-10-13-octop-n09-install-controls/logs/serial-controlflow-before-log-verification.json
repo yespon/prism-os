@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "code_inputs": 20,
+  "candidate_hashes_verified": true,
+  "current_build_exit": 0,
+  "independent_build_exit": 0,
+  "compiler": "webpack",
+  "node_heap_mb": 1024,
+  "affinity_cpus": 1
+}

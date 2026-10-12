@@ -1,0 +1,9 @@
+
+ RUN  v4.1.2 /tmp/prismos-n09d-clean-ck_yhi07/src/frontend
+
+
+ Test Files  47 passed (47)
+      Tests  173 passed (173)
+   Start at  01:56:25
+   Duration  48.00s (transform 3.29s, setup 3.26s, import 16.89s, tests 18.07s, environment 45.98s)
+

@@ -1,0 +1,33 @@
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/workspace/skills/skill-import-controls.test.tsx
+    9:1   error    `@tanstack/react-query` import should occur before import of `@testing-library/react`      import/order
+   10:1   error    There should be at least one empty line between import groups                              import/order
+   12:1   error    There should be at least one empty line between import groups                              import/order
+   17:1   error    `./skill-import-operations` import should occur before import of `./source-skill-install`  import/order
+   38:33  warning  `import()` type annotations are forbidden                                                  @typescript-eslint/consistent-type-imports
+  279:30  error    Unexpected any. Specify a different type                                                   @typescript-eslint/no-explicit-any
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/workspace/skills/skill-import-operations.tsx
+    4:1  error  There should be at least one empty line between import groups                               import/order
+    4:1  error  `@tanstack/react-query` import should occur before import of `react`                        import/order
+  106:7  error  Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/workspace/skills/source-skill-install.tsx
+  4:1  error  `next/link` import should occur before import of `react`              import/order
+  5:1  error  There should be at least one empty line between import groups         import/order
+  5:1  error  `@tanstack/react-query` import should occur before import of `react`  import/order
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/core/skills/import-context.test.tsx
+  2:1  error  There should be at least one empty line between import groups  import/order
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/core/skills/import-context.ts
+  4:1  error  `@/core/auth/auth-api` import should occur before import of `@/core/auth/hooks`  import/order
+  5:1  error  `@/core/agents/hooks` import should occur before import of `@/core/auth/hooks`   import/order
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/core/skills/imports.test.ts
+  1:1  error  There should be at least one empty line between import groups  import/order
+  8:1  error  `./api` import should occur before import of `./imports`       import/order
+
+✖ 17 problems (16 errors, 1 warning)
+  15 errors and 0 warnings potentially fixable with the `--fix` option.
+

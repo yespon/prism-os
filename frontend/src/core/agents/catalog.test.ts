@@ -4,6 +4,7 @@ import { fetchAuthApi } from "@/core/api/auth-client";
 
 import {
   downloadResourceArchive,
+  installSourceSkill,
   loadAgentCatalog,
   loadResourcePreflight,
   previewAgentTemplate,
@@ -106,4 +107,33 @@ describe("Resource preflight and source archive host API", () => {
       ),
     ).rejects.toThrow("Source archive unavailable");
   });
+});
+
+it("installs only the confirmed fixed source into the server-selected actor scope", async () => {
+  vi.mocked(fetchAuthApi).mockResolvedValueOnce(
+    new Response(
+      JSON.stringify({ operation_id: "receipt-a", registered: true }),
+    ),
+  );
+  const controller = new AbortController();
+  await installSourceSkill(
+    "expert:a/b",
+    "resource:a/b",
+    "zh",
+    "personal",
+    "a".repeat(64),
+    controller.signal,
+  );
+  expect(fetchAuthApi).toHaveBeenCalledWith(
+    "/api/agent-catalog/templates/expert%3Aa%2Fb/resources/resource%3Aa%2Fb/install?locale=zh",
+    {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        scope: "personal",
+        bundle_sha256: "a".repeat(64),
+      }),
+    },
+  );
 });

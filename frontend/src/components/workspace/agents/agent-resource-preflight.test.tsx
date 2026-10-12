@@ -15,6 +15,17 @@ const mock = vi.hoisted(() => ({
   load: vi.fn(),
   download: vi.fn(),
 }));
+vi.mock("../skills/source-skill-install", () => ({
+  SourceSkillInstall: ({ onInstalled }: {onInstalled: () => void}) => <button onClick={onInstalled}>Test completed installation</button>,
+}));
+vi.mock("@/core/skills/import-context", () => ({
+  useSkillImportContext: () => ({
+    key: mock.tenant,
+    identityReady: true,
+    canShare: false,
+    isCurrent: () => true,
+  }),
+}));
 vi.mock("@/core/agents/hooks", () => ({ useTenantKey: () => mock.tenant }));
 vi.mock("@/core/tenants/store", () => ({
   getCurrentTenantId: () => mock.tenant,
@@ -173,4 +184,17 @@ it("never downloads a late response after leaving the template", async () => {
   await act(async () => download.resolve(new Blob(["source"])));
   expect(create).not.toHaveBeenCalled();
   vi.unstubAllGlobals();
+});
+
+it("refreshes installation facts after confirmed registration while preserving the visible resource", async () => {
+  render(<AgentResourcePreflight {...props} />);
+  fireEvent.click(screen.getByRole("button", {name: "检查配套资源"}));
+  await screen.findByText(/完整配套文件 9 项/);
+  const update = pending<ResourcePreflight>();
+  mock.load.mockReturnValueOnce(update.promise);
+  fireEvent.click(screen.getByRole("button", {name: "Test completed installation"}));
+  expect(mock.load).toHaveBeenCalledTimes(2);
+  expect(screen.getByText(/完整配套文件 9 项/)).toBeInTheDocument();
+  await act(async () => update.resolve({...result, resources: [{...result.resources[0]!, installation: {status: "source_match", candidates: []}}]}));
+  expect(screen.getByText(/依赖、绑定和执行权限仍需确认/)).toBeInTheDocument();
 });

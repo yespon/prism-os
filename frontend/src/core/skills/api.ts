@@ -1,3 +1,4 @@
+import { readSkillImportResponse, SkillImportError } from "./imports";
 import { getAuthHeaders } from "@/core/api/auth-client";
 import { getBackendBaseURL } from "@/core/config";
 
@@ -20,6 +21,7 @@ export interface InstallSkillResponse {
   success: boolean;
   skill_name: string;
   message: string;
+  operation_id?: string;
 }
 
 export async function installSkill(
@@ -33,18 +35,12 @@ export async function installSkill(
     body: JSON.stringify(request),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const errorMessage =
-      errorData.detail ?? `HTTP ${response.status}: ${response.statusText}`;
-    return {
-      success: false,
-      skill_name: "",
-      message: errorMessage,
-    };
+  try {
+    return await readSkillImportResponse<InstallSkillResponse>(response);
+  } catch (error) {
+    if (!(error instanceof SkillImportError)) throw error;
+    return { success: false, skill_name: "", message: error.message, operation_id: error.operationId };
   }
-
-  return response.json();
 }
 
 export async function loadAvailableSkills() {
@@ -229,11 +225,10 @@ export async function importPersonalSkill(file: File) {
     if (response.status === 413) {
       throw new Error("技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限");
     }
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to import personal skill: ${response.status}`);
+    return readSkillImportResponse(response);
   }
 
-  return response.json();
+  return readSkillImportResponse(response);
 }
 
 export async function importTenantSkill(file: File) {
@@ -250,11 +245,10 @@ export async function importTenantSkill(file: File) {
     if (response.status === 413) {
       throw new Error("技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限");
     }
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to import tenant skill: ${response.status}`);
+    return readSkillImportResponse(response);
   }
 
-  return response.json();
+  return readSkillImportResponse(response);
 }
 
 export async function deleteTenantSkill(skillName: string) {

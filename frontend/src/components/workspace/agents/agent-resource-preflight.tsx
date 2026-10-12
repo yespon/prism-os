@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { SourceSkillInstall } from "../skills/source-skill-install";
+import { useSkillImportContext } from "@/core/skills/import-context";
 import { Button } from "@/components/ui/button";
 import { useTenantKey } from "@/core/agents/hooks";
 import { getCurrentTenantId } from "@/core/tenants/store";
@@ -36,6 +38,7 @@ export function AgentResourcePreflight({
   locale: "zh" | "en";
 }) {
   const tenant = useTenantKey();
+  const identity = useSkillImportContext();
   const zh = locale === "zh";
   const [data, setData] = useState<{
     scope: string;
@@ -44,7 +47,13 @@ export function AgentResourcePreflight({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState("");
-  const scope = JSON.stringify([open, tenant, templateId, locale]);
+  const scope = JSON.stringify([
+    open,
+    tenant,
+    identity.key,
+    templateId,
+    locale,
+  ]);
   const live = useRef(scope);
   live.current = scope;
   const generation = useRef(0);
@@ -65,12 +74,14 @@ export function AgentResourcePreflight({
     };
   }, [scope]);
   const isCurrent = (signal: AbortSignal, current: number) =>
+    identity.isCurrent() &&
     !signal.aborted &&
     generation.current === current &&
     live.current === scope &&
     tenant === (getCurrentTenantId() ?? "_");
 
-  async function inspect() {
+  async function inspect(preserve = false) {
+    if (!identity.identityReady || !identity.isCurrent()) return;
     request.current?.abort();
     download.current?.abort();
     setDownloading("");
@@ -78,7 +89,7 @@ export function AgentResourcePreflight({
     request.current = controller;
     const current = ++generation.current;
     setLoading(true);
-    setData(null);
+    if (!preserve) setData(null);
     setError("");
     try {
       const result = await loadResourcePreflight(
@@ -147,7 +158,7 @@ export function AgentResourcePreflight({
         type="button"
         variant="outline"
         size="sm"
-        disabled={loading}
+        disabled={loading || !identity.identityReady}
         onClick={() => void inspect()}
       >
         {loading
@@ -209,6 +220,15 @@ export function AgentResourcePreflight({
                 )}
                 {resource.host_format.status === "needs_adapter" && (
                   <p className="break-all">{resource.host_format.detail}</p>
+                )}
+                {resource.host_adaptation?.status === "ready" && (
+                  <SourceSkillInstall
+                    templateId={templateId}
+                    resource={resource}
+                    locale={locale}
+                    open={open}
+                    onInstalled={() => void inspect(true)}
+                  />
                 )}
                 {resource.host_adaptation?.status === "ready" && (
                   <Button

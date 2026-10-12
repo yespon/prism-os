@@ -207,6 +207,7 @@ def test_registration_failure_can_be_reconciled_without_upload_or_duplicate(scop
     url = f"/api/skills/personal/imports/{operation}"
     status = http.get(url).json()
     assert status["state"] == "registration_pending" and status["files_verified"] and not status["registered"]
+    assert status["phase"] == "registration_unknown"
     assert len(asyncio.run(all_rows(factory))) == 0
     assert http.get(url, headers={"x-user-id": "user-b"}).status_code == 404
     assert http.get(url, headers={"x-tenant-id": "tenant-b"}).status_code == 404
@@ -285,6 +286,7 @@ def test_observed_registration_does_not_enable_disabled_skill(scoped_client):
     asyncio.run(disable())
     body = http.post(f"/api/skills/personal/imports/{operation}/recover").json()
     assert body["registered"] and not body["enabled"] and not body["execution_ready"]
+    assert body["phase"] == "registration_observed"
 
 
 def test_tenant_admin_import_and_recovery_do_not_grant_member_write(scoped_client):

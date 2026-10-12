@@ -69,6 +69,7 @@ async def observe_operation(operation_id: str, tenant_id: str, user_id: str, sha
         "name": record["skill_name"],
         "scope": "tenant" if shared else "personal",
         "state": record["state"],
+        "phase": record["state"],
         "files_verified": False,
         "registered": False,
         "enabled": row.enabled if row else None,

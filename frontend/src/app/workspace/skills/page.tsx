@@ -2,9 +2,12 @@
 
 import { Bot, Plus, SearchIcon, Loader2, Upload, Trash2, Edit3 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { toast } from "sonner";
 
+import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
+import { skillImportErrorMessage } from "@/core/skills/imports";
+import { useSkillImportContext } from "@/core/skills/import-context";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,7 +27,13 @@ import { useAvailableSkills, useCreatePersonalSkill, useImportPersonalSkill, use
 import type { AvailableSkillResponse } from "@/core/skills/type";
 
 export default function SkillsCenterPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const importContext = useSkillImportContext();
+  const importIdentity = useRef(importContext.key);
+  importIdentity.current = importContext.key;
+  const archiveBusy = useRef(false);
+  const archiveGeneration = useRef(0);
+  const changeArchiveOpen = (value: boolean) => { archiveGeneration.current += 1; archiveBusy.current = false; setImportOpen(value); };
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlFilter = searchParams.get("filter");
@@ -36,10 +45,12 @@ export default function SkillsCenterPage() {
   );
 
   // Create/Import Skill state
+  const [operationsOpen, setOperationsOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [archiveFile, setArchiveFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => { setImportOpen(false); setArchiveFile(null); archiveBusy.current = false; }, [importContext.key]);
 
   const { mutateAsync: createPersonalSkill, isPending: isCreating } = useCreatePersonalSkill();
   const { mutateAsync: importPersonalSkill, isPending: isImporting } = useImportPersonalSkill();
@@ -89,22 +100,30 @@ export default function SkillsCenterPage() {
   };
 
   const handleImport = async () => {
+    if (!importContext.identityReady || !importContext.isCurrent() || archiveBusy.current) return;
+    const identity = importContext.key;
+    const generation = archiveGeneration.current;
+    const current = () => archiveGeneration.current === generation && importIdentity.current === identity && importContext.isCurrent();
+    archiveBusy.current = true;
     try {
       if (!archiveFile) {
         toast.error("请选择要导入的技能包文件");
         return;
       }
       await importPersonalSkill(archiveFile);
+      if (!current()) return;
       toast.success("导入成功");
       setImportOpen(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "操作失败");
+      if (current()) toast.error(skillImportErrorMessage(err, locale === "zh-CN"));
+    } finally {
+      if (current()) archiveBusy.current = false;
     }
   };
 
   const handleOpenImport = () => {
     setArchiveFile(null);
-    setImportOpen(true);
+    changeArchiveOpen(true);
   };
 
   const handleDelete = async (skillName: string, e: React.MouseEvent) => {
@@ -169,6 +188,11 @@ export default function SkillsCenterPage() {
         </div>
       </div>
 
+      <details className="shrink-0" onToggle={event => setOperationsOpen(event.currentTarget.open)}>
+        <summary>{locale === "zh-CN" ? "Skill 导入记录与恢复" : "Skill import records and recovery"}</summary>
+        {operationsOpen && <SkillImportOperations scope="personal" locale={locale === "zh-CN" ? "zh" : "en"} />}
+      </details>
+
       {/* Skill Grid */}
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
@@ -199,7 +223,7 @@ export default function SkillsCenterPage() {
         )}
       </div>
 
-      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+      <Dialog open={importOpen} onOpenChange={changeArchiveOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>导入私有 Skill</DialogTitle>
@@ -267,7 +291,7 @@ export default function SkillsCenterPage() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setImportOpen(false)}>
+            <Button variant="outline" onClick={() => changeArchiveOpen(false)}>
               {t.common.cancel}
             </Button>
             <Button 

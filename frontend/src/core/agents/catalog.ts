@@ -1,5 +1,6 @@
 import type { AgentQuickPrompt } from "./types";
 import { fetchAuthApi } from "@/core/api/auth-client";
+import { readSkillImportResponse } from "@/core/skills/imports";
 
 export interface AgentTemplate {
   id: string;
@@ -168,4 +169,33 @@ export async function downloadResourceArchive(
   );
   if (!response.ok) throw new Error("Source archive unavailable");
   return response.blob();
+}
+
+export interface SourceSkillInstallResult {
+  operation_id: string;
+  name: string;
+  scope: "personal" | "tenant";
+  registered: true;
+  execution_ready: false;
+  permission_grants: false;
+}
+export async function installSourceSkill(
+  id: string,
+  resourceId: string,
+  locale: "zh" | "en",
+  scope: "personal" | "tenant",
+  bundleSha256: string,
+  signal: AbortSignal,
+) {
+  return readSkillImportResponse<SourceSkillInstallResult>(
+    await fetchAuthApi(
+      `/api/agent-catalog/templates/${encodeURIComponent(id)}/resources/${encodeURIComponent(resourceId)}/install?locale=${locale}`,
+      {
+        method: "POST",
+        signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scope, bundle_sha256: bundleSha256 }),
+      },
+    ),
+  );
 }

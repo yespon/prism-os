@@ -1,0 +1,26 @@
+{
+  "baseline": "70853b871f45c822c911065ef13c59cdc73570c6",
+  "root": "/tmp/prismos-n09d-clean-ck_yhi07/src",
+  "code_sha256": {
+    "Makefile": "53ca825ffd23b790faa3a3b34813b514cbfc0067114a0ccbf493ca571719052d",
+    "backend/app/integrations/skill_imports.py": "bf2f18c06321bd8540d9a006f30c4f52777ec652f82adcf534ce5ccd3892cbb0",
+    "backend/tests/test_skill_import_recovery.py": "4b3591a72fddc3d5d3a3c5f2ba34648ad77763cc1047b42d0931493609aa18a4",
+    "frontend/src/app/workspace/skills/page.tsx": "07121fa797f470f677f83115935a189c009b86afacb2630122b32abbf8b2ff0a",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.test.tsx": "7f8daf31b8d51f1e50fd9a605bf4b4f8f4df8e40d81e6b7b728d0570ed04e5bd",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx": "99363f4ee76027a9b0a8e45c6cab920e8b155a0343fec1c122aba5fa494789f6",
+    "frontend/src/components/workspace/agents/agent-presentation.test.tsx": "3ddf5b29800076ce1a63cb088c948991ad6a992e0d49f5061e775ead559e72e6",
+    "frontend/src/components/workspace/agents/agent-resource-preflight.test.tsx": "5300f4f099cb50731bad99c9d61b2515bcbd807aeb4625cc0a724c03781e359c",
+    "frontend/src/components/workspace/agents/agent-resource-preflight.tsx": "5beab4a0c72ea0e1f19b0f8509880691cc42c9a7919ebe359716c79cc9991be7",
+    "frontend/src/core/agents/catalog.test.ts": "10927fbaa257f2b5a7a84da8d4ce1591638a6a28a25fde2f459e6e1f031f6d6b",
+    "frontend/src/core/agents/catalog.ts": "913539432215c60be504766e2bf808bcd0e991b713fdce1e020f60f6dbb17d54",
+    "frontend/src/core/skills/api.ts": "688476599ce24365921d30b244dbe37ac4f899e2fdc59440c1ecb1ffa13ae354",
+    "frontend/src/components/workspace/skills/skill-import-controls.test.tsx": "a929dbc4a2d0bfdf10d2a171a2c7142998ee5ff6fdbe21c34bd49941b3f877b0",
+    "frontend/src/components/workspace/skills/skill-import-operations.tsx": "222278643b8ca50d6effc328c22da9beb91466f8495424dc5e5636d7d7da6e05",
+    "frontend/src/components/workspace/skills/source-skill-install.tsx": "4b9829ac24ef49b394e7d3ac1cc046caa4c4946528f6d9680e44245c468858d7",
+    "frontend/src/core/skills/import-context.test.tsx": "0b1aeef32d5a703222cd64c2c9cda86180c387f27f7493dd4edf8b5837f391a2",
+    "frontend/src/core/skills/import-context.ts": "7a1208ad9abbe72ded0c77eb57e5c7fa4cb4955f70fae37c0da43653dd98ff71",
+    "frontend/src/core/skills/imports.test.ts": "9eea1b0fbf42b5555b8a08e5f191e039b21ce9a45e80596c0e0963e11ac3c4bd",
+    "frontend/src/core/skills/imports.ts": "1f8c63be4f6d6fd478ad8948641b17ad3f64a3513a8e484d5672b1d5e8c27053",
+    "frontend/scripts/build.mjs": "ee502ac2358ea311eab6ba2d93d6a797c04421d6095645ee5a7372644ca767a2"
+  }
+}

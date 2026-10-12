@@ -45,6 +45,7 @@ vi.mock("@/core/agents/catalog", () => ({
   loadPersonalityQuestions: mock.questions,
   scorePersonality: mock.score,
 }));
+vi.mock("@/core/skills/import-context", () => ({ useSkillImportContext: () => ({ key: mock.tenant, identityReady: true, canShare: false, isCurrent: () => true }) }));
 vi.mock("@/core/agents/hooks", () => ({ useTenantKey: () => mock.tenant }));
 vi.mock("@/core/tenants/store", () => ({
   getCurrentTenantId: () => mock.tenant,

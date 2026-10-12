@@ -1,10 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { fireEvent, render, screen } from "@/test/utils";
+import { act, fireEvent, render, screen } from "@/test/utils";
 
 import { TenantAdminSkillsPage } from "./tenant-admin-skills-page";
 
 const mocks = vi.hoisted(() => ({
+  identity: "tenant-a/user-a",
+  current: true,
+  success: vi.fn(),
   useAvailableSkills: vi.fn(),
   useCreateTenantSkill: vi.fn(),
   useDeleteTenantSkill: vi.fn(),
@@ -12,6 +15,10 @@ const mocks = vi.hoisted(() => ({
   usePatchTenantSkill: vi.fn(),
   useUpdateTenantSkill: vi.fn(),
 }));
+
+vi.mock("@/core/skills/import-context", () => ({ useSkillImportContext: () => ({key: mocks.identity, identityReady: true, canShare: true, isCurrent: () => mocks.current}) }));
+
+vi.mock("sonner", () => ({toast: {success: mocks.success, error: vi.fn()}}));
 
 vi.mock("@/core/skills/hooks", () => ({
   useAvailableSkills: mocks.useAvailableSkills,
@@ -27,6 +34,9 @@ describe("TenantAdminSkillsPage", () => {
   const importSkill = vi.fn();
 
   const renderPage = () => {
+    mocks.identity = "tenant-a/user-a";
+    mocks.current = true;
+    mocks.success.mockClear();
     createSkill.mockReset();
     importSkill.mockReset();
     mocks.useAvailableSkills.mockReturnValue({
@@ -149,4 +159,24 @@ describe("TenantAdminSkillsPage", () => {
 
     expect(screen.getByRole("button", { name: "导入" })).not.toBeDisabled();
   });
+  it.each(["tenant", "close"])("does not apply an old upload response after %s changes", async kind => {
+    const view = renderPage();
+    let resolve!: (value: unknown) => void;
+    importSkill.mockReturnValueOnce(new Promise(done => {resolve = done;}));
+    fireEvent.click(screen.getByRole("button", {name: "新建 / 导入"}));
+    activateTab("导入");
+    const file = new File(["zip"], "demo.zip");
+    fireEvent.change(document.querySelector('input[type="file"]')!, {target: {files: [file]}});
+    fireEvent.click(screen.getByRole("button", {name: "导入"}));
+    expect(importSkill).toHaveBeenCalledOnce();
+    if (kind === "tenant") {
+      mocks.identity = "tenant-b/user-a";
+      view.rerender(<TenantAdminSkillsPage />);
+    } else {
+      fireEvent.click(screen.getByRole("button", {name: "取消"}));
+    }
+    await act(async () => resolve({}));
+    expect(mocks.success).not.toHaveBeenCalled();
+  });
+
 });
