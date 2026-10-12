@@ -1,12 +1,16 @@
 """Existing Skill registration plus filesystem reconciliation; no execution facts."""
 
+import base64
+import hashlib
+import json
+import re
 from pathlib import Path
 
 from sqlalchemy import select
 
 from deerflow.database import user_config_service as service
 from deerflow.database.models import TenantSkill
-from deerflow.skills.install_receipts import abort_staged_operation, mark_registration, read_receipt, receipt_path, resume_publication, scoped_parent, verified_publication, verified_stage, write_receipt
+from deerflow.skills.install_receipts import InvalidSkillReceipt, abort_staged_operation, mark_registration, read_receipt, resume_publication, scoped_parent, verified_publication, verified_stage, write_receipt
 from deerflow.skills.installer import SkillAlreadyExistsError, prepare_skill_installation_from_archive
 from deerflow.skills.loader import get_skills_root_path
 
@@ -129,18 +133,79 @@ async def recover_operation(operation_id: str, tenant_id: str, user_id: str, sha
     return await observe_operation(operation_id, tenant_id, user_id, shared, root=root)
 
 
-async def list_operations(tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None) -> list[dict]:
+class InvalidImportCursor(ValueError):
+    pass
+
+
+_OPERATION_ID = re.compile(r"^[0-9a-f]{32}$")
+_RECEIPT_NAME = re.compile(r"^\.prismos-import-([0-9a-f]{32})\.json$")
+RECEIPT_RETENTION = {"mode": "retain_all", "automatic_deletion": False, "maintenance": "owned_stage_abort_only"}
+
+
+def _cursor_scope(tenant_id: str, user_id: str, shared: bool) -> str:
+    return hashlib.sha256(json.dumps([tenant_id, user_id, shared], separators=(",", ":")).encode()).hexdigest()
+
+
+def _decode_cursor(cursor: str, identity: str, page_size: int) -> tuple[str, str]:
+    try:
+        if len(cursor) > 512:
+            raise ValueError()
+        payload = json.loads(base64.b64decode(cursor + "=" * (-len(cursor) % 4), altchars=b"-_", validate=True))
+        if not isinstance(payload, dict) or set(payload) != {"v", "scope", "before", "ceiling", "page_size"}:
+            raise ValueError()
+        if type(payload["v"]) is not int or payload["v"] != 1 or payload["scope"] != identity or type(payload["page_size"]) is not int or payload["page_size"] != page_size:
+            raise ValueError()
+        before, ceiling = payload["before"], payload["ceiling"]
+        if not isinstance(before, str) or not isinstance(ceiling, str) or not _OPERATION_ID.fullmatch(before) or not _OPERATION_ID.fullmatch(ceiling) or before > ceiling:
+            raise ValueError()
+        return before, ceiling
+    except (ValueError, TypeError, UnicodeError):
+        raise InvalidImportCursor("Import cursor is invalid for the current identity or page size; inspect again") from None
+
+
+def _encode_cursor(identity: str, before: str, ceiling: str, page_size: int) -> str:
+    payload = {"v": 1, "scope": identity, "before": before, "ceiling": ceiling, "page_size": page_size}
+    return base64.urlsafe_b64encode(json.dumps(payload, separators=(",", ":"), sort_keys=True).encode()).decode().rstrip("=")
+
+
+async def list_operation_page(tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None, cursor: str | None = None, page_size: int = 100) -> dict:
+    if type(page_size) is not int or not 1 <= page_size <= 100:
+        raise InvalidImportCursor("Import page size must be between 1 and 100")
     _, scope = owner_and_scope(tenant_id, user_id, shared)
     root = root or get_skills_root_path()
     parent, _ = scoped_parent(root, scope)
-    records = sorted(parent.glob(".prismos-import-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    identity = _cursor_scope(tenant_id, user_id, shared)
+    before, ceiling = _decode_cursor(cursor, identity, page_size) if cursor is not None else (None, None)
+    # Immutable IDs retain their place when recovery rewrites a receipt. This is
+    # a live listing, not a frozen snapshot; refresh discovers new IDs in ranges
+    # already visited. Every old ID still present remains reachable once.
+    ids = []
+    ignored = 0
+    for path in parent.glob(".prismos-import-*.json"):
+        match = _RECEIPT_NAME.fullmatch(path.name)
+        if match:
+            ids.append(match[1])
+        else:
+            ignored += 1
+    ids.sort(reverse=True)
+    ceiling = ceiling or (ids[0] if ids else "0" * 32)
+    eligible = [value for value in ids if value <= ceiling and (before is None or value < before)]
+    selected = eligible[:page_size]
     items = []
-    for path in records[:100]:
-        operation_id = path.name.removeprefix(".prismos-import-").removesuffix(".json")
-        if receipt_path(parent, operation_id) != path:
+    for operation_id in selected:
+        try:
+            # Validate local metadata before consulting the database. A corrupt
+            # receipt is isolated; a database outage must fail the whole request.
+            read_receipt(root, scope, operation_id)
+        except (OSError, ValueError):
+            items.append({"operation_id": operation_id, "name": "", "scope": "tenant" if shared else "personal", "state": "receipt_unavailable", "files_verified": False, "registered": False, "enabled": None, "execution_ready": False})
             continue
-        items.append(await observe_operation(operation_id, tenant_id, user_id, shared, root=root))
-    return items
+        try:
+            items.append(await observe_operation(operation_id, tenant_id, user_id, shared, root=root))
+        except (InvalidSkillReceipt, FileNotFoundError):
+            items.append({"operation_id": operation_id, "name": "", "scope": "tenant" if shared else "personal", "state": "receipt_unavailable", "files_verified": False, "registered": False, "enabled": None, "execution_ready": False})
+    next_cursor = _encode_cursor(identity, selected[-1], ceiling, page_size) if len(eligible) > page_size else None
+    return {"operations": items, "next_cursor": next_cursor, "total": len(ids), "ignored_entries": ignored, "ordering": "operation_id_desc", "listing": "live_refresh_for_new_records", "retention": dict(RECEIPT_RETENTION)}
 
 
 async def abort_operation(operation_id: str, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None) -> dict:

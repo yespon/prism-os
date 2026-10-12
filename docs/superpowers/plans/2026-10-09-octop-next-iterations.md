@@ -221,3 +221,14 @@ N09-A 先实现原计划中的最小资源声明和来源 digest，并以现有 
 3. N09-C3–C5：33 个非 Skill 资源组显式绑定，真实工具/schema/PEP/Sandbox/依赖验证，18 专家与子 Agent 真实行为及独立 Office；执行快照、持久执行和委派继续依赖原 N08/M1 门。
 
 N07-B 远端 CI 与 N04 真实目标环境保持 P0，取得位置与配置引用即插入验证。完整 C1、完整 N09 和 M1 均未退出；M2 持久执行仍未实施。N01–N15、O01–O42/F01–F12 及原 PrismOS 全部规划、能力目标与退出门保持。
+
+
+### N09-C1 本地退出：分页与保留（2026-10-13）
+
+基线 `520bb13`。原默认 100 条列表新增固定标识分页、当前 actor/tenant/shared/page_size 游标和明确的实时刷新语义；恢复改写 mtime 不再造成旧记录漏读。坏收据独立显示且不读别名目标，DB 不可用仍返回请求失败。前端追加/去重/重查、晚响应失效及第一页之外的恢复结果均核对。收据全部保留、不按年龄自动删除，显式维护只允许已证明归属的自有未发布暂存 abort；已发布/未知/冲突/登记/禁用内容不猜测回滚。
+
+原 C1 各要求见 [退出审查](../evidence/2026-10-13-octop-n09-receipt-pagination/c1-exit-audit.md) 与 [Spec](../specs/2026-10-13-octop-n09-receipt-pagination.md)。最终完整后端 1,664 通过/18 跳过，当前与独立完整前端 47 文件/185 通过；当前/独立默认统一构建各 335 后端/98 前端，真实 Gateway/Auth/membership 两页及保留验收通过。SQLite 与隔离 PostgreSQL 各 46 项，126 真实操作、最旧待登记恢复、并发刷新、坏记录、权限边界和古老/禁用/放弃内容保留均核对；固定 21 宿主输入的 b5→b6→b5 各 167 项通过。902 原始迁入字节、两份锁、唯一 head 与源码制品保留，无新 schema/注册表/执行事实。实际日志、退出和摘要见 [本轮证据](../evidence/2026-10-13-octop-n09-receipt-pagination/README.md) / [validation.json](../evidence/2026-10-13-octop-n09-receipt-pagination/validation.json)。
+
+C1 按原生安装/恢复/确认/分页/保留的已定义边界本地退出；这不表示远端 CI、真实目标环境或完整 N09 已验收。下一项按 [C2 计划](2026-10-13-octop-n09-resource-lifecycle-plan.md) 先审计具体来源/拥有者/当前 ACL、Agent 引用与 UI 身份查询边界，再实施明确确认的复制/分享及禁用/撤回，不携带 Secret、审批或历史执行许可。随后依原 C3–C5、33 非 Skill 资源、18 专家/子 Agent 与独立 Office 队列继续。
+
+N07-B、N04 保持 P0；M1 未退出，N08 持久执行/委派不实施。N01–N15、O01–O42/F01–F12 和原 PrismOS 全部规划、能力目标及退出门保持。

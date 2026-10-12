@@ -8,6 +8,7 @@ import { useSkillImportContext } from "@/core/skills/import-context";
 import {
   changeSkillImportOperation,
   loadSkillImportOperations,
+  SkillImportError,
   type SkillImportOperation,
   type SkillImportScope,
 } from "@/core/skills/imports";
@@ -28,6 +29,10 @@ const states: Record<string, [string, string]> = {
   ],
   files_unverified: ["内容或位置无法核对", "Contents or location unverified"],
   aborted: ["已放弃暂存", "Staging aborted"],
+  receipt_unavailable: [
+    "记录无法核对，内容保留",
+    "Receipt unverified, contents preserved",
+  ],
 };
 
 export function SkillImportOperations({
@@ -50,6 +55,8 @@ export function SkillImportOperations({
   const [result, setResult] = useState<{
     key: string;
     operations: SkillImportOperation[];
+    nextCursor: string | null;
+    total: number;
   } | null>(null);
   const [message, setMessage] = useState<{ key: string; text: string } | null>(
     null,
@@ -75,26 +82,54 @@ export function SkillImportOperations({
     !request.signal.aborted && live.current === key && context.isCurrent();
   const allowed =
     context.identityReady && (scope === "personal" || context.canShare);
-  async function inspect() {
+  async function inspect(more = false) {
     if (!allowed || !context.isCurrent() || busy.current) return;
+    const previous = more && result?.key === key ? result : null;
+    if (more && !previous?.nextCursor) return;
     busy.current = true;
     controller.current?.abort();
     const request = new AbortController();
     controller.current = request;
-    setWorking("inspect");
+    setWorking(more ? "more" : "inspect");
     setMessage(null);
     setConfirm(null);
     try {
-      const body = await loadSkillImportOperations(scope, request.signal);
-      if (valid(request)) setResult({ key, operations: body.operations });
-    } catch {
-      if (valid(request))
+      const body = await loadSkillImportOperations(
+        scope,
+        request.signal,
+        previous?.nextCursor ?? undefined,
+      );
+      if (valid(request)) {
+        const merged = new Map(
+          (previous?.operations ?? []).map((operation) => [
+            operation.operation_id,
+            operation,
+          ]),
+        );
+        for (const operation of body.operations)
+          merged.set(operation.operation_id, operation);
+        setResult({
+          key,
+          operations: Array.from(merged.values()),
+          nextCursor: body.next_cursor ?? null,
+          total: body.total ?? body.operations.length,
+        });
+      }
+    } catch (error) {
+      if (valid(request)) {
+        if (
+          !more ||
+          (error instanceof SkillImportError &&
+            [400, 401, 403].includes(error.status))
+        )
+          setResult(null);
         setMessage({
           key,
           text: zh
             ? "记录核对失败，请重试。"
             : "Import records unavailable. Please retry.",
         });
+      }
     } finally {
       if (valid(request)) {
         busy.current = false;
@@ -119,16 +154,28 @@ export function SkillImportOperations({
     setWorking(selected.action);
     setMessage(null);
     try {
-      await changeSkillImportOperation(
+      const outcome = await changeSkillImportOperation(
         scope,
         selected.operation.operation_id,
         selected.action,
         request.signal,
       );
       if (!valid(request)) return;
+      if (outcome.operation_id !== selected.operation.operation_id)
+        throw new SkillImportError(503);
       const body = await loadSkillImportOperations(scope, request.signal);
       if (!valid(request)) return;
-      setResult({ key, operations: body.operations });
+      const operations = body.operations.some(
+        (operation) => operation.operation_id === outcome.operation_id,
+      )
+        ? body.operations
+        : [outcome, ...body.operations];
+      setResult({
+        key,
+        operations,
+        nextCursor: body.next_cursor ?? null,
+        total: body.total ?? body.operations.length,
+      });
       setMessage({
         key,
         text: zh
@@ -159,6 +206,7 @@ export function SkillImportOperations({
     }
   }
   const visible = result?.key === key ? result.operations : null;
+  const nextCursor = result?.key === key ? result.nextCursor : null;
   const choice = confirm?.key === key ? confirm : null;
   if (!open) return null;
   return (
@@ -201,7 +249,9 @@ export function SkillImportOperations({
           {visible.map((operation) => (
             <li className="rounded border p-2" key={operation.operation_id}>
               <p>
-                {operation.name} ·{" "}
+                {operation.name ||
+                  (zh ? "无法核对的记录" : "Unverified receipt")}{" "}
+                ·{" "}
                 {
                   (states[operation.state] ?? ["待核对", "Needs inspection"])[
                     zh ? 0 : 1
@@ -252,6 +302,29 @@ export function SkillImportOperations({
           ))}
         </ul>
       )}
+      {visible && (
+        <p>
+          {zh
+            ? `已检查 ${visible.length} 条 / 当前 ${result?.total ?? 0} 条；所有记录均保留。新产生的记录请重新检查。`
+            : `Inspected ${visible.length} / ${result?.total ?? 0} current records. All receipts are retained; inspect again for new records.`}
+        </p>
+      )}
+      {nextCursor && (
+        <Button
+          type="button"
+          variant="outline"
+          disabled={!allowed || !!working}
+          onClick={() => void inspect(true)}
+        >
+          {working === "more"
+            ? zh
+              ? "正在加载…"
+              : "Loading…"
+            : zh
+              ? "加载更多记录"
+              : "Load more records"}
+        </Button>
+      )}
       {choice && (
         <div
           role="group"
@@ -280,7 +353,7 @@ export function SkillImportOperations({
           </Button>
         </div>
       )}
-      {working && working !== "inspect" && (
+      {working && working !== "inspect" && working !== "more" && (
         <p role="status">
           {zh
             ? "正在处理；离开页面后请重新核对结果。"

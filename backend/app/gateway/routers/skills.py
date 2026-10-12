@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 import yaml
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
@@ -788,9 +788,17 @@ def _import_identity(request: Request) -> tuple[str, str]:
     return tenant, user
 
 
-async def _import_operations(request: Request, shared: bool):
+async def _import_operations(request: Request, shared: bool, cursor: str | None, page_size: int):
     tenant, user = _import_identity(request)
-    return {"operations": await skill_imports.list_operations(tenant, user, shared, root=get_skills_root_path())}
+    try:
+        return await skill_imports.list_operation_page(tenant, user, shared, root=get_skills_root_path(), cursor=cursor, page_size=page_size)
+    except skill_imports.InvalidImportCursor as error:
+        raise HTTPException(400, str(error)) from None
+    except ValueError:
+        raise HTTPException(409, "Skill import scope cannot be verified; contents were preserved") from None
+    except Exception:
+        logger.exception("Skill import inspection did not complete")
+        raise HTTPException(503, "Import records unavailable; inspect again before taking action") from None
 
 
 async def _import_operation(request: Request, operation_id: str, shared: bool, recover: bool = False, abort: bool = False):
@@ -808,8 +816,8 @@ async def _import_operation(request: Request, operation_id: str, shared: bool, r
 
 
 @router.get("/skills/personal/imports")
-async def personal_import_operations(request: Request):
-    return await _import_operations(request, False)
+async def personal_import_operations(request: Request, cursor: str | None = Query(default=None, max_length=512), page_size: int = Query(default=100, ge=1, le=100)):
+    return await _import_operations(request, False, cursor, page_size)
 
 
 @router.get("/skills/personal/imports/{operation_id}")
@@ -828,8 +836,8 @@ async def abort_personal_import(request: Request, operation_id: str):
 
 
 @router.get("/tenants/skills/imports", dependencies=[Depends(require_tenant_admin)])
-async def tenant_import_operations(request: Request):
-    return await _import_operations(request, True)
+async def tenant_import_operations(request: Request, cursor: str | None = Query(default=None, max_length=512), page_size: int = Query(default=100, ge=1, le=100)):
+    return await _import_operations(request, True, cursor, page_size)
 
 
 @router.get("/tenants/skills/imports/{operation_id}", dependencies=[Depends(require_tenant_admin)])

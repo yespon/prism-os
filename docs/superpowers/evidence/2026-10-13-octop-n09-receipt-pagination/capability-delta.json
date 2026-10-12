@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-13",
+  "baseline": "520bb131f56585c7e0621962d4c60e8e27cd3d15",
+  "scope": "N09-C1 stable receipt pagination and retention",
+  "c1_local_complete": true,
+  "delivered": [
+    "all existing receipts reachable beyond 100 without mtime sorting",
+    "opaque actor/tenant/shared/page-size cursor with explicit live refresh semantics",
+    "bad records isolated without reading alias targets or hiding good records",
+    "database inspection failures return unavailable",
+    "front-end page append/deduplicate/retry and lifecycle isolation",
+    "recovered old operation remains visible",
+    "retain_all and owned-stage-only maintenance policy",
+    "full local C1 requirements audited"
+  ],
+  "execution_permission_grants": false,
+  "new_schema": false,
+  "remaining": [
+    "C2-C5",
+    "full N09",
+    "N04/M1",
+    "remote CI"
+  ],
+  "original_scope_preserved": true
+}

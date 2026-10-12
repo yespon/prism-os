@@ -2,9 +2,11 @@
 
 import asyncio
 import io
+import json
 import os
 import shutil
 import threading
+import uuid
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 
@@ -22,14 +24,14 @@ from app.gateway.routers import agent_catalog, skills
 from app.integrations import skill_imports
 from deerflow.database import user_config_service
 from deerflow.database.models import TenantSkill
-from deerflow.skills import installer
+from deerflow.skills import install_receipts, installer
 
 
-def archive_bytes():
+def archive_bytes(name="demo-skill"):
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w") as archive:
-        archive.writestr("demo-skill/SKILL.md", "---\nname: demo-skill\ndescription: Recovery fixture\n---\n# Demo\n")
-        archive.writestr("demo-skill/payload.txt", "complete contents")
+        archive.writestr(f"{name}/SKILL.md", f"---\nname: {name}\ndescription: Recovery fixture\n---\n# Demo\n")
+        archive.writestr(f"{name}/payload.txt", "complete contents")
     return output.getvalue()
 
 
@@ -527,3 +529,212 @@ def test_replaced_stage_cannot_be_aborted_or_published(scoped_client, tmp_path):
     assert http.post(url + "/abort").status_code == 409
     assert http.post(url + "/recover").status_code == 409
     assert (stage / "payload.txt").read_text() == "complete contents"
+
+
+def install_pending(root, tmp_path, monkeypatch, number):
+    name = f"pending-{number}"
+    source = tmp_path / f"{name}.zip"
+    source.write_bytes(archive_bytes(name))
+    with monkeypatch.context() as patch:
+        patch.setattr(install_receipts.uuid, "uuid4", lambda: uuid.UUID(int=number))
+        result = installer.install_skill_from_archive(source, skills_root=root, target_relative_path="tenant-a/user-a")
+    return result["operation_id"]
+
+
+def pages(http, *, cursor=None, page_size=17, headers=None):
+    seen = []
+    while True:
+        params = {"page_size": page_size}
+        if cursor:
+            params["cursor"] = cursor
+        response = http.get("/api/skills/personal/imports", params=params, headers=headers)
+        assert response.status_code == 200, response.text
+        body = response.json()
+        seen.extend(body["operations"])
+        cursor = body["next_cursor"]
+        if cursor is None:
+            return seen
+
+
+def test_pagination_reaches_an_old_pending_import_beyond_one_hundred(scoped_client, tmp_path, monkeypatch):
+    http, factory, root = scoped_client
+    oldest = install_pending(root, tmp_path, monkeypatch, 1)
+    for number in range(2, 127):
+        with monkeypatch.context() as patch:
+            patch.setattr(install_receipts.uuid, "uuid4", lambda: uuid.UUID(int=number))
+            response = http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes(f"registered-{number}"))})
+            assert response.status_code == 201, response.text
+    parent = root / "custom/tenant-a/user-a"
+    receipt = install_receipts.receipt_path(parent, oldest)
+    os.utime(receipt, (1, 1))
+    before = {p.name: p.read_bytes() for p in parent.glob(".prismos-import-*.json")}
+    first = http.get("/api/skills/personal/imports").json()
+    assert len(first["operations"]) == 100 and first["total"] == 126 and first["next_cursor"]
+    assert first["retention"] == {"mode": "retain_all", "automatic_deletion": False, "maintenance": "owned_stage_abort_only"}
+    entries = pages(http)
+    ids = [item["operation_id"] for item in entries]
+    assert len(ids) == len(set(ids)) == 126 and ids[-1] == oldest
+    assert entries[-1]["state"] == "registration_pending"
+    assert before == {p.name: p.read_bytes() for p in parent.glob(".prismos-import-*.json")}
+    assert http.post(f"/api/skills/personal/imports/{oldest}/recover").json()["registered"]
+    async def imported_rows():
+        async with factory() as session:
+            result = await session.exec(select(TenantSkill))
+            return result.scalars().all()
+
+    assert len(asyncio.run(imported_rows())) == 126
+
+
+def test_live_cursor_is_stable_through_recovery_and_concurrent_new_imports(scoped_client, tmp_path, monkeypatch):
+    http, _, root = scoped_client
+    original = {install_pending(root, tmp_path, monkeypatch, number) for number in [100, 200, 300, 400]}
+    first = http.get("/api/skills/personal/imports", params={"page_size": 2}).json()
+    visited = [item["operation_id"] for item in first["operations"]]
+    assert http.post(f"/api/skills/personal/imports/{visited[0]}/recover").json()["registered"]
+    inserted = {install_pending(root, tmp_path, monkeypatch, number) for number in [150, 350, 500]}
+    rest = pages(http, cursor=first["next_cursor"], page_size=2)
+    all_visited = visited + [item["operation_id"] for item in rest]
+    assert len(all_visited) == len(set(all_visited)) and original <= set(all_visited)
+    refreshed = pages(http, page_size=2)
+    assert {item["operation_id"] for item in refreshed} == original | inserted
+    assert next(item for item in refreshed if item["operation_id"] == visited[0])["registered"]
+
+
+def test_import_cursor_cannot_cross_user_tenant_scope_or_page_size(scoped_client, tmp_path, monkeypatch):
+    http, _, root = scoped_client
+    for number in [1, 2]:
+        install_pending(root, tmp_path, monkeypatch, number)
+    cursor = http.get("/api/skills/personal/imports", params={"page_size": 1}).json()["next_cursor"]
+    for headers in [{"x-user-id": "user-b"}, {"x-tenant-id": "tenant-b"}]:
+        assert http.get("/api/skills/personal/imports", params={"cursor": cursor, "page_size": 1}, headers=headers).status_code == 400
+    assert http.get("/api/skills/personal/imports", params={"cursor": cursor, "page_size": 2}).status_code == 400
+    assert http.get("/api/tenants/skills/imports", params={"cursor": cursor, "page_size": 1}).status_code == 403
+    assert http.get("/api/tenants/skills/imports", params={"cursor": cursor, "page_size": 1}, headers={"x-tenant-role": "tenant_admin"}).status_code == 400
+    assert http.get("/api/skills/personal/imports", params={"cursor": cursor}, headers={"x-user-id": ""}).status_code == 401
+
+
+@pytest.mark.parametrize("cursor", ["", "broken", "a" * 513, "e30"])
+def test_invalid_import_cursor_is_rejected_without_creating_storage(scoped_client, cursor):
+    http, _, root = scoped_client
+    response = http.get("/api/skills/personal/imports", params={"cursor": cursor})
+    assert response.status_code in {400, 422}
+    assert not (root / "custom").exists()
+
+
+@pytest.mark.parametrize("payload", [None, [], "private text", {}, {"skill_name": []}, {"state": []}, {"state": "invented"}])
+def test_bad_receipt_is_isolated_and_does_not_hide_a_recoverable_import(scoped_client, tmp_path, monkeypatch, payload):
+    http, _, root = scoped_client
+    operation = install_pending(root, tmp_path, monkeypatch, 1)
+    bad = root / "custom/tenant-a/user-a" / (".prismos-import-" + "f" * 32 + ".json")
+    bad.write_text(json.dumps(payload))
+    original = bad.read_bytes()
+    first = http.get("/api/skills/personal/imports", params={"page_size": 1}).json()
+    item = first["operations"][0]
+    assert item["state"] == "receipt_unavailable" and item["name"] == "" and not item["registered"]
+    next_page = pages(http, cursor=first["next_cursor"], page_size=1)
+    assert next_page[0]["operation_id"] == operation and next_page[0]["files_verified"]
+    assert http.post(f"/api/skills/personal/imports/{operation}/recover").json()["registered"]
+    assert bad.read_bytes() == original
+
+
+def test_alias_and_invalid_receipt_names_are_preserved_without_reading_targets(scoped_client, tmp_path, monkeypatch):
+    http, _, root = scoped_client
+    operation = install_pending(root, tmp_path, monkeypatch, 1)
+    parent = root / "custom/tenant-a/user-a"
+    outside = tmp_path / "private.json"
+    outside.write_text('{"secret":"private target"}')
+    alias = parent / (".prismos-import-" + "f" * 32 + ".json")
+    alias.symlink_to(outside)
+    ignored = parent / ".prismos-import-private-label.json"
+    ignored.write_text("private name")
+    original_read = type(outside).read_text
+
+    def guarded(path, *args, **kwargs):
+        if path in {alias, ignored, outside}:
+            raise AssertionError("An untrusted receipt target was read")
+        return original_read(path, *args, **kwargs)
+
+    monkeypatch.setattr(type(outside), "read_text", guarded)
+    response = http.get("/api/skills/personal/imports")
+    assert response.status_code == 200 and response.json()["ignored_entries"] == 1
+    assert "private target" not in response.text and "private-label" not in response.text
+    assert next(item for item in response.json()["operations"] if item["operation_id"] == operation)["files_verified"]
+    assert alias.is_symlink() and ignored.exists() and outside.exists()
+
+
+def test_database_failure_does_not_masquerade_as_a_damaged_receipt(scoped_client, tmp_path, monkeypatch):
+    http, _, root = scoped_client
+    operation = install_pending(root, tmp_path, monkeypatch, 1)
+
+    async def unavailable(*args, **kwargs):
+        raise RuntimeError("injected database inspection outage")
+
+    monkeypatch.setattr(skill_imports, "current_row", unavailable)
+    response = http.get("/api/skills/personal/imports")
+    assert response.status_code == 503 and "operations" not in response.json()
+    assert (root / "custom/tenant-a/user-a" / (".prismos-import-" + operation + ".json")).is_file()
+
+
+def test_registered_disabled_aborted_and_ancient_receipts_are_retained(scoped_client, tmp_path):
+    http, factory, root = scoped_client
+    assert http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes())}).status_code == 201
+    assert http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes())}).status_code == 409
+
+    async def disable():
+        async with factory() as session:
+            result = await session.exec(select(TenantSkill))
+            row = result.scalars().one()
+            row.enabled = False
+            session.add(row)
+            await session.commit()
+
+    asyncio.run(disable())
+    parent = root / "custom/tenant-a/user-a"
+    before = {p.name: p.read_bytes() for p in parent.glob(".prismos-import-*.json")}
+    for path in parent.glob(".prismos-import-*.json"):
+        os.utime(path, (1, 1))
+    entries = pages(http, page_size=1)
+    assert len(entries) == 2 and {item["state"] for item in entries} == {"registered", "aborted"}
+    assert next(item for item in entries if item["registered"])["enabled"] is False
+    assert before == {p.name: p.read_bytes() for p in parent.glob(".prismos-import-*.json")}
+    assert (parent / "demo-skill/payload.txt").read_text() == "complete contents"
+
+
+def test_shared_pagination_requires_current_admin_and_binds_cursor_to_actor(scoped_client):
+    http, _, root = scoped_client
+    admin = {"x-tenant-role": "tenant_admin"}
+    for name in ["shared-one", "shared-two"]:
+        assert http.post("/api/tenants/skills/import", files={"archive": ("source.zip", archive_bytes(name))}, headers=admin).status_code == 201
+    first = http.get("/api/tenants/skills/imports", params={"page_size": 1}, headers=admin).json()
+    assert first["operations"][0]["scope"] == "tenant" and first["next_cursor"]
+    params = {"page_size": 1, "cursor": first["next_cursor"]}
+    second = http.get("/api/tenants/skills/imports", params=params, headers=admin).json()
+    assert second["next_cursor"] is None and second["operations"][0]["operation_id"] != first["operations"][0]["operation_id"]
+    assert http.get("/api/tenants/skills/imports", params=params).status_code == 403
+    assert http.get("/api/tenants/skills/imports", params=params, headers={**admin, "x-user-id": "user-b"}).status_code == 400
+    assert http.get("/api/tenants/skills/imports", params=params, headers={**admin, "x-tenant-id": "tenant-b"}).status_code == 400
+    assert len(http.get("/api/tenants/skills/imports", headers={**admin, "x-user-id": "user-b"}).json()["operations"]) == 2
+    assert not (root / "custom/tenant-a/user-b").exists()
+
+
+def test_receipt_corrupted_between_listing_checks_is_isolated(scoped_client, tmp_path, monkeypatch):
+    http, _, root = scoped_client
+    operation = install_pending(root, tmp_path, monkeypatch, 1)
+    other = install_pending(root, tmp_path, monkeypatch, 2)
+    read = skill_imports.read_receipt
+    calls = 0
+
+    def racing_read(skills_root, scope, identifier):
+        nonlocal calls
+        if identifier == operation:
+            calls += 1
+            if calls == 2:
+                install_receipts.receipt_path(root / "custom/tenant-a/user-a", operation).write_text("[]")
+        return read(skills_root, scope, identifier)
+
+    monkeypatch.setattr(skill_imports, "read_receipt", racing_read)
+    response = http.get("/api/skills/personal/imports")
+    assert response.status_code == 200
+    entries = {item["operation_id"]: item for item in response.json()["operations"]}
+    assert entries[operation]["state"] == "receipt_unavailable"
+    assert entries[other]["files_verified"]

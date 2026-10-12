@@ -20,6 +20,10 @@ _NAME = re.compile(r"^[a-z0-9-]+$")
 SCHEMA = "prismos.skill-install.v1"
 
 
+class InvalidSkillReceipt(ValueError):
+    pass
+
+
 def scoped_parent(root: Path, scope: str | Path | None, *, create: bool = False) -> tuple[Path, Path]:
     relative = Path(scope) if scope is not None else Path()
     if relative.is_absolute() or ".." in relative.parts:
@@ -143,15 +147,21 @@ def read_receipt(root: Path, scope: str | Path | None, operation_id: str) -> dic
     if not path.is_file():
         raise FileNotFoundError("Skill import operation not found")
     if path.is_symlink() or path.resolve() != path.absolute():
-        raise ValueError("Skill import receipt alias is unavailable")
+        raise InvalidSkillReceipt("Skill import receipt alias is unavailable")
     try:
         value = json.loads(path.read_text())
     except (OSError, ValueError):
-        raise ValueError("Skill import receipt is unavailable") from None
-    if value.get("schema_version") != SCHEMA or value.get("operation_id") != operation_id or value.get("scope") != relative.as_posix() or not _NAME.fullmatch(value.get("skill_name", "")):
-        raise ValueError("Skill import receipt scope is unavailable")
+        raise InvalidSkillReceipt("Skill import receipt is unavailable") from None
+    if not isinstance(value, dict):
+        raise InvalidSkillReceipt("Skill import receipt is unavailable")
+    name = value.get("skill_name")
+    state = value.get("state")
+    if not isinstance(name, str) or not isinstance(state, str) or state not in {"allocated", "staging", "prepared", "published", "registered", "registration_observed", "registration_unknown", "aborted"}:
+        raise InvalidSkillReceipt("Skill import receipt state is unavailable")
+    if value.get("schema_version") != SCHEMA or value.get("operation_id") != operation_id or value.get("scope") != relative.as_posix() or not _NAME.fullmatch(name):
+        raise InvalidSkillReceipt("Skill import receipt scope is unavailable")
     if value.get("stage_name") != f".prismos-stage-{operation_id}":
-        raise ValueError("Skill import receipt stage is unavailable")
+        raise InvalidSkillReceipt("Skill import receipt stage is unavailable")
     return value
 
 

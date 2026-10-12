@@ -1,0 +1,119 @@
+{
+  "date": "2026-10-13",
+  "baseline": "520bb131f56585c7e0621962d4c60e8e27cd3d15",
+  "scope": "N09-C1 pagination, retention and local exit audit",
+  "local_verified": true,
+  "n09_c1_local_exit": true,
+  "full_n09_c1_complete": true,
+  "full_n09_complete": false,
+  "m1_exit": false,
+  "remote_ci_verified": false,
+  "live_model_tool_webhook_verified": false,
+  "current_batch_compose_verified": false,
+  "m2_persistent_implementation_started": false,
+  "backend_full": {
+    "passed": 1664,
+    "skipped": 18,
+    "warnings": 29
+  },
+  "frontend_full": {
+    "files": 47,
+    "passed": 185,
+    "current_and_independent": true
+  },
+  "octop_build": {
+    "backend": 335,
+    "frontend": 98,
+    "current_make_exit": 0,
+    "independent_make_exit": 0,
+    "logs_verified": true,
+    "real_gateway_auth_membership_pagination_retention": true,
+    "migration_head": "n8h9i0j1k2l3",
+    "compiler": "webpack",
+    "strict_typecheck_before_compilation": true
+  },
+  "fault_acceptance": {
+    "sqlite_cases": 46,
+    "postgres_cases": 46,
+    "real_operations_in_large_page_test": 126,
+    "all_rows_and_actual_files_checked": true,
+    "existing_ids_reachable_once_despite_recovery": true,
+    "new_ids_found_after_refresh": true,
+    "actor_tenant_shared_page_size_bound": true,
+    "bad_receipt_isolated": true,
+    "database_failure_not_partial_success": true,
+    "old_disabled_aborted_records_retained": true
+  },
+  "retention": {
+    "mode": "retain_all",
+    "automatic_deletion": false,
+    "maintenance": "owned_stage_abort_only",
+    "ownership_change_after_backup_requires_original_restore_resource_gate": true
+  },
+  "listing": {
+    "ordering": "operation_id_desc",
+    "mode": "live_refresh_for_new_records",
+    "default_page_size": 100,
+    "max_page_size": 100,
+    "snapshot_claimed": false
+  },
+  "upgrade": {
+    "host_inputs": 21,
+    "passed_each": 167,
+    "stages": [
+      "0.3.0b5",
+      "b6",
+      "0.3.0b5"
+    ],
+    "rollback_verified": true,
+    "host_changed": false
+  },
+  "candidate": {
+    "code_inputs": 9,
+    "current_independent_index_hashes_match": true,
+    "original_source_members": 902
+  },
+  "artifacts": {
+    "current": {
+      "trace_files": 50,
+      "references": 15690,
+      "outside_frontend": 0,
+      "sha256": {
+        "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+        "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+        "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+        "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+      },
+      "verified": true
+    },
+    "independent": {
+      "trace_files": 50,
+      "references": 15604,
+      "outside_frontend": 0,
+      "sha256": {
+        "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+        "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+        "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+        "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+      },
+      "verified": true
+    }
+  },
+  "new_schema": false,
+  "execution_permission_grants": false,
+  "static_checks": {
+    "backend_ruff": true,
+    "frontend_eslint": true
+  },
+  "remaining": [
+    "N09-C2 ownership sharing copying disable withdrawal",
+    "N09-C3 through C5 and original full N09",
+    "N04/M1 and remote CI"
+  ],
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

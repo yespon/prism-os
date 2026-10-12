@@ -309,3 +309,173 @@ it.each(["read", "recover"])(
     expect(mock.load).toHaveBeenCalledTimes(1);
   },
 );
+
+it("appends pages once and displays retained receipts without treating them as execution rights", async () => {
+  mock.load.mockResolvedValueOnce({
+    operations: [pendingOperation],
+    next_cursor: "next-a",
+    total: 126,
+  });
+  mock.load.mockResolvedValueOnce({
+    operations: [
+      pendingOperation,
+      {
+        ...pendingOperation,
+        operation_id: "old-operation",
+        name: "old-pending",
+      },
+    ],
+    next_cursor: null,
+    total: 126,
+  });
+  render(wrapped(<SkillImportOperations scope="personal" locale="zh" />));
+  fireEvent.click(screen.getByRole("button", { name: "检查导入记录" }));
+  await screen.findByRole("button", { name: "加载更多记录" });
+  fireEvent.click(screen.getByRole("button", { name: "加载更多记录" }));
+  await screen.findByText(/old-pending/);
+  expect(mock.load).toHaveBeenLastCalledWith(
+    "personal",
+    expect.any(AbortSignal),
+    "next-a",
+  );
+  expect(screen.getAllByText("operation-a")).toHaveLength(1);
+  expect(screen.getByText(/已检查 2 条 \/ 当前 126 条/)).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "加载更多记录" }),
+  ).not.toBeInTheDocument();
+});
+it("preserves inspected pages after a transient more-page read failure and can retry that cursor", async () => {
+  mock.load.mockResolvedValueOnce({
+    operations: [pendingOperation],
+    next_cursor: "next-a",
+    total: 126,
+  });
+  mock.load.mockRejectedValueOnce(new SkillImportError(503));
+  mock.load.mockResolvedValueOnce({
+    operations: [
+      { ...pendingOperation, operation_id: "old", name: "old-pending" },
+    ],
+    next_cursor: null,
+    total: 126,
+  });
+  render(wrapped(<SkillImportOperations scope="personal" locale="zh" />));
+  fireEvent.click(screen.getByRole("button", { name: "检查导入记录" }));
+  fireEvent.click(await screen.findByRole("button", { name: "加载更多记录" }));
+  await screen.findByText(/记录核对失败/);
+  expect(screen.getByText("operation-a")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "加载更多记录" }));
+  await screen.findByText(/old-pending/);
+  expect(mock.load).toHaveBeenLastCalledWith(
+    "personal",
+    expect.any(AbortSignal),
+    "next-a",
+  );
+});
+it("an invalid cursor clears actionable records and requires a fresh inspection", async () => {
+  mock.load.mockResolvedValueOnce({
+    operations: [pendingOperation],
+    next_cursor: "next-a",
+    total: 126,
+  });
+  mock.load.mockRejectedValueOnce(new SkillImportError(400));
+  render(wrapped(<SkillImportOperations scope="personal" locale="zh" />));
+  fireEvent.click(screen.getByRole("button", { name: "检查导入记录" }));
+  fireEvent.click(await screen.findByRole("button", { name: "加载更多记录" }));
+  await screen.findByText(/记录核对失败/);
+  expect(screen.queryByText("operation-a")).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "加载更多记录" }),
+  ).not.toBeInTheDocument();
+});
+it.each(["identity", "close"])(
+  "ignores a late additional page after %s change",
+  async (kind) => {
+    mock.load.mockResolvedValueOnce({
+      operations: [pendingOperation],
+      next_cursor: "next-a",
+      total: 126,
+    });
+    const request = deferred<{
+      operations: SkillImportOperation[];
+      next_cursor: null;
+      total: number;
+    }>();
+    mock.load.mockReturnValueOnce(request.promise);
+    const client = new QueryClient();
+    const view = render(
+      wrapped(<SkillImportOperations scope="personal" locale="zh" />, client),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "检查导入记录" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "加载更多记录" }),
+    );
+    const signal = mock.load.mock.calls[1]?.[1] as AbortSignal;
+    if (kind === "identity") mock.key = "tenant-b/user-a";
+    view.rerender(
+      wrapped(
+        <SkillImportOperations
+          scope="personal"
+          locale="zh"
+          open={kind !== "close"}
+        />,
+        client,
+      ),
+    );
+    await act(async () =>
+      request.resolve({
+        operations: [{ ...pendingOperation, name: "late private receipt" }],
+        next_cursor: null,
+        total: 126,
+      }),
+    );
+    expect(signal.aborted).toBe(true);
+    expect(screen.queryByText(/late private receipt/)).not.toBeInTheDocument();
+  },
+);
+it("isolates a damaged receipt without offering recovery or abort", async () => {
+  mock.load.mockResolvedValueOnce({
+    operations: [
+      {
+        ...pendingOperation,
+        name: "",
+        state: "receipt_unavailable",
+        phase: undefined,
+        files_verified: false,
+      },
+    ],
+    next_cursor: null,
+    total: 1,
+  });
+  render(wrapped(<SkillImportOperations scope="personal" locale="zh" />));
+  fireEvent.click(screen.getByRole("button", { name: "检查导入记录" }));
+  await screen.findByText(/记录无法核对/);
+  expect(
+    screen.queryByRole("button", { name: "继续核对并登记" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "放弃自有暂存" }),
+  ).not.toBeInTheDocument();
+});
+it("keeps the recovered old receipt visible when it is outside the first refreshed page", async () => {
+  mock.load.mockResolvedValueOnce({
+    operations: [pendingOperation],
+    next_cursor: "next-a",
+    total: 126,
+  });
+  mock.load.mockResolvedValueOnce({
+    operations: [],
+    next_cursor: "first-page",
+    total: 126,
+  });
+  render(wrapped(<SkillImportOperations scope="personal" locale="zh" />));
+  fireEvent.click(screen.getByRole("button", { name: "检查导入记录" }));
+  fireEvent.click(
+    await screen.findByRole("button", { name: "继续核对并登记" }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "确认操作" }));
+  await screen.findByText(/已登记/);
+  expect(screen.getByText("operation-a")).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "继续核对并登记" }),
+  ).not.toBeInTheDocument();
+});

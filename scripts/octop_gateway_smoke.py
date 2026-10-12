@@ -243,6 +243,17 @@ for module in (loader,skills,skill_imports,resource_installations,installer):
                 assert operation_status[1]["registered"]
                 assert request(operation_url + "/recover", token=token, method="POST")[1]["registered"]
                 assert request(install_url, install_body, token)[0] == 409
+                list_url = "/api/skills/personal/imports?page_size=1"
+                assert request(list_url)[0] == 401
+                code, first_page = request(list_url, token=token)
+                assert code == 200 and first_page["next_cursor"] and first_page["total"] == 2
+                assert first_page["retention"] == {"mode": "retain_all", "automatic_deletion": False, "maintenance": "owned_stage_abort_only"}
+                cursor_url = list_url + "&cursor=" + first_page["next_cursor"]
+                code, second_page = request(cursor_url, token=token)
+                assert code == 200 and second_page["next_cursor"] is None
+                assert first_page["operations"][0]["operation_id"] != second_page["operations"][0]["operation_id"]
+                assert {item["operation_id"] for item in first_page["operations"] + second_page["operations"]} >= {imported["operation_id"]}
+                assert request("/api/tenants/skills/imports?page_size=1&cursor=" + first_page["next_cursor"], token=token)[0] == 403
                 code, after_install = request("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", token=token)
                 assert code == 200
                 installed = next(r for r in after_install["resources"] if r["id"] == source_skill["id"])
@@ -277,7 +288,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer):
                     "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,
                     "temporary_skill_root": True,
-                    "explicit_source_install_and_recovery": True,
+                    "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True,
                     "installation_does_not_bind_agent_or_grant_execution": True,
                 }
                 if args.output:

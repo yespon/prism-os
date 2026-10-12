@@ -13,6 +13,11 @@ export interface SkillImportOperation {
   enabled: boolean | null;
   execution_ready: false;
 }
+export interface SkillImportPage {
+  operations: SkillImportOperation[];
+  next_cursor: string | null;
+  total: number;
+}
 export class SkillImportError extends Error {
   constructor(
     public status: number,
@@ -58,11 +63,24 @@ function importsUrl(scope: SkillImportScope) {
 export async function loadSkillImportOperations(
   scope: SkillImportScope,
   signal: AbortSignal,
+  cursor?: string,
 ) {
-  return readSkillImportResponse<{ operations: SkillImportOperation[] }>(
-    await fetchAuthApi(importsUrl(scope), { signal }),
+  const url =
+    importsUrl(scope) + (cursor ? `?${new URLSearchParams({ cursor })}` : "");
+  const page = await readSkillImportResponse<SkillImportPage>(
+    await fetchAuthApi(url, { signal }),
   );
+  if (
+    !page ||
+    !Array.isArray(page.operations) ||
+    (page.next_cursor !== null && typeof page.next_cursor !== "string") ||
+    !Number.isSafeInteger(page.total) ||
+    page.total < 0
+  )
+    throw new SkillImportError(503);
+  return page;
 }
+
 export async function changeSkillImportOperation(
   scope: SkillImportScope,
   operation: string,

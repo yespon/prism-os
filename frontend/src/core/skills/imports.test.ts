@@ -6,6 +6,7 @@ import {
   readSkillImportResponse,
   skillImportErrorMessage,
   changeSkillImportOperation,
+  loadSkillImportOperations,
 } from "./imports";
 const mock = vi.hoisted(() => ({ fetch: vi.fn() }));
 vi.mock("@/core/api/auth-client", () => ({
@@ -92,3 +93,35 @@ it("keeps thread install failure compatible with its string message contract and
     operation_id: "receipt-a",
   });
 });
+
+it("uses the opaque cursor in the current authenticated scope and preserves cancellation", async () => {
+  mock.fetch.mockResolvedValueOnce(
+    new Response(
+      JSON.stringify({ operations: [], next_cursor: null, total: 126 }),
+    ),
+  );
+  const controller = new AbortController();
+  await loadSkillImportOperations(
+    "tenant",
+    controller.signal,
+    "opaque/+cursor",
+  );
+  expect(mock.fetch).toHaveBeenCalledWith(
+    "/api/tenants/skills/imports?cursor=opaque%2F%2Bcursor",
+    { signal: controller.signal },
+  );
+});
+it.each([
+  { operations: [], total: 0 },
+  { operations: null, next_cursor: null, total: 0 },
+  { operations: [], next_cursor: 123, total: 0 },
+  { operations: [], next_cursor: null, total: -1 },
+])(
+  "rejects an incomplete or malformed page rather than claiming all records were checked",
+  async (page) => {
+    mock.fetch.mockResolvedValueOnce(new Response(JSON.stringify(page)));
+    await expect(
+      loadSkillImportOperations("personal", new AbortController().signal),
+    ).rejects.toMatchObject({ status: 503 });
+  },
+);
