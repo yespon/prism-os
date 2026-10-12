@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 import secrets
@@ -15,6 +16,7 @@ import tempfile
 import time
 import urllib.error
 import urllib.request
+import zipfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -231,6 +233,21 @@ def main():
                     resource_files += resources["member_count"]
                 assert resource_files == 297
                 with sqlite3.connect(directory / "tenant.db") as database:
+                    config_count_before = database.execute("SELECT count(*) FROM user_configs").fetchone()[0]
+                code, scoped = request("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", token=token)
+                assert code == 200 and scoped["installation_checked"] and not scoped["permission_grants"]
+                source_skill = next(r for r in scoped["resources"] if r["kind"] == "skill_bundle")
+                archive_url = "/api/agent-catalog/templates/expert:ai-coding-coach/resources/" + source_skill["id"] + "/archive"
+                assert request(archive_url)[0] == 401
+                code, package = request(archive_url, token=token, raw=True)
+                assert code == 200
+                with zipfile.ZipFile(io.BytesIO(package)) as archive:
+                    assert all(name.startswith(source_skill["host_adaptation"]["name"] + "/") for name in archive.namelist())
+                    assert any(name.endswith("/PRISMOS_ORIGIN.json") for name in archive.namelist())
+                    assert any(name.endswith("/LICENSE.octop") for name in archive.namelist())
+                with sqlite3.connect(directory / "tenant.db") as database:
+                    assert database.execute("SELECT count(*) FROM user_configs").fetchone()[0] == config_count_before
+                with sqlite3.connect(directory / "tenant.db") as database:
                     source = json.loads(
                         database.execute(
                             "SELECT metadata FROM custom_agents WHERE id=?",
@@ -252,6 +269,9 @@ def main():
                     "duplicate_persona_prevented": True,
                     "questionnaire_readonly": True,
                     "resource_preflight_all_experts_readonly": True,
+                    "scoped_installation_checks_without_config_creation": True,
+                    "fixed_upstream_skill_archive_authenticated": True,
+            "upstream_license_in_skill_archive": True,
                     "declared_resource_members": resource_files,
                     "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,

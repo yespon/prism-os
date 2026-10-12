@@ -13,6 +13,8 @@ import {
   type AgentTemplatePreview,
 } from "@/core/agents/catalog";
 
+import { AgentResourcePreflight } from "./agent-resource-preflight";
+
 interface Props {
   templateReadOnly?: boolean;
   open: boolean;
@@ -192,8 +194,8 @@ export function AgentTemplatePicker({
       {!!selected?.bundled_resources.length && (
         <p className="text-muted-foreground text-xs">
           {zh
-            ? `配套资源 ${selected.bundled_resources.length} 项：已归档，尚未安装或授权，请另行配置。`
-            : `${selected.bundled_resources.length} companion resources: archived; not installed or authorized. Configure separately.`}
+            ? `原目录配套文件 ${selected.bundled_resources.length} 项；请核对完整资源与安装状态。`
+            : `${selected.bundled_resources.length} files in the original resource list. Check complete resources and installation status.`}
         </p>
       )}
       {!!selected?.excluded_resources?.length && (
@@ -204,6 +206,11 @@ export function AgentTemplatePicker({
           {selected.excluded_resources.join(", ")}
         </p>
       )}
+      <AgentResourcePreflight
+        open={open}
+        templateId={templateId}
+        locale={locale}
+      />
       <select
         aria-label={zh ? "人格风格" : "Personality style"}
         className="bg-background w-full rounded border p-2 text-xs"

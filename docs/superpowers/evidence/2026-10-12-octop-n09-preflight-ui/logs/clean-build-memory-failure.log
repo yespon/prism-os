@@ -1,0 +1,149 @@
+python3 scripts/octop_sync.py verify
+{
+  "verified": true,
+  "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "source_files": 3771,
+  "retained_source_files": 3585,
+  "excluded_source_files": 186,
+  "imported_files": 902
+}
+python3 scripts/octop_external.py verify
+{"packages": 4, "restricted_resource_excluded": true, "retained_artifacts": 7, "runtime_integration": false, "verified": true}
+cd backend && /tmp/prismos-n09b-uv-build-index sync --locked
+Resolved 211 packages in 3ms
+Audited 202 packages in 3ms
+cd backend && /tmp/prismos-n09b-uv-build-index run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_octop_presentation.py tests/test_octop_resources.py tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py tests/test_octop_inventory.py tests/test_octop_source_curation.py tests/test_octop_source_fetch.py tests/test_bootstrap_identity_schema.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
+........................................................................ [ 28%]
+........................................................................ [ 57%]
+........................................................................ [ 85%]
+....................................                                     [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /tmp/prismos-n09b-clean-yf664f8f/src/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_custom_agent.py::TestPaths::test_agent_memory_file
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path_is_user_scoped_when_user_id_present
+  /tmp/prismos-n09b-clean-yf664f8f/src/backend/packages/harness/deerflow/config/paths.py:188: DeprecationWarning: agent_dir() is deprecated. Agents are now stored in the custom_agents DB table. Use load_agent_config() from deerflow.config.agents_config instead.
+    return self.agent_dir(name, user_id=user_id, tenant_id=tenant_id) / "memory.json"
+
+tests/test_custom_agent.py::TestPaths::test_agent_memory_file
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path_is_user_scoped_when_user_id_present
+  /tmp/prismos-n09b-clean-yf664f8f/src/backend/packages/harness/deerflow/config/paths.py:180: DeprecationWarning: agents_dir() is deprecated. Agents are now stored in the custom_agents DB table. Use load_agent_config() / list_custom_agents() from deerflow.config.agents_config instead.
+    return self.agents_dir(user_id=user_id, tenant_id=tenant_id) / name.lower()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+252 passed, 15 warnings in 273.06s (0:04:33)
+cd backend && /tmp/prismos-n09b-uv-build-index run --locked python ../scripts/octop_inventory.py verify
+{"counts": {"connectors": 26, "endpoints": 494, "excluded_resources": 237, "expert_resources": 538, "experts": 18, "personality": 123, "plugins": 31, "scripts": 241, "skills": 92, "subagents": 489}, "current_capabilities": 42, "current_catalog_counts": {"en": 235, "zh": 290}, "date": "2026-10-10", "excluded_external_source_files": 51, "excluded_main_source_files": 186, "external_manifest_sha256": "f796d5e83d6b0446cb680e28c93878c05327a1c8d52a71e384e48421453face1", "external_runtime_integration": false, "future_capabilities": 12, "imported_files": 902, "main_manifest_sha256": "d7fdd49296758eecff9577e63bce5e72347b20f60c3d00dcce0c2b189891e8c0", "main_source_files": 3771, "release": "b6", "retained_external_source_files": 653, "retained_main_source_files": 3585, "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422", "runtime_permission_grants": false, "schema_version": 1, "scope": "static source, dependency and content inventory; original full behavior scope remains pending", "verified": true}
+cd frontend && pnpm typecheck
+
+> prismos-frontend@0.2.0-alpha.1 typecheck /tmp/prismos-n09b-clean-yf664f8f/src/frontend
+> tsc --noEmit
+
+cd frontend && pnpm exec vitest run src/core/agents/catalog.test.ts src/components/workspace/agents/agent-presentation.test.tsx src/components/workspace/agents/agent-avatar.test.tsx src/server/demo-files.test.ts src/components/workspace/agents/agent-resource-preflight.test.tsx --maxWorkers=2
+
+ RUN  v4.1.2 /tmp/prismos-n09b-clean-yf664f8f/src/frontend
+
+stderr | src/components/workspace/agents/agent-presentation.test.tsx > Questionnaire draft flow > requires all 28 choices and only applies the confirmed result
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ src/components/workspace/agents/agent-presentation.test.tsx (16 tests | 3 failed) 381079ms
+     × requires all 28 choices and only applies the confirmed result 335553ms
+     × clears the questionnaire and discards the pending score after close 15004ms
+     × clears the questionnaire and discards the pending score after locale 6364ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/workspace/agents/agent-presentation.test.tsx > Questionnaire draft flow > requires all 28 choices and only applies the confirmed result
+Error: Test timed out in 15000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/components/workspace/agents/agent-presentation.test.tsx:295:3
+    293| describe("Questionnaire draft flow", () => {
+    294|   // The complete 28-choice dialog flow needs a bounded budget on shar…
+    295|   it("requires all 28 choices and only applies the confirmed result", …
+       |   ^
+    296|     const props = fields();
+    297|     render(<AgentPresentationEditor {...props} />);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/components/workspace/agents/agent-presentation.test.tsx > Questionnaire draft flow > clears the questionnaire and discards the pending score after close
+ FAIL  src/components/workspace/agents/agent-presentation.test.tsx > Questionnaire draft flow > clears the questionnaire and discards the pending score after locale
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/components/workspace/agents/agent-presentation.test.tsx:312:40
+    310|     expect(mock.update).not.toHaveBeenCalled();
+    311|   }, 15_000);
+    312|   it.each(["close", "locale", "tenant"])(
+       |                                        ^
+    313|     "clears the questionnaire and discards the pending score after %s",
+    314|     async (kind) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: [vitest-pool]: Failed to start forks worker for test files /tmp/prismos-n09b-clean-yf664f8f/src/frontend/src/core/agents/catalog.test.ts.
+ ❯ node_modules/.pnpm/vitest@4.1.2_@opentelemetry+api@1.9.0_@types+node@20.19.33_jsdom@29.0.1_@noble+hashes@2_0c4a4fc914bced5fb52e43d8c9cd5d56/node_modules/vitest/dist/chunks/cli-api.Bxr1Nn49.js:3450:94
+ ❯ Pool.schedule node_modules/.pnpm/vitest@4.1.2_@opentelemetry+api@1.9.0_@types+node@20.19.33_jsdom@29.0.1_@noble+hashes@2_0c4a4fc914bced5fb52e43d8c9cd5d56/node_modules/vitest/dist/chunks/cli-api.Bxr1Nn49.js:3450:5
+
+Caused by: Error: [vitest-pool-runner]: Timeout waiting for worker to respond
+ ❯ Timeout.<anonymous> node_modules/.pnpm/vitest@4.1.2_@opentelemetry+api@1.9.0_@types+node@20.19.33_jsdom@29.0.1_@noble+hashes@2_0c4a4fc914bced5fb52e43d8c9cd5d56/node_modules/vitest/dist/chunks/cli-api.Bxr1Nn49.js:3030:58
+ ❯ listOnTimeout node:internal/timers:605:17
+ ❯ processTimers node:internal/timers:541:7
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: [vitest-pool]: Failed to start forks worker for test files /tmp/prismos-n09b-clean-yf664f8f/src/frontend/src/components/workspace/agents/agent-avatar.test.tsx.
+ ❯ node_modules/.pnpm/vitest@4.1.2_@opentelemetry+api@1.9.0_@types+node@20.19.33_jsdom@29.0.1_@noble+hashes@2_0c4a4fc914bced5fb52e43d8c9cd5d56/node_modules/vitest/dist/chunks/cli-api.Bxr1Nn49.js:3450:94
+ ❯ Pool.schedule node_modules/.pnpm/vitest@4.1.2_@opentelemetry+api@1.9.0_@types+node@20.19.33_jsdom@29.0.1_@noble+hashes@2_0c4a4fc914bced5fb52e43d8c9cd5d56/node_modules/vitest/dist/chunks/cli-api.Bxr1Nn49.js:3450:5
+
+Caused by: Error: [vitest-pool-runner]: Timeout waiting for worker to respond
+ ❯ Timeout.<anonymous> node_modules/.pnpm/vitest@4.1.2_@opentelemetry+api@1.9.0_@types+node@20.19.33_jsdom@29.0.1_@noble+hashes@2_0c4a4fc914bced5fb52e43d8c9cd5d56/node_modules/vitest/dist/chunks/cli-api.Bxr1Nn49.js:3030:58
+ ❯ listOnTimeout node:internal/timers:605:17
+ ❯ processTimers node:internal/timers:541:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  3 failed | 36 passed (39)
+     Errors  2 errors
+   Start at  19:55:12
+   Duration  394.36s (transform 3.01s, setup 1.78s, import 7.64s, tests 382.39s, environment 9.76s)
+
+make: *** [Makefile:214: octop-check] Error 1

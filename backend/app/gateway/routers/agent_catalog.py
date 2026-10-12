@@ -10,7 +10,9 @@ from prismos_octop.presentation import avatar, list_avatars, questionnaire, scor
 from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_context
+from app.integrations.octop.resource_installations import scoped_resource_preflight
 from app.integrations.octop.resources import resource_preflight
+from app.integrations.octop.skill_packages import SkillPackageUnavailable, prepare_skill_package, skill_archive
 
 router = APIRouter(prefix="/api/agent-catalog", tags=["agents"])
 
@@ -95,11 +97,36 @@ async def avatar_image(request: Request, avatar_id: str) -> Response:
 
 
 @router.get("/templates/{template_id}/resources")
-async def template_resources(template_id: str, request: Request, locale: Literal["zh", "en"] = "zh") -> dict:
+async def template_resources(template_id: str, request: Request, locale: Literal["zh", "en"] = "zh", check_installation: bool = False) -> dict:
     _authorize(request)
     try:
+        if check_installation:
+            return await scoped_resource_preflight(template_id, locale, require_tenant_context(request), request.state.user_id)
         return resource_preflight(template_id, locale)
     except KeyError:
         raise HTTPException(status_code=404, detail="Agent template not found") from None
     except ValueError:
         raise HTTPException(status_code=503, detail="Resource source integrity unavailable") from None
+
+
+@router.get("/templates/{template_id}/resources/{resource_id}/archive")
+async def resource_archive(template_id: str, resource_id: str, request: Request, locale: Literal["zh", "en"] = "zh") -> Response:
+    _authorize(request)
+    try:
+        # Only the pinned global upstream library is an archive source.
+        # Installation rows/private tenant directories are never read here.
+        declaration = resource_preflight(template_id, locale)
+        if not declaration["template_source"]["source"].startswith("src/octop/infra/agents/experts/library/"):
+            raise HTTPException(409, "Only retained upstream Skill sources can be exported")
+        resource = next((r for r in declaration["resources"] if r["id"] == resource_id), None)
+        if resource is None:
+            raise HTTPException(404, "Resource not found")
+        package = prepare_skill_package(declaration, resource)
+        data = skill_archive(package)
+    except KeyError:
+        raise HTTPException(404, "Agent template not found") from None
+    except SkillPackageUnavailable as error:
+        raise HTTPException(409, str(error)) from None
+    except ValueError:
+        raise HTTPException(503, "Resource source integrity unavailable") from None
+    return Response(data, media_type="application/zip", headers={"Content-Disposition": f'attachment; filename="{package["name"]}.zip"', "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})

@@ -1,0 +1,23 @@
+{
+  "observed": {
+    "memory_total_kib": 8135952,
+    "memory_available_kib": 941032,
+    "swap_total_kib": 4194304,
+    "swap_free_kib": 0,
+    "memory_some_avg10": 95.56,
+    "memory_full_avg10": 74.57
+  },
+  "effects": [
+    "independent Vitest worker startup/test timeout",
+    "production compiler retained graph and TypeScript worker memory pressure"
+  ],
+  "owned_builds_stopped": true,
+  "other_workspace_processes_modified": false,
+  "mitigation": [
+    "serialize frontend verification and production builds",
+    "strict next typegen and tsc --noEmit before compiler; direct Next default remains checked",
+    "two production page workers",
+    "two CPU affinity, NODE_OPTIONS max-old-space-size=2048, RAYON_NUM_THREADS=2"
+  ],
+  "initial_negative_probe_correction": "Underscore directory was private to Next route discovery; corrected to a discovered API route. Corrected invalid generated route contract rejected before compiler."
+}

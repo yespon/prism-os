@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fetchAuthApi } from "@/core/api/auth-client";
 
-import { loadAgentCatalog, previewAgentTemplate } from "./catalog";
+import {
+  downloadResourceArchive,
+  loadAgentCatalog,
+  loadResourcePreflight,
+  previewAgentTemplate,
+} from "./catalog";
 
 vi.mock("@/core/api/auth-client", () => ({ fetchAuthApi: vi.fn() }));
 
@@ -50,5 +55,55 @@ describe("Agent catalog host API", () => {
       new Response(JSON.stringify({ personas: [] })),
     );
     await expect(loadAgentCatalog("en")).rejects.toThrow();
+  });
+});
+
+describe("Resource preflight and source archive host API", () => {
+  beforeEach(() => vi.resetAllMocks());
+  it("requests scoped installation facts with encoded identifiers and abort signal", async () => {
+    const signal = new AbortController().signal;
+    vi.mocked(fetchAuthApi).mockResolvedValueOnce(
+      new Response(JSON.stringify({ installation_checked: true })),
+    );
+    expect(
+      (await loadResourcePreflight("expert:cloud/path", "en", signal))
+        .installation_checked,
+    ).toBe(true);
+    expect(fetchAuthApi).toHaveBeenCalledWith(
+      "/api/agent-catalog/templates/expert%3Acloud%2Fpath/resources?locale=en&check_installation=true",
+      { signal },
+    );
+  });
+  it("downloads bytes using authenticated fetch and encodes both identifiers", async () => {
+    const signal = new AbortController().signal;
+    vi.mocked(fetchAuthApi).mockResolvedValueOnce(
+      new Response("source-zip", {
+        headers: { "Content-Type": "application/zip" },
+      }),
+    );
+    const blob = await downloadResourceArchive(
+      "expert:cloud",
+      "skill:refs/path",
+      "zh",
+      signal,
+    );
+    expect(await blob.text()).toBe("source-zip");
+    expect(fetchAuthApi).toHaveBeenCalledWith(
+      "/api/agent-catalog/templates/expert%3Acloud/resources/skill%3Arefs%2Fpath/archive?locale=zh",
+      { signal },
+    );
+  });
+  it("rejects denied archives rather than saving an error response as a zip", async () => {
+    vi.mocked(fetchAuthApi).mockResolvedValueOnce(
+      new Response("Denied", { status: 403 }),
+    );
+    await expect(
+      downloadResourceArchive(
+        "expert:cloud",
+        "skill:one",
+        "en",
+        new AbortController().signal,
+      ),
+    ).rejects.toThrow("Source archive unavailable");
   });
 });

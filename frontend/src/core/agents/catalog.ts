@@ -109,3 +109,63 @@ export async function scorePersonality(
   if (!response.ok) throw new Error("Questionnaire could not be scored");
   return response.json() as Promise<PersonalityResult>;
 }
+
+export interface ResourcePreflightItem {
+  id: string;
+  kind: string;
+  root: string;
+  bundle_sha256: string;
+  members: Array<{ path: string; sha256: string; source_path: string }>;
+  host_format: { status: string; detail?: string; skill_name?: string };
+  host_adaptation?: {
+    status: string;
+    name?: string;
+    adapted?: boolean;
+    detail?: string;
+  };
+  installation?: {
+    status: string;
+    candidates: Array<{
+      scope: string;
+      enabled: boolean;
+      content_status: string;
+    }>;
+  };
+  execution_ready: false;
+}
+export interface ResourcePreflight {
+  template_id: string;
+  revision: string;
+  declaration_sha256: string;
+  member_count: number;
+  additional_member_count: number;
+  resources: ResourcePreflightItem[];
+  excluded_resources: string[];
+  installation_checked: boolean;
+  runtime_dependencies_checked: false;
+  execution_ready: false;
+  permission_grants: false;
+}
+export function loadResourcePreflight(
+  id: string,
+  locale: "zh" | "en",
+  signal: AbortSignal,
+) {
+  return readCatalog<ResourcePreflight>(
+    `/api/agent-catalog/templates/${encodeURIComponent(id)}/resources?locale=${locale}&check_installation=true`,
+    signal,
+  );
+}
+export async function downloadResourceArchive(
+  id: string,
+  resourceId: string,
+  locale: "zh" | "en",
+  signal: AbortSignal,
+) {
+  const response = await fetchAuthApi(
+    `/api/agent-catalog/templates/${encodeURIComponent(id)}/resources/${encodeURIComponent(resourceId)}/archive?locale=${locale}`,
+    { signal },
+  );
+  if (!response.ok) throw new Error("Source archive unavailable");
+  return response.blob();
+}

@@ -186,3 +186,14 @@ N05 完成的是逐项盘点及来源交付修正，完整专家/工具/Connecto
 基于 `fddc307` 形成 [N08 Spec](../specs/2026-10-12-octop-n08-execution-design.md)、[ADR](../../strategy/adr/2026-10-12-n08-platform-execution-facts.md)、[实施队列](2026-10-12-octop-n08-execution-plan.md) 与锁定 SDK 能力发现。Platform Run/Attempt/Native Segment、快照与当前授权、Command/Transition、幂等/lease/outbox、未知派发对账、协作取消/恢复与旧数据兼容明确；M1 未退出，持久模型/Worker/迁移未启动。
 
 N09-A 先实现原计划中的最小资源声明和来源 digest，并以现有 Skill validator 做只读格式预检。全 18 专家的 352 个保留源成员纳入核对，资源 297 个，比原 bundle 列表补齐 27 个参考资料/知识种子/USER/AGENTS 模板；persona/manifest 另列 55 个。4 个受限 Office 子树继续保持独立实现待完成。新 GET 入口不安装、授权、调用网络或执行脚本，不能由 format compatible 推断执行可用。具体结果与后续缺口见 [N09-A 证据](../evidence/2026-10-12-octop-n09-resource-preflight/README.md)。完整 N09 的资源 ACL/复制/安装恢复、18 专家实际行为、两个有资源专家与子 Agent 委派仍待后续切片；绑定执行依赖 N08。
+
+
+### N09-B：资源预检展示、安装事实与有限格式派生（2026-10-12）
+
+基于 `06875f8` 接入创建/编辑界面的按需预检，切换模板/语言/租户/关闭使旧结果和下载响应失效。完整 297 个配套源文件、四项独立 Office 缺口和来源摘要继续显示；当前租户共享/当前用户和 public 的安装事实只读核对，不 ensure_user_config，不授予绑定或执行权限。无可见安装、同名内容不同、记录缺文件、禁用、路径不可核对和多作用域分别报告。
+
+27 个保留 Skill 可生成固定来源派生 ZIP，三处格式差异采用有限映射，其余 SKILL 原字节保留；包内逐成员来源/宿主摘要及固定上游根版权文本可核对。鉴权下载只读取固定上游专家库源文件，不读取租户安装内容或运行配置。原个人导入修复为 native installer 支持的 tenant/user 目标，真实 SQLite/文件系统的导入、重复冲突、租户/用户隔离及公共禁用覆盖通过。原有 DB/文件系统跨阶段中断恢复仍待 N09-C 加固，不将这一修复称为完整原子安装。
+
+本批证据见 [N09-B README](../evidence/2026-10-12-octop-n09-preflight-ui/README.md)、[验证 JSON](../evidence/2026-10-12-octop-n09-preflight-ui/validation.json) 与 [追加能力账本](../evidence/2026-10-12-octop-n09-preflight-ui/capability-delta.json)。下一批先按 [N09-C 计划](2026-10-12-octop-n09-resource-installation-plan.md) 实施安装冲突与中断恢复，再推进拥有/共享/复制/撤回、33 个非 Skill 资源绑定、工具/schema/PEP/Sandbox 和 18 专家实际行为；执行快照与委派依原 N08。N01–N15、O01–O42/F01–F12 与原 PrismOS 完整规划和退出门均保留。
+
+最终本批完整后端 1,618 通过/18 跳过/30 warnings，当前与独立完整前端 44 文件/140 通过；独立 `make octop-build` 最终退出 0（255 后端/49 前端、严格类型、真实 Gateway、902 源成员 wheel/sdist 与生产构建）。固定 18 个宿主输入的 b5→b6→b5 各 121 项通过。原构建镜像 TLS 与内存压力失败保留；正式 build/preview 先生成当前路由类型并严格检查，再编译，真实错误路由在编译前拒绝，未放宽类型门。版权附件已在全部包与真实鉴权下载中核对。N09-B 为有界本地交付；完整 N09、N04/M1、远端 CI 与原执行治理门不据此退出。

@@ -1,0 +1,1 @@
+Build CPU affinity: 0,1; Node heap cap: --max-old-space-size=2048; Rayon threads: 2

@@ -1,0 +1,11 @@
+
+> prismos-frontend@0.2.0-alpha.1 build /root/.codex/worktrees/octop-integration/prism-os/frontend
+> next build
+
+▲ Next.js 16.2.11 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 42s
+  Running TypeScript ...
+Killed
+ ELIFECYCLE  Command failed with exit code 137.

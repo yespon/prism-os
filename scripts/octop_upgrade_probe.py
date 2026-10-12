@@ -33,11 +33,18 @@ def main():
     contract_paths = [
         "backend/app/integrations/octop/agents.py",
         "backend/app/integrations/octop/resources.py",
+        "backend/app/integrations/octop/resource_installations.py",
+        "backend/app/integrations/octop/skill_packages.py",
         "backend/app/gateway/routers/agents.py",
         "backend/app/gateway/routers/agent_catalog.py",
+        "backend/app/gateway/routers/skills.py",
+        "backend/packages/harness/deerflow/skills/installer.py",
+        "backend/packages/harness/deerflow/skills/validation.py",
         "backend/tests/test_octop_integration.py",
         "backend/tests/test_octop_presentation.py",
         "backend/tests/test_octop_resources.py",
+        "backend/tests/test_octop_resource_installations.py",
+        "backend/tests/test_octop_skill_packages.py",
         "backend/packages/octop-capabilities/src/prismos_octop/catalog.py",
         "backend/packages/octop-capabilities/src/prismos_octop/presentation.py",
         "backend/packages/octop-capabilities/src/prismos_octop/resources.py",
@@ -48,7 +55,11 @@ def main():
         for path in contract_paths
     }
     evidence = {
-        "scope": "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, complete resource declarations/native format preflight, imported pure modules and Agent host contracts",
+        "scope": (
+            "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, "
+            "complete resource declarations, scoped installation facts, derived packages/native installation, "
+            "imported pure modules and Agent host contracts"
+        ),
         "host_changed": False,
         "host_contract_sha256s": contract_hashes,
         "versions": [],
@@ -104,6 +115,8 @@ def main():
                     "tests/test_octop_integration.py",
                     "tests/test_octop_presentation.py",
                     "tests/test_octop_resources.py",
+                    "tests/test_octop_resource_installations.py",
+                    "tests/test_octop_skill_packages.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",

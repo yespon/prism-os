@@ -1,0 +1,13 @@
+
+> prismos-frontend@0.2.0-alpha.1 build /tmp/prismos-n09b-clean-yf664f8f/src/frontend
+> node scripts/build.mjs
+
+Generating route types...
+✓ Types generated successfully
+Checking TypeScript and generated route contracts...
+.next/types/validator.ts(387,31): error TS2344: Type 'typeof import("/tmp/prismos-n09b-clean-yf664f8f/src/frontend/src/app/api/octop-build-gate-negative/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/octop-build-gate-negative">'.
+  The types returned by 'GET(...)' are incompatible between these types.
+    Type 'Promise<number>' is not assignable to type 'void | Response | Promise<void | Response>'.
+      Type 'Promise<number>' is not assignable to type 'Promise<void | Response>'.
+        Type 'number' is not assignable to type 'void | Response'.
+ ELIFECYCLE  Command failed with exit code 2.

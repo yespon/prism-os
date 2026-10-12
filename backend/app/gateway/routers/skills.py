@@ -795,12 +795,10 @@ async def import_personal_skill(request: Request, archive: UploadFile = File(...
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        target_rel = f"{user_id}"
+        target_rel = f"{tenant_id}/{user_id}"
         result = install_skill_from_archive(
             temp_path,
             target_relative_path=target_rel,
-            is_custom=True,
-            tenant_id=tenant_id,
         )
         skill_name = str(result.get("skill_name") or "").strip()
         installed_dir = Path(str(result.get("install_dir") or str(get_skills_root_path() / "custom" / tenant_id / user_id / skill_name)))

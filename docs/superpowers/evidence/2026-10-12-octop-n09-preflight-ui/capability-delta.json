@@ -1,0 +1,58 @@
+{
+  "base_ledger": "../2026-10-10-octop-n06-presentation/inventory/capability-ledger.json",
+  "base_future_ledger": "../2026-10-10-octop-n06-presentation/inventory/future-ledger.json",
+  "scope_preserved": {
+    "O": 42,
+    "F": 12,
+    "N": 15
+  },
+  "parent_full_parity": false,
+  "full_n09_complete": false,
+  "entries": [
+    {
+      "capabilities": [
+        "O05",
+        "O07"
+      ],
+      "scope": "18 expert source preflight; current tenant/personal/public Skill installation observations; authenticated fixed upstream archive export; finite three host format adapters; native personal import signature/path repair",
+      "status": "bounded local verification; full behavior pending",
+      "source": {
+        "retained_expert_members": 352,
+        "companion_resources": 297,
+        "skill_bundles": 27,
+        "adapted_formats": 3,
+        "raw_imports": 902,
+        "upstream_license_in_each_package": true,
+        "materialized_host_members": 318
+      },
+      "permissions": [
+        "native authenticated tenant context",
+        "current tenant/current user or shared Skill records",
+        "public source archive only",
+        "no execution/secret grants"
+      ],
+      "evidence": [
+        "validation.json",
+        "materialization.json",
+        "gateway.json"
+      ],
+      "remaining": [
+        "atomic publication/conflict/crash recovery",
+        "ownership/sharing/copy/revoke complete flows",
+        "33 non-Skill resource bindings",
+        "actual tool/schema/PEP/Sandbox/dependency acceptance",
+        "18 actual expert behavior including independent Office equivalents",
+        "N08 execution snapshot binding and subagent delegation",
+        "N04 live M1 and N07 remote CI"
+      ],
+      "verification_scope": {
+        "backend_full": 1618,
+        "frontend_full": 140,
+        "independent_build_backend": 255,
+        "independent_build_frontend": 49,
+        "upgrade_tests_each": 121,
+        "host_contract_inputs": 18
+      }
+    }
+  ]
+}

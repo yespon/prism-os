@@ -227,7 +227,7 @@ describe("Template request isolation and resources", () => {
   it("clears old catalog contents on tenant change and retries failures", async () => {
     const props = picker({ templateId: expert.id });
     const view = render(<AgentTemplatePicker {...props} />);
-    await screen.findByText(/配套资源 1 项：已归档/);
+    await screen.findByText(/原目录配套文件 1 项/);
     expect(screen.getByText(/待独立实现：/)).toHaveTextContent("skills/pptx");
     mock.tenant = "tenant-b";
     mock.load.mockRejectedValueOnce(new Error("offline"));
