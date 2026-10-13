@@ -1,0 +1,148 @@
+
+ RUN  v4.1.2 /root/.codex/worktrees/octop-integration/prism-os/frontend
+
+ ❯ src/components/workspace/skills/skill-import-controls.test.tsx (25 tests | 1 failed) 2518ms
+   × offers deletion recovery without registration or abort and requires explicit confirmation 1076ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/workspace/skills/skill-import-controls.test.tsx > offers deletion recovery without registration or abort and requires explicit confirmation
+TestingLibraryElementError: Unable to find an element with the text: /删除与回收已完成/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Skill 删除记录"[39m
+      [33mclass[39m=[32m"space-y-2 rounded border p-3 text-sm"[39m
+    [36m>[39m
+      [36m<p>[39m
+        [0m删除请求中断不代表回滚。核对撤回与回收记录，避免重复删除。[0m
+      [36m</p>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3"[39m
+        [33mdata-size[39m=[32m"default"[39m
+        [33mdata-slot[39m=[32m"button"[39m
+        [33mdata-variant[39m=[32m"outline"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m检查删除记录[0m
+      [36m</button>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"status"[39m
+      [36m>[39m
+        [0m已重新核对撤回与回收记录，请按当前状态确认是否完成。[0m
+      [36m</p>[39m
+      [36m<ul[39m
+        [33mclass[39m=[32m"max-h-64 space-y-2 overflow-auto"[39m
+      [36m>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"rounded border p-2"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mdemo[0m
+            [0m [0m
+            [0m·[0m
+            [0m [0m
+            [0m已撤回，回收待完成[0m
+          [36m</p>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-muted-foreground text-xs break-all"[39m
+          [36m>[39m
+            [0moperation-a[0m
+          [36m</p>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3"[39m
+            [33mdata-size[39m=[32m"default"[39m
+            [33mdata-slot[39m=[32m"button"[39m
+            [33mdata-variant[39m=[32m"outline"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m继续撤回与回收[0m
+          [36m</button>[39m
+        [36m</li>[39m
+      [36m</ul>[39m
+      [36m<p>[39m
+        [0m已检查 1 条 / 当前 1 条；所有记录均保留。新产生的记录请重新检查。[0m
+      [36m</p>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Skill 删除记录"[39m
+      [33mclass[39m=[32m"space-y-2 rounded border p-3 text-sm"[39m
+    [36m>[39m
+      [36m<p>[39m
+        [0m删除请求中断不代表回滚。核对撤回与回收记录，避免重复删除。[0m
+      [36m</p>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3"[39m
+        [33mdata-size[39m=[32m"default"[39m
+        [33mdata-slot[39m=[32m"button"[39m
+        [33mdata-variant[39m=[32m"outline"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m检查删除记录[0m
+      [36m</button>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"status"[39m
+      [36m>[39m
+        [0m已重新核对撤回与回收记录，请按当前状态确认是否完成。[0m
+      [36m</p>[39m
+      [36m<ul[39m
+        [33mclass[39m=[32m"max-h-64 space-y-2 overflow-auto"[39m
+      [36m>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"rounded border p-2"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mdemo[0m
+            [0m [0m
+            [0m·[0m
+            [0m [0m
+            [0m已撤回，回收待完成[0m
+          [36m</p>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-muted-foreground text-xs break-all"[39m
+          [36m>[39m
+            [0moperation-a[0m
+          [36m</p>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3"[39m
+            [33mdata-size[39m=[32m"default"[39m
+            [33mdata-slot[39m=[32m"button"[39m
+            [33mdata-variant[39m=[32m"outline"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m继续撤回与回收[0m
+          [36m</button>[39m
+        [36m</li>[39m
+      [36m</ul>[39m
+      [36m<p>[39m
+        [0m已检查 1 条 / 当前 1 条；所有记录均保留。新产生的记录请重新检查。[0m
+      [36m</p>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/skills/skill-import-controls.test.tsx:520:16
+    518|   expect(mock.change).toHaveBeenCalledWith(
+    519|     "personal",
+    520|     deletion.operation_id,
+       |                ^
+    521|     "recover",
+    522|     expect.any(AbortSignal),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 54 passed (55)
+      Tests  1 failed | 238 passed (239)
+   Start at  22:58:01
+   Duration  59.12s (transform 3.50s, setup 4.63s, import 19.19s, tests 26.78s, environment 55.69s)
+

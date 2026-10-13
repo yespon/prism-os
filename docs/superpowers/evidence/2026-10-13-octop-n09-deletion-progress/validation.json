@@ -1,0 +1,95 @@
+{
+  "status": "implementation_progress_not_N09_exit",
+  "base_commit": "b6fbc88c67b00c262275ef4164bfad2637a1bca5",
+  "backend": {
+    "passed": 1743,
+    "skipped": 18,
+    "warnings": 164,
+    "exit_code": 0,
+    "source_note": "Unused shutil import in skills router was removed during this run; Ruff passed afterwards. Final frozen-source full replay remains part of candidate exit."
+  },
+  "frontend": {
+    "files": 55,
+    "passed": 239,
+    "exit_code": 0,
+    "lint_exit_code": 0
+  },
+  "production_build": {
+    "exit_code": 0,
+    "default": "scripts/build.mjs (typegen, strict tsc, webpack)",
+    "cpu": 1,
+    "heap_mb": 1024
+  },
+  "postgres": {
+    "passed": 125,
+    "warnings": 66,
+    "exit_code": 0,
+    "owned_container_removed": true
+  },
+  "gateway": {
+    "exit_code": 0,
+    "auth": "real session and membership",
+    "deletion_checks": true
+  },
+  "source": {
+    "imported_files": 902,
+    "verified": true,
+    "external_packages": 4,
+    "external_runtime_integration": false
+  },
+  "existing_wheel": {
+    "verified": true,
+    "new_artifact_built": false
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "f86a71d69164a28be1a7337978568c6cebadfe21c84ff8343c838bf9f7ee911d",
+    "Makefile": "1325bd95dd4389c9b67186f1c9773f58bc13efb29ead57f5af8a6e115886c4dd",
+    "backend/app/gateway/routers/skills.py": "ef1df73c92e43d853d2d4ba3ff9afb573128d01a569df1af3c7a44396ec9289c",
+    "backend/app/integrations/skill_imports.py": "0a748b08c43901edda870d5f58be0368841fdc63b89a5b1bd0ca53c193c514a0",
+    "backend/packages/harness/deerflow/skills/install_receipts.py": "fd14be0a3d086615754abdc4c89bd4a757fd510a3213c643112faa85d340f16d",
+    "backend/tests/test_skills_scope_router.py": "4ac7c2f6c5b0e1747de69999329817bb67c7ea70f3d16abcee63783d42169c90",
+    "frontend/src/app/workspace/skills/page.tsx": "5c47477edcbce8cd2d32cf9ada51443c90230e6efeedc8ca2e6bac0c18b4475b",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx": "848c265c8e7e2889adeda640446ec1656f5f074cf310b7d23c1975ae6023f948",
+    "frontend/src/components/workspace/skills/skill-import-controls.test.tsx": "88381fbf4c2078803159921d0b0e30f77b79b15bb0e210536a7e9dbcfdbe21f3",
+    "frontend/src/components/workspace/skills/skill-import-operations.tsx": "289b2ffc9b3a8070f74f6a6c29b083af33d596976f00272fefcc2dc6cc0be051",
+    "frontend/src/core/skills/api.ts": "3f2b69adb60998c14005bfc7757bd4aa17d3eac6951977ebc00d4372caf6b705",
+    "frontend/src/core/skills/imports.ts": "3e64e4b58824a41eb68e2fed5498a31dbb30e3521d1814b0b34d6909360a68ca",
+    "scripts/octop_gateway_smoke.py": "86286b3f1aae53bb0b9ca9102efc15dd518b9a766449331b44828970727f422b",
+    "scripts/octop_skill_postgres.py": "ab36ce4ea05c59f91788af069a4f7a0a86eb730d79e83235b640e419be702551",
+    "scripts/octop_upgrade_probe.py": "fae6a17c1afbcdf70d93d433eacffc17d286fe5a54271c3b0da332f5e1ea6abd",
+    "backend/app/integrations/skill_deletions.py": "bd63ed24aec1f8afcd1f4e77ddbdc14ca00fc387e6c6cf888140d3e086e5af7e",
+    "backend/packages/harness/deerflow/skills/resource_deletion_files.py": "8120634184bd8c75ce0a65f5783e978bbb991442393410dfb88690df7410c864",
+    "backend/tests/test_skill_resource_deletion.py": "e030983e4d83f313ec8f37e1f4aa25dd88f49b21cd520172bf4e9e6322ecdcbd",
+    "frontend/src/components/workspace/skills/skill-delete-control.test.tsx": "8dcea48588b36eaa7dc50d54b9eb83c00cf62fb9a7cb2f8aa4641b5356b1460c",
+    "frontend/src/components/workspace/skills/skill-delete-control.tsx": "8c336751537cef31a98df71d45a996d8591af878d4a374f9d4531c46010197c8",
+    "frontend/src/core/skills/deletions.test.ts": "139e3fb28ab5ddf0b1e0fee24e97261461befaafa889420152472258f27b4df6",
+    "frontend/src/core/skills/deletions.ts": "23adce49ddea8a54e415110e5a2fd2e75df43577ba9852fe38559bd721d4409e"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "evidence_sha256s": {
+    "logs/backend-full.log": "65974f8d0eed8bcfca9240f05a034065286b4b1125e38539b58d4138b69dce0d",
+    "logs/frontend-full.log": "dea61564177a1a89bbcfc30a9016d827e053681ce9514acd99c7b13f8b7874ce",
+    "logs/frontend-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/production-build.log": "5aca0d40653dfb2af5df992183d93532b47fdbb57600a07bb03c9862e4474c70",
+    "gateway.json": "7e4b532c1cceef150c1e75ed52e198ba9fbedcf9c658f4b90253c4f439b94808",
+    "logs/gateway.log": "20f73c373b84273a2fd6ca03449726afc2d0dceacdd2000fb22b036281d3897f",
+    "postgres.json": "b982ddaaa9f66a2028fba5ffce936de944afce4dad978f343a4b42f3bfbf6c85",
+    "logs/postgres.log": "43bfd28db065c6d9a1e6bce6d8baea012b50ecf3aed536c5efcc060a276c396f",
+    "logs/source-verify.log": "714452369f6aaca58cf458eaadc743b103d0ede8a825ba1faebb25741cb4a698",
+    "logs/inventory.log": "528b0949e856809fa6a7d57313fa0b24c280be4dac8cc1240d26fe32952a64f8",
+    "logs/existing-wheel.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/brand.log": "39c57a45acab5fe0c25b7be5963289e4dc34a0110d763b3ffe604e42e23aefbc",
+    "logs/recovery-test-fixture-failure.log": "9d3c2faf3e86e18331e1655256917e9a56d5d0097daf676c2a0eda53efcf7d6d",
+    "logs/original-response-fixture-failure.log": "10290674d217e6064cd00c8e846426cf0a1c60e0b6b939cfc4395fc858254389"
+  },
+  "pending_gates": [
+    "Coordinate Agent reference create/update and deletion, including concurrent new rows; current FOR UPDATE check does not predicate-lock missing references.",
+    "Bind concrete resource references and reauthorize before use; legacy name lists and public fallback do not prove selected-instance continuity.",
+    "True process-exit deletion recovery, frozen current/independent unified build, fixed-host upstream upgrade/rollback and candidate artifact freeze.",
+    "N04 real environment/model/countable ticket receiver and N07 remote CI remain missing; M1 not exited and N08 persistent execution not started.",
+    "Full C2/N09, C3-C5, non-Skill/expert/subagent/Office and N01-N15/O01-O42/F01-F12 original PrismOS scope remain open."
+  ]
+}

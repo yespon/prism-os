@@ -1,7 +1,6 @@
 import hashlib
 import logging
 import re
-import shutil
 import tempfile
 import zipfile
 from pathlib import Path
@@ -13,10 +12,8 @@ from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.gateway.path_utils import resolve_thread_virtual_path
-from app.integrations import skill_imports, skill_mutations
+from app.integrations import skill_deletions, skill_imports, skill_mutations
 from deerflow.database.user_config_service import (
-    delete_tenant_personal_skill,
-    delete_tenant_shared_skill,
     get_available_skills,
     get_tenant_shared_skill_settings,
     initialize_owned_skill_configuration,
@@ -571,21 +568,48 @@ async def patch_tenant_skill(skill_name: str, request: TenantSkillPatchRequest, 
     return await _patch_owned_response(skill_name, request, api_request, True)
 
 
-@router.delete(
-    "/tenants/skills/{skill_name}",
-    status_code=204,
-    summary="Delete Tenant Shared Skill",
-    dependencies=[Depends(require_tenant_admin)],
-)
-async def delete_tenant_skill(skill_name: str, request: Request):
-    tenant_id = require_tenant_context(request)
-    skill_dir = _tenant_skill_dir(tenant_id, skill_name)
+async def _deletion_preflight(name: str, request: Request, shared: bool, expected_resource_id: str | None = None):
+    if shared:
+        require_tenant_admin(request)
+    tenant, actor = _import_identity(request)
     try:
-        await delete_tenant_shared_skill(tenant_id, skill_name)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    if skill_dir.exists():
-        shutil.rmtree(skill_dir, ignore_errors=True)
+        return await skill_deletions.preflight(get_skills_root_path(), tenant, actor, shared, name, expected_resource_id)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except (ValueError, OSError):
+        raise HTTPException(409, "Deletion ownership or references cannot be verified; contents were preserved") from None
+
+
+async def _delete_owned_response(name: str, request: Request, shared: bool, expected_resource_id=None, expected_tree_sha256=None, expected_file_sha256=None):
+    if shared:
+        require_tenant_admin(request)
+    tenant, actor = _import_identity(request)
+    try:
+        await skill_deletions.delete_owned(get_skills_root_path(), tenant, actor, shared, name, expected_resource_id=expected_resource_id, expected_tree_sha256=expected_tree_sha256, expected_file_sha256=expected_file_sha256)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except skill_deletions.SkillDeletionUnknown as error:
+        raise HTTPException(503, {"message": str(error), "operation_id": error.operation_id, "resource_id": error.resource_id, "inspection_required": True, "recovery_available": True}) from None
+    except (ValueError, OSError):
+        raise HTTPException(409, "Deletion ownership or references cannot be verified; contents were preserved") from None
+    except Exception:
+        logger.exception("Resource deletion did not complete")
+        raise HTTPException(503, "Deletion unavailable; inspect current resource and operation records") from None
+
+
+@router.get("/tenants/skills/{skill_name}/deletion-preflight", dependencies=[Depends(require_tenant_admin)])
+async def tenant_deletion_preflight(skill_name: str, request: Request, expected_resource_id: str | None = None):
+    return await _deletion_preflight(skill_name, request, True, expected_resource_id)
+
+
+@router.get("/skills/personal/{skill_name}/deletion-preflight")
+async def personal_deletion_preflight(skill_name: str, request: Request, expected_resource_id: str | None = None):
+    return await _deletion_preflight(skill_name, request, False, expected_resource_id)
+
+
+@router.delete("/tenants/skills/{skill_name}", status_code=204, summary="Delete Tenant Shared Skill", dependencies=[Depends(require_tenant_admin)])
+async def delete_tenant_skill(skill_name: str, request: Request, expected_resource_id: str | None = None, expected_tree_sha256: str | None = None, expected_file_sha256: str | None = None):
+    return await _delete_owned_response(skill_name, request, True, expected_resource_id, expected_tree_sha256, expected_file_sha256)
 
 
 @router.post(
@@ -607,22 +631,9 @@ async def patch_personal_skill(skill_name: str, request: TenantSkillPatchRequest
     return await _patch_owned_response(skill_name, request, api_request, False)
 
 
-@router.delete(
-    "/skills/personal/{skill_name}",
-    status_code=204,
-    summary="Delete Personal Skill",
-)
-async def delete_personal_skill(skill_name: str, request: Request):
-    tenant_id = require_tenant_context(request)
-    user_id: str = getattr(request.state, "user_id", "")
-    skill_dir = get_skills_root_path() / "custom" / tenant_id / user_id / skill_name
-    try:
-        await delete_tenant_personal_skill(tenant_id, user_id, skill_name)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    if skill_dir.exists():
-        shutil.rmtree(skill_dir, ignore_errors=True)
-
+@router.delete("/skills/personal/{skill_name}", status_code=204, summary="Delete Personal Skill")
+async def delete_personal_skill(skill_name: str, request: Request, expected_resource_id: str | None = None, expected_tree_sha256: str | None = None, expected_file_sha256: str | None = None):
+    return await _delete_owned_response(skill_name, request, False, expected_resource_id, expected_tree_sha256, expected_file_sha256)
 
 
 def _import_error_detail(error: Exception, result: dict | None = None):
@@ -654,6 +665,8 @@ async def _import_operations(request: Request, shared: bool, cursor: str | None,
 
 
 async def _import_operation(request: Request, operation_id: str, shared: bool, recover: bool = False, abort: bool = False):
+    if shared:
+        require_tenant_admin(request)
     tenant, user = _import_identity(request)
     try:
         callback = skill_imports.abort_operation if abort else skill_imports.recover_operation if recover else skill_imports.observe_operation

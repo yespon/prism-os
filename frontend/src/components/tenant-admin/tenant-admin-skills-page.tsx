@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, Trash2, Upload, SearchIcon } from "lucide-react";
+import { Pencil, Plus, Upload, SearchIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -12,12 +12,12 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { SkillCreationInspection } from "@/components/workspace/skills/skill-creation-inspection";
+import { SkillDeleteControl } from "@/components/workspace/skills/skill-delete-control";
 import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
 import { useI18n } from "@/core/i18n/hooks";
 import {
   useAvailableSkills,
   useCreateTenantSkill,
-  useDeleteTenantSkill,
   useImportTenantSkill,
   usePatchTenantSkill,
   useUpdateTenantSkill,
@@ -41,7 +41,6 @@ export function TenantAdminSkillsPage() {
   const [operationsOpen, setOperationsOpen] = useState(false);
   const { skills, isLoading, error } = useAvailableSkills();
   const { mutateAsync: updateTenantSkill, canToggleResource, enablementNeedsInspection, inspectEnablement } = useUpdateTenantSkill();
-  const { mutateAsync: deleteTenantSkill } = useDeleteTenantSkill();
   const { mutateAsync: createTenantSkill } = useCreateTenantSkill();
   const { mutateAsync: importTenantSkill, isPending: isImportingSkill } = useImportTenantSkill();
   const { mutateAsync: patchTenantSkill } = usePatchTenantSkill();
@@ -335,12 +334,7 @@ export function TenantAdminSkillsPage() {
             onToggle={(skill, enabled) => void toggleSkill(skill, enabled)}
             canToggleResource={canToggleResource}
             onEdit={openEdit}
-            onDelete={(skillName) => {
-              if (!confirm(`${t.tenantAdmin.skills.deleteConfirm} ${skillName}?`)) return;
-              void deleteTenantSkill(skillName)
-                .then(() => toast.success(t.tenantAdmin.skills.deleteSuccess))
-                .catch((err) => toast.error(err instanceof Error ? err.message : t.tenantAdmin.skills.importError));
-            }}
+
           />
         </TabsContent>
       </Tabs>
@@ -541,7 +535,6 @@ function SkillSection({
   onToggle,
   canToggleResource,
   onEdit,
-  onDelete,
 }: {
   title: string;
   description: string;
@@ -552,9 +545,8 @@ function SkillSection({
   onToggle: (skill: AvailableSkillResponse, enabled: boolean) => void;
   canToggleResource?: (id?: string | null) => boolean;
   onEdit?: (skill: AvailableSkillResponse) => void;
-  onDelete?: (skillName: string) => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const rows = skills.length;
   const hasOperations = allowEditing;
 
@@ -646,16 +638,7 @@ function SkillSection({
                             <Pencil className="mr-1.5 h-3.5 w-3.5" />
                             {t.tenantAdmin.skills.edit}
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive hover:bg-destructive/10"
-                            disabled={!canManage}
-                            aria-label={`${t.tenantAdmin.skills.delete} ${skill.name}`}
-                            onClick={() => onDelete?.(skill.name)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <SkillDeleteControl name={skill.name} resourceId={skill.resource_id} scope="tenant" locale={locale === "zh-CN" ? "zh" : "en"} disabled={!canManage} />
                         </div>
                       </td>
                     )}

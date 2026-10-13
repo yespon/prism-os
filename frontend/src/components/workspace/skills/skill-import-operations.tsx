@@ -14,6 +14,12 @@ import {
 } from "@/core/skills/imports";
 
 const states: Record<string, [string, string]> = {
+  deletion_pending: ["待撤回登记", "Withdrawal pending"],
+  reclamation_pending: ["已撤回，回收待完成", "Withdrawn, reclamation pending"],
+  reclaimed: ["删除与回收已完成", "Withdrawal and reclamation completed"],
+  deletion_files_unverified: ["回收内容无法核对，内容保留", "Reclamation contents unverified"],
+  withdrawn: ["原实例已撤回，不能恢复登记", "Original instance withdrawn; registration cannot be restored"],
+  withdrawal_pending: ["撤回结果待核对", "Withdrawal requires inspection"],
   registered: ["已登记", "Registered"],
   registration_pending: [
     "文件已发布，待核对登记",
@@ -40,16 +46,18 @@ export function SkillImportOperations({
   locale,
   open = true,
   creation = false,
+  deletion = false,
 }: {
   scope: SkillImportScope;
   locale: "zh" | "en";
   open?: boolean;
   creation?: boolean;
+  deletion?: boolean;
 }) {
   const context = useSkillImportContext();
   const queryClient = useQueryClient();
   const zh = locale === "zh";
-  const key = JSON.stringify([context.key, scope, locale, open, creation]);
+  const key = JSON.stringify([context.key, scope, locale, open, creation, deletion]);
   const live = useRef(key);
   live.current = key;
   const controller = useRef<AbortController | null>(null);
@@ -180,9 +188,9 @@ export function SkillImportOperations({
       });
       setMessage({
         key,
-        text: zh
-          ? "已重新核对当前记录。登记不代表已绑定或可执行。"
-          : "Current records checked. Registration does not imply bindings or execution rights.",
+        text: selected.operation.kind === "resource_delete"
+          ? (zh ? "已重新核对撤回与回收记录，请按当前状态确认是否完成。" : "Withdrawal and reclamation records checked; use the current state to establish completion.")
+          : (zh ? "已重新核对当前记录。登记不代表已绑定或可执行。" : "Current records checked. Registration does not imply bindings or execution rights."),
       });
       for (const queryKey of [
         ["skills"],
@@ -196,8 +204,8 @@ export function SkillImportOperations({
         setMessage({
           key,
           text: zh
-            ? "结果暂无法确认或存在冲突。文件已保留；先检查记录，再决定后续操作。"
-            : "Outcome uncertain or conflicting. Contents were preserved; inspect records before taking another action.",
+            ? (selected.operation.kind === "resource_delete" ? "删除或回收结果尚未确认。请检查当前记录后决定后续操作。" : "结果暂无法确认或存在冲突。文件已保留；先检查记录，再决定后续操作。")
+            : (selected.operation.kind === "resource_delete" ? "Withdrawal or reclamation remains unconfirmed. Inspect current records before taking another action." : "Outcome uncertain or conflicting. Contents were preserved; inspect records before taking another action."),
         });
       }
     } finally {
@@ -214,12 +222,12 @@ export function SkillImportOperations({
   return (
     <section
       className="space-y-2 rounded border p-3 text-sm"
-      aria-label={creation ? (zh ? "Skill 创建记录" : "Skill creation records") : (zh ? "Skill 导入记录" : "Skill import records")}
+      aria-label={deletion ? (zh ? "Skill 删除记录" : "Skill deletion records") : creation ? (zh ? "Skill 创建记录" : "Skill creation records") : (zh ? "Skill 导入记录" : "Skill import records")}
     >
       <p>
         {zh
-          ? "请求中断不代表服务器回滚。先核对记录，避免重复导入。"
-          : "An interrupted request does not prove server rollback. Inspect records before importing again."}
+          ? (deletion ? "删除请求中断不代表回滚。核对撤回与回收记录，避免重复删除。" : "请求中断不代表服务器回滚。先核对记录，避免重复导入。")
+          : (deletion ? "Interrupted deletion does not prove rollback. Inspect withdrawal and reclamation records." : "An interrupted request does not prove server rollback. Inspect records before importing again.")}
       </p>
       <Button
         type="button"
@@ -232,8 +240,8 @@ export function SkillImportOperations({
             ? "正在检查记录…"
             : "Inspecting records…"
           : zh
-            ? (creation ? "检查创建记录" : "检查导入记录")
-            : (creation ? "Inspect creation records" : "Inspect import records")}
+            ? (deletion ? "检查删除记录" : creation ? "检查创建记录" : "检查导入记录")
+            : (deletion ? "Inspect deletion records" : creation ? "Inspect creation records" : "Inspect import records")}
       </Button>
       {!allowed && (
         <p>
@@ -273,7 +281,8 @@ export function SkillImportOperations({
                 {({pending: ["尚未完成", "Pending"], confirmed: ["已完成", "Completed"], unknown: ["待核对", "Needs inspection"]}[operation.configuration_phase ?? "pending"])[zh ? 0 : 1]}
                 {operation.registered && operation.resource_id && <a className="ml-2 underline" href={`/workspace/skills/${encodeURIComponent(operation.name)}?scope=${scope}&resource_id=${encodeURIComponent(operation.resource_id)}`}>{zh ? "查看当前资源与配置" : "Inspect current resource and configuration"}</a>}
               </p>}
-              {!operation.registered &&
+              {operation.kind === "resource_delete" && operation.files_verified && ["deletion_pending", "reclamation_pending"].includes(operation.state) && <Button type="button" variant="outline" disabled={!!working} onClick={() => setConfirm({key, operation, action: "recover"})}>{zh ? "继续撤回与回收" : "Continue withdrawal and reclamation"}</Button>}
+              {operation.kind !== "resource_delete" && !operation.registered &&
                 ((operation.state === "registration_pending" &&
                   operation.files_verified) ||
                   (operation.state === "publication_pending" &&
@@ -289,7 +298,7 @@ export function SkillImportOperations({
                     {zh ? "继续核对并登记" : "Continue and register"}
                   </Button>
                 )}
-              {!operation.registered &&
+              {operation.kind !== "resource_delete" && !operation.registered &&
                 !operation.files_verified &&
                 ["allocated", "staging", "prepared"].includes(
                   operation.phase ?? "",
@@ -335,11 +344,13 @@ export function SkillImportOperations({
       {choice && (
         <div
           role="group"
-          aria-label={zh ? "确认导入恢复操作" : "Confirm import recovery"}
+          aria-label={choice.operation.kind === "resource_delete" ? (zh ? "确认删除恢复操作" : "Confirm deletion recovery") : (zh ? "确认导入恢复操作" : "Confirm import recovery")}
           className="rounded border p-2"
         >
           <p>
-            {choice.action === "recover"
+            {choice.operation.kind === "resource_delete"
+              ? (zh ? `确认继续删除 ${choice.operation.name} 的原实例并回收已核对自有内容？` : `Continue withdrawing ${choice.operation.name} and reclaiming verified owned contents?`)
+              : choice.action === "recover"
               ? zh
                 ? `确认核对 ${choice.operation.name}，必要时发布并登记到当前${scope === "tenant" ? "租户共享" : "个人"}范围？`
                 : `Inspect ${choice.operation.name}, and publish/register if needed in the current ${scope} scope?`

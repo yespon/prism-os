@@ -1,13 +1,10 @@
 "use client";
 
-import { Bot, Plus, SearchIcon, Loader2, Upload, Trash2, Edit3 } from "lucide-react";
+import { Bot, Plus, SearchIcon, Loader2, Upload, Edit3 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { toast } from "sonner";
 
-import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
-import { skillImportErrorMessage } from "@/core/skills/imports";
-import { useSkillImportContext } from "@/core/skills/import-context";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,12 +15,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SkillDeleteControl } from "@/components/workspace/skills/skill-delete-control";
+import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
 import { useSession } from "@/core/auth/hooks";
 import { useI18n } from "@/core/i18n/hooks";
 import { isPlatformAdminRole } from "@/core/permissions/roles";
-import { useAvailableSkills, useCreatePersonalSkill, useImportPersonalSkill, useDeletePersonalSkill } from "@/core/skills/hooks";
+import { useAvailableSkills, useImportPersonalSkill } from "@/core/skills/hooks";
+import { useSkillImportContext } from "@/core/skills/import-context";
+import { skillImportErrorMessage } from "@/core/skills/imports";
 import type { AvailableSkillResponse } from "@/core/skills/type";
 
 export default function SkillsCenterPage() {
@@ -52,12 +52,7 @@ export default function SkillsCenterPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => { setImportOpen(false); setArchiveFile(null); archiveBusy.current = false; }, [importContext.key]);
 
-  const { mutateAsync: createPersonalSkill, isPending: isCreating } = useCreatePersonalSkill();
   const { mutateAsync: importPersonalSkill, isPending: isImporting } = useImportPersonalSkill();
-  const { mutateAsync: deletePersonalSkill, isPending: isDeleting } = useDeletePersonalSkill();
-
-  const [deletingSkill, setDeletingSkill] = useState<string | null>(null);
-
   const isAdmin = isPlatformAdminRole(session?.user?.role) || session?.user?.role === "tenant_admin";
 
   const filteredSkills = useMemo(() => {
@@ -124,20 +119,6 @@ export default function SkillsCenterPage() {
   const handleOpenImport = () => {
     setArchiveFile(null);
     changeArchiveOpen(true);
-  };
-
-  const handleDelete = async (skillName: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!confirm(`确定要删除私有 Skill "${skillName}" 吗？此操作不可恢复。`)) return;
-    setDeletingSkill(skillName);
-    try {
-      await deletePersonalSkill(skillName);
-      toast.success(`已删除 ${skillName}`);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "删除失败");
-    } finally {
-      setDeletingSkill(null);
-    }
   };
 
   return (
@@ -215,8 +196,7 @@ export default function SkillsCenterPage() {
                 key={skill.resource_id ?? `${skill.scope}:${skill.name}`}
                 skill={skill}
                 onClick={() => router.push(`/workspace/skills/${encodeURIComponent(skill.name)}?${new URLSearchParams({scope: skill.scope, ...(skill.resource_id ? {resource_id: skill.resource_id} : {})})}`)}
-                onDelete={skill.scope === "personal" ? (e: React.MouseEvent) => handleDelete(skill.name, e) : undefined}
-                isDeleting={deletingSkill === skill.name}
+                locale={locale === "zh-CN" ? "zh" : "en"}
               />
             ))}
           </div>
@@ -311,13 +291,11 @@ export default function SkillsCenterPage() {
 function SkillCard({
   skill,
   onClick,
-  onDelete,
-  isDeleting,
+  locale,
 }: {
   skill: AvailableSkillResponse;
   onClick: () => void;
-  onDelete?: (e: React.MouseEvent) => void;
-  isDeleting?: boolean;
+  locale: "zh" | "en";
 }) {
   const canEdit = skill.managed_by_current_user && skill.scope !== "global";
 
@@ -336,20 +314,7 @@ function SkillCard({
             <Edit3 className="h-3.5 w-3.5" />
           </button>
         )}
-        {onDelete && (
-          <button
-            onClick={onDelete}
-            disabled={isDeleting}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
-            title="删除此 Skill"
-          >
-            {isDeleting ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Trash2 className="h-3.5 w-3.5" />
-            )}
-          </button>
-        )}
+        {skill.scope === "personal" && <SkillDeleteControl name={skill.name} resourceId={skill.resource_id} scope="personal" locale={locale} disabled={!canEdit} />}
       </div>
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">

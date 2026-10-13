@@ -183,12 +183,12 @@ def test_tenant_shared_skill_delete_rejects_non_tenant_admin() -> None:
 def test_tenant_shared_skill_delete_returns_404_when_missing(monkeypatch) -> None:
     app = _create_app()
 
-    async def _fake_delete_tenant_shared_skill(tenant_id: str, skill_name: str) -> None:
-        assert tenant_id == "tenant-a"
-        assert skill_name == "missing-skill"
-        raise ValueError("Skill 'missing-skill' not found")
+    async def missing(root, tenant_id, actor, shared, name, **kwargs):
+        assert tenant_id == "tenant-a" and actor == "u-1" and shared
+        assert name == "missing-skill"
+        raise skills.skill_mutations.SkillMutationRejected(404, "Current registered resource not found")
 
-    monkeypatch.setattr(skills, "delete_tenant_shared_skill", _fake_delete_tenant_shared_skill)
+    monkeypatch.setattr(skills.skill_deletions, "delete_owned", missing)
 
     with TestClient(app) as client:
         response = client.delete(

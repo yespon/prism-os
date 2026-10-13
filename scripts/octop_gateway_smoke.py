@@ -15,6 +15,7 @@ import subprocess
 import tempfile
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import zipfile
 from datetime import UTC, datetime, timedelta
@@ -86,7 +87,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
             )
             try:
                 with urllib.request.urlopen(req, timeout=10) as response:
-                    return response.status, response.read() if raw else json.load(response)
+                    return response.status, response.read() if raw else (None if response.status == 204 else json.load(response))
             except urllib.error.HTTPError as exc:
                 return exc.code, json.load(exc)
 
@@ -332,6 +333,33 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                 manual_patch = {"enabled": True, "expected_resource_id": manual["resource_id"], "expected_file_sha256": manual["file_sha256"]}
                 code, activated = request("/api/skills/personal/manual-owned", manual_patch, token, method="PATCH")
                 assert code == 200 and activated["enabled"] and activated["resource_id"] == manual["resource_id"]
+                # Actual authenticated DELETE: current selection, fresh role,
+                # original receipt withdrawal and public source preservation.
+                manual_delete = "/api/skills/personal/manual-owned"
+                assert request(manual_delete + "/deletion-preflight")[0] == 401
+                assert request(shared_url + "/deletion-preflight", token=token)[0] == 403
+                assert request(shared_url, token=token, method="DELETE")[0] == 403
+                code, removal_plan = request(manual_delete + "/deletion-preflight", token=token)
+                assert code == 200 and removal_plan["eligible"] and removal_plan["members"] >= 1
+                stale_delete = manual_delete + "?expected_resource_id=skill:withdrawn"
+                assert request(stale_delete, token=token, method="DELETE")[0] == 409
+                selection = urllib.parse.urlencode({"expected_resource_id": removal_plan["resource_id"], "expected_tree_sha256": removal_plan["tree_sha256"]})
+                assert request(manual_delete + "?" + selection, token=token, method="DELETE")[0] == 204
+                assert request(manual_url, token=token)[1]["state"] == "withdrawn"
+                assert request(manual_url + "/recover", token=token, method="POST")[0] == 409
+                assert request(manual_delete, token=token, method="DELETE")[0] == 404
+                code, replacement = request("/api/skills/personal", {"name": "manual-owned", "description": "New generation", "instructions": "NEW INSTANCE BODY"}, token)
+                assert code == 201 and replacement["resource_id"] != manual["resource_id"]
+                assert request(manual_url + "/recover", token=token, method="POST")[0] == 409
+                with sqlite3.connect(directory / "tenant.db") as database:
+                    database.execute("UPDATE tenant_memberships SET role='tenant_admin' WHERE user_id=?", ("catalog-smoke-user",))
+                for managed_url in [shared_url, enable_url]:
+                    code, removal_plan = request(managed_url + "/deletion-preflight", token=token)
+                    assert code == 200 and removal_plan["eligible"] and removal_plan["resource_id"].startswith("skill:")
+                    selection = urllib.parse.urlencode({"expected_resource_id": removal_plan["resource_id"], "expected_tree_sha256": removal_plan["tree_sha256"]})
+                    assert request(managed_url + "?" + selection, token=token, method="DELETE")[0] == 204
+                assert (public_dir / "SKILL.md").read_text().endswith("PROBE PUBLIC BODY\n")
+                assert request(detail_url, token=token)[0] == 200
                 result = {
                     "passed": True,
                     "gateway": "real uvicorn process",
@@ -354,6 +382,9 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     "installation_does_not_bind_agent_or_grant_execution": True,
                     "concrete_enablement_and_current_membership": True,
                     "manual_creation_owned_publication_configuration_and_explicit_enablement": True,
+                    "conditional_owned_delete_with_current_membership_and_original_receipt_withdrawal": True,
+                    "public_override_removal_preserves_source": True,
+                    "old_receipt_cannot_restore_or_rebind_same_name_replacement": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

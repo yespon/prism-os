@@ -479,3 +479,56 @@ it("keeps the recovered old receipt visible when it is outside the first refresh
     screen.queryByRole("button", { name: "继续核对并登记" }),
   ).not.toBeInTheDocument();
 });
+
+it("offers deletion recovery without registration or abort and requires explicit confirmation", async () => {
+  const deletion: SkillImportOperation = {
+    ...pendingOperation,
+    kind: "resource_delete",
+    state: "reclamation_pending",
+    phase: "delete_withdrawn",
+    withdrawn: true,
+    physical_reclamation: true,
+  };
+  mock.load.mockResolvedValueOnce({
+    operations: [deletion],
+    next_cursor: null,
+    total: 1,
+  });
+  mock.load.mockResolvedValue({
+    operations: [
+      { ...deletion, state: "reclaimed", phase: "delete_reclaimed" },
+    ],
+    next_cursor: null,
+    total: 1,
+  });
+  mock.change.mockResolvedValue({
+    ...deletion,
+    state: "reclaimed",
+    phase: "delete_reclaimed",
+  });
+  render(
+    wrapped(<SkillImportOperations scope="personal" locale="zh" deletion />),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "检查删除记录" }));
+  fireEvent.click(
+    await screen.findByRole("button", { name: "继续撤回与回收" }),
+  );
+  expect(
+    screen.getByRole("group", { name: "确认删除恢复操作" }),
+  ).toHaveTextContent("确认继续删除");
+  expect(
+    screen.queryByRole("button", { name: "继续核对并登记" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "放弃自有暂存" }),
+  ).not.toBeInTheDocument();
+  expect(mock.change).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "确认操作" }));
+  await screen.findByText(/删除与回收已完成/);
+  expect(mock.change).toHaveBeenCalledWith(
+    "personal",
+    deletion.operation_id,
+    "recover",
+    expect.any(AbortSignal),
+  );
+});

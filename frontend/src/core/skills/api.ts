@@ -1,6 +1,7 @@
 import { getAuthHeaders } from "@/core/api/auth-client";
 import { getBackendBaseURL } from "@/core/config";
 
+import { deleteOwnedSkill, type SkillDeletionOptions } from "./deletions";
 import { readSkillImportResponse, SkillImportError } from "./imports";
 import { SkillMutationError, readSkillMutationResponse } from "./mutations";
 import type {
@@ -208,20 +209,8 @@ export async function patchPersonalSkill(
   );
   return readSkillMutationResponse(response);
 }
-export async function deletePersonalSkill(skillName: string) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/skills/personal/${skillName}`,
-    {
-      method: "DELETE",
-      headers: await getAuthHeaders(),
-    },
-  );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(
-      payload.detail ?? `Failed to delete personal skill: ${response.status}`,
-    );
-  }
+export async function deletePersonalSkill(skillName: string, options: SkillDeletionOptions = {}) {
+  return deleteOwnedSkill("personal", skillName, options);
 }
 
 export async function importPersonalSkill(file: File) {
@@ -274,20 +263,8 @@ export async function importTenantSkill(file: File) {
   return readSkillImportResponse(response);
 }
 
-export async function deleteTenantSkill(skillName: string) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/tenants/skills/${skillName}`,
-    {
-      method: "DELETE",
-      headers: await getAuthHeaders(),
-    },
-  );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(
-      payload.detail ?? `Failed to delete tenant skill: ${response.status}`,
-    );
-  }
+export async function deleteTenantSkill(skillName: string, options: SkillDeletionOptions = {}) {
+  return deleteOwnedSkill("tenant", skillName, options);
 }
 
 export async function getSkillDetail(

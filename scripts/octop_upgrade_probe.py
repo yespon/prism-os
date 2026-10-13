@@ -25,7 +25,9 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     manifest = json.loads((ROOT / "vendor/octop/manifest.json").read_text())
-    spec = importlib.util.spec_from_file_location("octop_sync", ROOT / "scripts/octop_sync.py")
+    spec = importlib.util.spec_from_file_location(
+        "octop_sync", ROOT / "scripts/octop_sync.py"
+    )
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
@@ -38,6 +40,9 @@ def main():
         "backend/tests/test_skill_mutation_boundaries.py",
         "backend/tests/test_skill_enablement_boundaries.py",
         "backend/tests/test_skill_manual_creation.py",
+        "backend/tests/test_skill_resource_deletion.py",
+        "backend/app/integrations/skill_deletions.py",
+        "backend/packages/harness/deerflow/skills/resource_deletion_files.py",
         "backend/packages/harness/deerflow/database/user_config_service.py",
         "backend/packages/harness/deerflow/skills/loader.py",
         "backend/packages/harness/deerflow/skills/resource_identity.py",
@@ -59,7 +64,10 @@ def main():
         "backend/packages/octop-capabilities/src/prismos_octop/resources.py",
         "backend/packages/octop-capabilities/src/prismos_octop/source_policy.py",
     ]
-    contract_hashes = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in contract_paths}
+    contract_hashes = {
+        path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+        for path in contract_paths
+    }
     evidence = {
         "scope": (
             "curated source upgrade/rollback; catalog, questionnaire, avatars, presentation persistence, "
@@ -99,7 +107,9 @@ def main():
                 ROOT / "vendor/octop/manifest.json",
             ),
         ]
-        snapshots.append(snapshots[0])  # Exercise restoration to the previous curated source view.
+        snapshots.append(
+            snapshots[0]
+        )  # Exercise restoration to the previous curated source view.
         for archive, revision, release, receipt in snapshots:
             if evidence["versions"]:
                 key = "diff" if len(evidence["versions"]) == 1 else "rollback_diff"
@@ -107,7 +117,9 @@ def main():
             imported = sync.sync(archive, revision, release, receipt)
             verified = sync.verify()
             environment = dict(os.environ)
-            environment["PYTHONPATH"] = str(package.parent) + os.pathsep + str(ROOT / "backend")
+            environment["PYTHONPATH"] = (
+                str(package.parent) + os.pathsep + str(ROOT / "backend")
+            )
             environment["PRISMOS_OCTOP_EXPECTED_REVISION"] = revision
             result = subprocess.run(
                 [
@@ -124,6 +136,7 @@ def main():
                     "tests/test_skill_mutation_boundaries.py",
                     "tests/test_skill_enablement_boundaries.py",
                     "tests/test_skill_manual_creation.py",
+                    "tests/test_skill_resource_deletion.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",
@@ -143,7 +156,10 @@ def main():
             )
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
-    if contract_hashes != {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in contract_paths}:
+    if contract_hashes != {
+        path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+        for path in contract_paths
+    }:
         raise ValueError("Host contract changed during upgrade probe")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n")

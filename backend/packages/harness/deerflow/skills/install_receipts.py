@@ -81,8 +81,25 @@ def sync_directory(path: Path) -> None:
         os.close(descriptor)
 
 
-def publish_no_replace(source: Path, target: Path) -> None:
+def publish_no_replace(source: Path, target: Path, *, parent_descriptor: int | None = None) -> None:
     """Same-filesystem exclusive rename; never emulate with overwriting rename."""
+    if parent_descriptor is not None:
+        if not sys.platform.startswith("linux"):
+            raise OSError(errno.ENOTSUP, "Descriptor-safe Skill movement is unavailable")
+        libc = ctypes.CDLL(None, use_errno=True)
+        if not hasattr(libc, "renameat2"):
+            raise OSError(errno.ENOTSUP, "Descriptor-safe Skill movement is unavailable")
+        call = libc.renameat2
+        call.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        call.restype = ctypes.c_int
+        result = call(parent_descriptor, os.fsencode(source.name), parent_descriptor, os.fsencode(target.name), 1)
+        if result:
+            code = ctypes.get_errno()
+            if code in {errno.EEXIST, errno.ENOTEMPTY}:
+                raise FileExistsError(code, "Skill destination already exists")
+            raise OSError(code, "Descriptor-safe Skill movement failed")
+        os.fsync(parent_descriptor)
+        return
     if os.name == "nt":
         os.rename(source, target)  # Windows rename refuses an existing destination.
         return
@@ -165,7 +182,12 @@ def read_receipt(root: Path, scope: str | Path | None, operation_id: str) -> dic
         raise InvalidSkillReceipt("Skill import receipt is unavailable")
     name = value.get("skill_name")
     state = value.get("state")
-    if not isinstance(name, str) or not isinstance(state, str) or state not in {"allocated", "staging", "prepared", "published", "registered", "registration_observed", "registration_unknown", "aborted"}:
+    if value.get("kind") == "resource_delete":
+        from deerflow.skills.resource_deletion_files import validate_delete_receipt
+
+        validate_delete_receipt(value, relative, operation_id)
+        return value
+    if not isinstance(name, str) or not isinstance(state, str) or state not in {"allocated", "staging", "prepared", "published", "registered", "registration_observed", "registration_unknown", "aborted", "withdrawn"}:
         raise InvalidSkillReceipt("Skill import receipt state is unavailable")
     if value.get("schema_version") != SCHEMA or value.get("operation_id") != operation_id or value.get("scope") != relative.as_posix() or not _NAME.fullmatch(name):
         raise InvalidSkillReceipt("Skill import receipt scope is unavailable")

@@ -12,7 +12,9 @@ export interface SkillImportOperation {
   registered: boolean;
   enabled: boolean | null;
   execution_ready: false;
-  kind?: "manual_create";
+  kind?: "manual_create" | "resource_delete";
+  withdrawn?: boolean;
+  physical_reclamation?: boolean;
   requested_enabled?: boolean;
   configuration_phase?: "pending" | "confirmed" | "unknown";
   resource_id?: string;

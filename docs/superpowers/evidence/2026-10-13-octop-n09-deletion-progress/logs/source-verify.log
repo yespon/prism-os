@@ -1,0 +1,11 @@
+python3 scripts/octop_sync.py verify
+{
+  "verified": true,
+  "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "source_files": 3771,
+  "retained_source_files": 3585,
+  "excluded_source_files": 186,
+  "imported_files": 902
+}
+python3 scripts/octop_external.py verify
+{"packages": 4, "restricted_resource_excluded": true, "retained_artifacts": 7, "runtime_integration": false, "verified": true}

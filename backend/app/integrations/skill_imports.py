@@ -76,6 +76,9 @@ async def observe_operation(operation_id: str, tenant_id: str, user_id: str, sha
     owner, scope = owner_and_scope(tenant_id, user_id, shared)
     root = root or get_skills_root_path()
     record = read_receipt(root, scope, operation_id)
+    if record.get("kind") == "resource_delete":
+        from app.integrations import skill_deletions
+        return await skill_deletions.observe_operation(operation_id, tenant_id, user_id, shared, root=root)
     row = await current_row(tenant_id, owner, record["skill_name"])
     summary = {
         "operation_id": operation_id,
@@ -90,6 +93,10 @@ async def observe_operation(operation_id: str, tenant_id: str, user_id: str, sha
     }
     if "manual_creation" in record:
         summary.update(kind="manual_create", requested_enabled=record["manual_creation"]["enabled"], configuration_phase=record["manual_creation"]["configuration_phase"], configuration_recovery="inspect_current_settings")
+    if record["state"] == "withdrawn":
+        original = row is not None and registered_resource_id(row) == record.get("withdrawn_resource_id")
+        summary.update(state="withdrawal_pending" if original else "withdrawn", registered=False, withdrawn=not original)
+        return summary
     try:
         _, target = verified_publication(root, scope, operation_id)
     except ValueError:
@@ -116,6 +123,11 @@ async def recover_operation(operation_id: str, tenant_id: str, user_id: str, sha
     owner, scope = owner_and_scope(tenant_id, user_id, shared)
     root = root or get_skills_root_path()
     record = read_receipt(root, scope, operation_id)
+    if record.get("kind") == "resource_delete":
+        from app.integrations import skill_deletions
+        return await skill_deletions.recover_operation(operation_id, tenant_id, user_id, shared, root=root)
+    if record["state"] == "withdrawn":
+        raise ValueError("Withdrawn resource cannot be restored from its old publication receipt")
     row = await current_row(tenant_id, owner, record["skill_name"])
     try:
         record, target = verified_publication(root, scope, operation_id)
