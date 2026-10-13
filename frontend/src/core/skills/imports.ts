@@ -12,6 +12,10 @@ export interface SkillImportOperation {
   registered: boolean;
   enabled: boolean | null;
   execution_ready: false;
+  kind?: "manual_create";
+  requested_enabled?: boolean;
+  configuration_phase?: "pending" | "confirmed" | "unknown";
+  resource_id?: string;
 }
 export interface SkillImportPage {
   operations: SkillImportOperation[];

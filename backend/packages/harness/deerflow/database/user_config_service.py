@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from typing import Any
 
+from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from sqlmodel import delete, select
 
@@ -1550,6 +1551,41 @@ async def update_tenant_shared_skill_settings(
         session.add(row)
         await session.commit()
         return current
+
+
+async def initialize_owned_skill_configuration(
+    tenant_id: str, user_id: str, skill_name: str, *, shared: bool,
+    expected_resource_id: str, enabled: bool, bound_tools: list[str] | None = None,
+    prompt_template: str | None = None, strategy: str | None = None,
+) -> dict[str, Any]:
+    """Initialize the original encrypted slot and enablement in one DB transaction.
+
+    Creation starts disabled. A new instance never inherits old name-based
+    bindings, and current-instance validation guards this second phase.
+    """
+    owner = _tenant_shared_skill_owner_id(tenant_id) if shared else user_id
+    await ensure_user_config(owner, tenant_id=tenant_id)
+    settings = {"bound_tools": [item.strip() for item in (bound_tools or []) if item.strip()], "prompt_template": (prompt_template or "").strip() or None, "strategy": (strategy or "").strip() or None}
+    async with get_session_factory()() as session:
+        async with session.begin():
+            if session.get_bind().dialect.name == "sqlite":
+                await session.execute(text("BEGIN IMMEDIATE"))
+            native = await session.scalar(select(TenantSkill).where(TenantSkill.tenant_id == tenant_id, TenantSkill.user_id == owner, TenantSkill.name == skill_name).with_for_update())
+            if native is None or registered_resource_id(native) != expected_resource_id:
+                raise ValueError("Current Skill instance changed before configuration initialization")
+            config = await session.scalar(select(UserConfig).where(UserConfig.user_id == owner, _config_scope_clause(UserConfig, tenant_id)).with_for_update())
+            if config is None:
+                raise ValueError("Original Skill configuration is unavailable")
+            payload = decrypt_extensions_payload(dict(config.extensions_config or {}))
+            slots = payload.get("tenant_skill_settings")
+            slots = dict(slots) if isinstance(slots, dict) else {}
+            slots[skill_name] = settings
+            payload["tenant_skill_settings"] = slots
+            config.extensions_config = encrypt_extensions_payload(payload)
+            native.enabled = enabled
+            session.add(config)
+            session.add(native)
+    return settings
 
 
 async def delete_tenant_shared_skill_settings(tenant_id: str, skill_name: str) -> None:

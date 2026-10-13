@@ -70,7 +70,11 @@ def main():
         environment = dict(os.environ, PRISMOS_SKILL_TEST_DB_URL=url)
         with (args.output_dir / "pytest.log").open("w") as log:
             run = subprocess.run(
-                [sys.executable, "-m", "pytest", "tests/test_skill_import_recovery.py", "tests/test_skill_resource_identity.py", "tests/test_skill_mutation_boundaries.py", "tests/test_skill_enablement_boundaries.py", "-q"],
+                [
+                    sys.executable, "-m", "pytest", "tests/test_skill_import_recovery.py",
+                    "tests/test_skill_resource_identity.py", "tests/test_skill_mutation_boundaries.py",
+                    "tests/test_skill_enablement_boundaries.py", "tests/test_skill_manual_creation.py", "-q",
+                ],
                 cwd=ROOT / "backend", env=environment, stdout=log, stderr=subprocess.STDOUT,
             )
         version = subprocess.check_output(["docker", "exec", name, "psql", "-U", "prismos_test", "-d", "prismos_skill_probe", "-At", "-c", "select version()"], text=True).strip()

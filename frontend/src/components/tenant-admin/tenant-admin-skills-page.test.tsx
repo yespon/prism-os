@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { SkillMutationError } from "@/core/skills/mutations";
 import { act, fireEvent, render, screen } from "@/test/utils";
 
-import { SkillMutationError } from "@/core/skills/mutations";
 
 import { TenantAdminSkillsPage } from "./tenant-admin-skills-page";
 
@@ -101,6 +101,25 @@ describe("TenantAdminSkillsPage", () => {
     toggleSkill.mockResolvedValueOnce({});
     fireEvent.click(screen.getByRole("switch"));
     expect(toggleSkill).toHaveBeenCalledWith({skillName: "custom-skill-a", enabled: false, expectedResourceId: "skill:current"});
+  });
+
+  it("unknown shared manual creation blocks repeats and offers current operation inspection", async () => {
+    renderPage(); createSkill.mockRejectedValueOnce(new SkillMutationError(503, "skill:current", true, "Inspect", "a".repeat(32)));
+    fireEvent.click(screen.getByRole("button", {name: "新建 / 导入"}));
+    fireEvent.change(screen.getByLabelText(/名称/), {target: {value: "manual-owned"}});
+    fireEvent.change(screen.getByLabelText(/描述/), {target: {value: "Owned shared"}});
+    fireEvent.click(screen.getByRole("button", {name: "保存"}));
+    await act(async () => {await Promise.resolve();});
+    expect(screen.getByRole("button", {name: "保存"})).toBeDisabled(); expect(screen.getByRole("button", {name: "检查创建记录"})).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", {name: "保存"})); expect(createSkill).toHaveBeenCalledOnce();
+  });
+
+  it("late shared creation success after identity change does not show success", async () => {
+    const view = renderPage(); let resolve!: (value: object) => void; createSkill.mockReturnValueOnce(new Promise(done => {resolve = done;}));
+    fireEvent.click(screen.getByRole("button", {name: "新建 / 导入"}));
+    fireEvent.change(screen.getByLabelText(/名称/), {target: {value: "manual-owned"}}); fireEvent.change(screen.getByLabelText(/描述/), {target: {value: "Owned shared"}});
+    fireEvent.click(screen.getByRole("button", {name: "保存"})); mocks.identity = "tenant-b/user-b"; view.rerender(<TenantAdminSkillsPage />);
+    await act(async () => resolve({})); expect(mocks.success).not.toHaveBeenCalled();
   });
 
   it("splits built-in and custom skills into separate tabs", () => {

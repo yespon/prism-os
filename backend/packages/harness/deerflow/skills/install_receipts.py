@@ -141,6 +141,15 @@ def write_receipt(parent: Path, record: dict, *, initial: bool = False) -> None:
         temporary.unlink(missing_ok=True)
 
 
+def validate_manual_creation(value: dict) -> None:
+    if not isinstance(value, dict) or set(value) != {"enabled", "category", "configuration_phase"}:
+        raise InvalidSkillReceipt("Manual creation intent is unavailable")
+    if type(value["enabled"]) is not bool or not isinstance(value["category"], str) or not value["category"].strip() or value["category"].strip().lower() == "public":
+        raise InvalidSkillReceipt("Manual creation registration intent is unavailable")
+    if not isinstance(value["configuration_phase"], str) or value["configuration_phase"] not in {"pending", "confirmed", "unknown"}:
+        raise InvalidSkillReceipt("Manual creation configuration phase is unavailable")
+
+
 def read_receipt(root: Path, scope: str | Path | None, operation_id: str) -> dict:
     parent, relative = scoped_parent(root, scope)
     path = receipt_path(parent, operation_id)
@@ -162,6 +171,8 @@ def read_receipt(root: Path, scope: str | Path | None, operation_id: str) -> dic
         raise InvalidSkillReceipt("Skill import receipt scope is unavailable")
     if value.get("stage_name") != f".prismos-stage-{operation_id}":
         raise InvalidSkillReceipt("Skill import receipt stage is unavailable")
+    if "manual_creation" in value:
+        validate_manual_creation(value["manual_creation"])
     return value
 
 

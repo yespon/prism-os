@@ -39,15 +39,17 @@ export function SkillImportOperations({
   scope,
   locale,
   open = true,
+  creation = false,
 }: {
   scope: SkillImportScope;
   locale: "zh" | "en";
   open?: boolean;
+  creation?: boolean;
 }) {
   const context = useSkillImportContext();
   const queryClient = useQueryClient();
   const zh = locale === "zh";
-  const key = JSON.stringify([context.key, scope, locale, open]);
+  const key = JSON.stringify([context.key, scope, locale, open, creation]);
   const live = useRef(key);
   live.current = key;
   const controller = useRef<AbortController | null>(null);
@@ -212,7 +214,7 @@ export function SkillImportOperations({
   return (
     <section
       className="space-y-2 rounded border p-3 text-sm"
-      aria-label={zh ? "Skill 导入记录" : "Skill import records"}
+      aria-label={creation ? (zh ? "Skill 创建记录" : "Skill creation records") : (zh ? "Skill 导入记录" : "Skill import records")}
     >
       <p>
         {zh
@@ -230,8 +232,8 @@ export function SkillImportOperations({
             ? "正在检查记录…"
             : "Inspecting records…"
           : zh
-            ? "检查导入记录"
-            : "Inspect import records"}
+            ? (creation ? "检查创建记录" : "检查导入记录")
+            : (creation ? "Inspect creation records" : "Inspect import records")}
       </Button>
       {!allowed && (
         <p>
@@ -266,6 +268,11 @@ export function SkillImportOperations({
               <p className="text-muted-foreground text-xs break-all">
                 {operation.operation_id}
               </p>
+              {operation.kind === "manual_create" && <p className="text-xs">
+                {zh ? "本次创建的配置阶段：" : "Configuration phase of this creation: "}
+                {({pending: ["尚未完成", "Pending"], confirmed: ["已完成", "Completed"], unknown: ["待核对", "Needs inspection"]}[operation.configuration_phase ?? "pending"])[zh ? 0 : 1]}
+                {operation.registered && operation.resource_id && <a className="ml-2 underline" href={`/workspace/skills/${encodeURIComponent(operation.name)}?scope=${scope}&resource_id=${encodeURIComponent(operation.resource_id)}`}>{zh ? "查看当前资源与配置" : "Inspect current resource and configuration"}</a>}
+              </p>}
               {!operation.registered &&
                 ((operation.state === "registration_pending" &&
                   operation.files_verified) ||

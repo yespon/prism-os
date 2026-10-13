@@ -72,3 +72,9 @@ export interface SummarizeDiagnosisResponse {
   suggested_tools: string[];
   suggested_category: string;
 }
+
+export interface SkillCreationResult extends SkillDetail {
+  operation_id: string;
+  recovery_available: boolean;
+  configuration_phase: string;
+}

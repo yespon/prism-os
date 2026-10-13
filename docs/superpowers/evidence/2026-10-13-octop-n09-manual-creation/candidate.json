@@ -1,0 +1,45 @@
+{
+  "baseline": "38c0c75b8d9540acf6dbb6005b7c780951ecf940",
+  "root": "/tmp/prismos-n09i-clean-5dptby6s/src",
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "5c1a76b32c15dcb336b60da0ffd6f4ad41ca35eb0da60967431459b98ba37dd0",
+    "Makefile": "7175dce3b12c0c69818ef5c2acc4a9689b2abb7745f957b1599b297aee00ed37",
+    "backend/app/gateway/routers/skills.py": "e0a87c5948d3938a67daf0fc3bd3de7604f0068969d8037ee8806bfea0e3291a",
+    "backend/app/integrations/skill_imports.py": "239a8e0d356daa68260b8ac0f28e26a41641d01a59d16964e022b212a9f05ea7",
+    "backend/packages/harness/deerflow/database/user_config_service.py": "26c6e5819ce4117be744bed1d1c0c11c8ba04bdf26323e68b43620e6e41d2c63",
+    "backend/packages/harness/deerflow/skills/install_receipts.py": "3cd23cefec27868fc1aec0f57e45c22198dcad8ac959b1e069f5dfcfc39a72ca",
+    "backend/tests/test_skill_manual_creation.py": "df2e456f6992c92f5ad7b1ecdcfd9c4f432d3705e3d515dddfefa511d3833bd6",
+    "frontend/src/app/workspace/skills/[name]/page.test.tsx": "3453e5f9d3140336e09f5b45c126ee9ada831838fea2c45a33b9595e922153ce",
+    "frontend/src/app/workspace/skills/[name]/page.tsx": "15942a8c97be9546faf1e89f8996a1b30372d928759b7e00c96c3d908273863e",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.test.tsx": "bdf712dd6bda95191a1538662780f2ef6a081771a135072d7decb6fa76d7a56d",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx": "4d398b901bbea0efe76ae94990ef5cc17ab9a7cc2e1190d794afbb75be7b6f00",
+    "frontend/src/components/workspace/incidents/save-as-skill-dialog.tsx": "808aa0648b0308292bdc35288794eac35145de06f4e479f15ec771feab5b5f91",
+    "frontend/src/components/workspace/skills/skill-creation-flows.test.tsx": "b2db704a159dc7ce5d35b01319a2132d78a5c8bab03ef167fe723227854fab37",
+    "frontend/src/components/workspace/skills/skill-creation-inspection.test.tsx": "b13d273370c29246853e9d2a29e2e9fa483dab4d569516cb11b746db74d626bb",
+    "frontend/src/components/workspace/skills/skill-creation-inspection.tsx": "b4a932af1e20bc48e6078c53a0a8464a1c13b30a0c362256b9ff9f59847cb75c",
+    "frontend/src/components/workspace/skills/skill-import-operations.tsx": "1b47028118a9251440edf059d9330fef6fb296380fee2510bf063619edcab5b1",
+    "frontend/src/components/workspace/terminal/save-as-skill-dialog.tsx": "1a26893ffc8b4a101e6a588a35682c1a67cccb84e251c9277571506e46ca3976",
+    "frontend/src/core/skills/api.ts": "1a0c9afd432f005b5509e1b56d7211cb2bd0bb4d5add4035f4e627a484bbdc23",
+    "frontend/src/core/skills/hooks.ts": "c07100663639ded75e770e72f48436052ee17f41a6ffcd7fb01a23a68b69e46c",
+    "frontend/src/core/skills/imports.ts": "f1e65d1141673447758640997acaf816d6db951f56a35949ce735eaa9fc860c9",
+    "frontend/src/core/skills/mutations.test.ts": "49b24bde1fc94018a9d165c924e1abb80da6b8cc73cbe93f32deaf5371bb49d9",
+    "frontend/src/core/skills/mutations.ts": "6e678b7fb2e586030577049b518c6c50db12ddf015266370021f3abd1bb050b8",
+    "frontend/src/core/skills/type.ts": "9b0a453714806d83453ffda3239f12b1b9521605883c0a27bc6342e01345af1e",
+    "scripts/octop_gateway_smoke.py": "0f55abfedc30b5c5517814cdde02647a8ddfc940029d00248f068601c93e7565",
+    "scripts/octop_skill_postgres.py": "da0c63917f820368060eaa06b8379f280501902d01e73f260a725714d3c82dd2",
+    "scripts/octop_upgrade_probe.py": "ffaf316d735fdc14a6ac3ec4767d5ee2f74d26b2d88d3a933b06e3e296b32d06"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "type": "host-only metadata absolute symlink",
+      "sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "type": "host-only metadata absolute symlink",
+      "sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db"
+    }
+  ],
+  "original_source_members_verified": 902
+}

@@ -2,7 +2,7 @@
 
 import { BookmarkIcon, Loader2Icon, SparklesIcon, FileTextIcon, GitCompareIcon, CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
+import { SkillCreationInspection } from "@/components/workspace/skills/skill-creation-inspection";
 import { summarizeDiagnosis, createPersonalSkill } from "@/core/skills/api";
+import { useSkillImportContext } from "@/core/skills/import-context";
+import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
 import type { ToolCallSummary } from "@/core/skills/type";
 import type { TerminalMessage } from "@/core/terminal-agent/message-types";
 
@@ -114,6 +117,13 @@ export function SaveAsSkillDialog({
   diagnosisSteps = [],
   toolCallsSummary = [],
 }: Props) {
+  const creationContext = useSkillImportContext();
+  const creationIdentity = useRef(creationContext.key);
+  creationIdentity.current = creationContext.key;
+  const creationGeneration = useRef(0);
+  const creationBusy = useRef(false);
+  const [creationUnknown, setCreationUnknown] = useState(false);
+  const [creationOperation, setCreationOperation] = useState<string | undefined>();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<Stage>("trigger");
@@ -130,7 +140,13 @@ export function SaveAsSkillDialog({
   const [editedName, setEditedName] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
 
+  useEffect(() => {creationGeneration.current += 1; creationBusy.current = false; setOpen(false); setStage("trigger"); setCreationUnknown(false);}, [creationContext.key]);
+
   const handleOpenChange = (newOpen: boolean) => {
+    creationGeneration.current += 1;
+    creationBusy.current = false;
+    setCreationUnknown(false);
+    setCreationOperation(undefined);
     if (!newOpen) {
       // Reset state when closing
       setStage("trigger");
@@ -140,6 +156,10 @@ export function SaveAsSkillDialog({
   };
 
   const handleStartRefine = async () => {
+    if (creationUnknown || !creationContext.isCurrent()) return;
+    const owner = creationContext.key;
+    const generation = ++creationGeneration.current;
+    const current = () => creationIdentity.current === owner && creationGeneration.current === generation && creationContext.isCurrent();
     setStage("refining");
     setError(null);
 
@@ -149,7 +169,8 @@ export function SaveAsSkillDialog({
         diagnosis_result: diagnosisText,
         diagnosis_steps: diagnosisSteps.length > 0 ? diagnosisSteps : undefined,
         tool_calls_summary: toolCallsSummary.length > 0 ? toolCallsSummary : undefined,
-      });
+      }, {isCurrent: current});
+      if (!current()) return;
 
       // Normalize the AI-suggested name to valid hyphen-case
       const safeName = normalizeSkillName(result.suggested_name);
@@ -164,12 +185,18 @@ export function SaveAsSkillDialog({
 
       setStage("preview");
     } catch (err) {
+      if (!current()) return;
       setError(err instanceof Error ? err.message : "AI 提炼失败");
       setStage("trigger");
     }
   };
 
   const handleSave = async () => {
+    if (creationUnknown || creationBusy.current || !creationContext.isCurrent()) return;
+    const owner = creationContext.key;
+    const generation = creationGeneration.current;
+    const current = () => creationIdentity.current === owner && creationGeneration.current === generation && creationContext.isCurrent();
+    creationBusy.current = true;
     setStage("saving");
     setError(null);
 
@@ -184,16 +211,19 @@ export function SaveAsSkillDialog({
         description,
         instructions: refinedInstructions,
         enabled: true,
-      });
+      }, {isCurrent: current});
+      if (!current()) return;
 
       toast.success("Skill 已创建，可在 Skills Plaza 的「我的 Skill」中查看");
       setOpen(false);
       // Redirect to Skills Plaza (personal skill detail page doesn't exist yet)
       router.push("/workspace/skills?filter=personal");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "创建失败");
+      if (!current()) return;
+      if (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409))) {setCreationUnknown(true); if (err instanceof SkillMutationError) setCreationOperation(err.operationId);}
+      setError(skillMutationMessage(err));
       setStage("preview");
-    }
+    } finally {if (current()) creationBusy.current = false;}
   };
 
   return (
@@ -210,6 +240,7 @@ export function SaveAsSkillDialog({
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        {creationUnknown && <SkillCreationInspection scope="personal" operationId={creationOperation} />}
         {/* Stage: Refining (loading) */}
         {stage === "refining" && (
           <div className="flex flex-col items-center justify-center py-16 space-y-6">
@@ -383,14 +414,14 @@ export function SaveAsSkillDialog({
                     setStage("trigger");
                     setOpen(false);
                   }}
-                  disabled={stage === "saving"}
+                  disabled={stage === "saving" || creationUnknown}
                 >
                   取消
                 </Button>
                 <Button
                   size="sm"
                   onClick={handleSave}
-                  disabled={stage === "saving"}
+                  disabled={stage === "saving" || creationUnknown}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
                 >
                   {stage === "saving" ? (
@@ -450,7 +481,7 @@ export function SaveAsSkillDialog({
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
+              <Button variant="outline" size="sm" onClick={() => handleOpenChange(false)}>
                 取消
               </Button>
               <Button

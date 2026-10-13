@@ -55,7 +55,7 @@ jobs:
           app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
           ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
           packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py
-          app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_enablement_boundaries.py packages/harness/deerflow/skills/install_receipts.py packages/harness/deerflow/skills/installer.py
+          app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py packages/harness/deerflow/skills/install_receipts.py packages/harness/deerflow/skills/installer.py
           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity.py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/database/user_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
       - name: Pinned previous source and host upgrade rollback
         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"

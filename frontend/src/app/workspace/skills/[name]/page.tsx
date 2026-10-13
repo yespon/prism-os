@@ -17,10 +17,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
-import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
-import { useSkillQueryIdentity } from "@/core/skills/query-identity";
+import { SkillCreationInspection } from "@/components/workspace/skills/skill-creation-inspection";
 import { useAvailableModels } from "@/core/models/hooks";
 import {
   getSkillDetail,
@@ -29,6 +29,8 @@ import {
   createPersonalSkill,
   generateInstructions,
 } from "@/core/skills/api";
+import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
+import { useSkillQueryIdentity } from "@/core/skills/query-identity";
 import type { SkillDetail } from "@/core/skills/type";
 import type { TerminalMessagePart, TerminalToolCall } from "@/core/terminal-agent/message-types";
 import { useTerminalAgent } from "@/core/terminal-agent/useTerminalAgent";
@@ -57,6 +59,7 @@ function SkillDetailContent() {
   const [skill, setSkill] = useState<SkillDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [inspectionNeeded, setInspectionNeeded] = useState(false);
+  const [creationOperation, setCreationOperation] = useState<string | undefined>();
   const [inspectionNonce, setInspectionNonce] = useState(0);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -154,8 +157,8 @@ function SkillDetailContent() {
         toast.error("请输入 Skill 英文名称");
         return;
       }
-      if (!/^[a-z0-9_]+$/.test(newName)) {
-        toast.error("名称只能包含小写字母、数字和下划线");
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(newName)) {
+        toast.error("名称使用小写字母、数字和连字符");
         return;
       }
     }
@@ -172,10 +175,10 @@ function SkillDetailContent() {
           name: newName,
           description: description.trim() || "",
           instructions: instructions.trim() || null,
-          enabled: true,
+          enabled: skill.enabled,
           bound_tools: boundToolsText.split(",").map((t) => t.trim()).filter(Boolean),
           strategy: strategy || null,
-        });
+        }, {isCurrent: currentView});
         if (!currentView()) return;
         toast.success("创建成功");
         setDirty(false);
@@ -184,6 +187,7 @@ function SkillDetailContent() {
       }
 
       const payload = {
+        enabled: skill.enabled,
         expected_resource_id: skill.resource_id ?? undefined,
         expected_file_sha256: skill.file_sha256 ?? undefined,
         description: description.trim() || null,
@@ -207,6 +211,7 @@ function SkillDetailContent() {
       router.push("/workspace/skills");
     } catch (err) {
       if (currentView()) {
+        if (isNew && err instanceof SkillMutationError) setCreationOperation(err.operationId);
         if (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409))) setInspectionNeeded(true);
         toast.error(skillMutationMessage(err));
       }
@@ -317,7 +322,8 @@ function SkillDetailContent() {
               ))}
             </SelectContent>
           </Select>
-          {inspectionNeeded && <Button variant="outline" onClick={() => setInspectionNonce(value => value + 1)}>重新检查当前资源</Button>}
+          {inspectionNeeded && isNew && <SkillCreationInspection scope="personal" operationId={creationOperation} />}
+          {inspectionNeeded && !isNew && <Button variant="outline" onClick={() => setInspectionNonce(value => value + 1)}>重新检查当前资源</Button>}
           <Button
             variant="outline"
             onClick={handleSave}
@@ -352,13 +358,14 @@ function SkillDetailContent() {
                   placeholder="输入小写英文名称"
                   className="mt-1.5 font-semibold text-sm"
                 />
-                <span className="text-[10px] text-muted-foreground mt-1 block">仅限小写字母、数字、下划线</span>
+                <span className="text-[10px] text-muted-foreground mt-1 block">仅限小写字母、数字、连字符</span>
               </div>
             )}
 
             {/* Description */}
             <div>
               <label className="text-sm font-medium">描述<span className="text-red-500 ml-1">*</span></label>
+              <label className="flex items-center gap-2 text-sm"><Switch aria-label="启用此 Skill" checked={skill.enabled} disabled={!canEdit || saving || inspectionNeeded} onCheckedChange={enabled => {setSkill({...skill, enabled}); setDirty(true);}} />启用此 Skill</label>
               <Input
                 value={description}
                 onChange={(e) => {

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { SkillCreationInspection } from "@/components/workspace/skills/skill-creation-inspection";
 import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
 import { useI18n } from "@/core/i18n/hooks";
 import {
@@ -30,6 +31,7 @@ export function TenantAdminSkillsPage() {
   const { t, locale } = useI18n();
   const queryClient = useQueryClient();
   const [editNeedsInspection, setEditNeedsInspection] = useState(false);
+  const [creationOperation, setCreationOperation] = useState<string | undefined>();
   const importContext = useSkillImportContext();
   const importIdentity = useRef(importContext.key);
   importIdentity.current = importContext.key;
@@ -112,6 +114,7 @@ export function TenantAdminSkillsPage() {
   const openCreate = () => {
     setDialogMode("manual");
     setEditNeedsInspection(false);
+    setCreationOperation(undefined);
     setEditingName(null);
     setSkillName("");
     setSkillDescription("");
@@ -136,6 +139,7 @@ export function TenantAdminSkillsPage() {
   }) => {
     setDialogMode("manual");
     setEditNeedsInspection(false);
+    setCreationOperation(undefined);
     setEditingName(skill.name);
     setEditingResourceId(skill.resource_id ?? undefined);
     setEditingFileSha(skill.file_sha256 ?? undefined);
@@ -181,7 +185,7 @@ export function TenantAdminSkillsPage() {
   };
 
   const save = async () => {
-    if (editNeedsInspection) return;
+    if (editNeedsInspection || !importContext.canShare || !importContext.isCurrent()) return;
     const importing = dialogMode === "import" && !editingName;
     if (importing && (!importContext.canShare || !importContext.isCurrent() || archiveBusy.current)) return;
     const identity = importContext.key;
@@ -234,11 +238,13 @@ export function TenantAdminSkillsPage() {
           prompt_template: promptTemplate || null,
           strategy,
         });
+        if (!current()) return;
         toast.success(t.tenantAdmin.skills.createSuccess);
       }
       setOpen(false);
     } catch (err) {
       if (!current()) return;
+      if (!editingName && err instanceof SkillMutationError) setCreationOperation(err.operationId);
       if (!importing && (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409)))) setEditNeedsInspection(true);
       const message = importing ? skillImportErrorMessage(err, locale === "zh-CN") : skillMutationMessage(err, locale === "zh-CN");
       if (dialogMode === "import" && !editingName) {
@@ -499,7 +505,8 @@ export function TenantAdminSkillsPage() {
           </Tabs>
 
           <DialogFooter>
-{editNeedsInspection && <Button variant="outline" onClick={() => { void queryClient.invalidateQueries({queryKey: ["availableSkills"]}); changeArchiveOpen(false); setEditNeedsInspection(false); }}>重新检查资源列表</Button>}
+{editNeedsInspection && !editingName && <SkillCreationInspection scope="tenant" operationId={creationOperation} locale={locale === "zh-CN" ? "zh" : "en"} />}
+{editNeedsInspection && editingName && <Button variant="outline" onClick={() => { void queryClient.invalidateQueries({queryKey: ["availableSkills"]}); changeArchiveOpen(false); setEditNeedsInspection(false); }}>重新检查资源列表</Button>}
             <Button type="button" variant="outline" onClick={() => changeArchiveOpen(false)}>
               {t.common.cancel}
             </Button>

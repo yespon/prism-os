@@ -1,8 +1,9 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   act,
   cleanup,
   fireEvent,
-  render,
+  render as testingRender,
   screen,
   waitFor,
 } from "@testing-library/react";
@@ -14,6 +15,8 @@ import SkillDetailPage from "./page";
 
 const mock = vi.hoisted(() => ({
   key: "tenant-a/user-a",
+  name: "collision",
+  create: vi.fn(),
   scope: "personal",
   id: "skill:1",
   ready: true,
@@ -25,11 +28,16 @@ const mock = vi.hoisted(() => ({
   terminal: vi.fn(),
 }));
 vi.mock("next/navigation", () => ({
-  useParams: () => ({ name: "collision" }),
+  useParams: () => ({ name: mock.name }),
   useRouter: () => ({ push: mock.push, back: vi.fn() }),
   useSearchParams: () =>
     new URLSearchParams({ scope: mock.scope, resource_id: mock.id }),
 }));
+vi.mock("@/core/skills/import-context", () => ({useSkillImportContext: () => ({key: mock.key, identityReady: mock.ready, canShare: false, isCurrent: () => mock.current})}));
+function render(element: React.ReactElement) {
+  const client = new QueryClient({defaultOptions: {queries: {retry: false}}});
+  return testingRender(element, {wrapper: ({children}) => <QueryClientProvider client={client}>{children}</QueryClientProvider>});
+}
 vi.mock("@/core/skills/query-identity", () => ({
   useSkillQueryIdentity: () => ({
     key: mock.key,
@@ -41,7 +49,7 @@ vi.mock("@/core/skills/api", () => ({
   getSkillDetail: mock.detail,
   patchPersonalSkill: mock.patch,
   patchTenantSkill: mock.patch,
-  createPersonalSkill: vi.fn(),
+  createPersonalSkill: mock.create,
   generateInstructions: vi.fn(),
 }));
 vi.mock("@/core/models/hooks", () => ({
@@ -68,6 +76,7 @@ const data = {
 beforeEach(() => {
   vi.clearAllMocks();
   mock.key = "tenant-a/user-a";
+  mock.name = "collision";
   mock.scope = "personal";
   mock.id = "skill:1";
   mock.ready = mock.current = true;
@@ -165,4 +174,22 @@ it("unknown save blocks repetition until the user reinspects the current specifi
   });
   expect(mock.detail).toHaveBeenCalledTimes(2);
   expect(screen.getByRole("button", { name: "保存" })).not.toBeDisabled();
+});
+
+
+it("recovered disabled personal resource can be explicitly enabled using its current instance and content", async () => {
+  mock.detail.mockResolvedValueOnce({...data, enabled: false}); mock.patch.mockResolvedValueOnce({});
+  render(<SkillDetailPage />); await screen.findByDisplayValue("PERSONAL BODY");
+  const toggle = screen.getByRole("switch", {name: "启用此 Skill"}); expect(toggle).toHaveAttribute("aria-checked", "false"); fireEvent.click(toggle);
+  fireEvent.click(screen.getByRole("button", {name: "保存"})); await waitFor(() => expect(mock.patch).toHaveBeenCalledOnce());
+  expect(mock.patch.mock.calls[0]?.[1]).toMatchObject({enabled: true, expected_resource_id: "skill:current", expected_file_sha256: "a".repeat(64)});
+});
+it("new creation unknown offers original operation inspection and never reloads an empty draft as proof of recovery", async () => {
+  mock.name = "new"; mock.create.mockRejectedValueOnce(new SkillMutationError(503, "skill:current", true, "Inspect", "a".repeat(32)));
+  render(<SkillDetailPage />);
+  fireEvent.change(await screen.findByPlaceholderText("输入小写英文名称"), {target: {value: "owned-new"}});
+  fireEvent.change(screen.getByPlaceholderText("简短描述这个 Skill 做什么"), {target: {value: "Owned description"}});
+  fireEvent.click(screen.getByRole("button", {name: "保存"}));
+  await screen.findByRole("button", {name: "检查创建记录"}); expect(screen.getByRole("button", {name: "保存"})).toBeDisabled();
+  expect(screen.queryByRole("button", {name: "重新检查当前资源"})).not.toBeInTheDocument(); expect(mock.create).toHaveBeenCalledOnce(); expect(mock.detail).not.toHaveBeenCalled();
 });

@@ -215,8 +215,12 @@ export function useDeleteTenantSkill() {
 
 export function useCreateTenantSkill() {
   const queryClient = useQueryClient();
+  const identity = useSkillQueryIdentity();
+  const live = useRef(identity.key); live.current = identity.key;
+  const current = () => live.current === identity.key && identity.isCurrent();
 
   return useMutation({
+    retry: false,
     mutationFn: (input: {
       name: string;
       description: string;
@@ -226,10 +230,14 @@ export function useCreateTenantSkill() {
       bound_tools?: string[];
       prompt_template?: string | null;
       strategy?: string | null;
-    }) => createTenantSkill(input),
+    }) => {
+      if (!current()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+      return createTenantSkill(input, {isCurrent: current});
+    },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["tenantSkills"] });
-      void queryClient.invalidateQueries({ queryKey: ["availableSkills"] });
+      if (!current()) return;
+      void queryClient.invalidateQueries({ queryKey: ["tenantSkills", identity.key] });
+      void queryClient.invalidateQueries({ queryKey: ["availableSkills", identity.key] });
     },
   });
 }
@@ -270,8 +278,12 @@ export function usePatchTenantSkill() {
 
 export function useCreatePersonalSkill() {
   const queryClient = useQueryClient();
+  const identity = useSkillQueryIdentity();
+  const live = useRef(identity.key); live.current = identity.key;
+  const current = () => live.current === identity.key && identity.isCurrent();
 
   return useMutation({
+    retry: false,
     mutationFn: (input: {
       name: string;
       description: string;
@@ -281,9 +293,13 @@ export function useCreatePersonalSkill() {
       bound_tools?: string[];
       prompt_template?: string | null;
       strategy?: string | null;
-    }) => createPersonalSkill(input),
+    }) => {
+      if (!current()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+      return createPersonalSkill(input, {isCurrent: current});
+    },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["availableSkills"] });
+      if (!current()) return;
+      void queryClient.invalidateQueries({ queryKey: ["availableSkills", identity.key] });
     },
   });
 }

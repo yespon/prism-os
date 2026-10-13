@@ -10,9 +10,10 @@ from sqlalchemy import select
 
 from deerflow.database import user_config_service as service
 from deerflow.database.models import TenantSkill
-from deerflow.skills.install_receipts import InvalidSkillReceipt, abort_staged_operation, mark_registration, read_receipt, resume_publication, scoped_parent, verified_publication, verified_stage, write_receipt
+from deerflow.skills.install_receipts import InvalidSkillReceipt, abort_staged_operation, mark_registration, read_receipt, resume_publication, scoped_parent, validate_manual_creation, verified_publication, verified_stage, write_receipt
 from deerflow.skills.installer import SkillAlreadyExistsError, prepare_skill_installation_from_archive
 from deerflow.skills.loader import get_skills_root_path
+from deerflow.skills.resource_identity import registered_resource_id
 
 
 async def current_row(tenant_id: str, user_id: str, name: str) -> TenantSkill | None:
@@ -28,19 +29,27 @@ def owner_and_scope(tenant_id: str, user_id: str, shared: bool):
 
 
 async def register(tenant_id: str, user_id: str, shared: bool, result: dict) -> TenantSkill:
-    payload = {"enabled": True, "skill_name": result["skill_name"], "category": result["category"], "relative_path": result["relative_path"], "install_dir": result["install_dir"]}
+    payload = {"enabled": result.get("enabled", True), "skill_name": result["skill_name"], "category": result["category"], "relative_path": result["relative_path"], "install_dir": result["install_dir"]}
     if shared:
         return await service.create_tenant_shared_skill(tenant_id, **payload)
     return await service.create_tenant_personal_skill(tenant_id, user_id, **payload)
 
 
-async def import_archive(archive: Path, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None) -> tuple[dict, TenantSkill]:
+async def import_archive(archive: Path, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None, manual_creation: dict | None = None) -> tuple[dict, TenantSkill]:
     owner, scope = owner_and_scope(tenant_id, user_id, shared)
     root = root or get_skills_root_path()
     result = None
+    if manual_creation is not None:
+        validate_manual_creation(manual_creation)
     with prepare_skill_installation_from_archive(archive, skills_root=root, target_relative_path=scope) as prepared:
         if await current_row(tenant_id, owner, prepared.record["skill_name"]) is not None:
             raise SkillAlreadyExistsError(f"Skill '{prepared.record['skill_name']}' is already registered")
+        if manual_creation is not None:
+            prepared.record["manual_creation"] = dict(manual_creation)
+            write_receipt(prepared.parent, prepared.record)
+            # Recovery may register this operation, but never activate an
+            # uninitialized or inherited same-name configuration.
+            prepared.result.update(enabled=False, category=manual_creation["category"])
         try:
             try:
                 result = prepared.publish()
@@ -79,6 +88,8 @@ async def observe_operation(operation_id: str, tenant_id: str, user_id: str, sha
         "enabled": row.enabled if row else None,
         "execution_ready": False,
     }
+    if "manual_creation" in record:
+        summary.update(kind="manual_create", requested_enabled=record["manual_creation"]["enabled"], configuration_phase=record["manual_creation"]["configuration_phase"], configuration_recovery="inspect_current_settings")
     try:
         _, target = verified_publication(root, scope, operation_id)
     except ValueError:
@@ -95,6 +106,7 @@ async def observe_operation(operation_id: str, tenant_id: str, user_id: str, sha
     elif row.install_dir and Path(row.install_dir).absolute() == target:
         summary["state"] = "registered"
         summary["registered"] = True
+        summary["resource_id"] = registered_resource_id(row)
     else:
         summary["state"] = "registration_conflict"
     return summary
@@ -124,6 +136,8 @@ async def recover_operation(operation_id: str, tenant_id: str, user_id: str, sha
             raise ValueError("Published Skill format is unavailable")
         parent, relative = scoped_parent(root, scope)
         result = {"skill_name": name, "category": "custom", "relative_path": (relative / name).as_posix(), "install_dir": str(target)}
+        if "manual_creation" in record:
+            result.update(enabled=False, category=record["manual_creation"]["category"])
         row = await register(tenant_id, user_id, shared, result)
         state = "registered"
     # Reading a matching existing row does not claim this operation created it.
@@ -131,6 +145,15 @@ async def recover_operation(operation_id: str, tenant_id: str, user_id: str, sha
     parent, _ = scoped_parent(root, scope)
     write_receipt(parent, record)
     return await observe_operation(operation_id, tenant_id, user_id, shared, root=root)
+
+
+async def mark_manual_configuration(result: dict, tenant_id: str, user_id: str, shared: bool, phase: str, *, root: Path) -> None:
+    _, scope = owner_and_scope(tenant_id, user_id, shared)
+    record = read_receipt(root, scope, result["operation_id"])
+    record["manual_creation"]["configuration_phase"] = phase
+    validate_manual_creation(record["manual_creation"])
+    parent, _ = scoped_parent(root, scope)
+    write_receipt(parent, record)
 
 
 class InvalidImportCursor(ValueError):

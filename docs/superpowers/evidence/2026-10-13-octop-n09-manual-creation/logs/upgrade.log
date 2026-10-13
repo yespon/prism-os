@@ -1,0 +1,13 @@
+test -n "/tmp/prismos-n09i-upgrade"
+cd backend && /root/.local/bin/uv run --locked python ../scripts/octop_source_fetch.py --revision e473dd3c4a4741618ffde1a42a3492341a189e8e --release 0.3.0b5 --output-dir "/tmp/prismos-n09i-upgrade/previous"
+{
+  "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+  "url": "https://codeload.github.com/TencentCloud/Octop/tar.gz/e473dd3c4a4741618ffde1a42a3492341a189e8e",
+  "archive_sha256": "d61c73d5831d83de4aad2e4bf1459c32786db4890381b6344c9a465513c55682",
+  "retained_archive_sha256": "408b7536a45e09f8975492aa71a0d9c40f521cc08845beec00235d93ad7a8eca",
+  "retained_files": 3510,
+  "excluded_files": 186,
+  "raw_archive_retained": false
+}
+cd backend && /root/.local/bin/uv run --locked python ../scripts/octop_upgrade_probe.py --previous-archive "/tmp/prismos-n09i-upgrade/previous/upstream.tar.gz" --previous-receipt "/tmp/prismos-n09i-upgrade/previous/manifest.json" --previous-revision e473dd3c4a4741618ffde1a42a3492341a189e8e --previous-release 0.3.0b5 --output "/tmp/prismos-n09i-upgrade/upgrade.json"
+{"passed": true, "restricted_resource_excluded": true, "rollback_verified": true, "versions": ["0.3.0b5", "b6", "0.3.0b5"], "imported_changed": 1}

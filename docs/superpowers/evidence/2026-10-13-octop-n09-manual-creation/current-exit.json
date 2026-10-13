@@ -1,0 +1,11 @@
+{
+  "current_build_exit": 0,
+  "full_tests_exit": 0,
+  "logs_verified": true,
+  "code_hashes_verified": true,
+  "logs_sha256": {
+    "backend-full.log": "ef1dc9c9a3038796e50da9cf68fb14b0ebac45a2be43daff833393f08fb23487",
+    "frontend-full.log": "178228f740f2abe001dce851918c401da5a54ce8205852b4303603d1fc4379d6",
+    "build-current.log": "cd52a495884e2914c1d685a8fd1cf1071c5d1b57c5bef6761b95c175d6f8a031"
+  }
+}

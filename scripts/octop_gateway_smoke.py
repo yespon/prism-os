@@ -320,6 +320,18 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     database.execute("UPDATE tenant_memberships SET role='tenant_member' WHERE user_id=?", ("catalog-smoke-user",))
                 assert request(shared_url, {"enabled": True, "expected_resource_id": shared_source["resource_id"]}, token, method="PUT")[0] == 403
                 assert unchanged_files == {path: path.read_bytes() for path in unchanged_files}
+                assert request("/api/tenants/skills", {"name": "member-creation-denied", "description": "Denied"}, token)[0] == 403
+                code, manual = request("/api/skills/personal", {"name": "manual-owned", "description": "SOP: verified manual", "instructions": "MANUAL BODY", "enabled": False, "bound_tools": []}, token)
+                assert code == 201 and not manual["enabled"] and manual["category"] == "personal"
+                assert manual["description"] == "SOP: verified manual" and manual["created_by"] == "catalog-smoke-user"
+                manual_url = "/api/skills/personal/imports/" + manual["operation_id"]
+                code, checked_manual = request(manual_url, token=token)
+                assert code == 200 and checked_manual["registered"] and checked_manual["kind"] == "manual_create"
+                assert checked_manual["configuration_phase"] == "confirmed" and checked_manual["resource_id"] == manual["resource_id"]
+                assert request("/api/skills/personal", {"name": "manual-owned", "description": "Duplicate"}, token)[0] == 409
+                manual_patch = {"enabled": True, "expected_resource_id": manual["resource_id"], "expected_file_sha256": manual["file_sha256"]}
+                code, activated = request("/api/skills/personal/manual-owned", manual_patch, token, method="PATCH")
+                assert code == 200 and activated["enabled"] and activated["resource_id"] == manual["resource_id"]
                 result = {
                     "passed": True,
                     "gateway": "real uvicorn process",
@@ -341,6 +353,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True, "concrete_skill_identity_and_detail": True, "owned_skill_patch_and_stale_content_rejection": True,
                     "installation_does_not_bind_agent_or_grant_execution": True,
                     "concrete_enablement_and_current_membership": True,
+                    "manual_creation_owned_publication_configuration_and_explicit_enablement": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

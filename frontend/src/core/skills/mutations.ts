@@ -4,6 +4,7 @@ export class SkillMutationError extends Error {
     public resourceId?: string,
     public inspectionRequired = false,
     message?: string,
+    public operationId?: string,
   ) {
     super(message ?? `Skill edit failed (${status})`);
   }
@@ -30,6 +31,7 @@ export async function readSkillMutationResponse<T>(
         : typeof object?.message === "string"
           ? object.message
           : undefined,
+      typeof object?.operation_id === "string" ? object.operation_id : undefined,
     );
   }
   if (!body) throw new SkillMutationError(503, undefined, true);

@@ -5,6 +5,7 @@ import { readSkillImportResponse, SkillImportError } from "./imports";
 import { SkillMutationError, readSkillMutationResponse } from "./mutations";
 import type {
   Skill,
+  SkillCreationResult,
   AvailableSkillResponse,
   SummarizeDiagnosisRequest,
   SummarizeDiagnosisResponse,
@@ -120,21 +121,17 @@ export async function createTenantSkill(input: {
   bound_tools?: string[];
   prompt_template?: string | null;
   strategy?: string | null;
-}) {
+}, options: {isCurrent?: () => boolean} = {}) {
+  const headers = await getAuthHeaders({"Content-Type": "application/json"});
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
   const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills`, {
     method: "POST",
-    headers: await getAuthHeaders({
-      "Content-Type": "application/json",
-    }),
+    headers,
     body: JSON.stringify(input),
   });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(
-      payload.detail ?? `Failed to create tenant skill: ${response.status}`,
-    );
-  }
-  return response.json();
+  const created = await readSkillMutationResponse<SkillCreationResult>(response);
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+  return created;
 }
 
 export async function patchTenantSkill(
@@ -172,21 +169,17 @@ export async function createPersonalSkill(input: {
   bound_tools?: string[];
   prompt_template?: string | null;
   strategy?: string | null;
-}) {
+}, options: {isCurrent?: () => boolean} = {}) {
+  const headers = await getAuthHeaders({"Content-Type": "application/json"});
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
   const response = await fetch(`${getBackendBaseURL()}/api/skills/personal`, {
     method: "POST",
-    headers: await getAuthHeaders({
-      "Content-Type": "application/json",
-    }),
+    headers,
     body: JSON.stringify(input),
   });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(
-      payload.detail ?? `Failed to create personal skill: ${response.status}`,
-    );
-  }
-  return response.json();
+  const created = await readSkillMutationResponse<SkillCreationResult>(response);
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+  return created;
 }
 
 export async function patchPersonalSkill(
@@ -339,14 +332,15 @@ export async function generateInstructions(prompt: string, modelName?: string) {
 
 export async function summarizeDiagnosis(
   input: SummarizeDiagnosisRequest,
+  options: {isCurrent?: () => boolean} = {},
 ): Promise<SummarizeDiagnosisResponse> {
+  const headers = await getAuthHeaders({"Content-Type": "application/json"});
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill refinement identity changed");
   const response = await fetch(
     `${getBackendBaseURL()}/api/skills/summarize-diagnosis`,
     {
       method: "POST",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
+      headers,
       body: JSON.stringify(input),
     },
   );

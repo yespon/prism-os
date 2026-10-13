@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 
-import { patchPersonalSkill, updateTenantSkill } from "./api";
+import { patchPersonalSkill, updateTenantSkill, createPersonalSkill, createTenantSkill, summarizeDiagnosis } from "./api";
 import {
   SkillMutationError,
   readSkillMutationResponse,
@@ -117,4 +117,21 @@ it("checks captured identity after asynchronous auth headers before dispatch", a
     }),
   ).rejects.toMatchObject({ status: 401 });
   expect(fetch).not.toHaveBeenCalled();
+});
+
+
+it("keeps creation operation identity and current resource in a structured unknown", async () => {
+  const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({detail: {message: "Inspect manual creation", resource_id: "skill:current", operation_id: "a".repeat(32), inspection_required: true}}), {status: 503}));
+  vi.stubGlobal("fetch", fetch);
+  await expect(createPersonalSkill({name: "owned", description: "Own"})).rejects.toMatchObject({status: 503, resourceId: "skill:current", operationId: "a".repeat(32), inspectionRequired: true});
+  expect(fetch).toHaveBeenCalledOnce();
+});
+it.each(["personal", "tenant"])("checks %s creation identity after auth headers before dispatch", async kind => {
+  const fetch = vi.fn(); vi.stubGlobal("fetch", fetch);
+  const create = kind === "personal" ? createPersonalSkill : createTenantSkill;
+  await expect(create({name: "owned", description: "Own"}, {isCurrent: () => false})).rejects.toMatchObject({status: 401}); expect(fetch).not.toHaveBeenCalled();
+});
+it("does not send an old-identity refinement source to new auth headers", async () => {
+  const fetch = vi.fn(); vi.stubGlobal("fetch", fetch);
+  await expect(summarizeDiagnosis({diagnosis_result: "PRIVATE OLD"}, {isCurrent: () => false})).rejects.toMatchObject({status: 401}); expect(fetch).not.toHaveBeenCalled();
 });
