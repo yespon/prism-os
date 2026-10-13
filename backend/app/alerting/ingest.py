@@ -187,7 +187,7 @@ async def process_alert(
             # Auto-trigger agent diagnosis if source has a bound agent
             diagnosis_agent_id = trigger.get("diagnosis_agent_id")
             if diagnosis_agent_id:
-                _schedule_agent_diagnosis(incident, source.tenant_id, diagnosis_agent_id)
+                _schedule_agent_diagnosis(incident, source.tenant_id, diagnosis_agent_id, source.id)
 
         # Schedule IM notification (delayed, waits for AI)
         from app.alerting.notify import schedule_notification, send_incident_created
@@ -262,7 +262,7 @@ def _schedule_batch_signals(raw_alert: RawAlert, source, remaining_signals: list
     asyncio.create_task(_run())
 
 
-def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str):
+def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str, source_id: str | None = None):
     """Fire-and-forget: trigger agent diagnosis for a newly created incident."""
     import asyncio
 
@@ -271,40 +271,33 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
     async def _run():
         try:
             from langgraph_sdk import get_client
-            from sqlmodel import select
 
             from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt
-            from app.models.agents import CustomAgent
 
             async with get_session_factory()() as session:
-                # Set status to running immediately
-                fresh_inc = await session.get(Incident, incident.id)
-                if fresh_inc:
-                    fresh_inc.diagnosis_status = "running"
-                    session.add(fresh_inc)
-                    await session.commit()
+                from sqlalchemy import select
+                fresh_inc = (await session.exec(select(Incident).where(Incident.id == incident.id, Incident.tenant_id == tenant_id))).scalars().first()
+                if fresh_inc is None:
+                    raise RuntimeError("Current diagnosis incident is unavailable")
+                fresh_inc.diagnosis_status = "running"
+                session.add(fresh_inc)
+                await session.commit()
 
-                agent_result = await session.exec(
-                    select(CustomAgent).where(CustomAgent.id == diagnosis_agent_id, CustomAgent.tenant_id == tenant_id, CustomAgent.enabled.is_(True))
-                )
-                agent = agent_result.scalars().first()
-                if agent is None:
-                    logger.warning("diagnose: agent %s not found for incident %s", diagnosis_agent_id, incident.incident_key)
-                    async with get_session_factory()() as err_session:
-                        fresh = await err_session.get(Incident, incident.id)
-                        if fresh:
-                            fresh.diagnosis_status = "failed"
-                            err_session.add(fresh)
-                            await err_session.commit()
-                    return
+                from app.alerting.diagnosis_authorization import current_authorization, revision
+                from app.models.alerting import AlertSource
+                from app.runtime_adapters import verify_native_selection
+                if not source_id:
+                    raise RuntimeError("Automatic diagnosis requires a source authorization")
+                actor_id, agent = await current_authorization(session, source_id, tenant_id, diagnosis_agent_id, severity=fresh_inc.severity)
+                source_revision = revision((await session.get(AlertSource, source_id)).config_json)
 
                 # Build diagnosis prompt with incident context using helper
                 prompt = await build_incident_diagnosis_prompt(
-                    session, incident, tenant_id,
+                    session, fresh_inc, tenant_id,
                     agent_system_prompt=agent.system_prompt,
                     agent_skills=agent.skills,
                     agent_tool_groups=agent.tool_groups,
-                    agent=agent, actor_id=agent.user_id,
+                    agent=agent, actor_id=actor_id,
                 )
 
                 langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2024")
@@ -315,6 +308,8 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
                 })
                 thread_id = thread["thread_id"]
 
+                # Recheck source and principal after asynchronous thread creation.
+                await current_authorization(session, source_id, tenant_id, diagnosis_agent_id, expected_actor=actor_id, expected_revision=source_revision, severity=(await session.get(Incident, incident.id, populate_existing=True)).severity)
                 result = await client.runs.wait(
                     thread_id,
                     "lead_agent",
@@ -325,9 +320,12 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
                     context=await attach_execution_capability({
                         "agent_name": agent.name,
                         "tenant_id": tenant_id,
-                        "user_id": agent.user_id,
+                        "user_id": actor_id,
+                        "agent_id": agent.id,
+                        "diagnosis_source_id": source_id,
+                        "diagnosis_source_revision": source_revision,
                         "thread_id": thread_id,
-                    }),
+                    }, native_selection_validator=verify_native_selection),
                 )
 
                 # Extract the last AI response text from the result
@@ -349,7 +347,7 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
 
                 # Store linkage, result, and completed status
                 fresh = await session.get(Incident, incident.id)
-                if fresh:
+                if fresh and fresh.tenant_id == tenant_id:
                     fresh.agent_id = diagnosis_agent_id
                     fresh.thread_id = thread_id
                     fresh.diagnosis_status = "completed"
@@ -365,7 +363,7 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
             try:
                 async with get_session_factory()() as err_session:
                     fresh = await err_session.get(Incident, incident.id)
-                    if fresh:
+                    if fresh and fresh.tenant_id == tenant_id:
                         fresh.diagnosis_status = "failed"
                         fresh.diagnosis_error = "自动诊断执行失败，请手动发起深度诊断"
                         err_session.add(fresh)
@@ -373,5 +371,6 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
             except Exception:
                 logger.exception("diagnose: failed to save failure status for incident=%s", incident.incident_key)
 
-    asyncio.create_task(_run())
+    task = asyncio.create_task(_run())
     logger.info("diagnose: auto-scheduled for incident=%s agent=%s", incident.incident_key, diagnosis_agent_id)
+    return task

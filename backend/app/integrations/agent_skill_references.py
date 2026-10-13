@@ -161,8 +161,16 @@ def references_instance(agent, resource_id, name):
     return (selected.mode == "unresolved" and name in selected.legacy_names) or any(r.resource_id == resource_id for r in selected.resources)
 
 
-async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=None, resource_id=None, *, root=None, expected_agent_id=None):
-    rows = (await session.exec(select(CustomAgent).where(CustomAgent.tenant_id == tenant, CustomAgent.user_id.in_([actor, "tenant-shared"]), CustomAgent.name == agent_name))).scalars().all()
+async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=None, resource_id=None, *, root=None, expected_agent_id=None, selected_agent_id=None):
+    rows = (
+        (
+            await session.exec(
+                select(CustomAgent).where(CustomAgent.tenant_id == tenant, CustomAgent.user_id.in_([actor, "tenant-shared"]), CustomAgent.name == agent_name, CustomAgent.id == selected_agent_id if selected_agent_id is not None else True)
+            )
+        )
+        .scalars()
+        .all()
+    )
     agent = next((a for a in rows if a.user_id == actor), rows[0] if rows else None)
     if agent is None or not agent.enabled:
         raise HTTPException(403, "Current Agent is unavailable")
@@ -212,7 +220,7 @@ async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=No
         sections.append(
             f'<selected_skill name="{item["name"]}" scope="{item["scope"]}" '
             f'resource_id="{item["resource_id"]}" file_sha256="{item["file_sha256"]}">\n'
-            f'Location: /mnt/skills/{item["location"]}\n{item["description"]}\n'
-            f'{item["instructions"] if len(resolved) == 1 else ""}\n</selected_skill>'
+            f"Location: /mnt/skills/{item['location']}\n{item['description']}\n"
+            f"{item['instructions'] if len(resolved) == 1 else ''}\n</selected_skill>"
         )
     return "<skill_system>\nUse only these current selected sources; recheck access when loading referenced members.\n" + "\n".join(sections) + "\n</skill_system>"

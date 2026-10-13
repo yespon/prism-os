@@ -85,7 +85,7 @@ async def build_incident_diagnosis_prompt(
     if agent is not None:
         from app.integrations.agent_skill_references import binding, current_skill_prompt
         if binding(agent) is not None:
-            verified_section = await current_skill_prompt(session, agent.name, tenant_id, actor_id, expected_agent_id=agent.id)
+            verified_section = await current_skill_prompt(session, agent.name, tenant_id, actor_id, expected_agent_id=agent.id, selected_agent_id=agent.id)
 
     links_result = await session.exec(
         select(IncidentSignalLink).where(

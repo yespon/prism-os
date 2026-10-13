@@ -38,3 +38,9 @@ SQLite 与隔离 PostgreSQL 的原恢复/身份/编辑/启停/创建回归；真
 基线 `67fe163`。原 metadata/CRUD 与实际创建编辑界面接入具体来源、all/selected/unresolved、明确旧名称重选、零项和原 Agent ID/配置摘要条件。已确认选择在宿主图/提示/诊断接缝核对当前登记、位置、启停和真实成员，单来源注入同次读取快照，多来源保持渐进式目录；旧已确认来源不得按公共或其他同名项回退。原共享管理详情限制保留；删除明确拒绝可重新核对，未知仍保留检查。最终完整后端 1765 passed / 18 skipped，前端 249 passed，统一门 454 后端/162 前端、严格类型/静态、真实 Gateway 和当前默认构建/制品通过。PostgreSQL 147 项属于本轮中间适用范围，冻结最终重放仍待，详见[证据与限制](../evidence/2026-10-14-octop-n09-agent-skill-selection/README.md)。
 
 继续[完整具体引用队列](2026-10-13-octop-n09-concrete-agent-skill-references.md)：未迁移旧名称/default/terminal 的使用授权、共享自动执行可信身份、同名 Agent 实例与原执行授权一致性、后续文件工具访问、最终 PostgreSQL及真实删除进程中断、独立构建和固定宿主升级/回退。完整 C2/N09未退出，N04/N07-B仍P0、M1未退出、N08持久执行/委派不启动；原全部 N01–N15/O01–O42/F01–F12、非 Skill、专家/子 Agent、独立 Office及PrismOS规划/能力/门保持。
+
+## 共享自动诊断接缝与冻结门补齐（2026-10-14）
+
+共享自动诊断现按原 source 管理员确认与当前成员资格传递受保护 Agent UUID，进入原 capability 单次消费、图配置/Skill/soul。最终 PostgreSQL 168 项、当前/独立统一门 483 后端/162 前端、独立完整前端/默认生产构建及固定 47 宿主输入升级/回退各 289 项通过，见[本批证据](../evidence/2026-10-14-octop-n09-shared-diagnosis-authority/README.md)。此前关于缺少自动可信身份/同名图一致性/最终 PostgreSQL和独立升级构建的待办，在本批明确共享自动边界内推进，不推导为全部入口或完整 C2/N09 退出。
+
+接下来先补齐异步消息配置/内容快照、人工与普通按名执行、旧名称/default/terminal 和成员文件工具的当前授权，再核对真实删除进程中断/恢复及完整成员复制/分享目标重授权。历史源确认体验、运行中撤权、N04/N07-B 和原全部能力与门继续保持，详见[后续队列](2026-10-14-octop-n09-shared-diagnosis-authority.md)。M1 未退出，N08 持久执行/委派不启动。

@@ -1,0 +1,153 @@
+{
+  "status": "shared_automatic_diagnosis_candidate_not_complete_C2_N09",
+  "base_commit": "079fa472426afae24438960ec7fa0c8305b01af7",
+  "backend": {
+    "passed": 1786,
+    "skipped": 18,
+    "warnings": 182,
+    "cwd": "backend",
+    "observed_exit_code": 0
+  },
+  "frontend": {
+    "current": {
+      "files": 57,
+      "passed": 249
+    },
+    "independent": {
+      "files": 57,
+      "passed": 249
+    }
+  },
+  "octop_check": {
+    "current": {
+      "backend_passed": 483,
+      "frontend_passed": 162,
+      "observed_exit_code": 0
+    },
+    "independent": {
+      "backend_passed": 483,
+      "frontend_passed": 162,
+      "observed_pipeline_exit_code": 0
+    }
+  },
+  "postgres": {
+    "passed": 168,
+    "warnings": 109,
+    "owned_container_removed": true,
+    "observed_exit_code": 0
+  },
+  "gateway": {
+    "current_and_independent_real_uvicorn_auth_session_and_membership": true,
+    "source_configuration_and_test_only_capability_probe": true,
+    "real_external_model_or_ticket_calls": false
+  },
+  "build": {
+    "strict_typegen_tsc_webpack": true,
+    "current_successful_completion_log": true,
+    "independent_pipeline_observed_exit_code": 0,
+    "current_trace_files": 50,
+    "independent_trace_files": 50,
+    "outside_frontend": []
+  },
+  "upgrade": {
+    "host_inputs": 47,
+    "host_changed": false,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 289,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "passed": 289,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 289,
+        "observed_exit_code": 0
+      }
+    ]
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "cac58e8fa39a0c57e1e5025d17d659c78bd107ff7bc9f5ec8fffe1f3be2b7d46",
+    "Makefile": "325fcfec8a8da6c9e3cfafd4941e1a55e4df2995970aa30066a9233567d665b9",
+    "backend/app/alerting/diagnosis_helper.py": "055ff1d7de60464036f0785697c4f3e017e7e693977bb31f506f2123e825339f",
+    "backend/app/alerting/ingest.py": "2770d58760bf39cf8a366577368a29a96d8f36264ee1f43f594dce0e17382fd8",
+    "backend/app/gateway/routers/alerts.py": "01070046059d3d89cf41d2518981ab43dc14695bd4ed02383027e9b40c5d8244",
+    "backend/app/gateway/routers/langgraph_proxy.py": "5adf6a17404cfec2f137edae15ad252b560c0cb70f4e9fa1ca395d8c2ec19cd4",
+    "backend/app/integrations/agent_skill_references.py": "747a49b631c1f146678920b8f070bde4b833e5a845cfcc2ce8bae83f20fb41b3",
+    "backend/app/platform/execution/trust.py": "b943ba13a26929754544882ea8de509748749c37dd035708c021e6a758582983",
+    "backend/app/runtime_adapters.py": "0e1a8ddf1cd413db1acd5db1caa6e18235e7b234df6e6d7a68501737563b509e",
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": "b8d1d6a03c2fc23d081e3cde9fe5c3fb6211e44c2c8435c33295950128c5e95b",
+    "backend/packages/harness/deerflow/agents/lead_agent/prompt.py": "4aa814b5b033bda61c593bdc3c880f6f849ee0539cf2a35b7c750f3fbcf792cf",
+    "backend/packages/harness/deerflow/runtime.py": "fabdb85e4f4348652dd377a80d142b682efe4c4dbe7ef9c7d800db2ac5d80c79",
+    "scripts/octop_gateway_smoke.py": "305ce1ce8ede76dd7c2357e38e1be48c3d3b6484bcb6af1d3dfa1d2af5f7a4ea",
+    "scripts/octop_skill_postgres.py": "d1e0c6f9777249ca5e7644ffe7d0b6bc6f6396ad3f1a00e5c42a9b3a875b5e68",
+    "scripts/octop_upgrade_probe.py": "78bcbe45ed7ab4edffc94f198dcff014b9e57c6ea76f063a7cebdfb323c5cc79",
+    "backend/app/alerting/diagnosis_authorization.py": "035acc2348efd6dcb420a3ed8fd3e7c4a28699acb6a98c7dc13281feb7654b98",
+    "backend/tests/test_diagnosis_authorization.py": "0eeb77810091dd2f6721cd0bb41d14850a6b19e32f21ac62aa9b5ef9fb354882"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifact_sha256s": {
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "independent_source_inputs_match": true,
+  "new_authority_module_cases": 21,
+  "controlled_sdk_model_is_contract_evidence": true,
+  "pending": [
+    "Asynchronous diagnosis message config/Skill/incident snapshot freshness and runtime revocation.",
+    "Manual and ordinary name-based execution, legacy-name/default/terminal current authority and explicit instance selection.",
+    "All referenced member file/tool use authorization and concurrent withdrawal.",
+    "True deletion process interruption/recovery, full deletion/C2 exit, complete member copy/share and target reauthorization.",
+    "N04 real environment/model/countable receiver and N07-B remote CI; M1 not exited; N08 persistence/delegation not started.",
+    "Full N01-N15/O01-O42/F01-F12, 33 non-Skill groups, 18 experts/subagents, independent Office and original PrismOS scope.",
+    "External packages runtime integration and MCP version compatibility remain pending."
+  ],
+  "evidence_sha256s": {
+    "README.md": "f284bb8c4d80d2855ea078993d1e5b7992b38e4e5686ef1a6921fb18d0bffe86",
+    "gateway.json": "3f2b38e08b0abc0ebe6a86fd183569a36f75ba57bfc9393af50953a6979a43fe",
+    "independent-gateway.json": "3f2b38e08b0abc0ebe6a86fd183569a36f75ba57bfc9393af50953a6979a43fe",
+    "independent-inputs.json": "d6c33e9f411904f824fe5f386145948288b8fc06294ddfb183735ea61bbbc98a",
+    "integrity.json": "43a6abd010e537076af01c20983e33e3c2ae61db765828bbd11f620ef59a8970",
+    "logs/architecture-failure-before-fix.log": "03ff0751db15f9826fe4b754e21d026220cc73480815903851e535da32e8dbc8",
+    "logs/architecture-fixed-focused.log": "b79012ea3d1df9656924bac100261646619b4d80e3105a8a4e3c3c371be5cd66",
+    "logs/backend-full.log": "0a083b572e16331463f283c6fc768a00d0da8e1cbf8661e78f60c4fd286d48a8",
+    "logs/brand-final.log": "ee86811059ee9d1748895465de52ed91589b74704fbebcfb725d375d42a6875a",
+    "logs/brand-staged.log": "43621d07a0cd6303c433cbe033be2bb2fba245b286c8284c0a3a338a20de5992",
+    "logs/brand.log": "e2dc5a1b50fd60f4989cc4f165ab3da522bfbb4510667dfe1116c2a513cedf2a",
+    "logs/ci-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/frontend-full.log": "082d6b5e17ebc9fb4ae479f9358dd9d300a7118a2d94b68960d0de30843a8523",
+    "logs/gateway.log": "db287c84d2135824630a167a39b8413e273313986c1a69d29d7b895be2f500eb",
+    "logs/independent-dependencies.log": "6b1017441e29c52584be38084c7c678db65c2adc44bbb9b6057b3b63d9c20820",
+    "logs/independent-frontend-full.log": "9c86fa18368b8d2c3cd396781dec7dd1fc3a905f61d9a2c65700f05a4cddc558",
+    "logs/independent-gateway.log": "db287c84d2135824630a167a39b8413e273313986c1a69d29d7b895be2f500eb",
+    "logs/independent-octop-check.log": "2aad0a2db04f5e78a1b86b5f6203c00d2e3e50d79e3434a164786a84f1b784c4",
+    "logs/independent-production-build.log": "388f88f64699f2d51f6ea274ad5a4741dcd41a0a4313edd37a636683cbfc3b30",
+    "logs/independent-tool-selection-failure.log": "d89e7d472a74b0ed70d9607d730bc170a99d6e38071f1fbda737bc277ec03a1b",
+    "logs/independent-wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/independent-wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/octop-check.log": "6a87a38094b87d81a3251a90d21e0f7a155725fed19aa3c2b816a776229ff9f3",
+    "logs/postgres-run.log": "6e2f76a8d3cf6ccda2b392d58cfba25446595acb2800847d9478c87786825b0c",
+    "logs/postgres.log": "d6a704af9fbe52d3e426328620f51900fb364e9c32255344b8a168cd1685dbb3",
+    "logs/production-build.log": "c583d4d3e3592e0b65c75af89b766331562d9a42eebc5529e394351332aed1db",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/source.log": "714452369f6aaca58cf458eaadc743b103d0ede8a825ba1faebb25741cb4a698",
+    "logs/upgrade-fetch.log": "d2561d16ae2b492d879c087ec3602d342fa3edd75ccaf8e46a2894ed0437042c",
+    "logs/upgrade-run.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "postgres.json": "fa238515f7f6eed5597ab8ca6ea6cb90ee1f68174f5f22008c572b3a63a32e9b",
+    "previous-source-receipt.json": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068",
+    "scope-audit.md": "37eec45a21ff48c7af56d0ae8113889ce33efb238266a8b640a95e1a5c0b3944",
+    "upgrade.json": "c04645949a9139c941989169921476cbb1be958ab2678a8bf425ae4abd340418"
+  }
+}

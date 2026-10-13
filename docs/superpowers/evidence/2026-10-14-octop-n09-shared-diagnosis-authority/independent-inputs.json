@@ -1,0 +1,35 @@
+{
+  "base_commit": "079fa472426afae24438960ec7fa0c8305b01af7",
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "cac58e8fa39a0c57e1e5025d17d659c78bd107ff7bc9f5ec8fffe1f3be2b7d46",
+    "Makefile": "325fcfec8a8da6c9e3cfafd4941e1a55e4df2995970aa30066a9233567d665b9",
+    "backend/app/alerting/diagnosis_helper.py": "055ff1d7de60464036f0785697c4f3e017e7e693977bb31f506f2123e825339f",
+    "backend/app/alerting/ingest.py": "2770d58760bf39cf8a366577368a29a96d8f36264ee1f43f594dce0e17382fd8",
+    "backend/app/gateway/routers/alerts.py": "01070046059d3d89cf41d2518981ab43dc14695bd4ed02383027e9b40c5d8244",
+    "backend/app/gateway/routers/langgraph_proxy.py": "5adf6a17404cfec2f137edae15ad252b560c0cb70f4e9fa1ca395d8c2ec19cd4",
+    "backend/app/integrations/agent_skill_references.py": "747a49b631c1f146678920b8f070bde4b833e5a845cfcc2ce8bae83f20fb41b3",
+    "backend/app/platform/execution/trust.py": "b943ba13a26929754544882ea8de509748749c37dd035708c021e6a758582983",
+    "backend/app/runtime_adapters.py": "0e1a8ddf1cd413db1acd5db1caa6e18235e7b234df6e6d7a68501737563b509e",
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": "b8d1d6a03c2fc23d081e3cde9fe5c3fb6211e44c2c8435c33295950128c5e95b",
+    "backend/packages/harness/deerflow/agents/lead_agent/prompt.py": "4aa814b5b033bda61c593bdc3c880f6f849ee0539cf2a35b7c750f3fbcf792cf",
+    "backend/packages/harness/deerflow/runtime.py": "fabdb85e4f4348652dd377a80d142b682efe4c4dbe7ef9c7d800db2ac5d80c79",
+    "scripts/octop_gateway_smoke.py": "305ce1ce8ede76dd7c2357e38e1be48c3d3b6484bcb6af1d3dfa1d2af5f7a4ea",
+    "scripts/octop_skill_postgres.py": "d1e0c6f9777249ca5e7644ffe7d0b6bc6f6396ad3f1a00e5c42a9b3a875b5e68",
+    "scripts/octop_upgrade_probe.py": "78bcbe45ed7ab4edffc94f198dcff014b9e57c6ea76f063a7cebdfb323c5cc79",
+    "backend/app/alerting/diagnosis_authorization.py": "035acc2348efd6dcb420a3ed8fd3e7c4a28699acb6a98c7dc13281feb7654b98",
+    "backend/tests/test_diagnosis_authorization.py": "0eeb77810091dd2f6721cd0bb41d14850a6b19e32f21ac62aa9b5ef9fb354882"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "link_sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3",
+      "reason": "absolute host tool metadata link; target not read"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "link_sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db",
+      "reason": "absolute host tool metadata link; target not read"
+    }
+  ],
+  "independent_directory": "/tmp/prismos-n09m-independent"
+}

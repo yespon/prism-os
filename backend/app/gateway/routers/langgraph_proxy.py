@@ -28,9 +28,19 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/langgraph", tags=["langgraph"])
 _THREAD_ID = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
 _IDENTITY_KEYS = {
-    "tenant_id", "user_id", "agent_name", "thread_id", "owner_user_id",
-    "owner_tenant_id", "prismos_execution_capability", "is_bootstrap",
-    "prismos_action_incident_id", "action_incident_id",
+    "agent_id",
+    "diagnosis_source_id",
+    "diagnosis_source_revision",
+    "tenant_id",
+    "user_id",
+    "agent_name",
+    "thread_id",
+    "owner_user_id",
+    "owner_tenant_id",
+    "prismos_execution_capability",
+    "is_bootstrap",
+    "prismos_action_incident_id",
+    "action_incident_id",
 }
 _UPSTREAM = os.getenv("LANGGRAPH_API_URL", "http://langgraph:2024").rstrip("/")
 
@@ -64,8 +74,12 @@ async def _forward(method: str, path: str, body: dict | None, request: Request) 
     encoded = None if body is None else json.dumps(body, separators=(",", ":")).encode()
     try:
         upstream, client = await _upstream(
-            method, path, encoded, request.url.query,
-            accept=request.headers.get("accept"), last_event_id=request.headers.get("last-event-id"),
+            method,
+            path,
+            encoded,
+            request.url.query,
+            accept=request.headers.get("accept"),
+            last_event_id=request.headers.get("last-event-id"),
         )
     except httpx.HTTPError as exc:
         logger.warning("LangGraph upstream unavailable: %s", type(exc).__name__)
@@ -77,8 +91,10 @@ async def _forward(method: str, path: str, body: dict | None, request: Request) 
     content_type = upstream.headers.get("content-type", "application/json")
     if "text/event-stream" in content_type and upstream.is_success:
         return StreamingResponse(
-            upstream.aiter_raw(), status_code=upstream.status_code,
-            media_type="text/event-stream", headers=headers,
+            upstream.aiter_raw(),
+            status_code=upstream.status_code,
+            media_type="text/event-stream",
+            headers=headers,
             background=BackgroundTask(_close_upstream, upstream, client),
         )
     try:
@@ -106,18 +122,26 @@ async def _visible_agent(tenant_id: str, user_id: str, name: str | None) -> None
     if name == "terminal-agent" or not re.fullmatch(r"[A-Za-z0-9-]+", name):
         raise HTTPException(403, "Agent is unavailable")
     async with get_session_factory()() as session:
-        row = (await session.exec(select(CustomAgent).where(
-            CustomAgent.tenant_id == tenant_id,
-            CustomAgent.name == name,
-            CustomAgent.enabled.is_(True),
-            (CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared"),
-        ))).first()
+        row = (
+            await session.exec(
+                select(CustomAgent).where(
+                    CustomAgent.tenant_id == tenant_id,
+                    CustomAgent.name == name,
+                    CustomAgent.enabled.is_(True),
+                    (CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared"),
+                )
+            )
+        ).first()
     if row is None:
         raise HTTPException(403, "Agent is unavailable")
 
 
 async def _binding_or_legacy(
-    threads: ThreadBindingRepository, thread_id: str, tenant_id: str, user_id: str, request: Request,
+    threads: ThreadBindingRepository,
+    thread_id: str,
+    tenant_id: str,
+    user_id: str,
+    request: Request,
 ) -> ThreadBinding:
     existing = await threads.lookup(thread_id)
     if existing is not None:
@@ -143,7 +167,10 @@ async def _binding_or_legacy(
 
 
 async def _run_body(
-    body: dict, binding: ThreadBinding, tenant_id: str, user_id: str,
+    body: dict,
+    binding: ThreadBinding,
+    tenant_id: str,
+    user_id: str,
     threads: ThreadBindingRepository,
 ) -> dict:
     if body.get("assistant_id") != "lead_agent":
@@ -176,15 +203,15 @@ async def _run_body(
     config_metadata = config.get("metadata") or {}
     if not isinstance(config_metadata, dict):
         raise HTTPException(400, "Invalid run configuration metadata")
-    body["config"] = {**config,
+    body["config"] = {
+        **config,
         "configurable": {key: value for key, value in configurable.items() if key not in _IDENTITY_KEYS},
         "metadata": {key: value for key, value in config_metadata.items() if key not in _IDENTITY_KEYS},
     }
     metadata = body.get("metadata") or {}
     if not isinstance(metadata, dict):
         raise HTTPException(400, "Invalid run metadata")
-    body["metadata"] = {**{key: value for key, value in metadata.items() if key not in _IDENTITY_KEYS},
-                        "owner_user_id": user_id, "owner_tenant_id": tenant_id}
+    body["metadata"] = {**{key: value for key, value in metadata.items() if key not in _IDENTITY_KEYS}, "owner_user_id": user_id, "owner_tenant_id": tenant_id}
     return body
 
 
@@ -215,9 +242,7 @@ async def proxy_langgraph(path: str, request: Request) -> Response:
         metadata = body.get("metadata") or {}
         if not isinstance(metadata, dict):
             raise HTTPException(400, "Invalid thread metadata")
-        body["metadata"] = {**{key: value for key, value in metadata.items()
-                               if key not in ("owner_user_id", "owner_tenant_id", "agent_name")},
-                            "owner_user_id": user_id, "owner_tenant_id": tenant_id}
+        body["metadata"] = {**{key: value for key, value in metadata.items() if key not in ("owner_user_id", "owner_tenant_id", "agent_name")}, "owner_user_id": user_id, "owner_tenant_id": tenant_id}
         response = await _forward(method, path, body, request)
         if response.status_code < 300:
             if json.loads(response.body).get("thread_id") != thread_id:
@@ -230,9 +255,7 @@ async def proxy_langgraph(path: str, request: Request) -> Response:
         metadata = body.get("metadata") or {}
         if not isinstance(metadata, dict):
             raise HTTPException(400, "Invalid thread search")
-        body["metadata"] = {**{key: value for key, value in metadata.items()
-                               if key not in ("owner_user_id", "owner_tenant_id")},
-                            "owner_user_id": user_id, "owner_tenant_id": tenant_id}
+        body["metadata"] = {**{key: value for key, value in metadata.items() if key not in ("owner_user_id", "owner_tenant_id")}, "owner_user_id": user_id, "owner_tenant_id": tenant_id}
         response = await _forward(method, path, body, request)
         if response.status_code != 200:
             return response
@@ -262,9 +285,7 @@ async def proxy_langgraph(path: str, request: Request) -> Response:
             metadata = body.get("metadata") or {}
             if not isinstance(metadata, dict):
                 raise HTTPException(400, "Invalid thread metadata")
-            body["metadata"] = {**{key: value for key, value in metadata.items()
-                                   if key not in ("owner_user_id", "owner_tenant_id", "agent_name")},
-                                "owner_user_id": user_id, "owner_tenant_id": tenant_id}
+            body["metadata"] = {**{key: value for key, value in metadata.items() if key not in ("owner_user_id", "owner_tenant_id", "agent_name")}, "owner_user_id": user_id, "owner_tenant_id": tenant_id}
         if len(parts) >= 3 and parts[2] == "runs" and method == "POST" and len(parts) in (3, 4) and (len(parts) == 3 or parts[3] in ("stream", "wait")):
             assert body is not None
             body = await _run_body(body, binding, tenant_id, user_id, threads)
@@ -274,8 +295,7 @@ async def proxy_langgraph(path: str, request: Request) -> Response:
                 new_id = json.loads(response.body)["thread_id"]
                 await threads.create(new_id, tenant_id, user_id)
                 if binding.agent_name is not None:
-                    await threads.bind_agent(new_id, tenant_id, user_id,
-                                             None if binding.agent_name == DEFAULT_AGENT else binding.agent_name)
+                    await threads.bind_agent(new_id, tenant_id, user_id, None if binding.agent_name == DEFAULT_AGENT else binding.agent_name)
             return response
         elif len(parts) == 2 and method == "DELETE":
             response = await _forward(method, path, body, request)

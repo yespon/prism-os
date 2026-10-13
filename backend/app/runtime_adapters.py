@@ -17,6 +17,7 @@ from deerflow.database.session import get_session_factory
 from deerflow.runtime import (
     ExecutionTrustError,
     register_agent_config_provider,
+    register_agent_identity_provider,
     register_agent_persistence_provider,
     register_execution_validator,
     register_governed_action_provider,
@@ -54,24 +55,41 @@ def _load_agent(name: str, user_id: str | None, tenant_id: str | None) -> Custom
     return _run_async(_query())
 
 
+async def verify_native_selection(session, tenant_id, user_id, agent_name, agent_id, source_id=None, source_revision=None):
+    from deerflow.database.models import Tenant, TenantMembership
+
+    agent = await session.get(CustomAgent, agent_id, populate_existing=True)
+    member = (await session.exec(select(TenantMembership).where(TenantMembership.tenant_id == tenant_id, TenantMembership.user_id == user_id, TenantMembership.status == "active").execution_options(populate_existing=True))).scalars().first()
+    tenant = await session.get(Tenant, tenant_id, populate_existing=True)
+    if agent is None or agent.tenant_id != tenant_id or agent.name != agent_name or not agent.enabled or agent.user_id not in {user_id, "tenant-shared"} or member is None or tenant is None or tenant.status != "active":
+        raise ExecutionTrustError("Native Agent selection unavailable")
+    if source_id is not None:
+        from app.alerting.diagnosis_authorization import current_authorization
+
+        await current_authorization(session, source_id, tenant_id, agent_id, expected_actor=user_id, expected_revision=source_revision)
+
+
+def _load_agent_by_id(name, user_id, tenant_id, agent_id):
+    async def load():
+        async with get_session_factory()() as session:
+            await verify_native_selection(session, tenant_id, user_id, name, agent_id)
+            return await session.get(CustomAgent, agent_id)
+
+    return _run_async(load())
+
+
 def _list_agents(user_id: str | None, tenant_id: str | None) -> list[CustomAgent]:
     async def _query() -> list[CustomAgent]:
         session_factory = get_session_factory()
         async with session_factory() as session:
-            statement = (
-                select(CustomAgent)
-                .where(CustomAgent.tenant_id == tenant_id, CustomAgent.user_id == user_id)
-                .order_by(CustomAgent.name)
-            )
+            statement = select(CustomAgent).where(CustomAgent.tenant_id == tenant_id, CustomAgent.user_id == user_id).order_by(CustomAgent.name)
             result = await session.exec(statement)
             return list(result.scalars().all())
 
     return _run_async(_query())
 
 
-def _persist_agent(
-    *, agent_name: str, soul: str, description: str, user_id: str | None, tenant_id: str | None
-) -> None:
+def _persist_agent(*, agent_name: str, soul: str, description: str, user_id: str | None, tenant_id: str | None) -> None:
     async def _create() -> None:
         session_factory = get_session_factory()
         async with session_factory() as session:
@@ -93,16 +111,18 @@ def _persist_agent(
 
 
 async def _consume_graph_capability(token, tenant_id, user_id, thread_id, agent_name):
-    return await ExecutionCapabilityRepository().consume(token, tenant_id, user_id, thread_id, agent_name)
+    return await ExecutionCapabilityRepository(get_session_factory(), native_selection_validator=verify_native_selection).consume(token, tenant_id, user_id, thread_id, agent_name, include_selection=True)
 
 
-def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resource_id=None):
+def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resource_id=None, agent_id=None):
     if not agent_name:
         return None
     from app.integrations.agent_skill_references import current_skill_prompt
+
     async def load():
         async with get_session_factory()() as session:
-            return await current_skill_prompt(session, agent_name, tenant_id, user_id, skill_name, resource_id)
+            return await current_skill_prompt(session, agent_name, tenant_id, user_id, skill_name, resource_id, selected_agent_id=agent_id)
+
     try:
         return _run_async(load())
     except Exception:
@@ -112,6 +132,7 @@ def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resou
 def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
+    register_agent_identity_provider(_load_agent_by_id)
     register_agent_persistence_provider(_persist_agent)
     register_terminal_agent_provider(
         get_tools=get_terminal_tools,

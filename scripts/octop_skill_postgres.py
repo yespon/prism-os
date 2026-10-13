@@ -104,6 +104,7 @@ def main():
                     "tests/test_skill_resource_deletion.py",
                     "tests/test_skill_reference_transactions.py",
                     "tests/test_agent_skill_references.py",
+                    "tests/test_diagnosis_authorization.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",

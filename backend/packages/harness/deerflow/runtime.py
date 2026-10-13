@@ -31,6 +31,7 @@ _agent_persister: AgentPersister | None = None
 _terminal_provider: dict[str, Any] | None = None
 _governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
 _execution_validator: ExecutionValidator | None = None
+_agent_identity_provider: Callable[..., Any] | None = None
 _skill_prompt_provider: Callable[..., str | None] | None = None
 _loaded_adapter_module: str | None = None
 
@@ -95,6 +96,15 @@ def get_execution_validator() -> ExecutionValidator | None:
     return _execution_validator
 
 
+def register_agent_identity_provider(provider: Callable[..., Any]) -> None:
+    global _agent_identity_provider
+    _agent_identity_provider = provider
+
+
+def get_agent_identity_provider():
+    return _agent_identity_provider
+
+
 def register_skill_prompt_provider(provider: Callable[..., str | None]) -> None:
     global _skill_prompt_provider
     _skill_prompt_provider = provider
@@ -124,7 +134,8 @@ def load_runtime_adapters() -> None:
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
-    global _skill_prompt_provider
+    global _skill_prompt_provider, _agent_identity_provider
+    _agent_identity_provider = None
     _skill_prompt_provider = None
     _agent_loader = None
     _agent_lister = None

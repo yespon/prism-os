@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.alerting import diagnosis_authorization
 from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
 from app.alerting.incident_manager import suppress_incident
 from app.alerting.ingest import process_alert
@@ -1852,6 +1853,8 @@ async def create_alert_source(
         body.diagnosis_agent_id,
     )
 
+    merged_config = await diagnosis_authorization.configure(session, tenant_id, user_id, merged_config, confirm=True)
+
     source = AlertSource(
         id=str(uuid.uuid4()),
         tenant_id=tenant_id,
@@ -1915,6 +1918,9 @@ async def update_alert_source(
     if source is None:
         raise HTTPException(status_code=404, detail="Alert source not found")
 
+    from copy import deepcopy
+    previous_config = deepcopy(source.config_json or {})
+
     # Validate diagnosis_agent_id if being changed
     if body.diagnosis_agent_id:
         await _validate_diagnosis_agent(session, tenant_id, body.diagnosis_agent_id)
@@ -1943,6 +1949,9 @@ async def update_alert_source(
         body.ai_analysis_model,
         body.diagnosis_agent_id,
     )
+
+    source.config_json = await diagnosis_authorization.configure(session, tenant_id, getattr(request.state,"user_id",None), source.config_json, previous_config,
+        confirm=bool({"ai_analysis_enabled", "ai_analysis_severities", "ai_analysis_model", "diagnosis_agent_id"} & body.model_fields_set))
 
     session.add(source)
     await session.commit()

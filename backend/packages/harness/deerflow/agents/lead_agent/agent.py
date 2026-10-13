@@ -13,7 +13,7 @@ from deerflow.agents.middlewares.tool_error_handling_middleware import build_lea
 from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
 from deerflow.agents.thread_state import ThreadState
 from deerflow.config import get_app_config
-from deerflow.config.agents_config import _run_async, load_agent_config
+from deerflow.config.agents_config import _db_agent_to_config, _run_async, load_agent_config
 from deerflow.config.summarization_config import get_summarization_config
 from deerflow.config.tenant_context import tenant_context
 from deerflow.config.title_config import get_title_config
@@ -21,6 +21,7 @@ from deerflow.database.user_config_store import load_enabled_tenant_model_names
 from deerflow.models.factory import create_chat_model
 from deerflow.runtime import (
     ExecutionTrustError,
+    get_agent_identity_provider,
     get_execution_validator,
     get_governed_action_provider,
     get_skill_prompt_provider,
@@ -93,18 +94,15 @@ def _resolve_model_name(requested_model_name: str | None, *, allowed_model_names
 
 def _validate_execution_context(config: dict) -> dict[str, str] | None:
     """Consume trusted identity before assembling any Agent tools."""
-    if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required":
+    if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required" and not (config.get("configurable", {}).get("agent_id") or config.get("context", {}).get("agent_id")):
         return
     cfg = config.get("configurable", {}) or {}
     context = config.get("context", {}) or {}
     thread_id = cfg.get("thread_id") or context.get("thread_id")
-    identity_claimed = bool(context) or any(
-        key in cfg
-        for key in ("user_id", "tenant_id", "agent_name", "is_bootstrap", "prismos_execution_capability")
-    )
+    identity_claimed = bool(context) or any(key in cfg for key in ("user_id", "tenant_id", "agent_name", "agent_id", "is_bootstrap", "prismos_execution_capability"))
     if not thread_id and not identity_claimed:
         return  # schema/assistant discovery without an execution context
-    for key in ("thread_id", "user_id", "tenant_id", "agent_name", "is_bootstrap", "prismos_execution_capability"):
+    for key in ("thread_id", "user_id", "tenant_id", "agent_name", "agent_id", "is_bootstrap", "prismos_execution_capability"):
         if key in cfg and key in context and cfg[key] != context[key]:
             raise ExecutionTrustError("conflicting graph execution context")
     user_id = cfg.get("user_id") or context.get("user_id")
@@ -119,14 +117,20 @@ def _validate_execution_context(config: dict) -> dict[str, str] | None:
     validator = get_execution_validator()
     if validator is None:
         raise ExecutionTrustError("trusted graph execution validator unavailable")
-    incident_id = _run_async(validator(token, tenant_id, user_id, thread_id, agent_name))
-    if incident_id:
-        return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id,
-                "agent_name": agent_name, "incident_id": incident_id}
+    result = _run_async(validator(token, tenant_id, user_id, thread_id, agent_name))
+    incident_id = result.get("incident_id") if isinstance(result, dict) else result
+    agent_id = result.get("agent_id") if isinstance(result, dict) else None
+    requested_id = cfg.get("agent_id") or context.get("agent_id")
+    if requested_id is not None and requested_id != agent_id:
+        raise ExecutionTrustError("native Agent selection is not covered by the capability")
+    if incident_id or agent_id:
+        return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id, "agent_name": agent_name, "incident_id": incident_id, "agent_id": agent_id}
 
 
 def make_lead_agent(config):
-    trusted_action = _validate_execution_context(config)
+    trusted_execution = _validate_execution_context(config)
+    trusted_action = trusted_execution if trusted_execution and trusted_execution.get("incident_id") else None
+    trusted_agent_id = trusted_execution.get("agent_id") if trusted_execution else None
     load_runtime_adapters()
     from deerflow.tools import get_available_tools
     from deerflow.tools.builtins import setup_agent
@@ -136,12 +140,7 @@ def make_lead_agent(config):
 
     thinking_enabled = cfg.get("thinking_enabled", runtime_context.get("thinking_enabled", True))
     reasoning_effort = cfg.get("reasoning_effort", runtime_context.get("reasoning_effort", None))
-    requested_model_name = (
-        cfg.get("model_name")
-        or cfg.get("model")
-        or runtime_context.get("model_name")
-        or runtime_context.get("model")
-    )
+    requested_model_name = cfg.get("model_name") or cfg.get("model") or runtime_context.get("model_name") or runtime_context.get("model")
     is_plan_mode = cfg.get("is_plan_mode", runtime_context.get("is_plan_mode", False))
     subagent_enabled = cfg.get("subagent_enabled", runtime_context.get("subagent_enabled", False))
     max_concurrent_subagents = cfg.get("max_concurrent_subagents", runtime_context.get("max_concurrent_subagents", 3))
@@ -156,6 +155,9 @@ def make_lead_agent(config):
         cfg.setdefault("tenant_id", tenant_id)
         cfg.setdefault("is_plan_mode", is_plan_mode)
 
+    if trusted_agent_id and is_bootstrap:
+        raise ExecutionTrustError("Native Agent capability cannot select bootstrap mode")
+
     tenant_allowed_model_names: set[str] | None = None
     if isinstance(tenant_id, str) and tenant_id.strip():
         tenant_allowed_model_names = set(load_enabled_tenant_model_names(tenant_id.strip()))
@@ -164,10 +166,19 @@ def make_lead_agent(config):
         # ------------------------------------------------------------------
         # Built-in Terminal Agent (SSH-based remote host operations)
         # ------------------------------------------------------------------
-        if agent_name == "terminal-agent":
+        if agent_name == "terminal-agent" and not trusted_agent_id:
             return _make_terminal_agent(config)
 
-        agent_config = load_agent_config(agent_name, user_id=user_id) if not is_bootstrap else None
+        if trusted_agent_id:
+            identity_loader = get_agent_identity_provider()
+            if identity_loader is None:
+                raise ExecutionTrustError("Native Agent identity provider unavailable")
+            record = identity_loader(agent_name, user_id, tenant_id, trusted_agent_id)
+            if record is None:
+                raise ExecutionTrustError("Current native Agent unavailable")
+            agent_config = _db_agent_to_config(record)
+        else:
+            agent_config = load_agent_config(agent_name, user_id=user_id) if not is_bootstrap else None
         if agent_name and not is_bootstrap and agent_config is None:
             raise ValueError(f"Agent '{agent_name}' is unavailable or disabled")
         agent_model_name = agent_config.model if agent_config and agent_config.model else None
@@ -231,18 +242,20 @@ def make_lead_agent(config):
         agent_skills = set(agent_config.skills) if (agent_config and agent_config.skills is not None) else None
         effective_skills = {skill_name} if skill_name else agent_skills
         skill_provider = get_skill_prompt_provider()
-        verified_skill_section = skill_provider(agent_name, tenant_id, user_id, skill_name, cfg.get("skill_resource_id") or runtime_context.get("skill_resource_id")) if skill_provider else None
+        verified_skill_section = (
+            skill_provider(agent_name, tenant_id, user_id, skill_name, cfg.get("skill_resource_id") or runtime_context.get("skill_resource_id"), **({"agent_id": trusted_agent_id} if trusted_agent_id else {})) if skill_provider else None
+        )
         action_provider = get_governed_action_provider()
         action_tools = action_provider(trusted_action) if trusted_action and action_provider else []
         action_prompt = (
-            "\nFor this incident diagnosis, create a ticket only if the evidence warrants one. "
-            "Use create_governed_incident_ticket and report its returned platform status; "
-            "never claim a ticket was created unless the status is submitted."
-            if action_tools else ""
+            "\nFor this incident diagnosis, create a ticket only if the evidence warrants one. Use create_governed_incident_ticket and report its returned platform status; never claim a ticket was created unless the status is submitted."
+            if action_tools
+            else ""
         )
 
         available_tools = get_available_tools(
-            model_name=model_name, groups=agent_config.tool_groups if agent_config else None,
+            model_name=model_name,
+            groups=agent_config.tool_groups if agent_config else None,
             subagent_enabled=subagent_enabled,
         )
         governed_names = {tool.name for tool in action_tools if getattr(tool, "name", None)}
@@ -257,8 +270,10 @@ def make_lead_agent(config):
                 agent_name=agent_name,
                 available_skills=effective_skills if verified_skill_section is None else None,
                 **({"skill_section_override": verified_skill_section} if verified_skill_section is not None else {}),
+                **({"agent_soul_override": agent_config.system_prompt} if trusted_agent_id else {}),
                 user_id=user_id,
-            ) + action_prompt,
+            )
+            + action_prompt,
             state_schema=ThreadState,
         )
 
@@ -290,12 +305,7 @@ def _make_terminal_agent(config: dict):
     provider["set_context"](terminal_context)
 
     # Resolve model
-    requested_model_name = (
-        cfg.get("model_name")
-        or cfg.get("model")
-        or runtime_context.get("model_name")
-        or runtime_context.get("model")
-    )
+    requested_model_name = cfg.get("model_name") or cfg.get("model") or runtime_context.get("model_name") or runtime_context.get("model")
     model_name = _resolve_model_name(requested_model_name or None)
 
     # Build the agent
