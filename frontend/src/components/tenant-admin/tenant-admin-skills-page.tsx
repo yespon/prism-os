@@ -3,7 +3,9 @@
 import { Pencil, Plus, Trash2, Upload, SearchIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
+import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
 import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
 import { skillImportErrorMessage } from "@/core/skills/imports";
 import { useSkillImportContext } from "@/core/skills/import-context";
@@ -26,6 +28,8 @@ import type { AvailableSkillResponse } from "@/core/skills/type";
 
 export function TenantAdminSkillsPage() {
   const { t, locale } = useI18n();
+  const queryClient = useQueryClient();
+  const [editNeedsInspection, setEditNeedsInspection] = useState(false);
   const importContext = useSkillImportContext();
   const importIdentity = useRef(importContext.key);
   importIdentity.current = importContext.key;
@@ -41,6 +45,8 @@ export function TenantAdminSkillsPage() {
   const { mutateAsync: patchTenantSkill } = usePatchTenantSkill();
   const [open, setOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"manual" | "import">("manual");
+  const [editingFileSha, setEditingFileSha] = useState<string | undefined>();
+  const [editingResourceId, setEditingResourceId] = useState<string | undefined>();
   const [editingName, setEditingName] = useState<string | null>(null);
   const [skillName, setSkillName] = useState("");
   const [skillDescription, setSkillDescription] = useState("");
@@ -95,6 +101,7 @@ export function TenantAdminSkillsPage() {
 
   const openCreate = () => {
     setDialogMode("manual");
+    setEditNeedsInspection(false);
     setEditingName(null);
     setSkillName("");
     setSkillDescription("");
@@ -109,6 +116,8 @@ export function TenantAdminSkillsPage() {
 
   const openEdit = (skill: {
     name: string;
+    resource_id?: string | null;
+    file_sha256?: string | null;
     description?: string;
     instructions?: string | null;
     bound_tools?: string[];
@@ -116,7 +125,10 @@ export function TenantAdminSkillsPage() {
     strategy?: string | null;
   }) => {
     setDialogMode("manual");
+    setEditNeedsInspection(false);
     setEditingName(skill.name);
+    setEditingResourceId(skill.resource_id ?? undefined);
+    setEditingFileSha(skill.file_sha256 ?? undefined);
     setSkillName(skill.name);
     setSkillDescription(skill.description ?? "");
     setInstructions(skill.instructions ?? "");
@@ -159,6 +171,7 @@ export function TenantAdminSkillsPage() {
   };
 
   const save = async () => {
+    if (editNeedsInspection) return;
     const importing = dialogMode === "import" && !editingName;
     if (importing && (!importContext.canShare || !importContext.isCurrent() || archiveBusy.current)) return;
     const identity = importContext.key;
@@ -191,12 +204,15 @@ export function TenantAdminSkillsPage() {
       if (editingName) {
         await patchTenantSkill({
           skillName: editingName,
+          expected_resource_id: editingResourceId,
+          expected_file_sha256: editingFileSha,
           description: skillDescription.trim(),
           instructions: instructions.trim() || null,
           bound_tools: parseBoundTools(),
           prompt_template: promptTemplate || null,
           strategy,
         });
+        if (!current()) return;
         toast.success(t.tenantAdmin.skills.updateSuccess);
       } else {
         await createTenantSkill({
@@ -212,8 +228,9 @@ export function TenantAdminSkillsPage() {
       }
       setOpen(false);
     } catch (err) {
-      if (importing && !current()) return;
-      const message = skillImportErrorMessage(err, locale === "zh-CN");
+      if (!current()) return;
+      if (!importing && (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409)))) setEditNeedsInspection(true);
+      const message = importing ? skillImportErrorMessage(err, locale === "zh-CN") : skillMutationMessage(err, locale === "zh-CN");
       if (dialogMode === "import" && !editingName) {
         setImportError(message);
       }
@@ -466,13 +483,14 @@ export function TenantAdminSkillsPage() {
           </Tabs>
 
           <DialogFooter>
+{editNeedsInspection && <Button variant="outline" onClick={() => { void queryClient.invalidateQueries({queryKey: ["availableSkills"]}); changeArchiveOpen(false); setEditNeedsInspection(false); }}>重新检查资源列表</Button>}
             <Button type="button" variant="outline" onClick={() => changeArchiveOpen(false)}>
               {t.common.cancel}
             </Button>
             <Button
               type="button"
               onClick={() => void save()}
-              disabled={isImportingSkill || (dialogMode === "import" && !editingName && !archiveFile)}
+              disabled={editNeedsInspection || isImportingSkill || (dialogMode === "import" && !editingName && !archiveFile)}
             >
               {dialogMode === "import" && !editingName
                 ? isImportingSkill

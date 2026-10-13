@@ -8,6 +8,8 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
+import { SkillMutationError } from "@/core/skills/mutations";
+
 import SkillDetailPage from "./page";
 
 const mock = vi.hoisted(() => ({
@@ -54,6 +56,8 @@ vi.mock("@/components/workspace/messages/markdown-content", () => ({
 }));
 const data = {
   name: "collision",
+  resource_id: "skill:current",
+  file_sha256: "a".repeat(64),
   description: "PERSONAL DESCRIPTION",
   instructions: "PERSONAL BODY",
   scope: "personal",
@@ -139,4 +143,26 @@ it("a late save cannot navigate or toast into a different selected source", asyn
   await act(async () => resolve({}));
   expect(mock.push).not.toHaveBeenCalled();
   expect(mock.success).not.toHaveBeenCalled();
+});
+
+it("unknown save blocks repetition until the user reinspects the current specific resource", async () => {
+  mock.patch.mockRejectedValueOnce(
+    new SkillMutationError(503, "skill:current", true),
+  );
+  render(<SkillDetailPage />);
+  await screen.findByDisplayValue("PERSONAL BODY");
+  fireEvent.click(screen.getByRole("button", { name: "保存" }));
+  const inspect = await screen.findByRole("button", {
+    name: "重新检查当前资源",
+  });
+  expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
+  fireEvent.click(inspect);
+  await screen.findByDisplayValue("PERSONAL BODY");
+  expect(mock.patch).toHaveBeenCalledOnce();
+  expect(mock.patch.mock.calls[0]?.[1]).toMatchObject({
+    expected_resource_id: "skill:current",
+    expected_file_sha256: "a".repeat(64),
+  });
+  expect(mock.detail).toHaveBeenCalledTimes(2);
+  expect(screen.getByRole("button", { name: "保存" })).not.toBeDisabled();
 });

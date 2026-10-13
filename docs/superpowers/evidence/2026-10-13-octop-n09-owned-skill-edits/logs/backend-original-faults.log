@@ -1,0 +1,94 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_____ test_member_shared_patch_cannot_change_native_state_before_rejection _____
+
+scoped_client = (<starlette.testclient.TestClient object at 0x773338c68650>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-170/test_member_shared_patch_canno0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77333952d790>
+
+    def test_member_shared_patch_cannot_change_native_state_before_rejection(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        before = (root / "custom/tenant-a/collision/SKILL.md").read_bytes()
+        with TestClient(http.app, raise_server_exceptions=False) as client:
+            response = client.patch("/api/tenants/skills/collision", json={"enabled": False})
+>       assert response.status_code == 403
+E       assert 500 == 403
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_skill_mutation_boundaries.py:26: AssertionError
+______ test_personal_patch_rejects_foreign_path_before_db_or_file_changes ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7733395bc8f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-170/test_personal_patch_rejects_fo0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x773338c2adb0>
+
+    def test_personal_patch_rejects_foreign_path_before_db_or_file_changes(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        foreign = root / "custom/tenant-a/user-b/collision"
+        foreign.mkdir(parents=True)
+        target = foreign / "SKILL.md"
+        target.write_text("---\nname: collision\ndescription: OTHER USER\n---\nPRIVATE BODY\n")
+    
+        async def point_at_foreign():
+            async with factory() as session:
+                row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                row.install_dir = str(foreign)
+                session.add(row)
+                await session.commit()
+        asyncio.run(point_at_foreign())
+        before = target.read_bytes()
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "description": "changed", "instructions": "overwritten"})
+>       assert response.status_code == 409
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_skill_mutation_boundaries.py:47: AssertionError
+__________ test_public_patch_rejected_before_changing_tenant_override __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x773338209fa0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-170/test_public_patch_rejected_bef0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x773339787d10>
+
+    def test_public_patch_rejected_before_changing_tenant_override(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+    
+        async def public_override():
+            async with factory() as session:
+                row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id != "user-a"))).scalars().one()
+                row.category = "public"
+                row.install_dir = str(root / "public/collision")
+                row.relative_path = "collision"
+                session.add(row)
+                await session.commit()
+        asyncio.run(public_override())
+        before = (root / "public/collision/SKILL.md").read_bytes()
+        with TestClient(http.app, raise_server_exceptions=False) as client:
+            response = client.patch("/api/tenants/skills/collision", headers={"x-tenant-role": "tenant_admin"}, json={"enabled": False, "description": "changed", "instructions": "overwrite public"})
+>       assert response.status_code == 403
+E       assert 500 == 403
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_skill_mutation_boundaries.py:67: AssertionError
+____________ test_stale_instance_patch_cannot_update_same_name_row _____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x773338278a10>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-170/test_stale_instance_patch_cann0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x773338c28a70>
+
+    def test_stale_instance_patch_cannot_update_same_name_row(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        before = (root / "custom/tenant-a/user-a/collision/SKILL.md").read_bytes()
+        response = http.patch("/api/skills/personal/collision", json={"expected_resource_id": "skill:withdrawn", "enabled": False})
+>       assert response.status_code == 409
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_skill_mutation_boundaries.py:76: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_mutation_boundaries.py::test_member_shared_patch_cannot_change_native_state_before_rejection
+FAILED tests/test_skill_mutation_boundaries.py::test_personal_patch_rejects_foreign_path_before_db_or_file_changes
+FAILED tests/test_skill_mutation_boundaries.py::test_public_patch_rejected_before_changing_tenant_override
+FAILED tests/test_skill_mutation_boundaries.py::test_stale_instance_patch_cannot_update_same_name_row
+4 failed, 1 warning in 2.80s

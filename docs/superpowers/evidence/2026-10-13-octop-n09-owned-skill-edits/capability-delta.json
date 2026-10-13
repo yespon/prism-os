@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-13",
+  "baseline": "ea843bd91017f8dcf56d53f1ef69b5ecc88869d1",
+  "scope": "C2 original owned PATCH seam",
+  "delivered": [
+    "pre-mutation tenant-admin/actor and native row checks",
+    "optional specific instance and main-file digest",
+    "own-directory no-follow and replacement verification",
+    "owned main file temp/fsync/atomic replacement",
+    "native row lock and explicit cross-store unknown preservation",
+    "structured current-resource inspection and blocked repeat-save UX",
+    "public files read-only here with original PUT toggle retained"
+  ],
+  "complete": false,
+  "new_schema": false,
+  "copy_share_implemented": false,
+  "execution_permission_grants": false,
+  "remaining": [
+    "PUT/DELETE",
+    "copy/share",
+    "old references and revoke/use",
+    "C3-C5",
+    "full N09",
+    "N04/M1",
+    "remote CI"
+  ],
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

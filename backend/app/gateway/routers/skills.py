@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import re
 import shutil
@@ -11,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.gateway.path_utils import resolve_thread_virtual_path
-from app.integrations import skill_imports
+from app.integrations import skill_imports, skill_mutations
 from deerflow.database.user_config_service import (
     create_tenant_personal_skill,
     create_tenant_shared_skill,
@@ -21,9 +22,7 @@ from deerflow.database.user_config_service import (
     get_tenant_shared_skill_settings,
     list_tenant_shared_skills,
     set_tenant_shared_skill_enabled,
-    update_tenant_personal_skill,
     update_tenant_personal_skill_settings,
-    update_tenant_shared_skill,
     update_tenant_shared_skill_settings,
 )
 from deerflow.skills import Skill, get_skills_root_path, load_skills
@@ -62,6 +61,7 @@ class SkillsListResponse(BaseModel):
 
 
 class AvailableSkillResponse(SkillResponse):
+    file_sha256: str | None = None
     resource_id: str | None = None
     owner_kind: str | None = None
     files_status: str | None = None
@@ -94,6 +94,8 @@ class TenantSkillCreateRequest(BaseModel):
 
 
 class TenantSkillPatchRequest(BaseModel):
+    expected_file_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    expected_resource_id: str | None = Field(default=None, max_length=128)
     description: str | None = Field(default=None, description="Skill description")
     instructions: str | None = Field(default=None, description="Skill instructions")
     enabled: bool | None = Field(default=None, description="Whether skill is enabled")
@@ -116,6 +118,7 @@ class GenerateInstructionsResponse(BaseModel):
 
 
 class SkillDetailResponse(SkillResponse):
+    file_sha256: str | None = None
     resource_id: str | None = None
     owner_kind: str | None = None
     files_status: str | None = None
@@ -408,12 +411,14 @@ async def list_available_skills(request: Request) -> AvailableSkillsListResponse
         enriched_rows = []
         for row in rows:
             if row.get("scope") in {"tenant", "personal"} and row.get("files_status") == "verified":
-                description, instructions = _read_skill_file_payload(
-                    resource_directory(get_skills_root_path(), tenant_id, request.state.user_id, row)
-                )
-                if description:
-                    row["description"] = description
+                directory = resource_directory(get_skills_root_path(), tenant_id, request.state.user_id, row)
+                raw_bytes = (directory / "SKILL.md").read_bytes()
+                frontmatter, instructions = _split_skill_markdown(raw_bytes.decode("utf-8"))
+                description = frontmatter.get("description")
+                if description is not None and str(description).strip():
+                    row["description"] = str(description).strip()
                 row["instructions"] = instructions
+                row["file_sha256"] = hashlib.sha256(raw_bytes).hexdigest()
             enriched_rows.append(row)
         return AvailableSkillsListResponse(skills=[AvailableSkillResponse.model_validate(row) for row in enriched_rows])
     except Exception as e:
@@ -529,75 +534,34 @@ async def update_tenant_skill(skill_name: str, request: SkillUpdateRequest, api_
     )
 
 
+async def _patch_owned_response(name: str, body: TenantSkillPatchRequest, request: Request, shared: bool):
+    tenant, actor = _import_identity(request)
+    try:
+        resource_id = await skill_mutations.patch_owned_skill(get_skills_root_path(), tenant, actor, shared, name, body, split=_split_skill_markdown, render=_render_skill_markdown, normalize=_normalize_skill_description)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except skill_mutations.SkillMutationUnknown as error:
+        raise HTTPException(503, {"message": str(error), "resource_id": error.resource_id, "inspection_required": True}) from None
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Owned Skill edit did not complete")
+        raise HTTPException(503, "Skill edit unavailable; inspect the current resource before retrying") from None
+    try:
+        return await get_skill_detail(name, request, scope="tenant" if shared else "personal", resource_id=resource_id)
+    except Exception:
+        raise HTTPException(503, {"message": "Skill edit response could not be confirmed; inspect current state", "resource_id": resource_id, "inspection_required": True}) from None
+
+
 @router.patch(
     "/tenants/skills/{skill_name}",
-    response_model=SkillResponse,
+    response_model=SkillDetailResponse,
     summary="Patch Tenant Shared Skill",
+    dependencies=[Depends(require_tenant_admin)],
 )
 async def patch_tenant_skill(skill_name: str, request: TenantSkillPatchRequest, api_request: Request) -> SkillResponse:
-    tenant_id = require_tenant_context(api_request)
-    user_id: str = getattr(api_request.state, "user_id", "")
-    is_admin = _is_tenant_admin(api_request)
-
-    try:
-        row = await update_tenant_shared_skill(
-            tenant_id,
-            skill_name,
-            enabled=request.enabled,
-            category=request.category,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
-
-    skill_dir = _resolve_skill_runtime_dir(
-        tenant_id,
-        row.name,
-        getattr(row, "install_dir", None),
-        getattr(row, "relative_path", None),
-    )
-    frontmatter, current_instructions = _read_skill_file_payload(skill_dir)
-    creator = frontmatter.get("created_by")
-    if not is_admin and creator and creator != user_id:
-        raise HTTPException(status_code=403, detail="You can only edit skills you created")
-
-    settings = await update_tenant_shared_skill_settings(
-        tenant_id,
-        row.name,
-        bound_tools=request.bound_tools,
-        prompt_template=request.prompt_template,
-        strategy=request.strategy,
-    )
-
-    if request.description is not None or request.instructions is not None:
-        current_description = frontmatter.get("description") or row.name
-        description_to_write = (
-            _normalize_skill_description(request.description)
-            if request.description is not None
-            else (current_description if isinstance(current_description, str) and current_description.strip() else row.name)
-        )
-        instructions_to_write = request.instructions if request.instructions is not None else current_instructions
-        new_version = int(frontmatter.get("version", 1)) + 1
-        _write_skill_markdown(
-            skill_dir,
-            name=row.name,
-            description=description_to_write,
-            instructions=instructions_to_write,
-            created_by=creator,
-            version=new_version,
-            changelog=request.changelog or f"Updated (v{new_version})",
-            usage_count=int(frontmatter.get("usage_count", 0)),
-            references=frontmatter.get("references"),
-        )
-
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
+    require_tenant_admin(api_request)
+    return await _patch_owned_response(skill_name, request, api_request, True)
 
 
 @router.delete(
@@ -684,78 +648,11 @@ async def create_personal_skill(request: Request, body: TenantSkillCreateRequest
 
 @router.patch(
     "/skills/personal/{skill_name}",
-    response_model=SkillResponse,
+    response_model=SkillDetailResponse,
     summary="Patch Personal Skill",
 )
 async def patch_personal_skill(skill_name: str, request: TenantSkillPatchRequest, api_request: Request) -> SkillResponse:
-    tenant_id = require_tenant_context(api_request)
-    user_id: str = getattr(api_request.state, "user_id", "")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="User ID is required")
-
-    try:
-        row = await update_tenant_personal_skill(
-            tenant_id,
-            user_id,
-            skill_name,
-            enabled=request.enabled,
-            category=request.category,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
-
-    skill_dir = _resolve_skill_runtime_dir(
-        tenant_id,
-        row.name,
-        getattr(row, "install_dir", None),
-        getattr(row, "relative_path", None),
-    )
-    skill_file = skill_dir / "SKILL.md"
-    if skill_file.exists():
-        frontmatter, current_instructions = _split_skill_markdown(skill_file.read_text(encoding="utf-8"))
-    else:
-        frontmatter = {}
-        current_instructions = ""
-
-    settings = await update_tenant_personal_skill_settings(
-        tenant_id,
-        user_id,
-        row.name,
-        bound_tools=request.bound_tools,
-        prompt_template=request.prompt_template,
-        strategy=request.strategy,
-    )
-
-    if request.description is not None or request.instructions is not None:
-        current_description = frontmatter.get("description") or row.name
-        description_to_write = (
-            _normalize_skill_description(request.description)
-            if request.description is not None
-            else (current_description if isinstance(current_description, str) and current_description.strip() else row.name)
-        )
-        instructions_to_write = request.instructions if request.instructions is not None else current_instructions
-        new_version = int(frontmatter.get("version", 1)) + 1
-        _write_skill_markdown(
-            skill_dir,
-            name=row.name,
-            description=description_to_write,
-            instructions=instructions_to_write,
-            created_by=user_id,
-            version=new_version,
-            changelog=request.changelog or f"Updated (v{new_version})",
-            usage_count=int(frontmatter.get("usage_count", 0)),
-            references=frontmatter.get("references"),
-        )
-
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
+    return await _patch_owned_response(skill_name, request, api_request, False)
 
 
 @router.delete(
@@ -1043,8 +940,11 @@ async def get_skill_detail(skill_name: str, request: Request, scope: Literal["gl
         raise HTTPException(409, "Skill resource location cannot be verified; contents were preserved") from None
     skill_file = skill_dir / "SKILL.md"
     file_description: str | None = None
+    file_sha256 = None
     if skill_file.exists():
-        raw = skill_file.read_text(encoding="utf-8")
+        raw_bytes = skill_file.read_bytes()
+        file_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+        raw = raw_bytes.decode("utf-8")
         fm, instructions = _split_skill_markdown(raw)
         # _read_skill_file_payload safely casts description to str
         file_description, _ = _read_skill_file_payload(skill_dir)
@@ -1053,6 +953,7 @@ async def get_skill_detail(skill_name: str, request: Request, scope: Literal["gl
         instructions = ""
 
     return SkillDetailResponse(
+        file_sha256=file_sha256,
         resource_id=row.get("resource_id"),
         owner_kind=row.get("owner_kind"),
         files_status=row.get("files_status"),

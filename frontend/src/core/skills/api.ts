@@ -1,3 +1,4 @@
+import { readSkillMutationResponse } from "./mutations";
 import { readSkillImportResponse, SkillImportError } from "./imports";
 import { getAuthHeaders } from "@/core/api/auth-client";
 import { getBackendBaseURL } from "@/core/config";
@@ -122,6 +123,8 @@ export async function createTenantSkill(input: {
 export async function patchTenantSkill(
   skillName: string,
   input: {
+    expected_resource_id?: string;
+    expected_file_sha256?: string;
     description?: string | null;
     instructions?: string | null;
     enabled?: boolean;
@@ -141,13 +144,8 @@ export async function patchTenantSkill(
       body: JSON.stringify(input),
     }
   );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to patch tenant skill: ${response.status}`);
-  }
-  return response.json();
+  return readSkillMutationResponse(response);
 }
-
 export async function createPersonalSkill(input: {
   name: string;
   description: string;
@@ -178,6 +176,8 @@ export async function createPersonalSkill(input: {
 export async function patchPersonalSkill(
   skillName: string,
   input: {
+    expected_resource_id?: string;
+    expected_file_sha256?: string;
     description?: string | null;
     instructions?: string | null;
     enabled?: boolean;
@@ -197,13 +197,8 @@ export async function patchPersonalSkill(
       body: JSON.stringify(input),
     }
   );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to patch personal skill: ${response.status}`);
-  }
-  return response.json();
+  return readSkillMutationResponse(response);
 }
-
 export async function deletePersonalSkill(skillName: string) {
   const response = await fetch(`${getBackendBaseURL()}/api/skills/personal/${skillName}`, {
     method: "DELETE",

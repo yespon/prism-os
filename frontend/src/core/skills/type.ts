@@ -17,6 +17,7 @@ export interface Skill {
 
 
 export interface AvailableSkillResponse extends Skill {
+  file_sha256?: string | null;
   resource_id?: string | null;
   owner_kind?: string | null;
   files_status?: string | null;
@@ -27,6 +28,7 @@ export interface AvailableSkillResponse extends Skill {
 }
 
 export interface SkillDetail extends Skill {
+  file_sha256?: string | null;
   resource_id?: string | null;
   owner_kind?: string | null;
   files_status?: string | null;

@@ -64,7 +64,7 @@ def main():
 from pathlib import Path
 from app.gateway.app import app
 from app.gateway.routers import skills
-from app.integrations import skill_imports
+from app.integrations import skill_imports,skill_mutations
 from app.integrations.octop import resource_installations
 from deerflow.skills import loader,installer
 from deerflow.database import user_config_service
@@ -253,6 +253,15 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                 code, detail = request(detail_url, token=token)
                 assert code == 200 and detail["resource_id"] == own["resource_id"] and detail["instructions"]
                 assert request(detail_url.replace("scope=personal", "scope=global"), token=token)[0] == 404
+                patch_body = {"expected_resource_id": own["resource_id"], "expected_file_sha256": detail["file_sha256"], "description": "Verified owned edit", "instructions": detail["instructions"] + "\nVerified owned edit"}
+                patch_url = "/api/skills/personal/" + imported["name"]
+                assert request(patch_url, patch_body, method="PATCH")[0] == 401
+                assert request("/api/tenants/skills/" + imported["name"], patch_body, token, method="PATCH")[0] == 403
+                code, edited = request(patch_url, patch_body, token, method="PATCH")
+                assert code == 200 and edited["resource_id"] == own["resource_id"] and edited["file_sha256"] != detail["file_sha256"]
+                assert request(patch_url, patch_body, token, method="PATCH")[0] == 409
+                code, checked_edit = request(detail_url, token=token)
+                assert code == 200 and "Verified owned edit" in checked_edit["instructions"]
                 list_url = "/api/skills/personal/imports?page_size=1"
                 assert request(list_url)[0] == 401
                 code, first_page = request(list_url, token=token)
@@ -267,7 +276,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                 code, after_install = request("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", token=token)
                 assert code == 200
                 installed = next(r for r in after_install["resources"] if r["id"] == source_skill["id"])
-                assert installed["installation"]["status"] == "source_match"
+                assert installed["installation"]["status"] == "modified"
                 with sqlite3.connect(directory / "tenant.db") as database:
                     assert database.execute("SELECT count(*) FROM tenant_skills").fetchone()[0] == 1
                 assert request("/api/agents/catalog-smoke", token=token)[1]["skills"] == []
@@ -298,7 +307,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     "avatars_authenticated_and_hash_verified": True,
                     "temporary_databases": True,
                     "temporary_skill_root": True,
-                    "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True, "concrete_skill_identity_and_detail": True,
+                    "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True, "concrete_skill_identity_and_detail": True, "owned_skill_patch_and_stale_content_rejection": True,
                     "installation_does_not_bind_agent_or_grant_execution": True,
                 }
                 if args.output:

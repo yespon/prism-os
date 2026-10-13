@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
+import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
 import { useSkillQueryIdentity } from "@/core/skills/query-identity";
 import { useAvailableModels } from "@/core/models/hooks";
 import {
@@ -55,6 +56,8 @@ function SkillDetailContent() {
 
   const [skill, setSkill] = useState<SkillDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [inspectionNeeded, setInspectionNeeded] = useState(false);
+  const [inspectionNonce, setInspectionNonce] = useState(0);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
@@ -132,6 +135,7 @@ function SkillDetailContent() {
       .then((data) => {
         if (!valid()) return;
         setLoadedContext(contextKey);
+        setInspectionNeeded(false);
         setSkill(data);
         setInstructions(data.instructions ?? "");
         setDescription(data.description ?? "");
@@ -141,10 +145,10 @@ function SkillDetailContent() {
       .catch(() => { if (valid()) toast.error("加载 Skill 详情失败"); })
       .finally(() => { if (valid()) setLoading(false); });
     return () => controller.abort();
-  }, [contextKey, identity.identityReady, skillName, isNew, scope, resourceId]);
+  }, [contextKey, identity.identityReady, skillName, isNew, scope, resourceId, inspectionNonce]);
 
   const handleSave = async () => {
-    if (!skill || loadedContext !== contextKey || !currentView()) return;
+    if (!skill || inspectionNeeded || loadedContext !== contextKey || !currentView()) return;
     if (isNew) {
       if (!newName.trim()) {
         toast.error("请输入 Skill 英文名称");
@@ -180,6 +184,8 @@ function SkillDetailContent() {
       }
 
       const payload = {
+        expected_resource_id: skill.resource_id ?? undefined,
+        expected_file_sha256: skill.file_sha256 ?? undefined,
         description: description.trim() || null,
         instructions: instructions.trim() || null,
         bound_tools: boundToolsText
@@ -200,7 +206,10 @@ function SkillDetailContent() {
       toast.success("保存成功");
       router.push("/workspace/skills");
     } catch (err) {
-      if (currentView()) toast.error(err instanceof Error ? err.message : "保存失败");
+      if (currentView()) {
+        if (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409))) setInspectionNeeded(true);
+        toast.error(skillMutationMessage(err));
+      }
     } finally {
       if (currentView()) setSaving(false);
     }
@@ -308,10 +317,11 @@ function SkillDetailContent() {
               ))}
             </SelectContent>
           </Select>
+          {inspectionNeeded && <Button variant="outline" onClick={() => setInspectionNonce(value => value + 1)}>重新检查当前资源</Button>}
           <Button
             variant="outline"
             onClick={handleSave}
-            disabled={!canEdit || saving}
+            disabled={!canEdit || saving || inspectionNeeded}
           >
             <Save className="mr-2 h-4 w-4" />
             {saving ? "保存中..." : "保存"}

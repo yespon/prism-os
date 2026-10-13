@@ -130,6 +130,8 @@ export function usePatchTenantSkill() {
   return useMutation({
     mutationFn: (input: {
       skillName: string;
+      expected_resource_id?: string;
+      expected_file_sha256?: string;
       description?: string | null;
       instructions?: string | null;
       enabled?: boolean;
@@ -139,6 +141,8 @@ export function usePatchTenantSkill() {
       strategy?: string | null;
     }) =>
       patchTenantSkill(input.skillName, {
+        expected_resource_id: input.expected_resource_id,
+        expected_file_sha256: input.expected_file_sha256,
         description: input.description,
         instructions: input.instructions,
         enabled: input.enabled,
@@ -181,6 +185,8 @@ export function usePatchPersonalSkill() {
   return useMutation({
     mutationFn: (input: {
       skillName: string;
+      expected_resource_id?: string;
+      expected_file_sha256?: string;
       description?: string | null;
       instructions?: string | null;
       enabled?: boolean;
@@ -190,6 +196,8 @@ export function usePatchPersonalSkill() {
       strategy?: string | null;
     }) =>
       patchPersonalSkill(input.skillName, {
+        expected_resource_id: input.expected_resource_id,
+        expected_file_sha256: input.expected_file_sha256,
         description: input.description,
         instructions: input.instructions,
         enabled: input.enabled,

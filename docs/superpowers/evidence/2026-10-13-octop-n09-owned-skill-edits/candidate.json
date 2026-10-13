@@ -1,0 +1,23 @@
+{
+  "baseline": "ea843bd91017f8dcf56d53f1ef69b5ecc88869d1",
+  "root": "/tmp/prismos-n09g-clean-z89et7xv/src",
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "2577f4c635d45d6e7c5ecb7eeec0749de1b9edee98f6d46454d63cea9b80a261",
+    "Makefile": "c6809bccde8d9235e659b56d086ebd09ebcb5f51d2ae99f5dd4ef11c48e0443b",
+    "backend/app/gateway/routers/skills.py": "595b48733fc2d22da631d311a9aa90842c08ceab104e80b6930a82c34d98a086",
+    "frontend/src/app/workspace/skills/[name]/page.test.tsx": "1589534de7eee95b03a35f5641f4f27fe2fd199ede8b0b00f03093ed791ab092",
+    "frontend/src/app/workspace/skills/[name]/page.tsx": "19d7b60787e0fc784e3297d6aa652f2c143f771ea088010f04f7a84566fb416d",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.test.tsx": "a262ad1a76b3af9fe69c3a23dc10760e1b167455738fe1bfdb4977d9ae982ecb",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx": "f345621fa38b719215722148fc4a60fa367b939ddc6bec78b6b9ff6e15de9d9f",
+    "frontend/src/core/skills/api.ts": "b5f256ea02e5bdef358e04dae423bd7991d41a90d8f2822c3a18c7224f4176e4",
+    "frontend/src/core/skills/hooks.ts": "9d248dc0d3a2e58d099cd4485b2ff227bbc670b2a1ff0d662f300e3c2de78d1c",
+    "frontend/src/core/skills/type.ts": "8eaa9de2b1fe602577845c9cc93c25eaff8a84f7757bb0fcb081fdc140c958c6",
+    "scripts/octop_gateway_smoke.py": "ef3014f6317d4b6539633c093a0cc7878bcd80f8a94c90ae09d3876570ce0fc7",
+    "scripts/octop_skill_postgres.py": "b4a3096282a6ca0d42d77693ac98c2bae2eed24200ff39e4f89109006c3b83e0",
+    "scripts/octop_upgrade_probe.py": "8e8058e732f18089dbb5f67650603ab24f5c29152f3ac550e2a4e14d83dfeeb6",
+    "backend/app/integrations/skill_mutations.py": "18a901c1b50c5b459b02daa3b7ead099571540bfbe68a745d709e87f955951f9",
+    "backend/tests/test_skill_mutation_boundaries.py": "9fde6da8a9449ba3c7e6b49f7135d8240c092785442b7bb6d55291d5359cebc0",
+    "frontend/src/core/skills/mutations.test.ts": "3216d4e917ddc40331d19fc43a9c37fdce2532a4918d77efa0fed02b5b196a58",
+    "frontend/src/core/skills/mutations.ts": "d9636aa518764de8a22973ffdd2d55d6c7be5e057104570a0db0c77a44b99f77"
+  }
+}

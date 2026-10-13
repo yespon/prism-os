@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { act, fireEvent, render, screen } from "@/test/utils";
 
+import { SkillMutationError } from "@/core/skills/mutations";
+
 import { TenantAdminSkillsPage } from "./tenant-admin-skills-page";
 
 const mocks = vi.hoisted(() => ({
@@ -32,6 +34,7 @@ vi.mock("@/core/skills/hooks", () => ({
 describe("TenantAdminSkillsPage", () => {
   const createSkill = vi.fn();
   const importSkill = vi.fn();
+  const patchSkill = vi.fn();
 
   const renderPage = () => {
     mocks.identity = "tenant-a/user-a";
@@ -39,6 +42,7 @@ describe("TenantAdminSkillsPage", () => {
     mocks.success.mockClear();
     createSkill.mockReset();
     importSkill.mockReset();
+    patchSkill.mockReset();
     mocks.useAvailableSkills.mockReturnValue({
       skills: [
         {
@@ -54,6 +58,8 @@ describe("TenantAdminSkillsPage", () => {
         },
         {
           name: "custom-skill-a",
+          resource_id: "skill:current",
+          file_sha256: "a".repeat(64),
           description: "自定义说明",
           category: "custom",
           license: "MIT",
@@ -75,7 +81,7 @@ describe("TenantAdminSkillsPage", () => {
     mocks.useCreateTenantSkill.mockReturnValue({ mutateAsync: createSkill });
     mocks.useDeleteTenantSkill.mockReturnValue({ mutateAsync: vi.fn() });
     mocks.useImportTenantSkill.mockReturnValue({ mutateAsync: importSkill, isPending: false });
-    mocks.usePatchTenantSkill.mockReturnValue({ mutateAsync: vi.fn() });
+    mocks.usePatchTenantSkill.mockReturnValue({ mutateAsync: patchSkill });
     mocks.useUpdateTenantSkill.mockReturnValue({ mutateAsync: vi.fn() });
 
     return render(<TenantAdminSkillsPage />);
@@ -177,6 +183,20 @@ describe("TenantAdminSkillsPage", () => {
     }
     await act(async () => resolve({}));
     expect(mocks.success).not.toHaveBeenCalled();
+  });
+
+  it("shared edit sends the listed instance and digest and blocks retry until inspection", async () => {
+    renderPage();
+    patchSkill.mockRejectedValueOnce(new SkillMutationError(503, "skill:current", true));
+    activateTab("团队技能 (1)");
+    fireEvent.click(screen.getByRole("button", {name: "编辑"}));
+    fireEvent.click(screen.getByRole("button", {name: "保存"}));
+    const inspect = await screen.findByRole("button", {name: "重新检查资源列表"});
+    expect(screen.getByRole("button", {name: "保存"})).toBeDisabled();
+    expect(patchSkill.mock.calls[0]?.[0]).toMatchObject({expected_resource_id: "skill:current", expected_file_sha256: "a".repeat(64)});
+    fireEvent.click(inspect);
+    expect(patchSkill).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
 });
