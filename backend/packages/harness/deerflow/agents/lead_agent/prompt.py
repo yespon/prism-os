@@ -571,6 +571,7 @@ def apply_prompt_template(
     *,
     agent_name: str | None = None,
     available_skills: set[str] | None = None,
+    skill_section_override: str | None = None,
     user_id: str | None = None,
 ) -> str:
     # Get memory context
@@ -604,7 +605,7 @@ def apply_prompt_template(
         skill_reminder = f"- **MANDATORY SKILL**: The user selected skill \"{skill_name}\". You MUST read and follow this skill's instructions before responding. Do NOT skip this step.\n"
 
     # Get skills section
-    skills_section = get_skills_prompt_section(available_skills)
+    skills_section = skill_section_override if skill_section_override is not None else get_skills_prompt_section(available_skills)
 
     # Get deferred tools section (tool_search)
     deferred_tools_section = get_deferred_tools_prompt_section()

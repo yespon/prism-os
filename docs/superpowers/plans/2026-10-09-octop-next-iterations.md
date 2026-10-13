@@ -296,3 +296,9 @@ N07-B、N04 保持 P0，真实测试环境的位置、配置引用、模型与�
 基线 `b552fb1`。原 Agent 创建/更新/删除及共享转换在首个行查询前，与 Skill 删除/删除恢复共用租户事务协调；PostgreSQL advisory xact lock 与 SQLite 即时写事务固定先后顺序，无新表/注册表/执行事实。真实双连接验证先提交引用阻止回收、删除检查后新写入等待；旧未协调创建接缝另在自有 PostgreSQL 重现两项实际失败，不计绿色验收。冻结后完整后端 1749 passed / 18 skipped，原统一门 420 后端/152 前端，PostgreSQL 131 项、真实 Gateway、源码制品重建/902 来源、严格类型及当前默认生产构建通过。前端源码未变，239 项全量前端结果仍属前批历史证据。详见[协调进展证据](../evidence/2026-10-13-octop-n09-reference-coordination/README.md)。
 
 完整删除与 C2/N09 尚未退出：继续[具体引用/使用前核对队列](2026-10-13-octop-n09-concrete-agent-skill-references.md)，覆盖原 CRUD/metadata、实际选择 UI、图/提示及自动人工诊断，并完成明确拒绝/未知结果的可继续检查流程、真实进程中断、冻结独立统一构建及固定宿主升级/回退。N04/N07-B 为 P0；测试环境位置、模型与工单接收端仍待补充。M1 未退出，N08 持久执行/委派不启动。C3–C5、33 非 Skill、18 专家/子 Agent、独立 Office、N01–N15/O01–O42/F01–F12 和原 PrismOS 全规划/能力/门保留。
+
+### N09-C2：Agent 具体 Skill 选择进展（2026-10-14，未退出）
+
+基线 `67fe163`。原 metadata/CRUD 与实际创建编辑界面接入具体来源、all/selected/unresolved、明确旧名称重选、零项和原 Agent ID/配置摘要条件。已确认选择在宿主图/提示/诊断接缝核对当前登记、位置、启停和真实成员，单来源注入同次读取快照，多来源保持渐进式目录；旧已确认来源不得按公共或其他同名项回退。原共享管理详情限制保留；删除明确拒绝可重新核对，未知仍保留检查。最终完整后端 1765 passed / 18 skipped，前端 249 passed，统一门 454 后端/162 前端、严格类型/静态、真实 Gateway 和当前默认构建/制品通过。PostgreSQL 147 项属于本轮中间适用范围，冻结最终重放仍待，详见[证据与限制](../evidence/2026-10-14-octop-n09-agent-skill-selection/README.md)。
+
+继续[完整具体引用队列](2026-10-13-octop-n09-concrete-agent-skill-references.md)：未迁移旧名称/default/terminal 的使用授权、共享自动执行可信身份、同名 Agent 实例与原执行授权一致性、后续文件工具访问、最终 PostgreSQL及真实删除进程中断、独立构建和固定宿主升级/回退。完整 C2/N09未退出，N04/N07-B仍P0、M1未退出、N08持久执行/委派不启动；原全部 N01–N15/O01–O42/F01–F12、非 Skill、专家/子 Agent、独立 Office及PrismOS规划/能力/门保持。

@@ -32,3 +32,9 @@ SQLite 与隔离 PostgreSQL 的原恢复/身份/编辑/启停/创建回归；真
 原 Agent CRUD 与原删除/删除恢复共用同租户事务协调；真实双连接个人/共享创建及更新两种顺序通过，PostgreSQL 另重现旧未协调创建提前提交的两项实际失败。完整后端 1749 passed / 18 skipped；原统一门 420 后端/152 前端；PostgreSQL 131 项；真实 Gateway、制品重建、902 来源、严格默认生产构建通过。见[本轮进展证据](../evidence/2026-10-13-octop-n09-reference-coordination/README.md)。
 
 这不证明旧名称引用的实例归属或运行前授权。下一步按[具体 Agent Skill 引用队列](2026-10-13-octop-n09-concrete-agent-skill-references.md) 完成原 metadata/CRUD、真实编辑选择、图构建/提示及自动人工诊断的同一授权路径；一并区分删除明确未执行与未知结果，给出可完成的重新核对流程。完整删除进程中断、独立冻结构建、固定宿主升级/回退和上述全退出门继续保留。
+
+### N09-C2：Agent 具体 Skill 选择进展（2026-10-14，未退出）
+
+基线 `67fe163`。原 metadata/CRUD 与实际创建编辑界面接入具体来源、all/selected/unresolved、明确旧名称重选、零项和原 Agent ID/配置摘要条件。已确认选择在宿主图/提示/诊断接缝核对当前登记、位置、启停和真实成员，单来源注入同次读取快照，多来源保持渐进式目录；旧已确认来源不得按公共或其他同名项回退。原共享管理详情限制保留；删除明确拒绝可重新核对，未知仍保留检查。最终完整后端 1765 passed / 18 skipped，前端 249 passed，统一门 454 后端/162 前端、严格类型/静态、真实 Gateway 和当前默认构建/制品通过。PostgreSQL 147 项属于本轮中间适用范围，冻结最终重放仍待，详见[证据与限制](../evidence/2026-10-14-octop-n09-agent-skill-selection/README.md)。
+
+继续[完整具体引用队列](2026-10-13-octop-n09-concrete-agent-skill-references.md)：未迁移旧名称/default/terminal 的使用授权、共享自动执行可信身份、同名 Agent 实例与原执行授权一致性、后续文件工具访问、最终 PostgreSQL及真实删除进程中断、独立构建和固定宿主升级/回退。完整 C2/N09未退出，N04/N07-B仍P0、M1未退出、N08持久执行/委派不启动；原全部 N01–N15/O01–O42/F01–F12、非 Skill、专家/子 Agent、独立 Office及PrismOS规划/能力/门保持。

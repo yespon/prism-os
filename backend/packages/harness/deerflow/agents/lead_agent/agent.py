@@ -23,6 +23,7 @@ from deerflow.runtime import (
     ExecutionTrustError,
     get_execution_validator,
     get_governed_action_provider,
+    get_skill_prompt_provider,
     get_terminal_agent_provider,
     load_runtime_adapters,
 )
@@ -229,6 +230,8 @@ def make_lead_agent(config):
 
         agent_skills = set(agent_config.skills) if (agent_config and agent_config.skills is not None) else None
         effective_skills = {skill_name} if skill_name else agent_skills
+        skill_provider = get_skill_prompt_provider()
+        verified_skill_section = skill_provider(agent_name, tenant_id, user_id, skill_name, cfg.get("skill_resource_id") or runtime_context.get("skill_resource_id")) if skill_provider else None
         action_provider = get_governed_action_provider()
         action_tools = action_provider(trusted_action) if trusted_action and action_provider else []
         action_prompt = (
@@ -252,7 +255,8 @@ def make_lead_agent(config):
                 subagent_enabled=subagent_enabled,
                 max_concurrent_subagents=max_concurrent_subagents,
                 agent_name=agent_name,
-                available_skills=effective_skills,
+                available_skills=effective_skills if verified_skill_section is None else None,
+                **({"skill_section_override": verified_skill_section} if verified_skill_section is not None else {}),
                 user_id=user_id,
             ) + action_prompt,
             state_schema=ThreadState,

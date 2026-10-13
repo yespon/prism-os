@@ -1,0 +1,108 @@
+{
+  "status": "confirmed_selection_progress_not_complete_C2_N09",
+  "base_commit": "67fe16392dfd432b13d7e10f069b7b3c19b76e17",
+  "backend": {
+    "passed": 1765,
+    "skipped": 18,
+    "warnings": 161,
+    "cwd": "backend",
+    "exit_code": 0
+  },
+  "frontend": {
+    "files": 57,
+    "passed": 249,
+    "strict_types": true,
+    "lint": true,
+    "exit_code": 0
+  },
+  "octop_check": {
+    "backend_passed": 454,
+    "frontend_passed": 162,
+    "frontend_files": 19,
+    "exit_code": 0
+  },
+  "postgres": {
+    "passed": 147,
+    "warnings": 88,
+    "owned_container_removed": true,
+    "scope": "Original lifecycle, coordination and new selected-reference modules. This run preceded the final optional expected-Agent-ID diagnosis check and standalone graph fixture isolation; it is not claimed as frozen final replay of all changed code."
+  },
+  "gateway": {
+    "real_session_and_membership": true,
+    "current_selected_snapshot": true,
+    "exit_code": 0
+  },
+  "build": {
+    "default_production": true,
+    "strict_typegen_tsc": true,
+    "exit_code": 0,
+    "trace_files": 50,
+    "outside_frontend": []
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "382cebf358a27f348c9c8f0c2010147f1407a1d27e14536e1a5d37cfb6e4f182",
+    "Makefile": "29d6fd9b4908416d677ba3e9280ca893670fc089aeaa5bdaeb7c27c0e22a4403",
+    "backend/app/alerting/diagnosis_helper.py": "f4d02c3e47697100b0be762f806850f6c8a968fa317ff54799d4d0e7f503d2d0",
+    "backend/app/alerting/ingest.py": "2de467d21a8546dd2671fe0edc898ab2dd71e9fe07a97c9f3ff16c50cf04ee9a",
+    "backend/app/gateway/routers/agents.py": "092c7f1ffa5c65a0cb97cc716f0deb3953505f52d17cca0ffbd0887f6a698ad8",
+    "backend/app/gateway/routers/alerts.py": "0a65fcc063323239db523e1ce47419df3f4c436fb79b86852f26082a45cf40f5",
+    "backend/app/integrations/skill_deletions.py": "c246b0c41405a0660610e24db011ca5aee7584cff7cc7ad2e41d6eb77e0175a2",
+    "backend/app/runtime_adapters.py": "4b35eeac4e33da4c25cedf1a9af6ca8b96f71aeb661b8e04987f4365266abc5a",
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": "976936c70801cffa4fffbcb79b8907fd902c3f43a28021a435bd1d2328a2c033",
+    "backend/packages/harness/deerflow/agents/lead_agent/prompt.py": "86a57040c51121d58344f426311307cc69cf582b0b2ac3a4027bda6f2b6ce0ae",
+    "backend/packages/harness/deerflow/runtime.py": "6e828fc5d821dd5c2732d4843ae2da1d5220fd67e2a629995ed29e79568a4e69",
+    "backend/tests/test_graph_execution_context.py": "f29365f456c7d0e9f2c72a6e3e3d723c0ce367c8f4bed57a6039666b84bcbd1b",
+    "frontend/src/components/workspace/agents/agent-presentation.test.tsx": "1990f808b7657d551d03e90e206a0676bd83607df6f88a91a211b1f78587fd8c",
+    "frontend/src/components/workspace/agents/create-agent-dialog.tsx": "1eb3cd1e641a770447e597f2ff20c9db7f3d6867582a2e7c595e1c5b748b59d3",
+    "frontend/src/components/workspace/agents/edit-agent-dialog.tsx": "1d02e6c8c0bf4f329a12381dc2a9be81519ff1bf1561c9fc61acd12b6c64dbdc",
+    "frontend/src/components/workspace/skills/skill-delete-control.test.tsx": "45f12ab122286cb5ad91953089442ac992429bce50fa34db067512fc53a30ad9",
+    "frontend/src/components/workspace/skills/skill-delete-control.tsx": "c7101d2d32e5ff96baeb037940e4938ae25160581776d0aa3657c3a8bdf67831",
+    "frontend/src/core/agents/api.ts": "311ee2ff03b139d148f2cf43559477bba074336fae9fabecaffa0cc2d4914874",
+    "frontend/src/core/agents/draft-scope.ts": "2ce48aac0bb53260bb0a75d0567492f1d473177ef0508a1003929b3959898503",
+    "frontend/src/core/agents/hooks.ts": "b200e46bc843e42ea9452848157a8fa4df6ec516a9030373f0bf33a961231a3e",
+    "frontend/src/core/agents/types.ts": "76b52dbfd90eee304a8d56744bdf0924a828b539049d5a3e02f662f73498befd",
+    "scripts/octop_gateway_smoke.py": "828a11bdbc2d94f1184880eef651cf34c63d49205f74739afa3125684dc6b922",
+    "scripts/octop_skill_postgres.py": "96e2bbcfdbeaf2cc6a99534861fbc14ef27914ab737df8e37a43fb05772b17e3",
+    "scripts/octop_upgrade_probe.py": "d164a9d3a4af493f68957e7eff11540fbc41c83ff3af394f9e348248eee87f55",
+    "backend/app/integrations/agent_skill_references.py": "95a4e911a4329e65284aa07d7e9b022753f92c11b74ce8b94553f5b8fbd044a2",
+    "backend/tests/test_agent_skill_references.py": "62d586dc687c169cfd6e99459de257e3f04ef1271e648f5a2aa28a29d239e13e",
+    "frontend/src/components/workspace/agents/agent-skill-selection.test.tsx": "8a015557c84e2805ee04714961e85a3539a86f63a482f76100a632de5e64998c",
+    "frontend/src/components/workspace/agents/agent-skill-selection.tsx": "1c02779560e02fdad01ea2337784c0a95ea8a52443dd5fed74f5ce305f1a480a",
+    "frontend/src/core/agents/api.test.ts": "15efcd16b03be24db709c3fa65286056a2dce504cbef2e9721a7812bfce21ca6"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifact_sha256s": {
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "evidence_sha256s": {
+    "gateway.json": "6568f36c5178cce926cc4200dffd7374b850daac3c0ec8bf62fb3274ceeada7b",
+    "logs/backend-full.log": "7a67e4248b2dddb6db01f7e131e1007ee074d6fd14176edad840aaac3ae0429c",
+    "logs/brand.log": "2121006cb3af8422d200ea159a4746a3dbc73fe806a92e30da05a725ed28f63e",
+    "logs/editor-fixture-failure.log": "c8d773c257ca8e0d270a0aa5d8d701615acafd10255aff5acb777cb46e246bcf",
+    "logs/frontend-full.log": "77209e64d796a49d96b049348958dc4ac5f2def7fcd8c1a7c676331404a5ac36",
+    "logs/frontend-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/gateway.log": "59958b5dea2bd320e9fcded087aaf0d9d8f14341aac62188cc8c71b06862543c",
+    "logs/graph-fixture-failure.log": "b3a0e3dcc9e23ba51c91e07464b6680766a7cda81871ae124aa949063d8153bd",
+    "logs/octop-check.log": "f33372a110537d2f7798079e294004692e2b8ac0031c65baacc36c4637b4c62b",
+    "logs/postgres.log": "aa7cc247b4c12f07d2e8c83f4f6061dc99f0278dd8f44c3186406a39b0793e23",
+    "logs/production-build.log": "b0d64628620494f660403cd0741d7b65ea4630d74995792abf413090bbc75a08",
+    "logs/types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/wrong-cwd-aborted.log": "6bf89e583ab11fe2183d29d399f097a75e33e9a65dcd3f6dee10b71433d71ae8",
+    "postgres.json": "c31e71f042aed826653234fe9a3e52ca0014660d214a15248b030277dc0a1048"
+  },
+  "pending": [
+    "Unmigrated legacy-name/default/terminal authorization paths; new confirmed choices do not prove all old paths.",
+    "Shared automatic diagnosis requires a trusted execution principal from original source authorization, not the tenant-shared sentinel or an arbitrary borrowed user.",
+    "Explicit Agent identity must match original name-based graph configuration and execution authorization, including same-name personal/shared cases.",
+    "Referenced-member file tools require current authorization and concurrency/withdrawal checks; main-file snapshot is narrower.",
+    "Frozen final PostgreSQL replay, true deletion process interruption, independent unified build, fixed-host upgrade/rollback and complete C2/N09 exit.",
+    "N04 real model/environment/countable receiver and N07 remote CI remain missing; M1 not exited and N08 persistence not started.",
+    "Full N01-N15/O01-O42/F01-F12, non-Skill, expert/subagent, independent Office and original PrismOS scope remains."
+  ]
+}

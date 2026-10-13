@@ -1,5 +1,7 @@
 """CRUD API for custom agents — DB-backed."""
 
+import hashlib
+import json
 import logging
 import re
 import uuid
@@ -7,12 +9,14 @@ from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
+from sqlalchemy import case
 from sqlalchemy import select as sa_select
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.authorization import _is_tenant_admin, require_tenant_context
 from app.gateway.config import get_plugin_states
+from app.integrations.agent_skill_references import SkillResourceReference, binding, save_binding
 from app.integrations.octop.agents import AgentPresentation, AgentQuickPrompt, agent_content, update_agent_content
 from app.integrations.skill_reference_transactions import begin_reference_transaction
 from app.models.agents import CustomAgent
@@ -34,12 +38,15 @@ AGENT_NAME_PATTERN = re.compile(r"^[A-Za-z0-9-]+$")
 class AgentResponse(BaseModel):
     """Response model for a custom agent."""
 
+    revision: str | None = None
     id: str = Field(..., description="UUID")
     name: str = Field(..., description="Agent name (hyphen-case)")
     description: str = Field(default="", description="Agent description")
     model: str | None = Field(default=None, description="Optional model override")
     tool_groups: list[str] | None = Field(default=None, description="Optional tool group whitelist")
     system_prompt: str | None = Field(default=None, description="Agent personality and behavioral guardrails")
+    skill_binding_mode: Literal["all", "selected", "unresolved"] | None = None
+    skill_resources: list[SkillResourceReference] | None = None
     skills: list[str] = Field(default_factory=list, description="Allowed skill SOPs")
     enabled: bool = Field(default=True, description="Whether the agent is active")
     tags: list[str] = Field(default_factory=list, description="Filter labels")
@@ -67,6 +74,8 @@ class AgentCreateRequest(BaseModel):
     model: str | None = Field(default=None, description="Optional model override")
     tool_groups: list[str] | None = Field(default=None, description="Optional tool group whitelist")
     system_prompt: str = Field(default="", description="Agent personality and behavioral guardrails")
+    skill_binding_mode: Literal["all", "selected"] | None = None
+    skill_resources: list[SkillResourceReference] | None = Field(default=None, max_length=128)
     skills: list[str] = Field(default_factory=list, description="Allowed skill SOPs (empty = all available)")
     tags: list[str] = Field(default_factory=list, description="Filter labels")
     enabled: bool = Field(default=True, description="Enable or disable the agent")
@@ -84,6 +93,8 @@ class AgentCreateRequest(BaseModel):
 class AgentUpdateRequest(BaseModel):
     """Request body for updating a custom agent. All fields optional."""
 
+    expected_agent_id: str | None = Field(default=None, max_length=80)
+    expected_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     template_locale: Literal["zh", "en"] | None = None
     persona_mbti: str | None = Field(default=None, max_length=4)
     quick_prompts: list[AgentQuickPrompt] | None = Field(default=None, max_length=32)
@@ -93,6 +104,8 @@ class AgentUpdateRequest(BaseModel):
     model: str | None = Field(default=None, description="Updated model override")
     tool_groups: list[str] | None = Field(default=None, description="Updated tool group whitelist")
     system_prompt: str | None = Field(default=None, description="Updated agent personality")
+    skill_binding_mode: Literal["all", "selected"] | None = None
+    skill_resources: list[SkillResourceReference] | None = Field(default=None, max_length=128)
     skills: list[str] | None = Field(default=None, description="Updated skill whitelist")
     enabled: bool | None = Field(default=None, description="Enable or disable the agent")
     tags: list[str] | None = Field(default=None, description="Updated filter labels")
@@ -145,8 +158,20 @@ def _normalize_agent_name(name: str) -> str:
     return name.lower()
 
 
+def _agent_revision(agent):
+    value = [agent.id, agent.user_id, agent.name, agent.description, agent.model, agent.tool_groups, agent.system_prompt, agent.skills, agent.enabled, agent.tags, agent.meta_info]
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+
+
 def _agent_to_response(agent: CustomAgent) -> AgentResponse:
+    try:
+        selected = binding(agent)
+    except ValueError:
+        selected = None
     return AgentResponse(
+        revision=_agent_revision(agent),
+        skill_binding_mode=selected.mode if selected else None,
+        skill_resources=selected.resources if selected else None,
         id=agent.id,
         name=agent.name,
         description=agent.description or "",
@@ -272,7 +297,7 @@ async def get_agent(
             CustomAgent.tenant_id == tenant_id,
             CustomAgent.user_id.in_(user_ids),
             CustomAgent.name == name,
-        )
+        ).order_by(case((CustomAgent.user_id == user_id, 0), else_=1))
     )
     agent = result.scalars().first()
 
@@ -338,6 +363,7 @@ async def create_agent_endpoint(
         meta_info=source_metadata,
     )
 
+    await save_binding(session, agent, tenant_id, user_id, body.skill_binding_mode, body.skill_resources, explicit=bool({"skill_resources", "skill_binding_mode"} & body.model_fields_set))
     session.add(agent)
     try:
         await session.commit()
@@ -382,7 +408,8 @@ async def update_agent(
             CustomAgent.tenant_id == tenant_id,
             CustomAgent.user_id.in_(user_ids),
             CustomAgent.name == name,
-        )
+            CustomAgent.id == body.expected_agent_id if body.expected_agent_id is not None else True,
+        ).order_by(case((CustomAgent.user_id == user_id, 0), else_=1)).with_for_update()
     )
     agent = result.scalars().first()
 
@@ -394,6 +421,11 @@ async def update_agent(
         raise HTTPException(status_code=403, detail="Only tenant admins can update shared agents")
     if agent.user_id != "tenant-shared" and agent.user_id != user_id:
         raise HTTPException(status_code=403, detail="Only the agent owner can update this agent")
+
+    if body.expected_agent_id is not None and body.expected_agent_id != agent.id:
+        raise HTTPException(409, "Agent instance changed; inspect current configuration")
+    if body.expected_revision is not None and body.expected_revision != _agent_revision(agent):
+        raise HTTPException(409, "Agent configuration changed; inspect before saving")
 
     fields_set = body.model_fields_set
 
@@ -432,6 +464,8 @@ async def update_agent(
     if body.enabled is not None:
         agent.enabled = body.enabled
 
+    await save_binding(session, agent, tenant_id, user_id, body.skill_binding_mode, body.skill_resources,
+        explicit=bool({"skill_resources", "skill_binding_mode"} & fields_set), names_changed="skills" in fields_set, scope_changed="is_shared" in fields_set)
     session.add(agent)
     await session.commit()
     await session.refresh(agent)

@@ -12,6 +12,7 @@ from deerflow.skills.install_receipts import read_receipt, scoped_parent, write_
 from deerflow.skills.resource_deletion_files import OwnedRemoval, tree_digest
 from deerflow.skills.resource_identity import public_resource_id, registered_resource_id, resource_directory
 
+from .agent_skill_references import references_instance
 from .skill_imports import owner_and_scope
 from .skill_mutations import SkillMutationRejected
 from .skill_reference_transactions import begin_reference_transaction
@@ -24,14 +25,14 @@ class SkillDeletionUnknown(Exception):
         super().__init__("Deletion outcome requires inspection; owned operation facts were preserved")
 
 
-async def _references(session, tenant, actor, shared, name):
+async def _references(session, tenant, actor, shared, name, resource_id=None):
     query = select(CustomAgent).where(CustomAgent.tenant_id == tenant)
     if not shared:
         query = query.where(CustomAgent.user_id.in_([actor, "tenant-shared"]))
     agents = (await session.exec(query.with_for_update())).scalars().all()
     # Old names cannot prove which same-name source was bound. Do not expose
     # another user's agent id or contents in an aggregate management conflict.
-    return sum(name in (agent.skills or []) for agent in agents)
+    return sum(references_instance(agent, resource_id, name) for agent in agents)
 
 
 def _public_directory(root, row):
@@ -109,7 +110,7 @@ async def preflight(root, tenant, actor, shared, name, expected_resource_id=None
         if row is None:
             raise SkillMutationRejected(404, "Current registered resource not found; files were preserved")
         resource_id, selected, kind, tree = _selection(root, tenant, actor, shared, row, expected_resource_id)
-        references = 0 if kind == "public_override" else await _references(session, tenant, actor, shared, name)
+        references = 0 if kind == "public_override" else await _references(session, tenant, actor, shared, name, resource_id)
         _source_operations(root, scope, name, tree, resource_id)
         return {
             "name": name,
@@ -166,7 +167,7 @@ async def delete_owned(root, tenant, actor, shared, name, *, expected_resource_i
                 if row is None:
                     raise SkillMutationRejected(404, "Current registered resource not found; files were preserved")
                 resource_id, selected, kind, tree = _selection(root, tenant, actor, shared, row, expected_resource_id, expected_tree_sha256, expected_file_sha256)
-                if kind != "public_override" and await _references(session, tenant, actor, shared, name):
+                if kind != "public_override" and await _references(session, tenant, actor, shared, name, resource_id):
                     raise SkillMutationRejected(409, "Legacy Agent references need review before physical deletion")
                 sources = [] if kind == "public_override" else _source_operations(root, scope, name, tree, resource_id)
                 parent, relative = scoped_parent(root, scope, create=True)
@@ -291,7 +292,7 @@ async def recover_operation(operation_id, tenant, actor, shared, *, root):
                 row = (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == owner, TenantSkill.name == record["skill_name"]).with_for_update())).scalars().first()
                 original_exists = row is not None and registered_resource_id(row) == record["resource_id"]
                 if original_exists:
-                    if record["target_kind"] != "public_override" and await _references(session, tenant, actor, shared, record["skill_name"]):
+                    if record["target_kind"] != "public_override" and await _references(session, tenant, actor, shared, record["skill_name"], record["resource_id"]):
                         raise ValueError("Current Agent references block deletion recovery")
                     if removal is not None:
                         if removal.exists(record["stage_name"]):

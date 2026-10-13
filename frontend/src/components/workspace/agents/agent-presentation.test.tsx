@@ -7,27 +7,33 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { zhCN } from "@/core/i18n/locales/zh-CN";
-import { enUS } from "@/core/i18n/locales/en-US";
-import type {
-  Agent,
-  CreateAgentRequest,
-  UpdateAgentRequest,
-} from "@/core/agents/types";
+
+import type * as AgentAPI from "@/core/agents/api";
 import type {
   AgentTemplatePreview,
   PersonalityResult,
 } from "@/core/agents/catalog";
-import { AgentTemplatePicker } from "./agent-template-picker";
+import type {
+  Agent,
+  Skill,
+  CreateAgentRequest,
+  UpdateAgentRequest,
+} from "@/core/agents/types";
+import { enUS } from "@/core/i18n/locales/en-US";
+import { zhCN } from "@/core/i18n/locales/zh-CN";
+
+import { AgentWelcome } from "../agent-welcome";
+
 import { AgentPresentationEditor } from "./agent-presentation-editor";
+import { AgentTemplatePicker } from "./agent-template-picker";
 import { CreateAgentDialog } from "./create-agent-dialog";
 import { EditAgentDialog } from "./edit-agent-dialog";
-import { AgentWelcome } from "../agent-welcome";
 
 const mock = vi.hoisted(() => ({
   tenant: "tenant-a",
   locale: "zh-CN",
   agent: null as Agent | null,
+  skills: [] as Skill[],
   load: vi.fn(),
   preview: vi.fn(),
   avatars: vi.fn(),
@@ -50,9 +56,9 @@ vi.mock("@/core/agents/hooks", () => ({ useTenantKey: () => mock.tenant }));
 vi.mock("@/core/tenants/store", () => ({
   getCurrentTenantId: () => mock.tenant,
 }));
-vi.mock("@/core/agents/api", () => ({ checkAgentName: mock.checkName }));
+vi.mock("@/core/agents/api", async (importActual) => ({...(await importActual<typeof AgentAPI>()), checkAgentName: mock.checkName}));
 vi.mock("@/core/agents", () => ({
-  useSkills: () => ({ skills: [] }),
+  useSkills: () => ({ skills: mock.skills }),
   useCreateAgent: () => ({ mutateAsync: mock.create, isPending: false }),
   useUpdateAgent: () => ({ mutateAsync: mock.update, isPending: false }),
   useAgent: () => ({ agent: mock.agent, isLoading: false }),
@@ -128,6 +134,7 @@ beforeEach(() => {
   mock.tenant = "tenant-a";
   mock.locale = "zh-CN";
   mock.agent = null;
+  mock.skills = [];
   mock.load.mockResolvedValue({
     templates: [
       expert,
@@ -342,7 +349,9 @@ function savedAgent(request: CreateAgentRequest): Agent {
     description: request.description ?? "",
     model: null,
     tool_groups: [],
-    skills: [],
+    skills: request.skills ?? [],
+    skill_binding_mode: request.skill_binding_mode,
+    skill_resources: request.skill_resources,
     enabled: true,
     tags: [],
     base_system_prompt: request.system_prompt,
@@ -521,4 +530,26 @@ describe("Create, edit and reopen", () => {
     expect(mock.create).not.toHaveBeenCalled();
     expect(mock.update).not.toHaveBeenCalled();
   });
+});
+
+
+it("sends a concrete personal choice from the actual create dialog", async () => {
+  mock.skills = [{name:"collision",description:"Personal SOP",enabled:true,category:"custom",scope:"personal",resource_id:"skill:personal"}, {name:"collision",description:"Shared SOP",enabled:true,category:"custom",scope:"tenant",resource_id:"skill:shared"}];
+  render(<CreateAgentDialog open onOpenChange={vi.fn()} />);
+  await selectExpert();
+  fireEvent.click(screen.getByRole("button",{name:/自定义技能/}));
+  fireEvent.click(screen.getByRole("checkbox",{name:"collision personal"}));
+  await waitFor(() => expect(screen.getByRole("button",{name:"保存配置"})).toBeEnabled());
+  fireEvent.click(screen.getByRole("button",{name:"保存配置"}));
+  await waitFor(() => expect(mock.create).toHaveBeenCalled());
+  expect(mock.create.mock.calls[0]?.[0]).toMatchObject({skill_binding_mode:"selected",skill_resources:[{name:"collision",scope:"personal",resource_id:"skill:personal"}]});
+});
+
+it("keeps an existing concrete choice and its revision on ordinary edits", async () => {
+  mock.agent = {...savedAgent({name:"general-assistant",system_prompt:"Agent",skills:["collision"]}),id:"current-agent",revision:"current-revision",skill_binding_mode:"selected",skill_resources:[{name:"collision",scope:"personal",resource_id:"skill:personal"}]};
+  render(<EditAgentDialog open agentName="general-assistant" onOpenChange={vi.fn()} />);
+  fireEvent.click(screen.getByRole("button",{name:"保存配置"}));
+  await waitFor(() => expect(mock.update).toHaveBeenCalled());
+  expect(mock.update.mock.calls[0]?.[0].request).toMatchObject({expected_agent_id:"current-agent",expected_revision:"current-revision",skills:["collision"]});
+  expect(mock.update.mock.calls[0]?.[0].request.skill_resources).toBeUndefined();
 });

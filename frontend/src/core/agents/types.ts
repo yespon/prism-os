@@ -1,3 +1,9 @@
+export interface SkillResourceReference {
+  name: string;
+  scope: "global" | "tenant" | "personal";
+  resource_id: string;
+}
+
 export interface AgentQuickPrompt {
   title: string;
   prompt: string;
@@ -16,6 +22,9 @@ export interface AgentPresentation {
 }
 
 export interface Agent {
+  revision?: string | null;
+  skill_binding_mode?: "all" | "selected" | "unresolved" | null;
+  skill_resources?: SkillResourceReference[] | null;
   presentation?: AgentPresentation;
   base_system_prompt?: string;
   id: string;
@@ -36,6 +45,8 @@ export interface Agent {
 }
 
 export interface Skill {
+  scope?: "global" | "tenant" | "personal";
+  resource_id?: string | null;
   name: string;
   description: string;
   category: string;
@@ -43,6 +54,8 @@ export interface Skill {
 }
 
 export interface CreateAgentRequest {
+  skill_binding_mode?: "all" | "selected";
+  skill_resources?: SkillResourceReference[];
   quick_prompts?: AgentQuickPrompt[];
   welcome_message?: string;
   avatar_id?: string | null;
@@ -63,6 +76,10 @@ export interface CreateAgentRequest {
 }
 
 export interface UpdateAgentRequest {
+  expected_agent_id?: string;
+  expected_revision?: string;
+  skill_binding_mode?: "all" | "selected";
+  skill_resources?: SkillResourceReference[];
   template_locale?: "zh" | "en";
   persona_mbti?: string | null;
   quick_prompts?: AgentQuickPrompt[];

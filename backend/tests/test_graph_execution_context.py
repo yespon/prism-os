@@ -54,6 +54,8 @@ def test_verified_diagnosis_scope_adds_host_action_tool_to_agent(monkeypatch) ->
     seen = []
     monkeypatch.setattr(lead_agent, "_validate_execution_context", lambda _config: scope)
     monkeypatch.setattr(lead_agent, "load_runtime_adapters", lambda: None)
+    # This standalone tool-selection contract has no host Agent/Skill database.
+    monkeypatch.setattr(lead_agent, "get_skill_prompt_provider", lambda: None)
     monkeypatch.setattr(lead_agent, "get_governed_action_provider", lambda: lambda found: seen.append(found) or [action_tool, governed_read])
     monkeypatch.setattr(lead_agent, "load_enabled_tenant_model_names", lambda _tenant: ["model-1"])
     monkeypatch.setattr(lead_agent, "load_agent_config", lambda *_args, **_kwargs:

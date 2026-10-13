@@ -285,7 +285,7 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
                     await session.commit()
 
                 agent_result = await session.exec(
-                    select(CustomAgent).where(CustomAgent.id == diagnosis_agent_id)
+                    select(CustomAgent).where(CustomAgent.id == diagnosis_agent_id, CustomAgent.tenant_id == tenant_id, CustomAgent.enabled.is_(True))
                 )
                 agent = agent_result.scalars().first()
                 if agent is None:
@@ -304,6 +304,7 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str)
                     agent_system_prompt=agent.system_prompt,
                     agent_skills=agent.skills,
                     agent_tool_groups=agent.tool_groups,
+                    agent=agent, actor_id=agent.user_id,
                 )
 
                 langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2024")

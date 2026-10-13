@@ -73,12 +73,20 @@ async def build_incident_diagnosis_prompt(
     agent_system_prompt: str | None = None,
     agent_skills: list[str] | None = None,
     agent_tool_groups: list[str] | None = None,
+    agent=None,
+    actor_id: str | None = None,
 ) -> str:
     """Build a unified, consistent detailed prompt for diagnosing an incident.
 
     When agent metadata is provided (system_prompt, skills, tool_groups),
     it is included to give the agent clear boundaries on its role and capabilities.
     """
+    verified_section = None
+    if agent is not None:
+        from app.integrations.agent_skill_references import binding, current_skill_prompt
+        if binding(agent) is not None:
+            verified_section = await current_skill_prompt(session, agent.name, tenant_id, actor_id, expected_agent_id=agent.id)
+
     links_result = await session.exec(
         select(IncidentSignalLink).where(
             IncidentSignalLink.incident_id == incident.id,
@@ -141,6 +149,8 @@ You are acting as a diagnostic agent with the following configuration:
         prompt += f"- **System Prompt**: {agent_system_prompt[:500]}\n"
     if agent_skills:
         prompt += f"- **Bound Skills**: {', '.join(agent_skills)}\n"
+    if verified_section is not None:
+        prompt += verified_section + "\n"
     if agent_tool_groups:
         prompt += f"- **Available Tool Groups**: {', '.join(agent_tool_groups)}\n"
         prompt += "- **Important**: Only use tools from the above groups. If a tool is not available, ask the user to provide the needed information.\n"

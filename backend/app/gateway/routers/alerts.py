@@ -1502,6 +1502,7 @@ async def diagnose_incident(
         agent_system_prompt=agent.system_prompt,
         agent_skills=agent.skills,
         agent_tool_groups=agent.tool_groups,
+        agent=agent, actor_id=user_id,
     )
 
     # Check if a diagnosis is already running. If not, start it.

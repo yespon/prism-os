@@ -15,10 +15,12 @@ from app.models.agents import CustomAgent
 from app.platform.execution.trust import ExecutionCapabilityRepository
 from deerflow.database.session import get_session_factory
 from deerflow.runtime import (
+    ExecutionTrustError,
     register_agent_config_provider,
     register_agent_persistence_provider,
     register_execution_validator,
     register_governed_action_provider,
+    register_skill_prompt_provider,
     register_terminal_agent_provider,
 )
 
@@ -94,6 +96,19 @@ async def _consume_graph_capability(token, tenant_id, user_id, thread_id, agent_
     return await ExecutionCapabilityRepository().consume(token, tenant_id, user_id, thread_id, agent_name)
 
 
+def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resource_id=None):
+    if not agent_name:
+        return None
+    from app.integrations.agent_skill_references import current_skill_prompt
+    async def load():
+        async with get_session_factory()() as session:
+            return await current_skill_prompt(session, agent_name, tenant_id, user_id, skill_name, resource_id)
+    try:
+        return _run_async(load())
+    except Exception:
+        raise ExecutionTrustError("Current Agent Skill choice or use authorization is unavailable") from None
+
+
 def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
@@ -105,6 +120,7 @@ def register_runtime_adapters() -> None:
     )
     register_governed_action_provider(governed_ticket_tools)
     register_execution_validator(_consume_graph_capability)
+    register_skill_prompt_provider(_current_skill_prompt)
 
 
 register_runtime_adapters()

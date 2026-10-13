@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSyncExternalStore } from "react";
 
+import { useAvailableSkills } from "@/core/skills/hooks";
 import { useSkillQueryIdentity } from "@/core/skills/query-identity";
 import { getCurrentTenantId, subscribeTenantChange } from "@/core/tenants/store";
 
@@ -9,7 +10,6 @@ import {
   deleteAgent,
   getAgent,
   listAgents,
-  listSkills,
   updateAgent,
 } from "./api";
 import type { CreateAgentRequest, UpdateAgentRequest } from "./types";
@@ -20,46 +20,40 @@ export function useTenantKey() {
 
 export function useAgents() {
   const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["agents", tenantKey],
-    queryFn: () => listAgents(),
+    queryKey: ["agents", tenantKey, identity.key],
+    queryFn: async () => { if (!identity.isCurrent()) throw new Error("Agent identity changed"); const data = await listAgents(); if (!identity.isCurrent()) throw new Error("Agent identity changed"); return data; },
+    enabled: identity.identityReady,
   });
   return { agents: data ?? [], isLoading, error, refetch };
 }
 
 export function useAgent(name: string | null | undefined) {
   const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["agents", tenantKey, name],
-    queryFn: () => getAgent(name!),
-    enabled: !!name,
+    queryKey: ["agents", tenantKey, identity.key, name],
+    queryFn: async () => { if (!identity.isCurrent()) throw new Error("Agent identity changed"); const data = await getAgent(name!); if (!identity.isCurrent()) throw new Error("Agent identity changed"); return data; },
+    enabled: !!name && identity.identityReady,
   });
   return { agent: data ?? null, isLoading, error };
 }
 
 export function useSkills() {
-  const identity = useSkillQueryIdentity();
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["skills", identity.key],
-    enabled: identity.identityReady,
-    retry: false,
-    queryFn: async ({signal}) => {
-      if (!identity.isCurrent()) throw new Error("Skill read identity changed");
-      const result = await listSkills(signal);
-      if (!identity.isCurrent() || signal.aborted) throw new Error("Skill read identity changed");
-      return result;
-    },
-  });
-  return { skills: identity.identityReady ? data ?? [] : [], isLoading, error };
+  const result = useAvailableSkills();
+  return { ...result, skills: result.skills.map((skill) => ({...skill, scope: skill.scope as "global" | "tenant" | "personal", category: skill.scope === "global" ? "public" : "custom"})) };
 }
 
 export function useCreateAgent() {
   const queryClient = useQueryClient();
   const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   return useMutation({
-    mutationFn: (request: CreateAgentRequest) => createAgent(request),
+    mutationFn: (request: CreateAgentRequest) => createAgent(request, {isCurrent:identity.isCurrent}),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey] });
+      if (!identity.isCurrent()) return;
+      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, identity.key] });
     },
   });
 }
@@ -67,6 +61,7 @@ export function useCreateAgent() {
 export function useUpdateAgent() {
   const queryClient = useQueryClient();
   const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   return useMutation({
     mutationFn: ({
       name,
@@ -74,10 +69,11 @@ export function useUpdateAgent() {
     }: {
       name: string;
       request: UpdateAgentRequest;
-    }) => updateAgent(name, request),
+    }) => updateAgent(name, request, {isCurrent:identity.isCurrent}),
     onSuccess: (_data, { name }) => {
-      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey] });
-      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, name] });
+      if (!identity.isCurrent()) return;
+      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, identity.key] });
+      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, identity.key, name] });
     },
   });
 }
@@ -85,6 +81,7 @@ export function useUpdateAgent() {
 export function useToggleAgent() {
   const queryClient = useQueryClient();
   const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   return useMutation({
     mutationFn: ({
       name,
@@ -92,10 +89,11 @@ export function useToggleAgent() {
     }: {
       name: string;
       enabled: boolean;
-    }) => updateAgent(name, { enabled }),
+    }) => updateAgent(name, { enabled }, {isCurrent:identity.isCurrent}),
     onSuccess: (_data, { name }) => {
-      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey] });
-      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, name] });
+      if (!identity.isCurrent()) return;
+      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, identity.key] });
+      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, identity.key, name] });
     },
   });
 }
@@ -103,10 +101,12 @@ export function useToggleAgent() {
 export function useDeleteAgent() {
   const queryClient = useQueryClient();
   const tenantKey = useTenantKey();
+  const identity = useSkillQueryIdentity();
   return useMutation({
     mutationFn: (name: string) => deleteAgent(name),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey] });
+      if (!identity.isCurrent()) return;
+      void queryClient.invalidateQueries({ queryKey: ["agents", tenantKey, identity.key] });
     },
   });
 }

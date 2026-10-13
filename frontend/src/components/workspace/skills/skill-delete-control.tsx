@@ -123,7 +123,10 @@ export function SkillDeleteControl({
     } catch (error) {
       if (!current()) return;
       setPlan(null);
-      if (remove) {
+      if (remove && error instanceof SkillMutationError && !error.inspectionRequired && error.status < 500) {
+        setBlocked(null);
+        setMessage({key,text:zh ? "删除未执行。请重新核对当前实例与权限后再确认。" : "Deletion was rejected. Inspect the current instance and permission before confirming again."});
+      } else if (remove) {
         setBlocked({
           key,
           operationId:

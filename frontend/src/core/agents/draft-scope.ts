@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef } from "react";
-import { getCurrentTenantId } from "@/core/tenants/store";
-import { useTenantKey } from "./hooks";
+
+import { useSkillImportContext } from "@/core/skills/import-context";
 
 /** Dialogs remount for tenant/locale/name changes; async callbacks also check live tenancy. */
 export function useDraftIsCurrent() {
-  const tenant = useTenantKey();
+  const context = useSkillImportContext();
+  const key = context.key;
   const mounted = useRef(true);
+  const latest = useRef(context);
+  latest.current = context;
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -13,7 +16,7 @@ export function useDraftIsCurrent() {
     };
   }, []);
   return useCallback(
-    () => mounted.current && tenant === (getCurrentTenantId() ?? "_"),
-    [tenant],
+    () => mounted.current && latest.current.key === key && latest.current.isCurrent(),
+    [key],
   );
 }

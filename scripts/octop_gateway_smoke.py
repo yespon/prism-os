@@ -65,12 +65,23 @@ def main():
 from pathlib import Path
 from app.gateway.app import app
 from app.gateway.routers import skills
-from app.integrations import skill_imports,skill_mutations
+from app.integrations import skill_imports,skill_mutations,agent_skill_references
 from app.integrations.octop import resource_installations
 from deerflow.skills import loader,installer
 from deerflow.database import user_config_service
-for module in (loader,skills,skill_imports,resource_installations,installer,user_config_service):
+for module in (loader,skills,skill_imports,resource_installations,installer,user_config_service,agent_skill_references):
     module.get_skills_root_path = lambda: Path({str(isolated_skills)!r})
+from fastapi import HTTPException, Request
+from app.gateway.authorization import require_tenant_context
+from app.runtime_adapters import _current_skill_prompt
+from deerflow.runtime import ExecutionTrustError
+@app.get("/api/probe/skill-choice/{{agent_name}}")
+async def owned_skill_choice(agent_name: str, request: Request):
+    tenant = require_tenant_context(request)
+    try:
+        return {{"section": _current_skill_prompt(agent_name, tenant, request.state.user_id)}}
+    except ExecutionTrustError:
+        raise HTTPException(403, "Current choice unavailable") from None
 """)
         environment["PYTHONPATH"] = str(directory) + os.pathsep + str(ROOT / "backend")
         base = f"http://127.0.0.1:{port}"
@@ -333,6 +344,22 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                 manual_patch = {"enabled": True, "expected_resource_id": manual["resource_id"], "expected_file_sha256": manual["file_sha256"]}
                 code, activated = request("/api/skills/personal/manual-owned", manual_patch, token, method="PATCH")
                 assert code == 200 and activated["enabled"] and activated["resource_id"] == manual["resource_id"]
+                binding_body = {"name": "bound-skill-probe", "system_prompt": "Bound Agent", "skill_binding_mode": "selected", "skill_resources": [{"name": manual["name"], "scope": "personal", "resource_id": manual["resource_id"]}]}
+                code, bound = request("/api/agents", binding_body, token)
+                assert code == 201 and bound["skill_resources"][0]["resource_id"] == manual["resource_id"]
+                probe_url = "/api/probe/skill-choice/bound-skill-probe"
+                assert request(probe_url)[0] == 401
+                code, current_body = request(probe_url, token=token)
+                assert code == 200 and "MANUAL BODY" in current_body["section"] and manual["resource_id"] in current_body["section"]
+                assert request("/api/skills/personal/manual-owned", token=token, method="DELETE")[0] == 409
+                code, bound_updated = request("/api/agents/bound-skill-probe", {"expected_agent_id": bound["id"], "expected_revision": bound["revision"], "description": "Current binding"}, token, method="PUT")
+                assert code == 200 and bound_updated["skill_resources"] == bound["skill_resources"]
+                assert request("/api/agents/bound-skill-probe", {"expected_revision": bound["revision"], "skill_binding_mode": "selected", "skill_resources": []}, token, method="PUT")[0] == 409
+                code, _ = request("/api/skills/personal/manual-owned", {"enabled": False, "expected_resource_id": manual["resource_id"]}, token, method="PATCH")
+                assert code == 200 and request(probe_url, token=token)[0] == 403
+                assert request("/api/skills/personal/manual-owned", {"enabled": True, "expected_resource_id": manual["resource_id"]}, token, method="PATCH")[0] == 200
+                assert request("/api/agents/bound-skill-probe", {"expected_agent_id": bound["id"], "expected_revision": bound_updated["revision"], "skill_binding_mode": "selected", "skill_resources": []}, token, method="PUT")[0] == 200
+                assert "MANUAL BODY" not in request(probe_url, token=token)[1]["section"]
                 # Actual authenticated DELETE: current selection, fresh role,
                 # original receipt withdrawal and public source preservation.
                 manual_delete = "/api/skills/personal/manual-owned"
@@ -385,6 +412,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     "conditional_owned_delete_with_current_membership_and_original_receipt_withdrawal": True,
                     "public_override_removal_preserves_source": True,
                     "old_receipt_cannot_restore_or_rebind_same_name_replacement": True,
+                    "concrete_agent_choice_revision_and_current_authorized_snapshot": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -184,3 +184,14 @@ it("requires current tenant administration for shared deletion", () => {
   );
   expect(screen.getByRole("button", { name: "删除 demo" })).toBeDisabled();
 });
+
+it("allows a fresh inspection after a definitive pre-mutation rejection", async () => {
+  mock.remove.mockRejectedValue(new SkillMutationError(409, plan.resource_id, false, "Current reference conflict"));
+  view(); await inspect(); fireEvent.click(screen.getByRole("button", { name: "确认删除当前实例" }));
+  await screen.findByText("删除未执行。请重新核对当前实例与权限后再确认。");
+  expect(screen.getByRole("button", { name: "核对当前删除范围" })).not.toBeDisabled();
+  expect(screen.queryByText("删除记录检查入口")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "核对当前删除范围" }));
+  await screen.findByRole("button", { name: "确认删除当前实例" });
+  expect(mock.load).toHaveBeenCalledTimes(2);
+});
