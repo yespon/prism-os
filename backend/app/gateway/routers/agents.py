@@ -14,6 +14,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.gateway.authorization import _is_tenant_admin, require_tenant_context
 from app.gateway.config import get_plugin_states
 from app.integrations.octop.agents import AgentPresentation, AgentQuickPrompt, agent_content, update_agent_content
+from app.integrations.skill_reference_transactions import begin_reference_transaction
 from app.models.agents import CustomAgent
 from deerflow.config.paths import get_paths
 from deerflow.database.session import get_session
@@ -308,6 +309,8 @@ async def create_agent_endpoint(
     if not system_prompt:
         raise HTTPException(status_code=422, detail="system_prompt is required and must not be empty")
 
+    await begin_reference_transaction(session, tenant_id)
+
     # Check uniqueness
     result = await session.exec(
         sa_select(CustomAgent).where(
@@ -366,6 +369,8 @@ async def update_agent(
     name = _normalize_agent_name(name)
     tenant_id = require_tenant_context(request)
     user_id = _get_user_id(request)
+
+    await begin_reference_transaction(session, tenant_id)
 
     user_ids = [user_id]
     is_admin = _is_tenant_admin(request)
@@ -453,6 +458,8 @@ async def delete_agent(
     name = _normalize_agent_name(name)
     tenant_id = require_tenant_context(request)
     user_id = _get_user_id(request)
+
+    await begin_reference_transaction(session, tenant_id)
 
     user_ids = [user_id]
     is_admin = _is_tenant_admin(request)

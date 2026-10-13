@@ -102,6 +102,7 @@ def main():
                     "tests/test_skill_enablement_boundaries.py",
                     "tests/test_skill_manual_creation.py",
                     "tests/test_skill_resource_deletion.py",
+                    "tests/test_skill_reference_transactions.py",
                     "-q",
                 ],
                 cwd=ROOT / "backend",
@@ -132,7 +133,7 @@ def main():
             "loopback_only": True,
             "owned_tmpfs_database": True,
             "schema": "existing SQLModel metadata including native TenantSkill uniqueness; no production database",
-            "cases": "full versioned import recovery, resource identity and mutation modules",
+            "cases": "import recovery, identity, mutation, enablement, creation, deletion and two-connection Agent reference ordering",
             "credentials_in_evidence": False,
             "returncode": run.returncode,
         }

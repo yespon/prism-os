@@ -2,7 +2,7 @@
 
 import uuid
 
-from sqlalchemy import select, text
+from sqlalchemy import select
 
 from app.models.agents import CustomAgent
 from deerflow.database import user_config_service as service
@@ -14,6 +14,7 @@ from deerflow.skills.resource_identity import public_resource_id, registered_res
 
 from .skill_imports import owner_and_scope
 from .skill_mutations import SkillMutationRejected
+from .skill_reference_transactions import begin_reference_transaction
 
 
 class SkillDeletionUnknown(Exception):
@@ -160,8 +161,7 @@ async def delete_owned(root, tenant, actor, shared, name, *, expected_resource_i
     try:
         async with service.get_session_factory()() as session:
             async with session.begin():
-                if session.get_bind().dialect.name == "sqlite":
-                    await session.execute(text("BEGIN IMMEDIATE"))
+                await begin_reference_transaction(session, tenant)
                 row = (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == owner, TenantSkill.name == name).with_for_update())).scalars().first()
                 if row is None:
                     raise SkillMutationRejected(404, "Current registered resource not found; files were preserved")
@@ -287,8 +287,7 @@ async def recover_operation(operation_id, tenant, actor, shared, *, root):
     try:
         async with service.get_session_factory()() as session:
             async with session.begin():
-                if session.get_bind().dialect.name == "sqlite":
-                    await session.execute(text("BEGIN IMMEDIATE"))
+                await begin_reference_transaction(session, tenant)
                 row = (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == owner, TenantSkill.name == record["skill_name"]).with_for_update())).scalars().first()
                 original_exists = row is not None and registered_resource_id(row) == record["resource_id"]
                 if original_exists:
