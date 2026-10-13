@@ -115,24 +115,18 @@ def test_tenant_shared_skills_reject_platform_admin_without_membership() -> None
 def test_tenant_shared_skill_update_succeeds_for_tenant_admin(monkeypatch) -> None:
     app = _create_app()
 
-    class _Row:
-        name = "tenant-skill"
-        category = "custom"
-        enabled = False
+    async def toggle(root, tenant_id, actor, name, enabled, expected_resource_id):
+        assert tenant_id == "tenant-a" and actor == "u-1"
+        assert name == "tenant-skill" and enabled is False
+        assert expected_resource_id is None
+        return "tenant", "skill:fixture"
 
-    class _Skill:
-        name = "tenant-skill"
-        description = "tenant skill"
-        license = None
+    async def detail(name, request, *, scope, resource_id):
+        assert scope == "tenant" and resource_id == "skill:fixture"
+        return skills.SkillDetailResponse(name=name, description="tenant skill", category="custom", enabled=False, scope=scope, resource_id=resource_id, managed_by_current_user=True)
 
-    async def _fake_set_tenant_shared_skill_enabled(tenant_id: str, skill_name: str, enabled: bool):
-        assert tenant_id == "tenant-a"
-        assert skill_name == "tenant-skill"
-        assert enabled is False
-        return _Row()
-
-    monkeypatch.setattr(skills, "set_tenant_shared_skill_enabled", _fake_set_tenant_shared_skill_enabled)
-    monkeypatch.setattr(skills, "load_skills", lambda enabled_only=False: [_Skill()])
+    monkeypatch.setattr(skills.skill_mutations, "set_shared_enablement", toggle)
+    monkeypatch.setattr(skills, "get_skill_detail", detail)
 
     with TestClient(app) as client:
         response = client.put(

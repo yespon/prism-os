@@ -1,0 +1,14 @@
+{
+  "current_build_exit": 0,
+  "independent_build_exit": 0,
+  "logs_verified": true,
+  "candidate_hashes_verified": true,
+  "code_inputs": 17,
+  "logs_sha256": {
+    "backend-full.log": "d8dea760c09e22fe48102595598715a245261f51c8a708ca486cca59589d63a8",
+    "frontend-full.log": "d0aecba4d7780dd37a563284a132a499eee8b5d711d3c529cb767949bb63d57f",
+    "build-current.log": "dfd0f8d1eff98c633fb6fb6677b765a0543b814ca483e44443e7dac24de724fc",
+    "build-independent.log": "81159ecfb0726ead0e954a678dcf9dc82ce7ff1a46cae9220760b574b70b1554",
+    "frontend-independent.log": "e03f36df70a8d346afe639a538f1ff9b33987ea12e3f35b63e220086599da09e"
+  }
+}

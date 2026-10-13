@@ -21,7 +21,6 @@ from deerflow.database.user_config_service import (
     get_available_skills,
     get_tenant_shared_skill_settings,
     list_tenant_shared_skills,
-    set_tenant_shared_skill_enabled,
     update_tenant_personal_skill_settings,
     update_tenant_shared_skill_settings,
 )
@@ -78,6 +77,7 @@ class AvailableSkillsListResponse(BaseModel):
 class SkillUpdateRequest(BaseModel):
     """Request model for updating a skill."""
 
+    expected_resource_id: str | None = Field(default=None, max_length=128)
     enabled: bool = Field(..., description="Whether to enable or disable the skill")
 
 
@@ -514,24 +514,26 @@ async def create_tenant_skill(request: Request, body: TenantSkillCreateRequest) 
 
 @router.put(
     "/tenants/skills/{skill_name}",
-    response_model=SkillResponse,
+    response_model=SkillDetailResponse,
     summary="Update Tenant Shared Skill",
     dependencies=[Depends(require_tenant_admin)],
 )
-async def update_tenant_skill(skill_name: str, request: SkillUpdateRequest, api_request: Request) -> SkillResponse:
-    tenant_id = require_tenant_context(api_request)
-    row = await set_tenant_shared_skill_enabled(tenant_id, skill_name, request.enabled)
-    settings_by_name = await get_tenant_shared_skill_settings(tenant_id)
-    settings = settings_by_name.get(row.name) or {}
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
+async def update_tenant_skill(skill_name: str, request: SkillUpdateRequest, api_request: Request) -> SkillDetailResponse:
+    require_tenant_admin(api_request)
+    tenant, actor = _import_identity(api_request)
+    try:
+        scope, resource_id = await skill_mutations.set_shared_enablement(get_skills_root_path(), tenant, actor, skill_name, request.enabled, request.expected_resource_id)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except skill_mutations.SkillMutationUnknown as error:
+        raise HTTPException(503, {"message": str(error), "resource_id": error.resource_id, "inspection_required": True}) from None
+    except Exception:
+        logger.exception("Skill enablement did not complete")
+        raise HTTPException(503, "Skill enablement unavailable; inspect current resources") from None
+    try:
+        return await get_skill_detail(skill_name, api_request, scope=scope, resource_id=resource_id)
+    except Exception:
+        raise HTTPException(503, {"message": "Skill enablement response could not be confirmed; inspect current state", "resource_id": resource_id, "inspection_required": True}) from None
 
 
 async def _patch_owned_response(name: str, body: TenantSkillPatchRequest, request: Request, shared: bool):

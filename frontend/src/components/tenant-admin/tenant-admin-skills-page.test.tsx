@@ -35,6 +35,7 @@ describe("TenantAdminSkillsPage", () => {
   const createSkill = vi.fn();
   const importSkill = vi.fn();
   const patchSkill = vi.fn();
+  const toggleSkill = vi.fn();
 
   const renderPage = () => {
     mocks.identity = "tenant-a/user-a";
@@ -43,6 +44,7 @@ describe("TenantAdminSkillsPage", () => {
     createSkill.mockReset();
     importSkill.mockReset();
     patchSkill.mockReset();
+    toggleSkill.mockReset();
     mocks.useAvailableSkills.mockReturnValue({
       skills: [
         {
@@ -82,7 +84,7 @@ describe("TenantAdminSkillsPage", () => {
     mocks.useDeleteTenantSkill.mockReturnValue({ mutateAsync: vi.fn() });
     mocks.useImportTenantSkill.mockReturnValue({ mutateAsync: importSkill, isPending: false });
     mocks.usePatchTenantSkill.mockReturnValue({ mutateAsync: patchSkill });
-    mocks.useUpdateTenantSkill.mockReturnValue({ mutateAsync: vi.fn() });
+    mocks.useUpdateTenantSkill.mockReturnValue({ mutateAsync: toggleSkill, canToggleResource: () => true, enablementNeedsInspection: false });
 
     return render(<TenantAdminSkillsPage />);
   };
@@ -93,6 +95,13 @@ describe("TenantAdminSkillsPage", () => {
     fireEvent.mouseDown(tab);
     fireEvent.click(tab);
   };
+
+  it("passes the listed concrete instance with enablement", async () => {
+    renderPage(); activateTab("团队技能 (1)");
+    toggleSkill.mockResolvedValueOnce({});
+    fireEvent.click(screen.getByRole("switch"));
+    expect(toggleSkill).toHaveBeenCalledWith({skillName: "custom-skill-a", enabled: false, expectedResourceId: "skill:current"});
+  });
 
   it("splits built-in and custom skills into separate tabs", () => {
     renderPage();

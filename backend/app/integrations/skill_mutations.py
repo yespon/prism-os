@@ -10,7 +10,8 @@ from sqlalchemy import select, text
 
 from deerflow.database import user_config_service as service
 from deerflow.database.models import TenantSkill
-from deerflow.skills.resource_identity import registered_resource_id, resource_directory
+from deerflow.skills.loader import _load_public_skills
+from deerflow.skills.resource_identity import public_resource_id, registered_resource_id, resource_directory
 
 
 class SkillMutationRejected(Exception):
@@ -167,3 +168,66 @@ async def patch_owned_skill(root: Path, tenant: str, actor: str, shared: bool, n
     finally:
         if markdown is not None:
             markdown.close()
+
+
+async def set_shared_enablement(root: Path, tenant: str, actor: str, name: str, enabled: bool, expected_resource_id: str | None = None) -> tuple[str, str]:
+    """Toggle the existing tenant row or a verified public tenant override.
+
+    Public and custom rows share the original owner/name unique key. A public
+    selector cannot convert or modify a colliding custom row. No new registry.
+    """
+    if not actor:
+        raise SkillMutationRejected(401, "Current user identity is required")
+    owner = f"__tenant_shared_skill__:{tenant}"
+    mutated = False
+    resource_id = expected_resource_id
+    try:
+        async with service.get_session_factory()() as session:
+            async with session.begin():
+                if session.get_bind().dialect.name == "sqlite":
+                    await session.execute(text("BEGIN IMMEDIATE"))
+                result = await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == owner, TenantSkill.name == name).with_for_update())
+                row = result.scalars().first()
+                wants_public = bool(expected_resource_id and expected_resource_id.startswith("public:"))
+                if row is not None and row.category != "public":
+                    resource_id = registered_resource_id(row)
+                    if wants_public or (expected_resource_id is not None and expected_resource_id != resource_id):
+                        raise SkillMutationRejected(409, "Skill instance or scope changed; inspect current resources")
+                    try:
+                        directory = resource_directory(root, tenant, actor, {"name": row.name, "scope": "tenant", "install_dir": row.install_dir, "relative_path": row.relative_path})
+                    except ValueError:
+                        raise SkillMutationRejected(409, "Skill location cannot be verified; contents were preserved") from None
+                    if enabled and not (directory / "SKILL.md").is_file():
+                        raise SkillMutationRejected(409, "Skill main file is unavailable; enablement was preserved")
+                    scope = "tenant"
+                else:
+                    if expected_resource_id is not None and not wants_public:
+                        raise SkillMutationRejected(409, "Selected registered Skill is no longer current")
+                    candidates = [skill for skill in _load_public_skills(root) if skill.name == name and (expected_resource_id is None or public_resource_id(skill.skill_path) == expected_resource_id)]
+                    if not candidates:
+                        raise SkillMutationRejected(404, "Current public or shared Skill not found")
+                    if len(candidates) != 1:
+                        raise SkillMutationRejected(409, "Public Skill name is ambiguous; select its concrete source")
+                    public = candidates[0]
+                    resource_id = public_resource_id(public.skill_path)
+                    try:
+                        directory = resource_directory(root, tenant, actor, {"scope": "global", "install_dir": str(public.skill_dir)})
+                    except ValueError:
+                        raise SkillMutationRejected(409, "Public Skill location cannot be verified") from None
+                    if not (directory / "SKILL.md").is_file():
+                        raise SkillMutationRejected(409, "Public Skill main file is unavailable")
+                    if row is None:
+                        row = TenantSkill(tenant_id=tenant, user_id=owner, name=name, category="public", relative_path=public.skill_path, install_dir=str(directory), enabled=enabled)
+                    elif (row.install_dir and Path(row.install_dir).absolute() != directory) or (row.relative_path and row.relative_path != public.skill_path):
+                        raise SkillMutationRejected(409, "Public override location differs from the selected source")
+                    scope = "global"
+                row.enabled = enabled
+                session.add(row)
+                mutated = True
+        return scope, resource_id
+    except SkillMutationRejected:
+        raise
+    except Exception:
+        if mutated:
+            raise SkillMutationUnknown(resource_id) from None
+        raise

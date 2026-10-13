@@ -1,0 +1,9 @@
+
+ RUN  v4.1.2 /tmp/prismos-n09h-clean-v_rutjiw/src/frontend
+
+
+ Test Files  51 passed (51)
+      Tests  212 passed (212)
+   Start at  10:16:51
+   Duration  79.97s (transform 4.77s, setup 5.46s, import 27.78s, tests 29.35s, environment 78.76s)
+

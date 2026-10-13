@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-13",
+  "baseline": "52e3cf3472ac9d889f560a5fcffd75d113c7c211",
+  "scope": "C2 original concrete-source tenant enablement",
+  "delivered": [
+    "current tenant-admin/actor and original row lock",
+    "optional specific resource generation or fixed public selector",
+    "no unknown-name unowned registration",
+    "no same-name public/custom conversion",
+    "actual directory and alias checks, missing-file disable only",
+    "unknown commit/response preservation and explicit successful current-list inspection",
+    "current identity before dispatch and after completion, no cross-session UI effects",
+    "same-name resources remain visible in settings"
+  ],
+  "complete": false,
+  "new_schema": false,
+  "delete_implemented": false,
+  "delete_pending_actual_faults": 2,
+  "manual_create_pending_actual_faults": 1,
+  "copy_share_implemented": false,
+  "execution_permission_grants": false,
+  "remaining": [
+    "DELETE/manual creation current instance, actual file ownership, unknown imports and Agent references/recovery",
+    "copy/share complete source bytes and target reauthorization",
+    "old Agent name references and revoke/use authorization",
+    "C3-C5 full N09 and original PrismOS roadmap",
+    "N04/M1 and remote CI"
+  ],
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

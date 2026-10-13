@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "files": {
+    "README.md": {
+      "bytes": 2686,
+      "sha256": "1fe707c2ba7ebdb609549d8a1b33f1546d9e608585e45f0122b11ab95c2480b6"
+    },
+    "build-exit-before-frontend-cleanup.json": {
+      "bytes": 412,
+      "sha256": "a574b1ad76d1cdd8d7c00a5dc983f9f1840f39c8d59f9ce7b0bc5698a48fe3ce"
+    },
+    "build-exit.json": {
+      "bytes": 642,
+      "sha256": "4fb37aa68f9f2194abf7c90bf9093d0e1f8c298494726de7ca17a77b3a81c1d9"
+    },
+    "candidate-before-frontend-cleanup.json": {
+      "bytes": 2682,
+      "sha256": "7f3434d1e6dd63245f9db669c613e8b6678558f41bbc45f93463f68ac7a3d1b9"
+    },
+    "candidate.json": {
+      "bytes": 2963,
+      "sha256": "a82af7ad6852afc6f417e9c5881cc213a499dfa84f6e5edbfac7d37e333602e7"
+    },
+    "capability-delta.json": {
+      "bytes": 1385,
+      "sha256": "71c47c01b39ff21478c725b499f154287514557e44308fef8cf2d800ba353d48"
+    },
+    "current-exit.json": {
+      "bytes": 490,
+      "sha256": "245d3a12278e2158ebab7cba373187f8da57fd36bb55d1868536b4e515845021"
+    },
+    "delete-pending-audit.md": {
+      "bytes": 2213,
+      "sha256": "a28480c9fd0ab9a368d5792676e7ec3bced696cd98dee126919903e4959b0daa"
+    },
+    "logs/backend-adjacent.log": {
+      "bytes": 3320,
+      "sha256": "8ca72577bcf8fac2e18593f1476d7bcfedb9e0d1b5578e0d3d445065ec7ba4ad"
+    },
+    "logs/backend-full.log": {
+      "bytes": 10792,
+      "sha256": "d8dea760c09e22fe48102595598715a245261f51c8a708ca486cca59589d63a8"
+    },
+    "logs/backend-lint.log": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "logs/backend-original-faults.log": {
+      "bytes": 6140,
+      "sha256": "0f9051a7e3776e9d9007c0ad536070a7f5f34710b57f18130675fac6e8d760ff"
+    },
+    "logs/brand.log": {
+      "bytes": 72,
+      "sha256": "3a29a5865d48a84c2a16149e8ba2c75f3dbfc516c8633beac99c35784d973a17"
+    },
+    "logs/build-current.log": {
+      "bytes": 13392,
+      "sha256": "dfd0f8d1eff98c633fb6fb6677b765a0543b814ca483e44443e7dac24de724fc"
+    },
+    "logs/build-independent.log": {
+      "bytes": 13278,
+      "sha256": "81159ecfb0726ead0e954a678dcf9dc82ce7ff1a46cae9220760b574b70b1554"
+    },
+    "logs/delete-pending-faults.log": {
+      "bytes": 7638,
+      "sha256": "6accd4501d931cb6b37bf67d82fad366cbce8d855440705d7f9c6a7118c0bd6f"
+    },
+    "logs/delete-pending-probe.py": {
+      "bytes": 3606,
+      "sha256": "d90484d648d615ad44e101cd020ea518fa0456f489d7086a3148beb7ad491277"
+    },
+    "logs/frontend-adjacent.log": {
+      "bytes": 250,
+      "sha256": "4b27b75f691aa35bf686806552df4c7eb4f4f078c72a11c249a9b73f218c0124"
+    },
+    "logs/frontend-full.log": {
+      "bytes": 256,
+      "sha256": "d0aecba4d7780dd37a563284a132a499eee8b5d711d3c529cb767949bb63d57f"
+    },
+    "logs/frontend-independent.log": {
+      "bytes": 243,
+      "sha256": "e03f36df70a8d346afe639a538f1ff9b33987ea12e3f35b63e220086599da09e"
+    },
+    "logs/frontend-lint.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "logs/frontend-ui-before-cleanup.log": {
+      "bytes": 2207,
+      "sha256": "8ca93eab79626fa4640b5de1bdc081d6856f1970e241dce036982b849873df8e"
+    },
+    "logs/gateway.log": {
+      "bytes": 1162,
+      "sha256": "aead71be336bfc552f1ace0c573551eda8747bc49297de2536a30bcbaa5dfe93"
+    },
+    "logs/independent-install-backend.log": {
+      "bytes": 5342,
+      "sha256": "e418247ba1f539b587eeeff530dedaf9d2f9523fffc1ebe8688a6a9a20616e35"
+    },
+    "logs/independent-install-frontend.log": {
+      "bytes": 3103,
+      "sha256": "9df08688245c0bbe205deda314d403b9c1e8d5f5097b86a3e40baa9842d5fbbc"
+    },
+    "logs/postgres.log": {
+      "bytes": 1659,
+      "sha256": "654ca87f77ab1eb8856f6aded865dfa8e7e17d83535171560af8357866b951a5"
+    },
+    "logs/reproduce-current.sh": {
+      "bytes": 1702,
+      "sha256": "5938600a949fc90837628eb9f84087ffde9d752cded54ca01dbf7b3f394dfd9c"
+    },
+    "logs/reproduce-front-cleanup.sh": {
+      "bytes": 2182,
+      "sha256": "d5a86521e8254d0469bbf4cc9142041d39f57db59d74ecaa2ee479abe0a7bc93"
+    },
+    "logs/reproduce-independent.sh": {
+      "bytes": 1830,
+      "sha256": "d714cbc7a091da0dbbdfede6abdee326321d7e2432f55bb96b0f0d484815aea8"
+    },
+    "logs/typecheck.log": {
+      "bytes": 119,
+      "sha256": "2859ea1abe72cd0136907e1b255ae191df5f81cd7cf53c64044d41124f81e6b2"
+    },
+    "logs/upgrade.log": {
+      "bytes": 1195,
+      "sha256": "4ded0e36270804a6d2eee7ace1e714a34d08fb6d1263ec46508ccc9b7f41021c"
+    },
+    "logs/uv-build-index.sh": {
+      "bytes": 198,
+      "sha256": "134e1fb226d097debbb71741ffc7d32ff3ec479897611d3f15e345053bf7cf44"
+    },
+    "postgres.json": {
+      "bytes": 551,
+      "sha256": "fb787c29f5cc31fda8d197b67ff468ea51a0144a0e56c503cb9da9f7041a4f9d"
+    },
+    "previous-source-receipt.json": {
+      "bytes": 1306239,
+      "sha256": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068"
+    },
+    "source-index.json": {
+      "bytes": 104,
+      "sha256": "5a96eeca1bcb031c6772587444ba4f581a7382560ff5e18878ef9c7cbbc02d15"
+    },
+    "upgrade.json": {
+      "bytes": 95360,
+      "sha256": "aaf07e5e0e11cf39d0077e7fadc8b4b548e10467991a5b05486ce87e706748f7"
+    },
+    "validation.json": {
+      "bytes": 4926,
+      "sha256": "47bbb2a29ea2a2f34fc1b8f8f4363c07c0cace257d0e10ab8dd4f92c8a056508"
+    }
+  }
+}

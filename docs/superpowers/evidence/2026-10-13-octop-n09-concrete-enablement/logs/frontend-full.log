@@ -1,0 +1,9 @@
+
+ RUN  v4.1.2 /root/.codex/worktrees/octop-integration/prism-os/frontend
+
+
+ Test Files  51 passed (51)
+      Tests  212 passed (212)
+   Start at  09:56:48
+   Duration  77.44s (transform 4.26s, setup 5.02s, import 26.85s, tests 31.62s, environment 73.73s)
+

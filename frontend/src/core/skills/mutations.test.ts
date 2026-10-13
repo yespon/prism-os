@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 
-import { patchPersonalSkill } from "./api";
+import { patchPersonalSkill, updateTenantSkill } from "./api";
 import {
   SkillMutationError,
   readSkillMutationResponse,
@@ -76,4 +76,45 @@ it("sends selected instance and loaded content digest with the owned personal ed
       body: JSON.stringify(input),
     },
   );
+});
+
+it("sends concrete enablement and parses structured unknown without retry", async () => {
+  const fetch = vi
+    .fn()
+    .mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          detail: {
+            message: "Inspect toggle",
+            resource_id: "skill:current",
+            inspection_required: true,
+          },
+        }),
+        { status: 503 },
+      ),
+    );
+  vi.stubGlobal("fetch", fetch);
+  await expect(
+    updateTenantSkill("demo", false, { expectedResourceId: "skill:current" }),
+  ).rejects.toMatchObject({
+    status: 503,
+    resourceId: "skill:current",
+    inspectionRequired: true,
+  });
+  expect(fetch).toHaveBeenCalledOnce();
+  expect(fetch.mock.calls[0]?.[1]?.body).toBe(
+    JSON.stringify({ enabled: false, expected_resource_id: "skill:current" }),
+  );
+});
+
+it("checks captured identity after asynchronous auth headers before dispatch", async () => {
+  const fetch = vi.fn();
+  vi.stubGlobal("fetch", fetch);
+  await expect(
+    updateTenantSkill("demo", true, {
+      expectedResourceId: "public:current",
+      isCurrent: () => false,
+    }),
+  ).rejects.toMatchObject({ status: 401 });
+  expect(fetch).not.toHaveBeenCalled();
 });

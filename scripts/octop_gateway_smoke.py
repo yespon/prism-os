@@ -289,6 +289,37 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     )
                     migration = database.execute("SELECT version_num FROM alembic_version").fetchone()[0]
                 assert source["octop_source"]["revision"] == catalog["revision"]
+                # Only this probe's native membership is changed. Real middleware
+                # must re-read it on each request; no role header bypass is used.
+                public_dir = isolated_skills / "public/enablement-smoke"
+                public_dir.mkdir(parents=True)
+                (public_dir / "SKILL.md").write_text("---\nname: enablement-smoke\ndescription: Public enablement probe\n---\nPROBE PUBLIC BODY\n")
+                enable_url = "/api/tenants/skills/enablement-smoke"
+                assert request(enable_url, {"enabled": False}, token, method="PUT")[0] == 403
+                with sqlite3.connect(directory / "tenant.db") as database:
+                    database.execute("UPDATE tenant_memberships SET role='tenant_admin' WHERE user_id=?", ("catalog-smoke-user",))
+                code, enabled_sources = request("/api/skills/available", token=token)
+                assert code == 200
+                public_source = next(item for item in enabled_sources["skills"] if item["name"] == "enablement-smoke" and item["scope"] == "global")
+                assert public_source["managed_by_current_user"]
+                for enabled in [False, True]:
+                    code, toggled = request(enable_url, {"enabled": enabled, "expected_resource_id": public_source["resource_id"]}, token, method="PUT")
+                    assert code == 200 and toggled["scope"] == "global" and toggled["enabled"] == enabled
+                    assert toggled["resource_id"] == public_source["resource_id"]
+                code, shared_created = request("/api/tenants/skills", {"name": "enablement-owned", "description": "Shared enablement probe", "instructions": "PROBE SHARED BODY"}, token)
+                assert code == 201
+                code, enabled_sources = request("/api/skills/available", token=token)
+                shared_source = next(item for item in enabled_sources["skills"] if item["name"] == "enablement-owned" and item["scope"] == "tenant")
+                shared_url = "/api/tenants/skills/enablement-owned"
+                unchanged_files = {path: path.read_bytes() for path in isolated_skills.rglob("SKILL.md")}
+                code, toggled = request(shared_url, {"enabled": False, "expected_resource_id": shared_source["resource_id"]}, token, method="PUT")
+                assert code == 200 and toggled["scope"] == "tenant" and not toggled["enabled"]
+                assert request(shared_url, {"enabled": True, "expected_resource_id": "skill:withdrawn"}, token, method="PUT")[0] == 409
+                assert request("/api/tenants/skills/nonexistent", {"enabled": False}, token, method="PUT")[0] == 404
+                with sqlite3.connect(directory / "tenant.db") as database:
+                    database.execute("UPDATE tenant_memberships SET role='tenant_member' WHERE user_id=?", ("catalog-smoke-user",))
+                assert request(shared_url, {"enabled": True, "expected_resource_id": shared_source["resource_id"]}, token, method="PUT")[0] == 403
+                assert unchanged_files == {path: path.read_bytes() for path in unchanged_files}
                 result = {
                     "passed": True,
                     "gateway": "real uvicorn process",
@@ -309,6 +340,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
                     "temporary_skill_root": True,
                     "explicit_source_install_and_recovery": True, "scoped_receipt_pagination_and_retention": True, "concrete_skill_identity_and_detail": True, "owned_skill_patch_and_stale_content_rejection": True,
                     "installation_does_not_bind_agent_or_grant_execution": True,
+                    "concrete_enablement_and_current_membership": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

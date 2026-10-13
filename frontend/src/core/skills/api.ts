@@ -1,9 +1,14 @@
-import { readSkillMutationResponse } from "./mutations";
-import { readSkillImportResponse, SkillImportError } from "./imports";
 import { getAuthHeaders } from "@/core/api/auth-client";
 import { getBackendBaseURL } from "@/core/config";
 
-import type { Skill, AvailableSkillResponse, SummarizeDiagnosisRequest, SummarizeDiagnosisResponse } from "./type";
+import { readSkillImportResponse, SkillImportError } from "./imports";
+import { SkillMutationError, readSkillMutationResponse } from "./mutations";
+import type {
+  Skill,
+  AvailableSkillResponse,
+  SummarizeDiagnosisRequest,
+  SummarizeDiagnosisResponse,
+} from "./type";
 
 export async function loadSkills(signal?: AbortSignal) {
   const skills = await fetch(`${getBackendBaseURL()}/api/skills`, {
@@ -42,7 +47,12 @@ export async function installSkill(
     return await readSkillImportResponse<InstallSkillResponse>(response);
   } catch (error) {
     if (!(error instanceof SkillImportError)) throw error;
-    return { success: false, skill_name: "", message: error.message, operation_id: error.operationId };
+    return {
+      success: false,
+      skill_name: "",
+      message: error.message,
+      operation_id: error.operationId,
+    };
   }
 }
 
@@ -74,23 +84,31 @@ export async function loadTenantSkills(signal?: AbortSignal) {
   return json.skills as Skill[];
 }
 
-export async function updateTenantSkill(skillName: string, enabled: boolean) {
+export async function updateTenantSkill(
+  skillName: string,
+  enabled: boolean,
+  options: { expectedResourceId?: string; isCurrent?: () => boolean } = {},
+) {
+  const headers = await getAuthHeaders({ "Content-Type": "application/json" });
+  if (options.isCurrent && !options.isCurrent())
+    throw new SkillMutationError(
+      401,
+      options.expectedResourceId,
+      false,
+      "Skill mutation identity changed",
+    );
   const response = await fetch(
-    `${getBackendBaseURL()}/api/tenants/skills/${skillName}`,
+    `${getBackendBaseURL()}/api/tenants/skills/${encodeURIComponent(skillName)}`,
     {
       method: "PUT",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
+      headers,
       body: JSON.stringify({
         enabled,
+        expected_resource_id: options.expectedResourceId,
       }),
-    }
+    },
   );
-  if (!response.ok) {
-    throw new Error(`Failed to update tenant skill: ${response.status}`);
-  }
-  return response.json();
+  return readSkillMutationResponse(response);
 }
 
 export async function createTenantSkill(input: {
@@ -103,19 +121,18 @@ export async function createTenantSkill(input: {
   prompt_template?: string | null;
   strategy?: string | null;
 }) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/tenants/skills`,
-    {
-      method: "POST",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(input),
-    }
-  );
+  const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills`, {
+    method: "POST",
+    headers: await getAuthHeaders({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(input),
+  });
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to create tenant skill: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to create tenant skill: ${response.status}`,
+    );
   }
   return response.json();
 }
@@ -142,7 +159,7 @@ export async function patchTenantSkill(
         "Content-Type": "application/json",
       }),
       body: JSON.stringify(input),
-    }
+    },
   );
   return readSkillMutationResponse(response);
 }
@@ -156,19 +173,18 @@ export async function createPersonalSkill(input: {
   prompt_template?: string | null;
   strategy?: string | null;
 }) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/skills/personal`,
-    {
-      method: "POST",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(input),
-    }
-  );
+  const response = await fetch(`${getBackendBaseURL()}/api/skills/personal`, {
+    method: "POST",
+    headers: await getAuthHeaders({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(input),
+  });
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to create personal skill: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to create personal skill: ${response.status}`,
+    );
   }
   return response.json();
 }
@@ -195,18 +211,23 @@ export async function patchPersonalSkill(
         "Content-Type": "application/json",
       }),
       body: JSON.stringify(input),
-    }
+    },
   );
   return readSkillMutationResponse(response);
 }
 export async function deletePersonalSkill(skillName: string) {
-  const response = await fetch(`${getBackendBaseURL()}/api/skills/personal/${skillName}`, {
-    method: "DELETE",
-    headers: await getAuthHeaders(),
-  });
+  const response = await fetch(
+    `${getBackendBaseURL()}/api/skills/personal/${skillName}`,
+    {
+      method: "DELETE",
+      headers: await getAuthHeaders(),
+    },
+  );
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to delete personal skill: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to delete personal skill: ${response.status}`,
+    );
   }
 }
 
@@ -214,15 +235,20 @@ export async function importPersonalSkill(file: File) {
   const formData = new FormData();
   formData.append("archive", file);
 
-  const response = await fetch(`${getBackendBaseURL()}/api/skills/personal/import`, {
-    method: "POST",
-    headers: await getAuthHeaders(),
-    body: formData,
-  });
+  const response = await fetch(
+    `${getBackendBaseURL()}/api/skills/personal/import`,
+    {
+      method: "POST",
+      headers: await getAuthHeaders(),
+      body: formData,
+    },
+  );
 
   if (!response.ok) {
     if (response.status === 413) {
-      throw new Error("技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限");
+      throw new Error(
+        "技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限",
+      );
     }
     return readSkillImportResponse(response);
   }
@@ -234,15 +260,20 @@ export async function importTenantSkill(file: File) {
   const formData = new FormData();
   formData.append("archive", file);
 
-  const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills/import`, {
-    method: "POST",
-    headers: await getAuthHeaders(),
-    body: formData,
-  });
+  const response = await fetch(
+    `${getBackendBaseURL()}/api/tenants/skills/import`,
+    {
+      method: "POST",
+      headers: await getAuthHeaders(),
+      body: formData,
+    },
+  );
 
   if (!response.ok) {
     if (response.status === 413) {
-      throw new Error("技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限");
+      throw new Error(
+        "技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限",
+      );
     }
     return readSkillImportResponse(response);
   }
@@ -256,15 +287,20 @@ export async function deleteTenantSkill(skillName: string) {
     {
       method: "DELETE",
       headers: await getAuthHeaders(),
-    }
+    },
   );
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to delete tenant skill: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to delete tenant skill: ${response.status}`,
+    );
   }
 }
 
-export async function getSkillDetail(skillName: string, options: {scope?: string; resourceId?: string; signal?: AbortSignal} = {}) {
+export async function getSkillDetail(
+  skillName: string,
+  options: { scope?: string; resourceId?: string; signal?: AbortSignal } = {},
+) {
   const query = new URLSearchParams();
   if (options.scope) query.set("scope", options.scope);
   if (options.resourceId) query.set("resource_id", options.resourceId);
@@ -273,7 +309,7 @@ export async function getSkillDetail(skillName: string, options: {scope?: string
     {
       headers: await getAuthHeaders(),
       signal: options.signal,
-    }
+    },
   );
   if (!response.ok) {
     throw new Error(`Failed to load skill detail: ${response.status}`);
@@ -290,11 +326,13 @@ export async function generateInstructions(prompt: string, modelName?: string) {
         "Content-Type": "application/json",
       }),
       body: JSON.stringify({ prompt, model_name: modelName }),
-    }
+    },
   );
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to generate instructions: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to generate instructions: ${response.status}`,
+    );
   }
   return response.json();
 }
@@ -310,11 +348,13 @@ export async function summarizeDiagnosis(
         "Content-Type": "application/json",
       }),
       body: JSON.stringify(input),
-    }
+    },
   );
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to summarize diagnosis: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to summarize diagnosis: ${response.status}`,
+    );
   }
   return response.json();
 }
