@@ -145,8 +145,10 @@ class ExecutionCapabilityRepository:
             raise ExecutionTrustError("invalid execution capability request")
         if diagnosis_source_id is not None and (agent_id is None or not isinstance(diagnosis_source_id, str) or not diagnosis_source_id or not isinstance(diagnosis_source_revision, str) or len(diagnosis_source_revision) != 64):
             raise ExecutionTrustError("Invalid diagnosis source selection")
-        if diagnosis_incident_id is not None and (diagnosis_source_id is None or not isinstance(diagnosis_incident_id, str) or not diagnosis_incident_id or len(diagnosis_incident_id) > 255):
+        if diagnosis_incident_id is not None and (agent_id is None or not isinstance(diagnosis_incident_id, str) or not diagnosis_incident_id or len(diagnosis_incident_id) > 255):
             raise ExecutionTrustError("Invalid diagnosis incident selection")
+        if diagnosis_incident_id is not None and action_incident_id is not None and diagnosis_incident_id != action_incident_id:
+            raise ExecutionTrustError("Diagnosis and action incident selections differ")
         instant = at or datetime.now(UTC)
         token = secrets.token_urlsafe(32)
         if agent_id is not None:
@@ -155,8 +157,8 @@ class ExecutionCapabilityRepository:
             payload = {"version": 1, "nonce": token, "agent_id": agent_id}
             if diagnosis_source_id is not None:
                 payload.update(source_id=diagnosis_source_id, source_revision=diagnosis_source_revision)
-                if diagnosis_incident_id is not None:
-                    payload["diagnosis_incident_id"] = diagnosis_incident_id
+            if diagnosis_incident_id is not None:
+                payload["diagnosis_incident_id"] = diagnosis_incident_id
             token = "prismos-native-v1." + base64.urlsafe_b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode().rstrip("=")
         row = PlatformExecutionCapabilityRecord(
             token_hash=sha256(token.encode()).hexdigest(),
@@ -189,7 +191,12 @@ class ExecutionCapabilityRepository:
             value = json.loads(base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)))
             if (
                 not isinstance(value, dict)
-                or set(value) not in ({"version", "nonce", "agent_id"}, {"version", "nonce", "agent_id", "source_id", "source_revision"}, {"version", "nonce", "agent_id", "source_id", "source_revision", "diagnosis_incident_id"})
+                or set(value) not in (
+                    {"version", "nonce", "agent_id"},
+                    {"version", "nonce", "agent_id", "source_id", "source_revision"},
+                    {"version", "nonce", "agent_id", "source_id", "source_revision", "diagnosis_incident_id"},
+                    {"version", "nonce", "agent_id", "diagnosis_incident_id"},
+                )
                 or value["version"] != 1
                 or not isinstance(value["nonce"], str)
                 or len(value["nonce"]) < 32
@@ -247,12 +254,12 @@ class ExecutionCapabilityRepository:
             return {"incident_id": row.action_incident_id, "agent_id": native_id} if include_selection else row.action_incident_id
 
 
-async def attach_execution_capability(context: dict, *, action_incident_id: str | None = None, native_selection_validator=None) -> dict:
+async def attach_execution_capability(context: dict, *, action_incident_id: str | None = None, native_selection_validator=None, session_factory=None) -> dict:
     """Add a short-lived bearer to a server-created LangGraph run context."""
     trusted = dict(context)
     if os.getenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off").lower() != "required" and not trusted.get("agent_id"):
         return trusted
-    trusted["prismos_execution_capability"] = await ExecutionCapabilityRepository(native_selection_validator=native_selection_validator).issue(
+    trusted["prismos_execution_capability"] = await ExecutionCapabilityRepository(session_factory, native_selection_validator=native_selection_validator).issue(
         trusted["tenant_id"],
         trusted["user_id"],
         trusted["thread_id"],

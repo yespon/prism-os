@@ -63,17 +63,17 @@ async def verify_native_selection(session, tenant_id, user_id, agent_name, agent
     tenant = await session.get(Tenant, tenant_id, populate_existing=True)
     if agent is None or agent.tenant_id != tenant_id or agent.name != agent_name or not agent.enabled or agent.user_id not in {user_id, "tenant-shared"} or member is None or tenant is None or tenant.status != "active":
         raise ExecutionTrustError("Native Agent selection unavailable")
+    severity = None
+    if diagnosis_incident_id is not None:
+        from app.models.alerting import Incident
+
+        incident = (await session.exec(select(Incident).where(Incident.id == diagnosis_incident_id, Incident.tenant_id == tenant_id).execution_options(populate_existing=True))).scalars().first()
+        if incident is None:
+            raise ExecutionTrustError("Current diagnosis incident unavailable")
+        severity = incident.severity
     if source_id is not None:
         from app.alerting.diagnosis_authorization import current_authorization
 
-        severity = None
-        if diagnosis_incident_id is not None:
-            from app.models.alerting import Incident
-
-            incident = (await session.exec(select(Incident).where(Incident.id == diagnosis_incident_id, Incident.tenant_id == tenant_id).execution_options(populate_existing=True))).scalars().first()
-            if incident is None:
-                raise ExecutionTrustError("Current diagnosis incident unavailable")
-            severity = incident.severity
         await current_authorization(session, source_id, tenant_id, agent_id, expected_actor=user_id, expected_revision=source_revision, severity=severity)
 
 

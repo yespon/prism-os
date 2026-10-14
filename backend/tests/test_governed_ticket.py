@@ -467,7 +467,8 @@ async def test_diagnosis_card_status_reads_persisted_action_facts(ticket_setup, 
 
 
 @pytest.mark.anyio
-async def test_diagnosis_read_file_records_policy_before_sandbox_read(ticket_setup, monkeypatch) -> None:
+@pytest.mark.parametrize("native", [False, True])
+async def test_diagnosis_read_file_records_policy_before_sandbox_read(ticket_setup, monkeypatch, native) -> None:
     from langchain.tools import ToolRuntime
 
     from app.alerting import governed_read_tool as read_action
@@ -494,6 +495,8 @@ async def test_diagnosis_read_file_records_policy_before_sandbox_read(ticket_set
     monkeypatch.setattr(read_action.read_file_tool, "func", sandbox_read)
     scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "diagnosis-read-1",
              "agent_name": "diagnosis", "incident_id": "incident-1"}
+    if native:
+        scope["agent_id"] = "native-read-agent"
     selected = read_action.governed_read_file_tool(scope)
     runtime = ToolRuntime(state={}, context=scope, config={}, stream_writer=lambda _value: None,
                           tool_call_id="call-1", store=None)
@@ -503,6 +506,7 @@ async def test_diagnosis_read_file_records_policy_before_sandbox_read(ticket_set
     decision = await decisions.get_by_request("tenant-a", request_id)
     assert decision.action == "read_file" and decision.risk_class == "read_only"
     assert decision.verdict == "allow" and decision.execution.actor.id == "user-1"
+    assert decision.execution.attributes.get("agent_id") == ("native-read-agent" if native else None)
     assert any(event.policy_decision_id == decision.decision_id and event.event_type == "action.policy_evaluated"
                for event in await audits.list_recent("tenant-a"))
     assert await selected.coroutine(runtime, "inspect logs", "/workspace/log.txt") == "file contents"
@@ -513,6 +517,11 @@ async def test_diagnosis_read_file_records_policy_before_sandbox_read(ticket_set
                                 stream_writer=lambda _value: None, tool_call_id="call-other", store=None)
     with pytest.raises(PermissionError, match="sandbox identity"):
         await selected.coroutine(wrong_runtime, "inspect logs", "/workspace/log.txt")
+    if native:
+        wrong_agent = ToolRuntime(state={}, context=scope | {"agent_id": "another-native-agent"}, config={},
+                                  stream_writer=lambda _value: None, tool_call_id="call-agent-mismatch", store=None)
+        with pytest.raises(PermissionError, match="sandbox identity"):
+            await selected.coroutine(wrong_agent, "inspect logs", "/workspace/log.txt")
     with pytest.raises(ValueError, match="different Action context"):
         await selected.coroutine(runtime, "inspect logs", "/workspace/other.txt")
     assert len(reads) == 2
@@ -593,3 +602,27 @@ async def test_diagnosis_read_file_denied_without_sandbox_access(ticket_setup, m
     assert decision.verdict == "deny"
     assert any(event.policy_decision_id == decision.decision_id and event.outcome == "denied"
                for event in await audits.list_recent("tenant-a"))
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("first_native", [False, True])
+async def test_existing_diagnosis_action_cannot_be_rebound_to_same_name_native_instance(ticket_setup, monkeypatch, first_native):
+    from app.alerting import governed_ticket_tool as agent_action
+
+    make, _, state, _, _, decisions, _, _, _ = ticket_setup
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
+    monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
+    monkeypatch.setattr(agent_action, "ticket_adapter", lambda _tenant: make("allow"))
+    monkeypatch.setattr(agent_action, "PolicyDecisionRepository", lambda: decisions)
+    scope = {"tenant_id": "tenant-a", "user_id": "user-1", "thread_id": "same-name-thread", "agent_name": "collision-agent", "incident_id": "incident-1"}
+    if first_native:
+        scope["agent_id"] = "first-native-id"
+    first = await agent_action.governed_ticket_tools(scope)[0].ainvoke({})
+    assert first["status"] == "submitted" and len(state.calls) == 1
+    chosen = scope | {"agent_id": "another-native-id"}
+    with pytest.raises(PermissionError, match="identity changed"):
+        await agent_action.governed_ticket_tools(chosen)[0].ainvoke({})
+    assert len(state.calls) == 1
+    decision = await decisions.get("tenant-a", first["decision_id"])
+    assert decision.execution.attributes.get("agent_id") == ("first-native-id" if first_native else None)

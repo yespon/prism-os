@@ -51,7 +51,16 @@ def ticket_execution(scope: dict[str, str]) -> ExecutionEnvelope:
         workload=IdentityRef(kind="workload", id=f"diagnosis-agent:{scope['agent_name']}", tenant_id=tenant_id),
         actor=IdentityRef(kind="user", id=scope["user_id"], tenant_id=tenant_id),
         occurred_at=datetime.now(UTC),
-        attributes={"thread_id": thread_id},
+        attributes={"thread_id": thread_id, **({"agent_id": scope["agent_id"]} if scope.get("agent_id") is not None else {})},
+    )
+
+
+def execution_matches_diagnosis_scope(execution: ExecutionEnvelope, scope: dict[str, str]) -> bool:
+    return (
+        execution.actor is not None
+        and execution.actor.id == scope["user_id"]
+        and execution.workload.id == f"diagnosis-agent:{scope['agent_name']}"
+        and execution.attributes.get("agent_id") == scope.get("agent_id")
     )
 
 
@@ -63,7 +72,7 @@ async def execute_ticket_scope(scope: dict[str, str], *, adapter: TicketActionAd
     request_id = ticket_request_id(scope["thread_id"], scope["incident_id"])
     existing = await (decisions or PolicyDecisionRepository()).get_by_request(tenant_id, request_id)
     execution = existing.execution if existing else ticket_execution(scope)
-    if execution.actor is None or execution.actor.id != scope["user_id"] or execution.workload.id != f"diagnosis-agent:{scope['agent_name']}":
+    if not execution_matches_diagnosis_scope(execution, scope):
         raise PermissionError("diagnosis Action identity changed")
     return await (adapter or ticket_adapter(tenant_id)).execute(execution, request_id, scope["incident_id"])
 

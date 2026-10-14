@@ -81,6 +81,26 @@ from app.models.alerting import AlertSource, Incident
 from app.platform.execution.trust import ExecutionCapabilityRepository
 from app.runtime_adapters import verify_native_selection
 from deerflow.database.session import get_session_factory
+from types import SimpleNamespace
+import uuid
+import langgraph_sdk
+_manual_selections = []
+async def _owned_manual_thread(**kwargs):
+    return {{"thread_id": "manual-" + uuid.uuid4().hex}}
+async def _owned_manual_state(*args, **kwargs):
+    return {{"values": {{}}}}
+async def _owned_manual_runs(*args, **kwargs):
+    return []
+async def _owned_manual_stream(thread_id, assistant, *, context, **kwargs):
+    repository = ExecutionCapabilityRepository(get_session_factory(), native_selection_validator=verify_native_selection)
+    chosen = await repository.consume(context["prismos_execution_capability"], context["tenant_id"], context["user_id"], thread_id, context["agent_name"], include_selection=True)
+    _manual_selections.append({{"tenant_id": context["tenant_id"], "user_id": context["user_id"], "agent_id": chosen["agent_id"], "incident_id": chosen["incident_id"]}})
+    yield SimpleNamespace(event="messages-tuple", data=[{{"type": "ai", "id": "owned-manual-message", "content": "Verified native manual diagnosis"}}, {{}}])
+langgraph_sdk.get_client = lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=_owned_manual_thread, get_state=_owned_manual_state), runs=SimpleNamespace(stream=_owned_manual_stream, list=_owned_manual_runs))
+@app.get("/api/probe/manual-selections")
+async def owned_manual_selections(request: Request):
+    tenant = require_tenant_context(request)
+    return {{"calls": [c for c in _manual_selections if c["tenant_id"] == tenant and c["user_id"] == request.state.user_id]}}
 @app.get("/api/probe/source-capability/{{source_id}}")
 async def owned_source_capability(source_id: str, request: Request, revoke_after_issue: bool = False):
     tenant = require_tenant_context(request)
@@ -376,6 +396,14 @@ async def owned_skill_choice(agent_name: str, request: Request):
                 code, verified_authority = request(authority_url, token=token)
                 assert code == 200 and verified_authority == {"actor_id": "catalog-smoke-user", "agent_id": shared_authority["id"], "action_authorized": False}
                 assert request(authority_url + "?revoke_after_issue=true", token=token)[0] == 403
+                manual_incident_id = "probe-" + source_authority["id"]
+                manual_diagnosis_url = "/api/incidents/" + manual_incident_id + "/diagnose?agent_id="
+                for native_agent in [shared_authority, private_collision]:
+                    code, stream = request(manual_diagnosis_url + native_agent["id"], token=token, method="POST", raw=True)
+                    assert code == 200 and b"RUN_FINISHED" in stream and b"RUN_ERROR" not in stream
+                code, manual_calls = request("/api/probe/manual-selections", token=token)
+                assert code == 200 and [c["agent_id"] for c in manual_calls["calls"]] == [shared_authority["id"], private_collision["id"]]
+                assert all(c["incident_id"] == manual_incident_id for c in manual_calls["calls"])
                 code, enabled_sources = request("/api/skills/available", token=token)
                 shared_source = next(item for item in enabled_sources["skills"] if item["name"] == "enablement-owned" and item["scope"] == "tenant")
                 shared_url = "/api/tenants/skills/enablement-owned"
@@ -389,6 +417,10 @@ async def owned_skill_choice(agent_name: str, request: Request):
                 assert request(shared_url, {"enabled": True, "expected_resource_id": shared_source["resource_id"]}, token, method="PUT")[0] == 403
                 assert request(authority_url, token=token)[0] == 403
                 assert request("/api/alert-sources", source_body, token)[0] == 403
+                code, stream = request(manual_diagnosis_url + shared_authority["id"], token=token, method="POST", raw=True)
+                assert code == 200 and b"RUN_FINISHED" in stream and b"RUN_ERROR" not in stream
+                code, manual_calls = request("/api/probe/manual-selections", token=token)
+                assert code == 200 and len(manual_calls["calls"]) == 3 and manual_calls["calls"][-1]["agent_id"] == shared_authority["id"]
                 assert unchanged_files == {path: path.read_bytes() for path in unchanged_files}
                 assert request("/api/tenants/skills", {"name": "member-creation-denied", "description": "Denied"}, token)[0] == 403
                 code, manual = request("/api/skills/personal", {"name": "manual-owned", "description": "SOP: verified manual", "instructions": "MANUAL BODY", "enabled": False, "bound_tools": []}, token)
@@ -473,6 +505,7 @@ async def owned_skill_choice(agent_name: str, request: Request):
                     "concrete_agent_choice_revision_and_current_authorized_snapshot": True,
                     "source_admin_confirmation_native_capability_and_role_withdrawal": True,
                     "diagnosis_incident_current_condition_recheck_without_action_authority": True,
+                    "manual_diagnosis_real_session_native_selection_and_member_usage": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

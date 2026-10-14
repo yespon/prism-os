@@ -318,3 +318,11 @@ N07-B、N04 保持 P0，真实测试环境的位置、配置引用、模型与�
 最终后端 1795 passed / 18 skipped、相邻回归 51 项、PostgreSQL 177 项、当前/独立统一门各 497 后端/162 前端、真实 Gateway 和当前/独立默认构建通过。48 宿主输入固定的 b5→b6→b5 各 303 项，原来源/锁/重建制品一致，两份生产追踪各 50 文件无越界。独立完整前端 249 项为本批新运行；499 个当前前端源码未变，当前完整前端保留 `3b493cb` 历史适用范围。独立 PyPI TLS 失败已在相同缓存离线重建后恢复，日志保留。详见[本批证据](../evidence/2026-10-14-octop-n09-shared-diagnosis-snapshots/README.md)。
 
 继续[完整后续队列](2026-10-14-octop-n09-shared-diagnosis-snapshots.md)：graph 构建配置/引用并发变化与运行中撤权，人工/普通按名入口、旧名称/default/terminal、全部成员文件工具授权，真实删除进程中断/恢复和复制/分享目标重授权；随后原 C3–C5、33 非 Skill、18 专家/子 Agent、独立 Office和外部运行/MCP接缝。受控 SDK/模型组装不替代 N04 真实环境；N04/N07-B 为 P0，完整 C2/N09/M1 未退出，N08 持久执行/委派不启动。全部 N01–N15/O01–O42/F01–F12 与原 PrismOS 规划/能力/门保持。
+
+### N09-C2：人工诊断具体实例与原 Action 身份（2026-10-14，未退出）
+
+基线 `3afdde4`。先以实际 HTTP/DB/SDK 固定八项人工同名/异步/撤权故障，人工请求、线程等待后及原 capability 发行/消费按当前成员/实例/租户事件核验；普通成员可用共享实例，人工不借用自动来源身份或严重性条件。原 ThreadBinding 保存 owner/name，登记前不发布指针，原任务内存参数隔离另一 actor/实例的活跃缓冲，旧线程归属可证明时保留清理；新消息不保留过期角色/Skill副本，跨租户变化不写外租户状态。
+
+原 Action/读取 ExecutionEnvelope 保留 workload 命名，并以既有 attributes 的 Native ID 拒绝同名另一实例复用旧决定；原 canary、Policy/Approval、单次发送、unknown及审计保持，无新schema/注册表/Run事实。最终后端 1816 passed / 18 skipped、相邻门 95、PostgreSQL 195、当前/独立统一门各 546 后端/162 前端、真实 Gateway/人工 SSE、默认构建与制品通过。独立完整前端 249 项为新运行；499 个当前前端源码未变，当前完整前端属基线历史。固定 52 宿主输入 b5→b6→b5 各 360 项，来源/锁/制品一致，生产追踪各50文件无越界。详见[本批证据](../evidence/2026-10-14-octop-n09-manual-diagnosis-identity/README.md)。受控SDK与模型流不替代N04真实外部环境。
+
+继续[完整后续队列](2026-10-14-octop-n09-manual-diagnosis-identity.md)：普通聊天/人工线程续接的具体实例持久绑定、旧名称/default/terminal、graph内并发配置/引用及运行中撤权与真实取消/unknown、全部文件工具和结果/历史访问，真实删除进程恢复及复制分享目标重授权。随后原C3–C5、33非Skill、18专家/子Agent、独立Office及外部运行/MCP接缝。完整C2/N09/M1未退出，N04/N07-B为P0，N08持久执行/委派不启动；原全部N01–N15/O01–O42/F01–F12和PrismOS规划/能力/门保持。

@@ -30,12 +30,16 @@ class DiagnosisTaskManager:
         self._stream_states = {} # incident_id -> StreamState
         self._thread_ids = {}    # incident_id -> str
         self._agent_names = {}   # incident_id -> str
+        self._identities = {}    # active task -> (tenant, actor, native Agent ID)
 
     def get_thread_id(self, incident_id: str) -> str | None:
         return self._thread_ids.get(incident_id)
 
     def get_agent_name(self, incident_id: str) -> str | None:
         return self._agent_names.get(incident_id)
+
+    def get_identity(self, incident_id: str):
+        return self._identities.get(incident_id)
 
     def is_running(self, incident_id: str) -> bool:
         task = self._tasks.get(incident_id)
@@ -69,6 +73,7 @@ class DiagnosisTaskManager:
         def _cleanup(t):
             if incident_id in self._tasks and self._tasks[incident_id] == t:
                 del self._tasks[incident_id]
+                self._identities.pop(incident_id, None)
         
         task.add_done_callback(_cleanup)
 
@@ -1310,16 +1315,34 @@ async def _run_diagnosis_background_task(
         langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2025")
         client = get_client(url=langgraph_url)
 
-        # Cancel any orphaned diagnosis from previous attempts
+        from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt
+        from app.integrations.agent_skill_references import current_skill_prompt
+        from app.models.agents import CustomAgent
+        from app.platform.execution.trust import ThreadBindingRepository
+        from app.runtime_adapters import verify_native_selection
+
         async with db_factory() as read_session:
+            current = await read_session.get(CustomAgent, agent_id)
+            if current is None:
+                raise ValueError("Current diagnosis Agent unavailable")
+            agent_name = current.name
+            await verify_native_selection(read_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
             inc = await read_session.get(Incident, incident_id)
-            old_thread_id = inc.thread_id if inc else None
-            
+            old_thread_id = inc.thread_id
+
+        # Only cancel a previous thread with proven current actor ownership.
         if old_thread_id:
-            try:
+            owned = await ThreadBindingRepository(db_factory).lookup(old_thread_id)
+            allowed = owned is not None and owned.tenant_id == tenant_id and owned.user_id == user_id
+            if owned is None:
+                try:
+                    previous = await client.threads.get(old_thread_id)
+                    metadata = previous.get("metadata", {}) if isinstance(previous, dict) else {}
+                    allowed = metadata.get("owner_tenant_id") == tenant_id and metadata.get("owner_user_id") == user_id
+                except Exception:
+                    allowed = False
+            if allowed:
                 await _cancel_incident_diagnosis_run(client, old_thread_id, incident_id)
-            except Exception:
-                pass
 
         thread = await client.threads.create(metadata={
             "owner_user_id": user_id,
@@ -1327,17 +1350,34 @@ async def _run_diagnosis_background_task(
             "incident_id": incident_id,
         })
         thread_id = thread["thread_id"]
-        task_manager._thread_ids[incident_id] = thread_id
 
-        # Update status to running and store thread_id early
+        # Establish original thread ownership before exposing any thread pointer.
+        async with db_factory() as selection_session:
+            current = await selection_session.get(CustomAgent, agent_id)
+            if current is None:
+                raise ValueError("Current diagnosis Agent unavailable")
+            agent_name = current.name
+            await verify_native_selection(selection_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+        repository = ThreadBindingRepository(db_factory)
+        await repository.create(thread_id, tenant_id, user_id)
+        await repository.bind_agent(thread_id, tenant_id, user_id, agent_name)
+
+        # Recheck current selection and resources after the network/DB waits.
         async with db_factory() as write_session:
+            current = await write_session.get(CustomAgent, agent_id)
+            if current is None:
+                raise ValueError("Current diagnosis Agent unavailable")
+            await verify_native_selection(write_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+            await current_skill_prompt(write_session, agent_name, tenant_id, user_id, selected_agent_id=agent_id)
             fresh = await write_session.get(Incident, incident_id)
-            if fresh:
-                fresh.agent_id = agent_id
-                fresh.thread_id = thread_id
-                fresh.diagnosis_status = "running"
-                write_session.add(fresh)
-                await write_session.commit()
+            diagnosis_prompt = await build_incident_diagnosis_prompt(write_session, fresh, tenant_id, include_agent_configuration=False)
+            fresh.agent_id = agent_id
+            fresh.thread_id = thread_id
+            fresh.diagnosis_status = "running"
+            write_session.add(fresh)
+            await write_session.commit()
+        task_manager._thread_ids[incident_id] = thread_id
+        task_manager._agent_names[incident_id] = agent_name
 
         # Broadcast thread_id start event
         task_manager.broadcast(incident_id, msg_thread(thread_id, agent_name))
@@ -1353,10 +1393,12 @@ async def _run_diagnosis_background_task(
             },
             context=await attach_execution_capability({
                 "agent_name": agent_name,
+                "agent_id": agent_id,
+                "diagnosis_incident_id": incident_id,
                 "user_id": user_id,
                 "tenant_id": tenant_id,
                 "thread_id": thread_id,
-            }, action_incident_id=incident_id),
+            }, action_incident_id=incident_id, native_selection_validator=verify_native_selection, session_factory=db_factory),
             stream_mode=["messages-tuple", "values"],
         ):
             event = getattr(chunk, "event", "")
@@ -1370,7 +1412,7 @@ async def _run_diagnosis_background_task(
                 
                 async with db_factory() as write_session:
                     fresh = await write_session.get(Incident, incident_id)
-                    if fresh:
+                    if fresh and fresh.tenant_id == tenant_id:
                         fresh.diagnosis_status = "failed"
                         fresh.diagnosis_error = err_msg
                         if stream_state.full_text_buffer:
@@ -1395,7 +1437,7 @@ async def _run_diagnosis_background_task(
         # Finished successfully
         async with db_factory() as write_session:
             fresh = await write_session.get(Incident, incident_id)
-            if fresh and fresh.diagnosis_status != "cancelled":
+            if fresh and fresh.tenant_id == tenant_id and fresh.diagnosis_status != "cancelled":
                 fresh.diagnosis_status = "completed"
                 fresh.diagnosis_result = stream_state.full_text_buffer or None
                 fresh.diagnosis_error = None
@@ -1411,7 +1453,7 @@ async def _run_diagnosis_background_task(
         # Update status to cancelled in DB
         async with db_factory() as write_session:
             fresh = await write_session.get(Incident, incident_id)
-            if fresh and fresh.diagnosis_status == "running":
+            if fresh and fresh.tenant_id == tenant_id and fresh.diagnosis_status == "running":
                 fresh.diagnosis_status = "cancelled"
                 fresh.diagnosis_error = "诊断任务被手动终止"
                 write_session.add(fresh)
@@ -1431,7 +1473,7 @@ async def _run_diagnosis_background_task(
         try:
             async with db_factory() as write_session:
                 fresh = await write_session.get(Incident, incident_id)
-                if fresh:
+                if fresh and fresh.tenant_id == tenant_id:
                     fresh.diagnosis_status = "failed"
                     fresh.diagnosis_error = err_msg[:5000]
                     if stream_state.full_text_buffer:
@@ -1497,19 +1539,27 @@ async def diagnose_incident(
 
     agent_name = agent.name
 
-    # Build the unified detailed prompt using helper (pass agent metadata)
-    diagnosis_prompt = await build_incident_diagnosis_prompt(
-        session, incident, tenant_id,
-        agent_system_prompt=agent.system_prompt,
-        agent_skills=agent.skills,
-        agent_tool_groups=agent.tool_groups,
-        agent=agent, actor_id=user_id,
-    )
+    from app.integrations.agent_skill_references import current_skill_prompt
+    from app.runtime_adapters import verify_native_selection
+
+    from deerflow.runtime import ExecutionTrustError
+
+    try:
+        await verify_native_selection(session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+    except ExecutionTrustError:
+        raise HTTPException(403, "Current diagnosis selection or membership unavailable") from None
+    await current_skill_prompt(session, agent_name, tenant_id, user_id, selected_agent_id=agent_id)
+    identity = (tenant_id, user_id, agent_id)
+    if diagnosis_task_manager.is_running(incident_id) and diagnosis_task_manager.get_identity(incident_id) != identity:
+        raise HTTPException(409, "A different diagnosis is already running for this incident")
+    diagnosis_prompt = await build_incident_diagnosis_prompt(session, incident, tenant_id, include_agent_configuration=False)
 
     # Check if a diagnosis is already running. If not, start it.
     if not diagnosis_task_manager.is_running(incident_id):
         from app.alerting.diagnosis_sse import StreamState
         diagnosis_task_manager._stream_states[incident_id] = StreamState()
+        diagnosis_task_manager._thread_ids.pop(incident_id, None)
+        diagnosis_task_manager._identities[incident_id] = identity
         diagnosis_task_manager._agent_names[incident_id] = agent_name
         
         diagnosis_task_manager.start_task(
@@ -1542,9 +1592,9 @@ async def diagnose_incident(
         diagnosis_task_manager.register_queue(incident_id, queue)
 
         try:
-            thread_id = diagnosis_task_manager.get_thread_id(incident_id) or incident.thread_id
+            thread_id = diagnosis_task_manager.get_thread_id(incident_id)
             if thread_id:
-                yield msg_thread(thread_id, agent_name)
+                yield msg_thread(thread_id, diagnosis_task_manager.get_agent_name(incident_id) or agent_name)
                 yielded_run_started = True
 
             # Replay historical steps from LangGraph checkpoint values (todos)

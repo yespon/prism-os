@@ -9,7 +9,7 @@ from uuid import uuid4
 from langchain.tools import ToolRuntime, tool
 
 from app.alerting.governed_ticket import active_requester
-from app.alerting.governed_ticket_tool import ticket_canary_enabled, ticket_execution
+from app.alerting.governed_ticket_tool import execution_matches_diagnosis_scope, ticket_canary_enabled, ticket_execution
 from app.platform.audit.repository import AuditEventRepository
 from app.platform.contracts import ActionContextInput, AuditEvent, PolicyRequest, hash_action_context, stable_platform_id
 from app.platform.policy.evaluator import PolicyConfiguration, PolicyRule
@@ -43,7 +43,8 @@ def governed_read_file_tool(scope: dict[str, str]):
         if not ticket_canary_enabled(tenant_id):
             raise PermissionError("governed read_file is disabled")
         context_identity = runtime.context or {}
-        if any(context_identity.get(key) != scope[key] for key in ("tenant_id", "user_id", "thread_id")):
+        identity_keys = ("tenant_id", "user_id", "thread_id", "agent_id") if scope.get("agent_id") is not None else ("tenant_id", "user_id", "thread_id")
+        if any(context_identity.get(key) != scope[key] for key in identity_keys):
             raise PermissionError("sandbox identity differs from trusted diagnosis scope")
         call_id = runtime.tool_call_id
         if not isinstance(call_id, str) or not call_id:
@@ -54,7 +55,7 @@ def governed_read_file_tool(scope: dict[str, str]):
         decisions = PolicyDecisionRepository()
         existing = await decisions.get_by_request(tenant_id, request_id)
         execution = existing.execution if existing else ticket_execution(scope)
-        if execution.actor is None or execution.actor.id != scope["user_id"] or execution.workload.id != f"diagnosis-agent:{scope['agent_name']}":
+        if not execution_matches_diagnosis_scope(execution, scope):
             raise PermissionError("diagnosis read identity changed")
         now = datetime.now(UTC)
         context = ActionContextInput(

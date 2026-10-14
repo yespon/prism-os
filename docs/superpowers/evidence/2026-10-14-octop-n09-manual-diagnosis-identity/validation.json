@@ -1,0 +1,157 @@
+{
+  "status": "manual_native_diagnosis_and_action_identity_candidate_not_complete_C2_N09",
+  "base_commit": "3afdde403af94dce7187e81c051314f3d4be47d0",
+  "backend": {
+    "passed": 1816,
+    "skipped": 18,
+    "warnings": 209,
+    "cwd": "backend",
+    "observed_exit_code": 0
+  },
+  "neighbors": {
+    "passed": 95,
+    "warnings": 49,
+    "observed_exit_code": 0
+  },
+  "new_cases_added": 21,
+  "manual_baseline_actual_failures": 8,
+  "postgres": {
+    "passed": 195,
+    "warnings": 136,
+    "owned_container_removed": true,
+    "observed_exit_code": 0
+  },
+  "octop_check": {
+    "current": {
+      "backend_passed": 546,
+      "frontend_passed": 162,
+      "observed_exit_code": 0
+    },
+    "independent": {
+      "backend_passed": 546,
+      "frontend_passed": 162,
+      "observed_prebuild_pipeline_exit_code": 0
+    }
+  },
+  "frontend": {
+    "current_source_unchanged_from_base": true,
+    "current_full_249_is_baseline_history": true,
+    "baseline_commit": "3afdde403af94dce7187e81c051314f3d4be47d0",
+    "tracked_source_paths": 499,
+    "source_aggregate_sha256": "f4c64aba602126913b25236df4be906df5745c2465dad3beebe6fd4e4f2bf198",
+    "independent_fresh": {
+      "files": 57,
+      "passed": 249,
+      "observed_prebuild_pipeline_exit_code": 0
+    }
+  },
+  "gateway": {
+    "current_and_independent_real_auth_session_and_membership": true,
+    "original_manual_sse_with_test_only_controlled_sdk": true,
+    "same_name_shared_and_personal_native_selection_and_member_usage": true,
+    "migration_head": "n8h9i0j1k2l3",
+    "real_external_model_tool_or_ticket_calls": false
+  },
+  "build": {
+    "current_observed_exit_code": 0,
+    "independent_observed_exit_code": 0,
+    "strict_typegen_tsc_webpack": true,
+    "current_trace_files": 50,
+    "independent_trace_files": 50,
+    "outside_frontend": [],
+    "wheel_sdist_offline_from_verified_cache": true
+  },
+  "upgrade": {
+    "host_inputs": 52,
+    "host_changed": false,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 360,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "passed": 360,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 360,
+        "observed_exit_code": 0
+      }
+    ]
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "a86072d3d54c65150bdf83d6b28af0b77eafcafd64f8971a3184998294e64937",
+    "Makefile": "248a92d7ab10d7824f4d4e656db516358503fab75457c34eae3581f6d0fe6ecd",
+    "backend/app/alerting/governed_read_tool.py": "065e02e108d5ec70c516f7d9d9fc39511ea69115eec49bb948b0d2197b6b00ea",
+    "backend/app/alerting/governed_ticket_tool.py": "00632e5d8f9dc501bd6e989be24e4423f5581e817d1710a933e7efd32a36e015",
+    "backend/app/gateway/routers/alerts.py": "b2b7e631665a74f24c4b623e5ec80703d8665839e11cf6876a93256144bac58a",
+    "backend/app/platform/execution/trust.py": "ebfcbc544e2c7df73eaeb70f5edeeaed023bc84cce3336f714378983c7b34e45",
+    "backend/app/runtime_adapters.py": "67b99ac4ea8666d017f79802affa9c0109ee427fb2369eff36c503175bad204c",
+    "backend/tests/test_diagnosis_authorization.py": "01e68fb9db94511450bfb62fb33ae83019ab91436a71e2faa462f27082df1172",
+    "backend/tests/test_governed_ticket.py": "5161ecc3f32330de07ae5966c11017faa7cf4b614aefe9d06c514a3106a2289b",
+    "backend/tests/test_incident_diagnosis.py": "eb1fed21674921e7a3913f680e027a19b34380ffe60bb2cd2d560d5044c0a3d8",
+    "scripts/octop_gateway_smoke.py": "7164abb0eef30e6070c603472684472672521e3dfbd02ea6952ce2752a3f84e4",
+    "scripts/octop_upgrade_probe.py": "2403e37c62160473ec54b5e28b62e369710fd41bc8cb2b94835b6d1acdb6b343"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifact_sha256s": {
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "pending": [
+    "Ordinary chat and continuation of diagnosis threads need persistent exact native instance binding; legacy-name/default/terminal still require current authorization.",
+    "Graph assembly config/reference concurrent changes, in-flight revocation, actual downstream cancellation/unknown and full N08 immutable versions/snapshots remain.",
+    "All referenced member file/tool authorization and complete result/history access policies.",
+    "True deletion process interruption/recovery, complete C2, complete member copy/share and target authorization.",
+    "N04 real environment/model/tool/countable receiver, N07-B remote CI; M1 not exited and N08 persistence/delegation not started.",
+    "Full N01-N15/O01-O42/F01-F12, 33 non-Skill groups, 18 experts/subagents, independent Office, external runtime/MCP compatibility and original PrismOS scope."
+  ],
+  "evidence_sha256s": {
+    "README.md": "dcbd7d54792e9b88a648247b6955d44e6d6b639cbc8909f02a4eb3ef66a94a99",
+    "gateway.json": "1adadad03497efdbad0176c65e1c3c54060c0f70d3a8818de9ffc382de7cc3cb",
+    "independent-gateway.json": "1adadad03497efdbad0176c65e1c3c54060c0f70d3a8818de9ffc382de7cc3cb",
+    "independent-inputs.json": "30f19f239fd4113f08f9c52c050bd41e46494c08a087e7fd03a675edbed55a29",
+    "integrity.json": "cb54cecc87168816e883e4dee152be2c35e053f58e76cbeda08755e9c6772682",
+    "logs/action-neighbors.log": "2fcbffd669cce4e899a2a68d440f2257c83ff41bd774d95455188e127c2b52eb",
+    "logs/backend-full.log": "29ba5a1290492e79b607d158ed6715b4f8a110906a1497712c110d4fc48d3c47",
+    "logs/brand-final.log": "5768ed13d58b55c4784f747790038d8768b5faba4743d0596a4bef67231beb73",
+    "logs/brand.log": "0bf83fbeefa595fff08acce02f58425565215fb99902c69cc7af2a7c33de975b",
+    "logs/ci-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/gateway.log": "4dafa0c3bfc285a2ddd6f0a528b1734037d24e1fec5229e88f0ee31222ec96dc",
+    "logs/independent-dependencies.log": "d5ab5b1d494b977755d6d164bd59a9ca937661d4d5f4b3b0d5790d506fc834e7",
+    "logs/independent-frontend-full.log": "3913f09711905ea0b7ca3937b55a8a21ef8af72586107c96a851db5c05d39eee",
+    "logs/independent-gateway.log": "4dafa0c3bfc285a2ddd6f0a528b1734037d24e1fec5229e88f0ee31222ec96dc",
+    "logs/independent-octop-check.log": "359e483148e38273c03b3abbd64d4683a42b23b1307a9a5d9852c38cdc91e01d",
+    "logs/independent-production-build.log": "bf8fa9ce034c6131e9bf184229da7b446f928e6922e3c46d54f94bce73adc7e4",
+    "logs/independent-wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/independent-wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/initial-action-validator-failure.log": "afcd0df05e205d4452d97e3c58412c66df88f97316d6d2a84cd78c0fc46bb3b7",
+    "logs/initial-neighbors.log": "432a7fb7bf4677a54351a7600787385d303a6917a4370aefc4f08fc9ee1482cd",
+    "logs/manual-baseline-eight-failures.log": "7a8977fae48963fe34b4609d04e24255ed47d2330dec0635f2d6df4def88836b",
+    "logs/manual-fixed-neighbors.log": "af516aa163e250f9ccf925f24109e3fdd87a15d1b7e53055d77ca472373cbb1b",
+    "logs/neighbors-frozen.log": "29082e77426189ff4c924710e6da1ad2ea3749386f65580ff1adb0d671e575e5",
+    "logs/octop-check.log": "8be4e8b1f826e077404a9000cdcfc392890f33be198a06e45a660df15fe76cc3",
+    "logs/owned-thread-neighbors.log": "6aba71c0640d784006671aaf43ff8d3345b0eb3e62b2026dc84b0ce82d4342b7",
+    "logs/postgres-run.log": "6d8fe65905bad8895c47f38ade22b1659636b2f987c8429be742fb3b93ac01e8",
+    "logs/postgres.log": "8f940a96f73d5ce4f1b82a49812ab3f0b5f3cb2128737c8e39c3ba124b7bcfe5",
+    "logs/production-build.log": "6d8c405f3560d29c56bc0604104ad151d5745149d81571b8e09050b9a6784c60",
+    "logs/source.log": "714452369f6aaca58cf458eaadc743b103d0ede8a825ba1faebb25741cb4a698",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/wrong-test-path-no-tests.log": "8b4d7b16d222107d4e395ce36e17a08fc2ac39ac187d8e7160e4441472c22710",
+    "postgres.json": "325946a570ad694d284d29ee79c9edd0efcf7a32c3d13f6d0d0da3018522a7a3",
+    "previous-source-receipt.json": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068",
+    "scope-audit.md": "490290b1e019614bebafcf5edbe66a9fe00522708ff6d05766587b7368808579",
+    "upgrade.json": "a13067812bbfc7f6c6a694f52f62e9d639f47e5c17144a706ffae7d639f564cf"
+  }
+}

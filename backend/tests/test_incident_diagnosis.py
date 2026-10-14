@@ -13,6 +13,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.agents import CustomAgent
 from app.models.alerting import AlertSource, Incident, IncidentSignalLink, RawAlert, Signal
+from deerflow.database.models import Tenant, TenantMembership
 
 # ---------------------------------------------------------------------------
 # Engine & Session Fixtures
@@ -118,6 +119,8 @@ def mock_langgraph():
 class TestIncidentDiagnosis:
     async def _setup_data(self, session_factory):
         async with session_factory() as session:
+            session.add(Tenant(id="tenant-a", name="A", slug="a"))
+            session.add(TenantMembership(tenant_id="tenant-a", user_id="user-a", role="tenant_member"))
             # 1. Create SRE custom agents
             private_agent = CustomAgent(
                 id="agent-private",
@@ -389,13 +392,15 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
     monkeypatch.setattr(agent_action, "PolicyDecisionRepository", lambda: decisions)
 
     async def graph_stream(thread_id, _assistant, *, context, **_kwargs):
-        incident_id = await trust.ExecutionCapabilityRepository(test_session_factory).consume(
+        from app.runtime_adapters import verify_native_selection
+        selected = await trust.ExecutionCapabilityRepository(test_session_factory, native_selection_validator=verify_native_selection).consume(
             context["prismos_execution_capability"], context["tenant_id"], context["user_id"],
-            thread_id, context["agent_name"],
+            thread_id, context["agent_name"], include_selection=True,
         )
-        assert incident_id == "incident-1"
+        incident_id = selected["incident_id"]
+        assert incident_id == "incident-1" and selected["agent_id"] == "agent-shared"
         scope = {"tenant_id": context["tenant_id"], "user_id": context["user_id"],
-                 "thread_id": thread_id, "agent_name": context["agent_name"], "incident_id": incident_id}
+                 "thread_id": thread_id, "agent_name": context["agent_name"], "incident_id": incident_id, "agent_id": selected["agent_id"]}
         outcome = await agent_action.governed_ticket_tools(scope)[0].ainvoke({})
         observed.append(outcome)
         yield MockStreamChunk("metadata", {})
@@ -412,6 +417,7 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
         decision = await decisions.get("tenant-a", observed[0]["decision_id"])
         assert decision.execution.actor.id == "user-a"
         assert decision.execution.workload.id == "diagnosis-agent:shared-diagnoser"
+        assert decision.execution.attributes["agent_id"] == "agent-shared"
         assert decision.execution.run_id
         assert (await submissions.get("tenant-a", decision.decision_id)).status == "submitted"
         assert any(event.event_type == "action.submitted" for event in
