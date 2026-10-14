@@ -269,6 +269,8 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
     from deerflow.database.session import get_session_factory
 
     async def _run():
+        from app.alerting.diagnosis_run_control import DiagnosisAuthorityWithdrawn, DiagnosisStopRequested
+
         try:
             from langgraph_sdk import get_client
 
@@ -312,8 +314,25 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                 bindings = ThreadBindingRepository(get_session_factory())
                 await bindings.create(thread_id, tenant_id, actor_id)
                 await bindings.bind_agent(thread_id, tenant_id, actor_id, agent.name)
+                fresh_inc.agent_id = diagnosis_agent_id
+                fresh_inc.thread_id = thread_id
+                session.add(fresh_inc)
+                await session.commit()
                 prompt = await build_incident_diagnosis_prompt(session, fresh_inc, tenant_id, include_agent_configuration=False)
-                result = await client.runs.wait(
+                from app.alerting.diagnosis_run_control import interrupt_owned_runs, wait_authorized_result
+
+                async def validate_running():
+                    async with get_session_factory()() as current:
+                        from app.runtime_adapters import verify_runtime_selection
+
+                        await verify_runtime_selection(current, {"tenant_id": tenant_id, "user_id": actor_id, "thread_id": thread_id,
+                            "agent_name": agent.name, "agent_id": agent.id, "diagnosis_source_id": source_id,
+                            "diagnosis_source_revision": source_revision, "diagnosis_incident_id": incident.id})
+
+                async def interrupt_running():
+                    return await interrupt_owned_runs(client, thread_id, tenant_id, actor_id, get_session_factory())
+
+                result = await wait_authorized_result(client.runs.wait(
                     thread_id,
                     "lead_agent",
                     input={"messages": [{"role": "human", "content": prompt}]},
@@ -330,7 +349,7 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                         "diagnosis_incident_id": fresh_inc.id,
                         "thread_id": thread_id,
                     }, native_selection_validator=verify_native_selection),
-                )
+                ), validate_running, interrupt_running)
 
                 # Extract the last AI response text from the result
                 diagnosis_text = ""
@@ -350,7 +369,8 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                                 break
 
                 # Store linkage, result, and completed status
-                fresh = await session.get(Incident, incident.id)
+                await validate_running()
+                fresh = await session.get(Incident, incident.id, populate_existing=True)
                 if fresh and fresh.tenant_id == tenant_id:
                     fresh.agent_id = diagnosis_agent_id
                     fresh.thread_id = thread_id
@@ -361,6 +381,29 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                     await session.commit()
 
                 logger.info("diagnose: auto-completed for incident=%s agent=%s", incident.incident_key, agent.name)
+
+        except DiagnosisStopRequested:
+            # The original cancellation endpoint owns confirmation/unknown;
+            # never publish a late result or overwrite that intent.
+            logger.info("diagnose: auto wait stopped by recorded cancellation for incident=%s", incident.id)
+
+        except DiagnosisAuthorityWithdrawn as withdrawn:
+            from app.models.alerting import IncidentAction
+
+            async with get_session_factory()() as err_session:
+                fresh = await err_session.get(Incident, incident.id)
+                if fresh and fresh.tenant_id == tenant_id:
+                    fresh.agent_id = diagnosis_agent_id
+                    fresh.thread_id = thread_id
+                    fresh.diagnosis_status = "cancelled" if withdrawn.interruption.status == "confirmed" else "failed"
+                    fresh.diagnosis_error = str(withdrawn)
+                    err_session.add(fresh)
+                    err_session.add(IncidentAction(id=str(uuid.uuid4()), tenant_id=tenant_id, incident_id=incident.id,
+                        actor_id=actor_id, action_type="diagnosis_authority_withdrawn",
+                        action_payload={"interruption": withdrawn.interruption.status, "thread_id": thread_id,
+                            "source_id": source_id, "source_revision": source_revision,
+                            "run_ids": list(withdrawn.interruption.run_ids), "external_effects": "unknown"}))
+                    await err_session.commit()
 
         except Exception:
             logger.exception("diagnose: auto-failed for incident=%s", incident.incident_key)

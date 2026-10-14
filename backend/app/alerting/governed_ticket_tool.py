@@ -22,6 +22,21 @@ def ticket_canary_enabled(tenant_id: str) -> bool:
     )
 
 
+async def authorize_diagnosis_execution(execution, factory):
+    if execution.attributes.get("agent_id") is None:
+        return  # Legacy identity remains explicit in the original migration scope.
+    from app.runtime_adapters import verify_runtime_selection
+
+    context = {"tenant_id": execution.tenant_id, "user_id": execution.actor.id,
+        "thread_id": execution.attributes.get("thread_id"), "agent_id": execution.attributes["agent_id"],
+        "agent_name": execution.workload.id.removeprefix("diagnosis-agent:"),
+        "diagnosis_incident_id": execution.attributes.get("diagnosis_incident_id") or execution.correlation_id,
+        "diagnosis_source_id": execution.attributes.get("diagnosis_source_id"),
+        "diagnosis_source_revision": execution.attributes.get("diagnosis_source_revision")}
+    async with factory() as session:
+        await verify_runtime_selection(session, context)
+
+
 def ticket_adapter(tenant_id: str) -> TicketActionAdapter:
     verdict = os.getenv("PRISMOS_GOVERNED_TICKET_VERDICT", "deny")
     if verdict not in ("allow", "deny", "require_approval"):
@@ -32,7 +47,7 @@ def ticket_adapter(tenant_id: str) -> TicketActionAdapter:
         rules={"ticket.create": PolicyRule(risk_class="side_effect", verdict=verdict)},
     )
     return TicketActionAdapter(enabled_tenants=frozenset({tenant_id}) if ticket_canary_enabled(tenant_id) else frozenset(),
-                               configuration=configuration)
+                               configuration=configuration, execution_authorizer=authorize_diagnosis_execution)
 
 
 def ticket_request_id(thread_id: str, incident_id: str) -> str:
@@ -51,7 +66,7 @@ def ticket_execution(scope: dict[str, str]) -> ExecutionEnvelope:
         workload=IdentityRef(kind="workload", id=f"diagnosis-agent:{scope['agent_name']}", tenant_id=tenant_id),
         actor=IdentityRef(kind="user", id=scope["user_id"], tenant_id=tenant_id),
         occurred_at=datetime.now(UTC),
-        attributes={"thread_id": thread_id, **({"agent_id": scope["agent_id"]} if scope.get("agent_id") is not None else {})},
+        attributes={"thread_id": thread_id, **{key: scope[key] for key in ("agent_id", "diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id") if scope.get(key) is not None}},
     )
 
 
@@ -61,6 +76,7 @@ def execution_matches_diagnosis_scope(execution: ExecutionEnvelope, scope: dict[
         and execution.actor.id == scope["user_id"]
         and execution.workload.id == f"diagnosis-agent:{scope['agent_name']}"
         and execution.attributes.get("agent_id") == scope.get("agent_id")
+        and all(execution.attributes.get(key) == scope.get(key) for key in ("diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id"))
     )
 
 

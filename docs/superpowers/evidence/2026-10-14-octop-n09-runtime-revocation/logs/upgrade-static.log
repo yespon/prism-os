@@ -1,0 +1,3119 @@
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .github/workflows/octop-integration.yml:1:13
+  |
+1 | name: Octop integration gates
+  |             ^^^^^^^^^^^
+2 | on:
+3 |   push:
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .github/workflows/octop-integration.yml:1:25
+  |
+1 | name: Octop integration gates
+  |                         ^^^^^
+2 | on:
+3 |   push:
+  |
+
+invalid-syntax: Expected an expression
+ --> .github/workflows/octop-integration.yml:2:4
+  |
+1 | name: Octop integration gates
+2 | on:
+  |    ^
+3 |   push:
+4 |     branches: [main, 'codex/octop-*']
+  |
+
+invalid-syntax: Unexpected indentation
+ --> .github/workflows/octop-integration.yml:3:1
+  |
+1 | name: Octop integration gates
+2 | on:
+3 |   push:
+  | ^^
+4 |     branches: [main, 'codex/octop-*']
+5 |   pull_request:
+  |
+
+invalid-syntax: Expected an expression
+ --> .github/workflows/octop-integration.yml:3:8
+  |
+1 | name: Octop integration gates
+2 | on:
+3 |   push:
+  |        ^
+4 |     branches: [main, 'codex/octop-*']
+5 |   pull_request:
+  |
+
+invalid-syntax: Unexpected indentation
+ --> .github/workflows/octop-integration.yml:4:1
+  |
+2 | on:
+3 |   push:
+4 |     branches: [main, 'codex/octop-*']
+  | ^^^^
+5 |   pull_request:
+6 |     paths:
+  |
+
+invalid-syntax: Expected a statement
+ --> .github/workflows/octop-integration.yml:5:3
+  |
+3 |   push:
+4 |     branches: [main, 'codex/octop-*']
+5 |   pull_request:
+  |   ^
+6 |     paths:
+7 |       - 'backend/**'
+  |
+
+invalid-syntax: Expected an expression
+ --> .github/workflows/octop-integration.yml:5:16
+  |
+3 |   push:
+4 |     branches: [main, 'codex/octop-*']
+5 |   pull_request:
+  |                ^
+6 |     paths:
+7 |       - 'backend/**'
+  |
+
+invalid-syntax: Unexpected indentation
+ --> .github/workflows/octop-integration.yml:6:1
+  |
+4 |     branches: [main, 'codex/octop-*']
+5 |   pull_request:
+6 |     paths:
+  | ^^^^
+7 |       - 'backend/**'
+8 |       - 'frontend/**'
+  |
+
+invalid-syntax: Expected an expression
+ --> .github/workflows/octop-integration.yml:6:11
+  |
+4 |     branches: [main, 'codex/octop-*']
+5 |   pull_request:
+6 |     paths:
+  |           ^
+7 |       - 'backend/**'
+8 |       - 'frontend/**'
+  |
+
+invalid-syntax: Unexpected indentation
+ --> .github/workflows/octop-integration.yml:7:1
+  |
+5 |   pull_request:
+6 |     paths:
+7 |       - 'backend/**'
+  | ^^^^^^
+8 |       - 'frontend/**'
+9 |       - 'vendor/octop/**'
+  |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:17:3
+   |
+15 |       - 'docker/nginx/**'
+16 |       - '.github/workflows/octop-integration.yml'
+17 |   workflow_dispatch:
+   |   ^
+18 | permissions:
+19 |   contents: read
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:17:21
+   |
+15 |       - 'docker/nginx/**'
+16 |       - '.github/workflows/octop-integration.yml'
+17 |   workflow_dispatch:
+   |                     ^
+18 | permissions:
+19 |   contents: read
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:18:1
+   |
+16 |       - '.github/workflows/octop-integration.yml'
+17 |   workflow_dispatch:
+18 | permissions:
+   | ^
+19 |   contents: read
+20 | jobs:
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:18:13
+   |
+16 |       - '.github/workflows/octop-integration.yml'
+17 |   workflow_dispatch:
+18 | permissions:
+   |             ^
+19 |   contents: read
+20 | jobs:
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:19:1
+   |
+17 |   workflow_dispatch:
+18 | permissions:
+19 |   contents: read
+   | ^^
+20 | jobs:
+21 |   verify:
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:20:1
+   |
+18 | permissions:
+19 |   contents: read
+20 | jobs:
+   | ^
+21 |   verify:
+22 |     runs-on: ubuntu-latest
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:20:6
+   |
+18 | permissions:
+19 |   contents: read
+20 | jobs:
+   |      ^
+21 |   verify:
+22 |     runs-on: ubuntu-latest
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:21:1
+   |
+19 |   contents: read
+20 | jobs:
+21 |   verify:
+   | ^^
+22 |     runs-on: ubuntu-latest
+23 |     steps:
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:21:10
+   |
+19 |   contents: read
+20 | jobs:
+21 |   verify:
+   |          ^
+22 |     runs-on: ubuntu-latest
+23 |     steps:
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:22:1
+   |
+20 | jobs:
+21 |   verify:
+22 |     runs-on: ubuntu-latest
+   | ^^^^
+23 |     steps:
+24 |       - uses: actions/checkout@v4
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:22:5
+   |
+20 | jobs:
+21 |   verify:
+22 |     runs-on: ubuntu-latest
+   |     ^^^^^^^
+23 |     steps:
+24 |       - uses: actions/checkout@v4
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:23:11
+   |
+21 |   verify:
+22 |     runs-on: ubuntu-latest
+23 |     steps:
+   |           ^
+24 |       - uses: actions/checkout@v4
+25 |       - uses: astral-sh/setup-uv@v6
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:24:1
+   |
+22 |     runs-on: ubuntu-latest
+23 |     steps:
+24 |       - uses: actions/checkout@v4
+   | ^^^^^^
+25 |       - uses: astral-sh/setup-uv@v6
+26 |         with:
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:24:7
+   |
+22 |     runs-on: ubuntu-latest
+23 |     steps:
+24 |       - uses: actions/checkout@v4
+   |       ^^^^^^
+25 |       - uses: astral-sh/setup-uv@v6
+26 |         with:
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:25:7
+   |
+23 |     steps:
+24 |       - uses: actions/checkout@v4
+25 |       - uses: astral-sh/setup-uv@v6
+   |       ^^^^^^
+26 |         with:
+27 |           version: 0.9.26
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:26:1
+   |
+24 |       - uses: actions/checkout@v4
+25 |       - uses: astral-sh/setup-uv@v6
+26 |         with:
+   | ^^^^^^^^
+27 |           version: 0.9.26
+28 |           enable-cache: true
+   |
+
+invalid-syntax: Expected the start of an expression after `with` keyword
+  --> .github/workflows/octop-integration.yml:26:13
+   |
+24 |       - uses: actions/checkout@v4
+25 |       - uses: astral-sh/setup-uv@v6
+26 |         with:
+   |             ^
+27 |           version: 0.9.26
+28 |           enable-cache: true
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:27:23
+   |
+25 |       - uses: astral-sh/setup-uv@v6
+26 |         with:
+27 |           version: 0.9.26
+   |                       ^^^
+28 |           enable-cache: true
+29 |           cache-dependency-glob: backend/uv.lock
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:28:11
+   |
+26 |         with:
+27 |           version: 0.9.26
+28 |           enable-cache: true
+   |           ^^^^^^^^^^^^
+29 |           cache-dependency-glob: backend/uv.lock
+30 |       - uses: pnpm/action-setup@v4
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:29:11
+   |
+27 |           version: 0.9.26
+28 |           enable-cache: true
+29 |           cache-dependency-glob: backend/uv.lock
+   |           ^^^^^^^^^^^^^^^^^^^^^
+30 |       - uses: pnpm/action-setup@v4
+31 |         with:
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:30:7
+   |
+28 |           enable-cache: true
+29 |           cache-dependency-glob: backend/uv.lock
+30 |       - uses: pnpm/action-setup@v4
+   |       ^
+31 |         with:
+32 |           version: 10.26.2
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:31:1
+   |
+29 |           cache-dependency-glob: backend/uv.lock
+30 |       - uses: pnpm/action-setup@v4
+31 |         with:
+   | ^^^^^^^^
+32 |           version: 10.26.2
+33 |           run_install: false
+   |
+
+invalid-syntax: Expected the start of an expression after `with` keyword
+  --> .github/workflows/octop-integration.yml:31:13
+   |
+29 |           cache-dependency-glob: backend/uv.lock
+30 |       - uses: pnpm/action-setup@v4
+31 |         with:
+   |             ^
+32 |           version: 10.26.2
+33 |           run_install: false
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:32:25
+   |
+30 |       - uses: pnpm/action-setup@v4
+31 |         with:
+32 |           version: 10.26.2
+   |                         ^^
+33 |           run_install: false
+34 |       - uses: actions/setup-node@v4
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:34:7
+   |
+32 |           version: 10.26.2
+33 |           run_install: false
+34 |       - uses: actions/setup-node@v4
+   |       ^
+35 |         with:
+36 |           node-version: 22
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:35:1
+   |
+33 |           run_install: false
+34 |       - uses: actions/setup-node@v4
+35 |         with:
+   | ^^^^^^^^
+36 |           node-version: 22
+37 |           cache: pnpm
+   |
+
+invalid-syntax: Expected the start of an expression after `with` keyword
+  --> .github/workflows/octop-integration.yml:35:13
+   |
+33 |           run_install: false
+34 |       - uses: actions/setup-node@v4
+35 |         with:
+   |             ^
+36 |           node-version: 22
+37 |           cache: pnpm
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:36:11
+   |
+34 |       - uses: actions/setup-node@v4
+35 |         with:
+36 |           node-version: 22
+   |           ^^^^^^^^^^^^
+37 |           cache: pnpm
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:38:11
+   |
+36 |           node-version: 22
+37 |           cache: pnpm
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+   |           ^^^^^^^^^^^^^^^^^^^^^
+39 |       - name: Verify upstream archive and imported bytes
+40 |         run: make octop-verify
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:39:7
+   |
+37 |           cache: pnpm
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+39 |       - name: Verify upstream archive and imported bytes
+   |       ^
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:39:22
+   |
+37 |           cache: pnpm
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+39 |       - name: Verify upstream archive and imported bytes
+   |                      ^^^^^^^^
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:39:31
+   |
+37 |           cache: pnpm
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+39 |       - name: Verify upstream archive and imported bytes
+   |                               ^^^^^^^
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:39:52
+   |
+37 |           cache: pnpm
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+39 |       - name: Verify upstream archive and imported bytes
+   |                                                    ^^^^^
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:40:1
+   |
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+39 |       - name: Verify upstream archive and imported bytes
+40 |         run: make octop-verify
+   | ^^^^^^^^
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:40:19
+   |
+38 |           cache-dependency-path: frontend/pnpm-lock.yaml
+39 |       - name: Verify upstream archive and imported bytes
+40 |         run: make octop-verify
+   |                   ^^^^^
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:41:7
+   |
+39 |       - name: Verify upstream archive and imported bytes
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |       ^
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:41:23
+   |
+39 |       - name: Verify upstream archive and imported bytes
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |                       ^^^^^^
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:41:30
+   |
+39 |       - name: Verify upstream archive and imported bytes
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+   |                              ^^^^^^^
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:42:1
+   |
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+   | ^^^^^^^^
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:42:17
+   |
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+   |                 ^^^^^^^
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:42:26
+   |
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+   |                          ^
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:42:31
+   |
+40 |         run: make octop-verify
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+   |                               ^^^^
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:43:7
+   |
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |       ^
+44 |         run: |
+45 |           sudo apt-get update
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:43:23
+   |
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |                       ^^^^^^
+44 |         run: |
+45 |           sudo apt-get update
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:43:30
+   |
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |                              ^^^^^^^^^
+44 |         run: |
+45 |           sudo apt-get update
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:43:40
+   |
+41 |       - name: Install locked backend
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+   |                                        ^^^^^^^
+44 |         run: |
+45 |           sudo apt-get update
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:44:1
+   |
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   | ^^^^^^^^
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:44:14
+   |
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   |              ^
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:44:15
+   |
+42 |         run: cd backend && uv sync --locked
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+   |               ^
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:45:1
+   |
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+45 |           sudo apt-get update
+   | ^^^^^^^^^^
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:45:16
+   |
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+45 |           sudo apt-get update
+   |                ^^^
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:45:24
+   |
+43 |       - name: Prepare scoped execution runtime
+44 |         run: |
+45 |           sudo apt-get update
+   |                        ^^^^^^
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:46:16
+   |
+44 |         run: |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+   |                ^^^
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:46:24
+   |
+44 |         run: |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+   |                        ^^^^^^^
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:46:35
+   |
+44 |         run: |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+   |                                   ^^^^^^^^^^
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:47:18
+   |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |                  ^^^^^
+48 |       - name: Run backend regression
+49 |         env:
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:47:27
+   |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |                           ^^^^^^^
+48 |       - name: Run backend regression
+49 |         env:
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:47:49
+   |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |                                                 ^^^^^^^
+48 |       - name: Run backend regression
+49 |         env:
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:47:80
+   |
+45 |           sudo apt-get update
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+   |                                                                                ^
+48 |       - name: Run backend regression
+49 |         env:
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:48:7
+   |
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+   |       ^
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:48:19
+   |
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+   |                   ^^^^^^^
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:48:27
+   |
+46 |           sudo apt-get install -y bubblewrap
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+   |                           ^^^^^^^^^^
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:49:1
+   |
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+49 |         env:
+   | ^^^^^^^^
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:49:13
+   |
+47 |           docker build -f backend/Dockerfile -t prismos-scoped-execution:test .
+48 |       - name: Run backend regression
+49 |         env:
+   |             ^
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:50:1
+   |
+48 |       - name: Run backend regression
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+   | ^^^^^^^^^^
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:50:62
+   |
+48 |       - name: Run backend regression
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+   |                                                              ^
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:51:9
+   |
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |         ^
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:51:17
+   |
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |                 ^^^^^^^
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:51:26
+   |
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |                          ^
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:51:31
+   |
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |                               ^^^
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:51:44
+   |
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |                                            ^^^^^^
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:51:51
+   |
+49 |         env:
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+   |                                                   ^^^^^
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:52:7
+   |
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+   |       ^
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:52:22
+   |
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+   |                      ^^^^^^^^^
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:52:32
+   |
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+   |                                ^^^^^^^^^^
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:52:43
+   |
+50 |           PRISMOS_SCOPED_TEST_IMAGE: prismos-scoped-execution:test
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+   |                                           ^^^^^^^^^
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:53:1
+   |
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   | ^^^^^^^^
+54 |       - name: Check host adapters
+55 |         run: >-
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:53:19
+   |
+51 |         run: cd backend && uv run --locked pytest tests/ -q
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+   |                   ^^^^^
+54 |       - name: Check host adapters
+55 |         run: >-
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:54:7
+   |
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |       ^
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:54:21
+   |
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |                     ^^^^
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:54:26
+   |
+52 |       - name: Verify generated capability inventory
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+   |                          ^^^^^^^^
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:55:1
+   |
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+55 |         run: >-
+   | ^^^^^^^^
+56 |           cd backend && uv run --locked ruff check
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:55:14
+   |
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+55 |         run: >-
+   |              ^
+56 |           cd backend && uv run --locked ruff check
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:55:16
+   |
+53 |         run: make octop-inventory
+54 |       - name: Check host adapters
+55 |         run: >-
+   |                ^
+56 |           cd backend && uv run --locked ruff check
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:56:1
+   |
+54 |       - name: Check host adapters
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   | ^^^^^^^^^^
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+58 |           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:56:14
+   |
+54 |       - name: Check host adapters
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |              ^^^^^^^
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+58 |           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.…
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:56:23
+   |
+54 |       - name: Check host adapters
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |                       ^
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+58 |           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:56:28
+   |
+54 |       - name: Check host adapters
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |                            ^^^
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+58 |           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:56:41
+   |
+54 |       - name: Check host adapters
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |                                         ^^^^
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+58 |           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:56:46
+   |
+54 |       - name: Check host adapters
+55 |         run: >-
+56 |           cd backend && uv run --locked ruff check
+   |                                              ^^^^^
+57 |           app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_ag…
+58 |           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:57:34
+   |
+55 | …     run: >-
+56 | …       cd backend && uv run --locked ruff check
+57 | …       app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agen…
+   |                                ^^^
+58 | …       tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …       ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scrip…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:57:58
+   |
+55 | …     run: >-
+56 | …       cd backend && uv run --locked ruff check
+57 | …       app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agen…
+   |                                                        ^^^^^^^^
+58 | …       tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …       ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scrip…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:57:95
+   |
+55 | …     run: >-
+56 | …       cd backend && uv run --locked ruff check
+57 | …       app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agen…
+   |                                                                                             ^^^^^^^^
+58 | …       tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …       ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scrip…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:57:148
+   |
+55 | …
+56 | …
+57 | …runtime.py packages/harness/deerflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py
+   |                                                                  ^^^^^
+58 | …kages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …ventory.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:57:179
+   |
+55 | …
+56 | …
+57 | …erflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py
+   |                                                                   ^^^
+58 | …rismos_octop/catalog.py
+59 | …grade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:58:43
+   |
+56 | …     cd backend && uv run --locked ruff check
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+   |                                       ^^^^^
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:58:81
+   |
+56 | …     cd backend && uv run --locked ruff check
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+   |                                                                             ^^^^^^^^
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:59:11
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |       ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:59:12
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |        ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:59:13
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |         ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:37
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                 ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:38
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                  ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:66
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                                              ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:67
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                                               ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:96
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                                                                            ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:97
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                                                                             ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:130
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                                                                                                              ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:131
+   |
+57 | …     app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/…
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+   |                                                                                                                               ^
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:164
+   |
+57 | …kages/harness/deerflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py
+58 | …pabilities/src/prismos_octop/catalog.py
+59 | …scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+   |                                                                    ^
+60 | …ry.py tests/test_octop_source_curation.py
+61 | …tion.py
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:59:165
+   |
+57 | …ages/harness/deerflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py
+58 | …abilities/src/prismos_octop/catalog.py
+59 | …cripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
+   |                                                                    ^
+60 | …y.py tests/test_octop_source_curation.py
+61 | …ion.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:60:74
+   |
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+   |                                                                      ^^^^^
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:60:104
+   |
+58 | …     tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+   |                                                                                                    ^^^^^
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:61:73
+   |
+59 | …     ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts…
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+   |                                                                     ^^^^^
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:62:42
+   |
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+   |                                      ^^^^^
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:62:82
+   |
+60 | …     packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+   |                                                                              ^^^^^
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:63:11
+   |
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+   |       ^
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:63:12
+   |
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+   |        ^
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:63:13
+   |
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+   |         ^
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:63:45
+   |
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+   |                                         ^
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:63:46
+   |
+61 | …     packages/octop-capabilities/src/prismos_octop/presentation.py tests/test_octop_presentation.py
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+   |                                          ^
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:64:70
+   |
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+   |                                                                  ^^^^^
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+66 | …     app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerting/i…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:64:100
+   |
+62 | …     app/gateway/bootstrap_admin.py tests/test_bootstrap_identity_schema.py tests/test_octop_source_fetch.py
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+   |                                                                                                ^^^^^
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+66 | …     app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerting/i…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:64:143
+   |
+62 | …py tests/test_octop_source_fetch.py
+63 | …
+64 | …t_octop_resources.py tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py
+   |                                                                  ^^^^^
+65 | …y tests/test_skill_mutation_boundaries.py tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_sk…
+66 | …ol.py tests/test_runtime_source_revocation.py app/alerting/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_acces…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:45
+   |
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |                                         ^^^
+66 | …     app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerting/i…
+67 | …     tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity.py …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:81
+   |
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |                                                                             ^^^^^
+66 | …     app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerting/i…
+67 | …     tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity.py …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:121
+   |
+63 | …     ../scripts/octop_source_fetch.py ../scripts/octop_compose_smoke.py
+64 | …     packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installations…
+65 | …     app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_skill_e…
+   |                                                                                                                     ^^^^^
+66 | …     app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerting/i…
+67 | …     tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity.py …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:163
+   |
+63 | …
+64 | … tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py
+65 | …utation_boundaries.py tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_skill_resource_deletio…
+   |                                                                  ^^^^^
+66 | …time_source_revocation.py app/alerting/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_access.py app/gateway/fil…
+67 | …ss/deerflow/skills/resource_identity.py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/database/user_config_ser…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:199
+   |
+63 | …
+64 | …ions.py tests/test_octop_skill_packages.py
+65 | …ll_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill_deletion_proce…
+   |                                                                  ^^^^^
+66 | …ng/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_access.py app/gateway/file_authorization.py app/gateway/route…
+67 | ….py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/database/user_config_service.py tests/test_skills_installer.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:237
+   |
+63 | …
+64 | …s.py
+65 | …_skill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py…
+   |                                                                  ^^^^^
+66 | …y_stream.py app/integrations/file_access.py app/gateway/file_authorization.py app/gateway/routers/artifacts.py app/gateway/routers/th…
+67 | …oader.py packages/harness/deerflow/database/user_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py .…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:274
+   |
+63 | …
+64 | …
+65 | …skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py …
+   |                                                                  ^^^^^
+66 | …ess.py app/gateway/file_authorization.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploads.…
+67 | …tabase/user_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:307
+   |
+63 | …
+64 | …
+65 | …test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_transa…
+   |                                                                  ^^^^^
+66 | …tion.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploads.py packages/harness/deerflow/sand…
+67 | …ts/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:343
+   |
+63 | …
+64 | …
+65 | …/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_transactions.py tests/test_agent_skill_ref…
+   |                                                                  ^^^^^
+66 | …s.py app/gateway/routers/threads.py app/gateway/routers/uploads.py packages/harness/deerflow/sandbox/file_access.py packages/harness/…
+67 | …st_skills_scope_router.py ../scripts/octop_skill_postgres.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:386
+   |
+63 | …
+64 | …
+65 | …l_scoped_commands.py tests/test_skill_reference_transactions.py tests/test_agent_skill_references.py tests/test_diagnosis_authorizati…
+   |                                                                  ^^^^^
+66 | …eway/routers/uploads.py packages/harness/deerflow/sandbox/file_access.py packages/harness/deerflow/tools/builtins/view_image_tool.py …
+67 | …skill_postgres.py
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:423
+   |
+63 | …
+64 | …
+65 | …_reference_transactions.py tests/test_agent_skill_references.py tests/test_diagnosis_authorization.py tests/test_langgraph_proxy.py a…
+   |                                                                  ^^^^^
+66 | …ess/deerflow/sandbox/file_access.py packages/harness/deerflow/tools/builtins/view_image_tool.py packages/harness/deerflow/tools/built…
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:461
+   |
+63 | …
+64 | …
+65 | …agent_skill_references.py tests/test_diagnosis_authorization.py tests/test_langgraph_proxy.py app/alerting/governed_ticket_tool.py ap…
+   |                                                                  ^^^^^
+66 | …ckages/harness/deerflow/tools/builtins/view_image_tool.py packages/harness/deerflow/tools/builtins/present_file_tool.py tests/test_fi…
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:491
+   |
+63 | …
+64 | …
+65 | …ts/test_diagnosis_authorization.py tests/test_langgraph_proxy.py app/alerting/governed_ticket_tool.py app/alerting/governed_read_tool…
+   |                                                                   ^^^
+66 | …/builtins/view_image_tool.py packages/harness/deerflow/tools/builtins/present_file_tool.py tests/test_file_access_boundaries.py tests…
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:528
+   |
+63 | …
+64 | …
+65 | …sts/test_langgraph_proxy.py app/alerting/governed_ticket_tool.py app/alerting/governed_read_tool.py app/platform/execution/trust.py a…
+   |                                                                   ^^^
+66 | …/harness/deerflow/tools/builtins/present_file_tool.py tests/test_file_access_boundaries.py tests/test_file_access_http.py
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:563
+   |
+63 | …
+64 | …
+65 | …rting/governed_ticket_tool.py app/alerting/governed_read_tool.py app/platform/execution/trust.py app/alerting/diagnosis_authorization…
+   |                                                                   ^^^
+66 | …esent_file_tool.py tests/test_file_access_boundaries.py tests/test_file_access_http.py
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:595
+   |
+63 | …
+64 | …
+65 | …p/alerting/governed_read_tool.py app/platform/execution/trust.py app/alerting/diagnosis_authorization.py app/integrations/agent_skill…
+   |                                                                   ^^^
+66 | …le_access_boundaries.py tests/test_file_access_http.py
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:635
+   |
+63 | …
+64 | …
+65 | …tform/execution/trust.py app/alerting/diagnosis_authorization.py app/integrations/agent_skill_references.py app/integrations/agent_sk…
+   |                                                                   ^^^
+66 | …access_http.py
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:678
+   |
+63 | …
+64 | …
+65 | …osis_authorization.py app/integrations/agent_skill_references.py app/integrations/agent_skill_members.py app/integrations/skill_comma…
+   |                                                                   ^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:718
+   |
+63 | …
+64 | …
+65 | …gent_skill_references.py app/integrations/agent_skill_members.py app/integrations/skill_command_views.py packages/harness/deerflow/sa…
+   |                                                                   ^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:758
+   |
+63 | …
+64 | …
+65 | …gent_skill_members.py app/integrations/skill_command_views.py packages/harness/deerflow/sandbox/tools.py packages/harness/deerflow/sa…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:801
+   |
+63 | …
+64 | …
+65 | …l_command_views.py packages/harness/deerflow/sandbox/tools.py packages/harness/deerflow/sandbox/sandbox_provider.py packages/harness/…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:855
+   |
+63 | …
+64 | …
+65 | …ools.py packages/harness/deerflow/sandbox/sandbox_provider.py packages/harness/deerflow/sandbox/local/scoped_command.py packages/harn…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:913
+   |
+63 | …
+64 | …
+65 | ….py packages/harness/deerflow/sandbox/local/scoped_command.py packages/harness/deerflow/sandbox/local/local_sandbox_provider.py packa…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:979
+   |
+63 | …
+64 | …
+65 | …ages/harness/deerflow/sandbox/local/local_sandbox_provider.py packages/harness/deerflow/community/aio_sandbox/scoped_command.py packa…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:1045
+   |
+63 | …
+64 | …
+65 | …ages/harness/deerflow/community/aio_sandbox/scoped_command.py packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:1117
+   |
+63 | …
+64 | …
+65 | …s/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py app/integrations/skill_reference_transactions.py app/integrations/sk…
+   |                                                                   ^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:1166
+   |
+63 | …
+64 | …
+65 | …box_provider.py app/integrations/skill_reference_transactions.py app/integrations/skill_deletions.py packages/harness/deerflow/skills…
+   |                                                                   ^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:1202
+   |
+63 | …
+64 | …
+65 | …reference_transactions.py app/integrations/skill_deletions.py packages/harness/deerflow/skills/resource_deletion_files.py packages/ha…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:1262
+   |
+63 | …
+64 | …
+65 | …y packages/harness/deerflow/skills/resource_deletion_files.py packages/harness/deerflow/skills/install_receipts.py packages/harness/d…
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:65:1315
+   |
+63 | …
+64 | …
+65 | …files.py packages/harness/deerflow/skills/install_receipts.py packages/harness/deerflow/skills/installer.py
+   |                                                                ^^^^^^^^
+66 | …
+67 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:49
+   |
+64 |           packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installat…
+65 |           app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_ski…
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+   |                                                 ^^^^^
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:85
+   |
+64 |           packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installat…
+65 |           app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_ski…
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+   |                                                                                     ^^^^^
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:125
+   |
+64 |           packages/octop-capabilities/src/prismos_octop/resources.py tests/test_octop_resources.py tests/test_octop_resource_installat…
+65 |           app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_ski…
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+   |                                                                                                                             ^^^
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:148
+   |
+64 | …op_resources.py tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py
+65 | …ts/test_skill_mutation_boundaries.py tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_skill_r…
+66 | … tests/test_runtime_source_revocation.py app/alerting/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_access.py …
+   |                                                                  ^^^^^
+67 | … packages/harness/deerflow/skills/resource_identity.py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/database/…
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:185
+   |
+64 | …ource_installations.py tests/test_octop_skill_packages.py
+65 | … tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill…
+66 | …n.py app/alerting/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_access.py app/gateway/file_authorization.py ap…
+   |                                                                   ^^^
+67 | …source_identity.py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/database/user_config_service.py tests/test_sk…
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:217
+   |
+64 | …t_octop_skill_packages.py
+65 | …ndaries.py tests/test_skill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_…
+66 | …s/test_langgraph_proxy_stream.py app/integrations/file_access.py app/gateway/file_authorization.py app/gateway/routers/artifacts.py a…
+   |                                                                   ^^^
+67 | …ess/deerflow/skills/loader.py packages/harness/deerflow/database/user_config_service.py tests/test_skills_installer.py tests/test_ski…
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:251
+   |
+64 | …
+65 | …_creation.py tests/test_skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_s…
+66 | …pp/integrations/file_access.py app/gateway/file_authorization.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/…
+   |                                                                   ^^^
+67 | …ages/harness/deerflow/database/user_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/oct…
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:284
+   |
+64 | …
+65 | …ource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/tes…
+66 | …p/gateway/file_authorization.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploads.py packag…
+   |                                                                   ^^^
+67 | …er_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:315
+   |
+64 | …
+65 | …ill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_transactions.…
+66 | … app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploads.py packages/harness/deerflow/sandbox/fil…
+   |                                                                   ^^^
+67 | …_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:346
+   |
+64 | …
+65 | …_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_transactions.py tests/test_agent_skill_referenc…
+66 | …app/gateway/routers/threads.py app/gateway/routers/uploads.py packages/harness/deerflow/sandbox/file_access.py packages/harness/deerf…
+   |                                                                ^^^^^^^^
+67 | …ills_scope_router.py ../scripts/octop_skill_postgres.py
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:395
+   |
+64 | …
+65 | …mmands.py tests/test_skill_reference_transactions.py tests/test_agent_skill_references.py tests/test_diagnosis_authorization.py tests…
+66 | …s/uploads.py packages/harness/deerflow/sandbox/file_access.py packages/harness/deerflow/tools/builtins/view_image_tool.py packages/ha…
+   |                                                                ^^^^^^^^
+67 | …res.py
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:455
+   |
+64 | …
+65 | …est_agent_skill_references.py tests/test_diagnosis_authorization.py tests/test_langgraph_proxy.py app/alerting/governed_ticket_tool.p…
+66 | …y packages/harness/deerflow/tools/builtins/view_image_tool.py packages/harness/deerflow/tools/builtins/present_file_tool.py tests/tes…
+   |                                                                ^^^^^^^^
+67 | …
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:517
+   |
+64 | …
+65 | …tion.py tests/test_langgraph_proxy.py app/alerting/governed_ticket_tool.py app/alerting/governed_read_tool.py app/platform/execution/…
+66 | …y packages/harness/deerflow/tools/builtins/present_file_tool.py tests/test_file_access_boundaries.py tests/test_file_access_http.py
+   |                                                                  ^^^^^
+67 | …
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:66:554
+   |
+64 | …
+65 | … app/alerting/governed_ticket_tool.py app/alerting/governed_read_tool.py app/platform/execution/trust.py app/alerting/diagnosis_autho…
+66 | …ltins/present_file_tool.py tests/test_file_access_boundaries.py tests/test_file_access_http.py
+   |                                                                  ^^^^^
+67 | …
+68 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:67:47
+   |
+65 |           app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_ski…
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+   |                                               ^^^^^
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:67:85
+   |
+65 |           app/integrations/skill_imports.py app/integrations/skill_mutations.py tests/test_skill_mutation_boundaries.py tests/test_ski…
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+   |                                                                                     ^^^^^^^^
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:67:139
+   |
+65 | ….py tests/test_skill_mutation_boundaries.py tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_…
+66 | …trol.py tests/test_runtime_source_revocation.py app/alerting/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_acc…
+67 | …tity.py packages/harness/deerflow/skills/resource_identity.py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/da…
+   |                                                                ^^^^^^^^
+68 | …
+69 | …e"
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:67:182
+   |
+65 | … tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill…
+66 | …n.py app/alerting/ingest.py tests/test_langgraph_proxy_stream.py app/integrations/file_access.py app/gateway/file_authorization.py ap…
+67 | …source_identity.py packages/harness/deerflow/skills/loader.py packages/harness/deerflow/database/user_config_service.py tests/test_sk…
+   |                                                                ^^^^^^^^
+68 | …
+69 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:67:240
+   |
+65 | …ill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py te…
+66 | …tream.py app/integrations/file_access.py app/gateway/file_authorization.py app/gateway/routers/artifacts.py app/gateway/routers/threa…
+67 | …er.py packages/harness/deerflow/database/user_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../s…
+   |                                                                  ^^^^^
+68 | …
+69 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:67:271
+   |
+65 | …st_skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.…
+66 | …access.py app/gateway/file_authorization.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploa…
+67 | …/database/user_config_service.py tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+   |                                                                  ^^^^^
+68 | …
+69 | …
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:67:306
+   |
+65 | …ts/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_tra…
+66 | …ization.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploads.py packages/harness/deerflow/s…
+67 | …tests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+   |                                                                    ^
+68 | …
+69 | …
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:67:307
+   |
+65 | …s/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_tran…
+66 | …zation.py app/gateway/routers/artifacts.py app/gateway/routers/threads.py app/gateway/routers/uploads.py packages/harness/deerflow/sa…
+67 | …ests/test_skills_installer.py tests/test_skills_scope_router.py ../scripts/octop_skill_postgres.py
+   |                                                                    ^
+68 | …
+69 | …
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:68:7
+   |
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |       ^
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:68:22
+   |
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |                      ^^^^^^^^
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:68:31
+   |
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |                               ^^^^^^
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:68:47
+   |
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |                                               ^^^^^^^
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:68:55
+   |
+66 |           app/alerting/diagnosis_run_control.py tests/test_diagnosis_run_control.py tests/test_runtime_source_revocation.py app/alerti…
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+   |                                                       ^^^^^^^^
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:69:1
+   |
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+   | ^^^^^^^^
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:69:19
+   |
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+   |                   ^^^^^
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:69:33
+   |
+67 |           tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py packages/harness/deerflow/skills/resource_identity…
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+   |                                 ^^^^^^^^^^^^^^^^^
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:70:7
+   |
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |       ^
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:70:20
+   |
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |                    ^^^^^^^
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:70:28
+   |
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |                            ^^^^^
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+  --> .github/workflows/octop-integration.yml:70:34
+   |
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |                                  ^^^^
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |
+
+invalid-syntax: Expected `,`, found name
+  --> .github/workflows/octop-integration.yml:70:49
+   |
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |                                                 ^^^^^^^^^
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |
+
+invalid-syntax: Expected `:`, found newline
+  --> .github/workflows/octop-integration.yml:70:58
+   |
+68 |       - name: Pinned previous source and host upgrade rollback
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+   |                                                          ^
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:71:19
+   |
+69 |         run: make octop-upgrade OCTOP_UPGRADE_DIR="$RUNNER_TEMP/octop-upgrade"
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+   |                   ^^^^^
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+   |
+
+invalid-syntax: Invalid annotated assignment target
+  --> .github/workflows/octop-integration.yml:72:7
+   |
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |       ^^^^^^
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:72:21
+   |
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |                     ^^^^^^^^^^
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:72:32
+   |
+70 |       - name: Real Gateway smoke with temporary databases
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+   |                                ^^^^^^^^^^^^
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:73:1
+   |
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+   | ^^^^^^^^
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:73:17
+   |
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+   |                 ^^^^^^^
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:73:26
+   |
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+   |                          ^
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:73:31
+   |
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+   |                               ^^^^^
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:73:47
+   |
+71 |         run: make octop-smoke
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+   |                                               ^^^^^^^
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:74:7
+   |
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |       ^
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:74:22
+   |
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |                      ^^^^^^^^^
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:74:32
+   |
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |                                ^^^^^
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:74:38
+   |
+72 |       - name: Build capability distribution
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+   |                                      ^^^^^^^^^
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:75:1
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   | ^^^^^^^^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:17
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                 ^^^^^^^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:75:26
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                          ^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:31
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                               ^^^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:44
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                                            ^^^^^^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:75:52
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                                                    ^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Expected an identifier
+  --> .github/workflows/octop-integration.yml:75:53
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                                                     ^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:84
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                                                                                    ^^^^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:119
+   |
+73 |         run: cd backend && uv build --package prismos-octop-capabilities
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+   |                                                                                                                       ^^
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:147
+   |
+73 | …
+74 | …
+75 | … dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl --sdist dist/prismos_octop_capabilities-0.1.0.tar.gz
+   |                                                                  ^^^^
+76 | …
+77 | …
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:75:182
+   |
+73 | …
+74 | …
+75 | ….1.0-py3-none-any.whl --sdist dist/prismos_octop_capabilities-0.1.0.tar.gz
+   |                                                                   ^^
+76 | …
+77 | …
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:76:7
+   |
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |       ^
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:76:23
+   |
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |                       ^^^^^^
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:76:30
+   |
+74 |       - name: Verify installed wheel resources
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+   |                              ^^^^^^^^
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:77:1
+   |
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   | ^^^^^^^^
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:77:17
+   |
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |                 ^^^^^^^^
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:77:27
+   |
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |                           ^
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:77:34
+   |
+75 |         run: cd backend && uv run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.…
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+   |                                  ^^^^^^^
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:78:7
+   |
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+   |       ^
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:78:38
+   |
+76 |       - name: Install locked frontend
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+   |                                      ^^^^^^^^^^
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:79:1
+   |
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   | ^^^^^^^^
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:79:17
+   |
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |                 ^^^^^^^^
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:79:27
+   |
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |                           ^
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:79:34
+   |
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |                                  ^^^^^^^^^
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:79:45
+   |
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |                                             ^
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:79:52
+   |
+77 |         run: cd frontend && pnpm install --frozen-lockfile
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+   |                                                    ^^^^
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:80:7
+   |
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+   |       ^
+81 |         run: cd frontend && pnpm build
+82 |         env:
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:80:21
+   |
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+   |                     ^^^^^^^^^^
+81 |         run: cd frontend && pnpm build
+82 |         env:
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:80:32
+   |
+78 |       - name: Typecheck and frontend regression
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+   |                                ^^^^^^^^
+81 |         run: cd frontend && pnpm build
+82 |         env:
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:81:1
+   |
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   | ^^^^^^^^
+82 |         env:
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:81:17
+   |
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |                 ^^^^^^^^
+82 |         env:
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:81:27
+   |
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |                           ^
+82 |         env:
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:81:34
+   |
+79 |         run: cd frontend && pnpm typecheck && pnpm test:unit --maxWorkers=2
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+   |                                  ^^^^^
+82 |         env:
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:82:13
+   |
+80 |       - name: Build production frontend
+81 |         run: cd frontend && pnpm build
+82 |         env:
+   |             ^
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+84 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:83:1
+   |
+81 |         run: cd frontend && pnpm build
+82 |         env:
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+   | ^^^^^^^^^^
+84 |       - uses: actions/upload-artifact@v4
+85 |         with:
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:84:7
+   |
+82 |         env:
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+84 |       - uses: actions/upload-artifact@v4
+   |       ^
+85 |         with:
+86 |           name: octop-capability-distributions
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:85:1
+   |
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+84 |       - uses: actions/upload-artifact@v4
+85 |         with:
+   | ^^^^^^^^
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+   |
+
+invalid-syntax: Expected the start of an expression after `with` keyword
+  --> .github/workflows/octop-integration.yml:85:13
+   |
+83 |           NEXT_TELEMETRY_DISABLED: '1'
+84 |       - uses: actions/upload-artifact@v4
+85 |         with:
+   |             ^
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+   |
+
+invalid-syntax: Starred expression cannot be used here
+  --> .github/workflows/octop-integration.yml:87:30
+   |
+85 |         with:
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+   |                              ^
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:87:31
+   |
+85 |         with:
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+   |                               ^
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:88:7
+   |
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+   |       ^
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:88:26
+   |
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+   |                          ^^^^^^
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:88:46
+   |
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+   |                                              ^^^^^^^^^^
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:88:57
+   |
+86 |           name: octop-capability-distributions
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+   |                                                         ^^^^^^^
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:89:1
+   |
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+   | ^^^^^^^^
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:89:19
+   |
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+   |                   ^^^^^
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:89:33
+   |
+87 |           path: backend/dist/*
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:90:7
+   |
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |       ^
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:90:22
+   |
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |                      ^^^^^
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:90:28
+   |
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |                            ^^^^^^^^
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:90:37
+   |
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |                                     ^^^^^^^
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:90:45
+   |
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |                                             ^^^^^^^^
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:90:54
+   |
+88 |       - name: Production Docker and isolated PostgreSQL Compose
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+   |                                                      ^^^^^^^^^^
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:91:1
+   |
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+   | ^^^^^^^^
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:91:19
+   |
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+   |                   ^^^^^
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+   |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+  --> .github/workflows/octop-integration.yml:91:40
+   |
+89 |         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+   |                                        ^^^^^^^^^^^^^^^^^^
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:92:7
+   |
+90 |       - name: Native Skill recovery against isolated PostgreSQL
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+   |       ^
+93 |         if: always()
+94 |         with:
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:93:1
+   |
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+   | ^^^^^^^^
+94 |         with:
+95 |           name: octop-runtime-verification
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:93:11
+   |
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+   |           ^
+94 |         with:
+95 |           name: octop-runtime-verification
+   |
+
+E701 Multiple statements on one line (colon)
+  --> .github/workflows/octop-integration.yml:93:11
+   |
+91 |         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+   |           ^
+94 |         with:
+95 |           name: octop-runtime-verification
+   |
+
+invalid-syntax: Expected the start of an expression after `with` keyword
+  --> .github/workflows/octop-integration.yml:94:13
+   |
+92 |       - uses: actions/upload-artifact@v4
+93 |         if: always()
+94 |         with:
+   |             ^
+95 |           name: octop-runtime-verification
+96 |           path: |
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:96:17
+   |
+94 |         with:
+95 |           name: octop-runtime-verification
+96 |           path: |
+   |                 ^
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:96:18
+   |
+94 |         with:
+95 |           name: octop-runtime-verification
+96 |           path: |
+   |                  ^
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+   |
+
+invalid-syntax: Unexpected indentation
+  --> .github/workflows/octop-integration.yml:97:1
+   |
+95 |           name: octop-runtime-verification
+96 |           path: |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+   | ^^^^^^^^^^^^
+98 |             ${{ runner.temp }}/octop-compose/*
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |
+
+invalid-syntax: Got unexpected token $
+  --> .github/workflows/octop-integration.yml:97:13
+   |
+95 |           name: octop-runtime-verification
+96 |           path: |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+   |             ^
+98 |             ${{ runner.temp }}/octop-compose/*
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |
+
+invalid-syntax: Got unexpected token $
+  --> .github/workflows/octop-integration.yml:98:13
+   |
+96 |           path: |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+   |             ^
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |
+
+invalid-syntax: Starred expression cannot be used here
+  --> .github/workflows/octop-integration.yml:98:46
+   |
+96 |           path: |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+   |                                              ^
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:98:47
+   |
+96 |           path: |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+   |                                               ^
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |
+
+invalid-syntax: Got unexpected token $
+  --> .github/workflows/octop-integration.yml:99:13
+   |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |             ^
+   |
+
+invalid-syntax: Starred expression cannot be used here
+  --> .github/workflows/octop-integration.yml:99:53
+   |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |                                                     ^
+   |
+
+invalid-syntax: Expected an expression
+  --> .github/workflows/octop-integration.yml:99:54
+   |
+97 |             ${{ runner.temp }}/octop-upgrade/upgrade.json
+98 |             ${{ runner.temp }}/octop-compose/*
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |                                                      ^
+   |
+
+invalid-syntax: Expected a statement
+  --> .github/workflows/octop-integration.yml:100:1
+   |
+98 |             ${{ runner.temp }}/octop-compose/*
+99 |             ${{ runner.temp }}/octop-skill-postgres/*
+   |                                                      ^
+   |
+
+Found 285 errors.

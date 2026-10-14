@@ -1541,7 +1541,6 @@ async def diagnose_incident(
 
     from app.integrations.agent_skill_references import current_skill_prompt
     from app.runtime_adapters import verify_native_selection
-
     from deerflow.runtime import ExecutionTrustError
 
     try:
@@ -1692,9 +1691,6 @@ async def cancel_diagnosis(
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
 
-    # Stop background task
-    diagnosis_task_manager.cancel_task(incident_id)
-
     if incident.diagnosis_status != "running":
         raise HTTPException(status_code=400, detail="No running diagnosis to cancel")
 
@@ -1702,21 +1698,41 @@ async def cancel_diagnosis(
     if not thread_id:
         raise HTTPException(status_code=400, detail="No active diagnosis thread found")
 
+    import uuid
+
     from langgraph_sdk import get_client
 
-    langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2025")
-    client = get_client(url=langgraph_url)
-    await _cancel_incident_diagnosis_run(client, thread_id, incident_id)
+    from app.alerting.diagnosis_run_control import interrupt_owned_runs
+    from app.gateway.file_authorization import require_thread_access
+    from app.models.alerting import IncidentAction
 
-    # Update incident status
-    incident.diagnosis_status = "cancelled"
-    incident.diagnosis_error = "诊断已被用户取消"
+    factory = get_session_factory()
+    await require_thread_access(request, thread_id, factory=factory)
+    # Persist stop intent before cancelling local delivery or waiting on the
+    # network. Old workers can no longer admit tools or overwrite the result.
+    incident.diagnosis_status = "failed"
+    incident.diagnosis_error = "cancel_requested: remote interruption unknown; inspect external effects"
     session.add(incident)
+    action = IncidentAction(id=str(uuid.uuid4()), tenant_id=tenant_id, incident_id=incident_id,
+        actor_id=user_id, action_type="diagnosis_cancel_requested",
+        action_payload={"thread_id": thread_id, "interruption": "unknown", "external_effects": "unknown"})
+    session.add(action)
     await session.commit()
-    await session.refresh(incident)
+    diagnosis_task_manager.cancel_task(incident_id)
 
-    logger.info("diagnose: cancelled by user for incident=%s", incident_id)
-    return {"status": "cancelled", "incident_id": incident_id}
+    client = get_client(url=os.getenv("LANGGRAPH_API_URL", "http://localhost:2025"))
+    outcome = await interrupt_owned_runs(client, thread_id, tenant_id, user_id, factory)
+    await session.refresh(incident)
+    if incident.thread_id == thread_id and (incident.diagnosis_error or "").startswith("cancel_requested:"):
+        incident.diagnosis_status = "cancelled" if outcome.status == "confirmed" else "failed"
+        incident.diagnosis_error = "cancel_requested: interruption " + outcome.status + "; inspect external effects"
+        session.add(incident)
+    action.action_payload = {"thread_id": thread_id, "interruption": outcome.status,
+        "run_ids": list(outcome.run_ids), "external_effects": "unknown"}
+    session.add(action)
+    await session.commit()
+    return {"status": "cancelled" if outcome.status == "confirmed" else "unknown", "incident_id": incident_id,
+        "external_effects": "unknown"}
 
 
 # ---------------------------------------------------------------------------

@@ -84,6 +84,32 @@ async def verify_native_selection(session, tenant_id, user_id, agent_name, agent
         await current_authorization(session, source_id, tenant_id, agent_id, expected_actor=user_id, expected_revision=source_revision, severity=severity)
 
 
+async def verify_runtime_selection(session, context):
+    """Recheck the original owner and protected diagnosis facts at tool use."""
+    from app.integrations.file_access import verify_thread
+
+    binding = await verify_thread(session, context.get("tenant_id"), context.get("user_id"), context.get("thread_id"))
+    if binding.agent_name is not None and binding.agent_name != context.get("agent_name"):
+        raise ExecutionTrustError("Current thread Agent unavailable")
+    source = context.get("diagnosis_source_id")
+    revision = context.get("diagnosis_source_revision")
+    incident = context.get("diagnosis_incident_id")
+    if source is not None and (not isinstance(revision, str) or not revision or not incident):
+        raise ExecutionTrustError("Protected automatic diagnosis context incomplete")
+    if source is None and revision is not None:
+        raise ExecutionTrustError("Protected diagnosis source unavailable")
+    await verify_native_selection(session, context.get("tenant_id"), context.get("user_id"), context.get("agent_name"), context.get("agent_id"), source, revision, diagnosis_incident_id=incident)
+    if incident is not None:
+        from app.alerting.diagnosis_run_control import DiagnosisStopRequested
+        from app.models.alerting import Incident
+
+        current = await session.get(Incident, incident, populate_existing=True)
+        if current.diagnosis_status == "cancelled" or (current.diagnosis_status == "failed" and (current.diagnosis_error or "").startswith("cancel_requested:")):
+            raise DiagnosisStopRequested("Diagnosis cancellation requested")
+        if current.thread_id is not None and current.thread_id != context.get("thread_id"):
+            raise ExecutionTrustError("Diagnosis thread has been replaced")
+
+
 def _load_agent_by_id(name, user_id, tenant_id, agent_id):
     async def load():
         async with get_session_factory()() as session:
@@ -178,19 +204,14 @@ def _current_skill_member(context, operation, path, container_prefix):
         async with get_session_factory()() as session:
             tenant, actor = context.get("tenant_id"), context.get("user_id")
             await begin_reference_transaction(session, tenant)
-            from app.integrations.file_access import verify_thread
-            binding = await verify_thread(session, tenant, actor, context.get("thread_id"))
-            if binding.agent_name is not None and binding.agent_name != context.get("agent_name"):
-                raise ExecutionTrustError("Current thread Agent unavailable")
-            await verify_native_selection(session, tenant, actor, context.get("agent_name"), context["agent_id"])
+            await verify_runtime_selection(session, context)
             from app.integrations.agent_skill_references import current_skill_resources
 
             record = await session.get(CustomAgent, context["agent_id"])
             values = deepcopy(record.model_dump())
             before = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
             result = await current_member(session, context, operation, path, container_prefix)
-            await verify_native_selection(session, tenant, actor, context.get("agent_name"), context["agent_id"])
-            await verify_thread(session, tenant, actor, context.get("thread_id"))
+            await verify_runtime_selection(session, context)
             after = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
             if before != after or record.model_dump() != values:
                 raise ExecutionTrustError("Current Skill selection changed during access")
@@ -227,11 +248,11 @@ def _current_skill_command(context, command, provider, thread_data, env):
     async def snapshot(destination=None):
         async with get_session_factory()() as session:
             await begin_reference_transaction(session, tenant)
-            await verify_native_selection(session, tenant, actor, name, agent_id)
+            await verify_runtime_selection(session, context)
             record = await session.get(CustomAgent, agent_id)
             values = deepcopy(record.model_dump())
             resources = await materialize(session, context, destination) if destination is not None else await current_skill_resources(session, name, tenant, actor, selected_agent_id=agent_id, include_snapshot=True)
-            await verify_native_selection(session, tenant, actor, name, agent_id)
+            await verify_runtime_selection(session, context)
             if record.model_dump() != values:
                 raise ExecutionTrustError("Command configuration changed during assembly")
             return values, resources

@@ -114,6 +114,7 @@ class TicketActionAdapter:
         check_permission: PermissionCheck = active_requester,
         send_ticket: TicketSender = create_ticket,
         link_ticket: TicketLinker = link_incident_ticket,
+        execution_authorizer: Callable[..., Awaitable[None]] | None = None,
     ) -> None:
         self._enabled_tenants = enabled_tenants
         self._configuration = configuration
@@ -126,6 +127,7 @@ class TicketActionAdapter:
         self._check_permission = check_permission
         self._send_ticket = send_ticket
         self._link_ticket = link_ticket
+        self._execution_authorizer = execution_authorizer
 
     @staticmethod
     def _validate_destination(config: dict[str, Any], *, tenant_id: str | None = None, source_id: str | None = None) -> None:
@@ -188,6 +190,8 @@ class TicketActionAdapter:
             raise PermissionError("trusted user and Agent workload required")
         if not await self._check_permission(execution.tenant_id, actor.id):
             raise PermissionError("requester is no longer authorized")
+        if self._execution_authorizer is not None:
+            await self._execution_authorizer(execution, self._submissions._session_factory)
         instant = at or datetime.now(UTC)
         target = await self._resolve_target(execution.tenant_id, incident_id)
         if target.incident.tenant_id != execution.tenant_id or target.incident.id != incident_id:
@@ -224,6 +228,8 @@ class TicketActionAdapter:
             raise ValueError("incident already has a ticket")
         if not await self._check_permission(execution.tenant_id, actor.id):
             raise PermissionError("requester authorization changed")
+        if self._execution_authorizer is not None:
+            await self._execution_authorizer(execution, self._submissions._session_factory)
         current = await self._resolve_target(execution.tenant_id, incident_id)
         self._validate_destination(current.config, tenant_id=execution.tenant_id, source_id=current.source_id)
         if current.incident.ticket_id or self._request(execution, request_id, current, instant).context_hash != request.context_hash:
@@ -248,9 +254,13 @@ class TicketActionAdapter:
                 needs_reconciliation=latest.status == "submitted" and current.incident.ticket_id != latest.ticket_id,
             )
         try:
+            if self._execution_authorizer is not None:
+                await self._execution_authorizer(execution, self._submissions._session_factory)
             arguments = {"idempotency_key": fact.idempotency_key}
             if "secret_ref" in current.config:
                 async def before_send():
+                    if self._execution_authorizer is not None:
+                        await self._execution_authorizer(execution, self._submissions._session_factory)
                     if not await self._check_permission(execution.tenant_id, actor.id):
                         raise PermissionError("requester authorization changed")
                     final = await self._resolve_target(execution.tenant_id, incident_id)

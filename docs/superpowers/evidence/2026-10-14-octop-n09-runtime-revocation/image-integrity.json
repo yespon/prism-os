@@ -1,0 +1,52 @@
+{
+  "image_id": "sha256:8dd0f12b2738d10d8da37e07999b4ab0c3cb51bccfb057a0aa78f4bf7b01e300",
+  "modules": [
+    {
+      "path": "backend/app/alerting/diagnosis_run_control.py",
+      "sha256": "ee87571c691a82db89ad4977b226be928022daa7924706eec0310789e23cc843",
+      "matches": true
+    },
+    {
+      "path": "backend/app/alerting/governed_ticket.py",
+      "sha256": "1f904783340d5223a7ff4b8bc6684bd0990694de2ae83c2697c3bb56217cfecc",
+      "matches": true
+    },
+    {
+      "path": "backend/app/alerting/governed_ticket_tool.py",
+      "sha256": "750fe7983213f021618870530417a46682192ae692fabd8e767ad8e3b3df415b",
+      "matches": true
+    },
+    {
+      "path": "backend/app/alerting/ingest.py",
+      "sha256": "be70ce371d8c0c7db09652044d2391804a28791872b29ef99919091490a8c570",
+      "matches": true
+    },
+    {
+      "path": "backend/app/gateway/routers/alerts.py",
+      "sha256": "4cb9ffdd2135e716c6f8383833db30d10c6c7dea8b6d761337e6a282ddc3fc7c",
+      "matches": true
+    },
+    {
+      "path": "backend/app/integrations/file_access.py",
+      "sha256": "ccee040bed6ce3bf35954b28aeb5c0f8672f8f19e2c38a037f593b3c383c6ab8",
+      "matches": true
+    },
+    {
+      "path": "backend/app/runtime_adapters.py",
+      "sha256": "c8f83023fd9a4c4d85e131613735b7f9c0f3aee94fa5c3ff35c552b2439472b7",
+      "matches": true
+    },
+    {
+      "path": "backend/packages/harness/deerflow/runtime.py",
+      "sha256": "712441f95922fc2d06dbaa399403159dea390ed75ad20f097cfb02687f1a9f76",
+      "matches": true
+    },
+    {
+      "path": "backend/packages/harness/deerflow/sandbox/tools.py",
+      "sha256": "a84c6a5c149fde25c9818ff7ebccb57a4c559d34e24ce1c0c8ed790c58de27de",
+      "matches": true
+    }
+  ],
+  "inspection_container_removed": true,
+  "publish_or_deploy": false
+}
