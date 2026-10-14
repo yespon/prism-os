@@ -25,6 +25,7 @@ from deerflow.runtime import (
     register_agent_persistence_provider,
     register_execution_validator,
     register_governed_action_provider,
+    register_skill_command_provider,
     register_skill_file_provider,
     register_skill_prompt_provider,
     register_terminal_agent_provider,
@@ -195,6 +196,69 @@ def _current_skill_member(context, operation, path, container_prefix):
         raise ExecutionTrustError("Current selected Skill member access unavailable") from None
 
 
+def _current_skill_command(context, command, provider, thread_data, env):
+    if not context.get("agent_id"):
+        return None
+    from tempfile import TemporaryDirectory
+
+    from app.integrations.agent_skill_references import current_skill_resources
+    from app.integrations.skill_command_views import materialize
+    from app.integrations.skill_reference_transactions import begin_reference_transaction
+    from deerflow.config.paths import get_paths
+
+    tenant, actor, agent_id = context.get("tenant_id"), context.get("user_id"), context["agent_id"]
+    name, thread_id = context.get("agent_name"), context.get("thread_id")
+    paths = get_paths()
+    if not thread_id:
+        raise ExecutionTrustError("Owned execution thread unavailable")
+    expected_paths = {key + "_path": str(getattr(paths, "sandbox_" + ("work" if key == "workspace" else key) + "_dir")(actor, thread_id, tenant_id=tenant)) for key in ("workspace", "uploads", "outputs")}
+    if thread_data != expected_paths:
+        raise ExecutionTrustError("Command directories differ from the current execution owner")
+    for path in expected_paths.values():
+        from pathlib import Path
+        if Path(path).resolve() != Path(path):
+            raise ExecutionTrustError("Owned command directory contains an alias")
+    async def snapshot(destination=None):
+        async with get_session_factory()() as session:
+            await begin_reference_transaction(session, tenant)
+            await verify_native_selection(session, tenant, actor, name, agent_id)
+            record = await session.get(CustomAgent, agent_id)
+            values = deepcopy(record.model_dump())
+            resources = await materialize(session, context, destination) if destination is not None else await current_skill_resources(session, name, tenant, actor, selected_agent_id=agent_id, include_snapshot=True)
+            await verify_native_selection(session, tenant, actor, name, agent_id)
+            if record.model_dump() != values:
+                raise ExecutionTrustError("Command configuration changed during assembly")
+            return values, resources
+
+    try:
+        import os
+        from pathlib import Path
+
+        initial = _run_async(snapshot())
+        if initial[1] is None:
+            return None
+        paths.ensure_thread_dirs(actor, thread_id, tenant_id=tenant)
+        view_parent = paths.base_dir / ".scoped-command-views"
+        if view_parent.resolve() != view_parent:
+            raise ExecutionTrustError("Command view parent contains an alias")
+        view_parent.mkdir(mode=0o700, exist_ok=True)
+        if view_parent.stat().st_uid != os.getuid() or view_parent.stat().st_mode & 0o077:
+            raise ExecutionTrustError("Command view parent is not private")
+        with TemporaryDirectory(prefix="lease-", dir=view_parent) as view:
+            Path(view).chmod(0o755)
+            before = _run_async(snapshot(Path(view)))
+            if before != initial:
+                raise ExecutionTrustError("Command authority changed before publication")
+
+            def validate():
+                if _run_async(snapshot()) != before:
+                    raise ExecutionTrustError("Current command configuration or resources changed")
+
+            return provider.execute_scoped_command(command, view, expected_paths, env=env, validate=validate)
+    except Exception:
+        raise ExecutionTrustError("Current scoped command access unavailable or changed; inspect outputs and any external effects") from None
+
+
 def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
@@ -210,6 +274,7 @@ def register_runtime_adapters() -> None:
     register_execution_validator(_consume_graph_capability)
     register_skill_prompt_provider(_current_skill_prompt)
     register_skill_file_provider(_current_skill_member)
+    register_skill_command_provider(_current_skill_command)
 
 
 register_runtime_adapters()

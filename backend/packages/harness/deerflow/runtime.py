@@ -44,6 +44,7 @@ _agent_identity_provider: Callable[..., Any] | None = None
 _agent_context_provider: Callable[..., NativeAgentContext] | None = None
 _skill_prompt_provider: Callable[..., str | None] | None = None
 _skill_file_provider: Callable[..., Any] | None = None
+_skill_command_provider: Callable[..., Any] | None = None
 _loaded_adapter_module: str | None = None
 
 
@@ -143,6 +144,15 @@ def get_skill_file_provider():
     return _skill_file_provider
 
 
+def register_skill_command_provider(provider: Callable[..., Any]) -> None:
+    global _skill_command_provider
+    _skill_command_provider = provider
+
+
+def get_skill_command_provider():
+    return _skill_command_provider
+
+
 def load_runtime_adapters() -> None:
     """Import the configured adapter module once.
 
@@ -163,7 +173,8 @@ def load_runtime_adapters() -> None:
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
-    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider
+    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider
+    _skill_command_provider = None
     _skill_file_provider = None
     _agent_context_provider = None
     _agent_identity_provider = None

@@ -20,9 +20,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--image", default="postgres:16-alpine")
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--test-file", action="append", help="Existing backend test file; repeat to verify a changed functional block")
     args = parser.parse_args()
     if not args.output_dir.is_absolute() or args.output_dir.exists():
         parser.error("output-dir must be a new absolute evidence directory")
+    tests = args.test_file or [
+        "tests/test_skill_import_recovery.py", "tests/test_skill_resource_identity.py", "tests/test_skill_mutation_boundaries.py",
+        "tests/test_skill_enablement_boundaries.py", "tests/test_skill_manual_creation.py", "tests/test_skill_resource_deletion.py",
+        "tests/test_skill_deletion_process.py", "tests/test_skill_member_tools.py", "tests/test_skill_scoped_commands.py",
+        "tests/test_skill_reference_transactions.py", "tests/test_agent_skill_references.py", "tests/test_diagnosis_authorization.py",
+    ]
+    for name in tests:
+        path = Path(name)
+        if path.parent != Path("tests") or not path.name.startswith("test_") or path.suffix != ".py" or not (ROOT / "backend" / path).is_file():
+            parser.error("test-file must be an existing direct backend/tests/test_*.py file")
     subprocess.run(
         ["docker", "image", "inspect", args.image], check=True, capture_output=True
     )
@@ -96,17 +107,7 @@ def main():
                     sys.executable,
                     "-m",
                     "pytest",
-                    "tests/test_skill_import_recovery.py",
-                    "tests/test_skill_resource_identity.py",
-                    "tests/test_skill_mutation_boundaries.py",
-                    "tests/test_skill_enablement_boundaries.py",
-                    "tests/test_skill_manual_creation.py",
-                    "tests/test_skill_resource_deletion.py",
-                    "tests/test_skill_deletion_process.py",
-                    "tests/test_skill_member_tools.py",
-                    "tests/test_skill_reference_transactions.py",
-                    "tests/test_agent_skill_references.py",
-                    "tests/test_diagnosis_authorization.py",
+                    *tests,
                     "-q",
                 ],
                 cwd=ROOT / "backend",
@@ -137,7 +138,8 @@ def main():
             "loopback_only": True,
             "owned_tmpfs_database": True,
             "schema": "existing SQLModel metadata including native TenantSkill uniqueness; no production database",
-            "cases": "import recovery, identity, mutation, enablement, creation, deletion and two-connection Agent reference ordering",
+            "test_files": tests,
+            "scope": "selected changed functional block" if args.test_file else "full original Skill suite including scoped commands",
             "credentials_in_evidence": False,
             "returncode": run.returncode,
         }

@@ -1,0 +1,139 @@
+{
+  "status": "native_local_and_local_AIO_command_block_verified_complete_runtime_resource_milestone_pending",
+  "base_commit": "8ba73a65daf0b3b506ba36ba6bdcdde5490dbd31",
+  "scoped_command_cases": 17,
+  "neighbors": {
+    "passed": 87,
+    "skipped": 0,
+    "warnings": 45
+  },
+  "backend": {
+    "passed": 1887,
+    "skipped": 18,
+    "warnings": 303,
+    "observed_exit_code": 0,
+    "started_before_final_volume_permission_delta": true,
+    "final_permission_delta_command_cases": {
+      "passed": 17,
+      "skipped": 0,
+      "warnings": 18
+    },
+    "note": "Full backend completed with scoped cases; final volume permissions additionally verified by 17 actual command cases. Not a new frontend or whole C2 result."
+  },
+  "postgres": {
+    "passed": 60,
+    "skipped": 0,
+    "warnings": 63,
+    "test_files": [
+      "tests/test_skill_scoped_commands.py",
+      "tests/test_skill_member_tools.py",
+      "tests/test_agent_skill_references.py"
+    ],
+    "observed_exit_code": 0,
+    "owned_container_removed": true,
+    "scope": "Changed command/current identity and Skill reference paths; completed before filesystem permission delta. DB schema and authorization mechanism unchanged by that delta. Other original DB/migration/install-recovery evidence retains historical scope."
+  },
+  "built_backend_image": {
+    "image_id": "sha256:5066ee3390984ab1f5c0e1269bee20c37a058b0162dd3bbff677ea1e9e951266",
+    "runtime_modules_verified": 9,
+    "modules_match_worktree": true,
+    "initial_build_observed_exit_code": 0,
+    "final_build_after_permission_delta_observed_exit_code": 0,
+    "new_image_command_cases": {
+      "passed": 17,
+      "skipped": 0,
+      "warnings": 18
+    },
+    "observed_exit_code": 0,
+    "deployment_or_publish": false
+  },
+  "upgrade": {
+    "host_inputs": 64,
+    "host_changed": false,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "passed": 435,
+        "skipped": 0,
+        "warnings": 274,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "b6",
+        "passed": 435,
+        "skipped": 0,
+        "warnings": 274,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "0.3.0b5",
+        "passed": 435,
+        "skipped": 0,
+        "warnings": 274,
+        "observed_exit_code": 0
+      }
+    ],
+    "observed_exit_code": 0
+  },
+  "historical_reuse": {
+    "evidence": "docs/superpowers/evidence/2026-10-14-octop-n09-skill-member-access/validation.json",
+    "frontend_inputs_unchanged": 499,
+    "new_frontend_compile": false,
+    "new_current_or_independent_full_frontend": false,
+    "historical_trace": {
+      "current": {
+        "trace_files": 50,
+        "paths_outside_frontend": []
+      },
+      "independent": {
+        "trace_files": 50,
+        "paths_outside_frontend": []
+      }
+    },
+    "locks_and_distribution_sha256": {
+      "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+      "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+      "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+      "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+    },
+    "scope": "Frontend full tests/production builds/traces, raw source/distribution and unchanged migration gates only; current command/backend/upgrade are new. Historical full backend is not reused."
+  },
+  "static": {
+    "ci_ruff_paths": 68,
+    "observed_exit_code": 0,
+    "brand_existing_allowlist_matches": 526
+  },
+  "source": {
+    "original_imported_members": 902,
+    "external_packages": 4,
+    "external_artifacts": 7,
+    "external_runtime_integrated": false
+  },
+  "real_external_model_tool_or_ticket_calls": false,
+  "remote_AIO_scoped_mounts_and_cancel_verified": false,
+  "M1_complete": false,
+  "N08_persistent_execution_started": false,
+  "user_cadence": "Five functional milestones; related checks within a block, full applicable checks at block/milestone, reuse only unchanged covered inputs; one commit per accepted functional block.",
+  "raw_log_sha256": {
+    "logs/backend-final.log": "93ce6a8446b3e4fbbd3b3509d95940a21169098bb282e29146787be22e0611c8",
+    "logs/backend-image-final.log": "0ec40534df569bbc3e0d9002d268c8e3ee438c3cc0077a98c540f6598a40b3bd",
+    "logs/backend-image.log": "140fbaef85b5a869039b6ab1f0903a0032f5419f4f5c14dd819d05c3203f5426",
+    "logs/brand.log": "9c176c7f91b200e1d79d395dd35b784d82491bbed57a0b77c7ae321414f44b20",
+    "logs/built-image-commands.log": "87b938c92db592b8213bbd42d2648ecce5d2f890442a6ebb19247231231d3c25",
+    "logs/command-block-final.log": "8e92a7c5c4e8d1cce2e431f7ca5e2b01658d880fa06db5c2995b1ea2570ded6f",
+    "logs/command-debug.log": "8029e252189a50e92d27b77523ac14abe63e6a56a761cb8c589b37eca0df965e",
+    "logs/command-final-neighbors.log": "99783e50de1914e0abd58db95f1118e5b7f70114101faba300209d8c9c1dbdb3",
+    "logs/command-target.log": "562195b4d76f6ad0eb28d66cf06df11be0c2c8cd47448698f403cbb18102dd6b",
+    "logs/command-target2.log": "d4e7a5aae56f7472e22787b0c6ee82428ee708f40fcdc0c7a70ab2181249a7e2",
+    "logs/command-target3.log": "33a68be48942abb483f55f5e266d9426027741adf962b5a4282bf669ffa6d344",
+    "logs/command-target4.log": "763e4271efaeb2c55f6013d0adb6810a8e950871f75860a7430b6e4db95eee9e",
+    "logs/external.log": "78abc64b52e8d5fb1dccf50fbc93848fb26c0afabf49f8b24ff294cf55e2ded4",
+    "logs/path-fix.log": "591043c83f27a7dc2c0d5d33d766da7d992f947c86e831c10cf89ceef4ae9527",
+    "logs/postgres-pytest.log": "aca42fcf4e637e4946820d414565ae05a02f56cd858962b862598db736f922ed",
+    "logs/postgres-run.log": "af707691ce079370ad6f9c87c0b0c400ff56f8cd01b4fba1e9c68ed4b0b79b25",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/source.log": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03",
+    "logs/upgrade-run.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/volume-permissions.log": "703b2469a380bce4d4f3374eea42900d41cce4dac45e5f5a8f0a1d6318574fd1"
+  }
+}

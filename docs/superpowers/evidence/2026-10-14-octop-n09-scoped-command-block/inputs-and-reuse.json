@@ -1,0 +1,29 @@
+{
+  "base_commit": "8ba73a65daf0b3b506ba36ba6bdcdde5490dbd31",
+  "current_code_inputs": {
+    ".github/workflows/octop-integration.yml": "d98dd7de8edd1438099f21998a2f4ec1a225801bf9e0a128b0a991be1937c6f1",
+    "Makefile": "179e49ab2562526b5c5b7ea0d01c2a153a83843e06744cbad0d3c346dcc317a7",
+    "backend/Dockerfile": "c6f087d31035df3afc1d7c04a2c3322886a947074b13ff1a2b605680d6f02235",
+    "backend/app/runtime_adapters.py": "2f68b06666cb443bcdcfbde28f3610d9f11727613e3060c34da3d4e3555943c5",
+    "backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py": "3c789f36b355e55a29af879ac63f4f188432ec3629a1af9a741ca2c78517d919",
+    "backend/packages/harness/deerflow/runtime.py": "19f710dbd0df8212f64ed2563b94cadae811a475d9e6bdc26be145fc187b796f",
+    "backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py": "0ce84b372275911310e1378fbe4f62e9d5f0ab40fb08000b038a4c5cc7414fbb",
+    "backend/packages/harness/deerflow/sandbox/sandbox_provider.py": "30da81dcc524e7421f5de1a459c7df5fcbd2eb728a539c6ddd7d236e91b6170d",
+    "backend/packages/harness/deerflow/sandbox/tools.py": "989bd9a36b6fbb2202e27e9bdc19a214e3eeaac801201fa598d0557237228428",
+    "scripts/octop_skill_postgres.py": "5659cc2fc409fff3184e8e50a9ea5a9ed97d40a635e7b99ebfc4e0883868ec68",
+    "scripts/octop_upgrade_probe.py": "9a3a91d3864a25bfb6affa3ad86125bd2d84abdbc83a8a06e4090efbf7c72e07",
+    "backend/app/integrations/skill_command_views.py": "a30860c25c96b5a2f012afb7d46c4815a19d60eac5c0847e1a3073785f1945e0",
+    "backend/packages/harness/deerflow/community/aio_sandbox/scoped_command.py": "d1d5097de83d7155a217494f7517a5beab3145a06998c943642735004b8c73bc",
+    "backend/packages/harness/deerflow/sandbox/local/scoped_command.py": "b673c244ed1e612b506eb6ba3bd667f420ba72e9687f2a82cc71e274567df485",
+    "backend/tests/test_skill_scoped_commands.py": "dbb21dfcabac4b66818cd1fbfeb66ac7faccab038122168e5d56a42c7b9524f6"
+  },
+  "historical_evidence": "docs/superpowers/evidence/2026-10-14-octop-n09-skill-member-access/validation.json",
+  "unchanged_frontend_files": 499,
+  "reuse": "Historical frontend full/production builds and 50 traces per checkout, source/locks/wheel/sdist; not a new runtime or new complete backend result",
+  "unchanged_lock_distribution_sha256": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  }
+}

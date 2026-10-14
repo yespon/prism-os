@@ -565,6 +565,18 @@ class AioSandboxProvider(SandboxProvider):
         logger.info(f"Created sandbox {sandbox_id} for user={user_id}, thread={thread_id} at {info.sandbox_url}")
         return sandbox_id
 
+    def execute_scoped_command(self, command, skills_view, thread_data, *, env=None, validate=None):
+        from pathlib import Path
+
+        from deerflow.community.aio_sandbox.scoped_command import execute_container_command
+
+        if not isinstance(self._backend, LocalContainerBackend):
+            raise PermissionError("Remote provisioner scoped mounts and cancellation are not verified")
+        paths = get_paths()
+        sources = [skills_view, *thread_data.values()]
+        host_paths = {str(source): str(paths.host_base_dir / Path(source).relative_to(paths.base_dir)) for source in sources}
+        return execute_container_command(self._backend.runtime, self._config["image"], command, skills_view, thread_data, env=env, validate=validate, host_paths=host_paths)
+
     def get(self, sandbox_id: str) -> Sandbox | None:
         """Get a sandbox by ID. Updates last activity timestamp.
 

@@ -1,0 +1,237 @@
+FFFFFFFFFF.                                                              [100%]
+=================================== FAILURES ===================================
+______ test_actual_python_reads_selected_source_and_persists_owned_output ______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe83e3a90>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787febb91d60>)
+
+    def test_actual_python_reads_selected_source_and_persists_owned_output(command_runtime):
+        _, root, _, _, runtime, _ = command_runtime
+        result = run(runtime, "from pathlib import Path; p=Path('/mnt/skills/custom/tenant-a/user-a/collision/member.txt'); text=p.read_text(); Path('/mnt/user-data/outputs/result.txt').write_text(text); print(text)")
+>       assert 'AUTHORIZED PERSONAL MEMBER' in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert 'AUTHORIZED PERSONAL MEMBER' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1'
+
+tests/test_skill_scoped_commands.py:51: AssertionError
+______ test_computed_paths_cannot_access_unselected_or_host_files[public] ______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6ed4650>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe6de05f0>)
+target = 'public'
+
+    @pytest.mark.parametrize('target', ['public', 'shared', 'host', 'proc-root'])
+    def test_computed_paths_cannot_access_unselected_or_host_files(command_runtime, target):
+        _, root, _, _, runtime, _ = command_runtime
+        secret = root.parent / 'host-only.txt'
+        secret.write_text('HOST-ONLY CONTENT')
+        path = {'public': '/mnt/skills/public/collision/member.txt', 'shared': '/mnt/skills/custom/tenant-a/collision/member.txt', 'host': str(secret), 'proc-root': '/proc/self/root' + str(secret)}[target]
+        code = "from pathlib import Path; p=Path(" + repr(path) + "); print(p.read_text() if p.exists() else 'unavailable')"
+        result = run(runtime, code)
+>       assert 'unavailable' in result and 'CONTENT' not in result and 'MEMBER' not in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('unavailable' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:64: AssertionError
+______ test_computed_paths_cannot_access_unselected_or_host_files[shared] ______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6da9a50>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe6ce97f0>)
+target = 'shared'
+
+    @pytest.mark.parametrize('target', ['public', 'shared', 'host', 'proc-root'])
+    def test_computed_paths_cannot_access_unselected_or_host_files(command_runtime, target):
+        _, root, _, _, runtime, _ = command_runtime
+        secret = root.parent / 'host-only.txt'
+        secret.write_text('HOST-ONLY CONTENT')
+        path = {'public': '/mnt/skills/public/collision/member.txt', 'shared': '/mnt/skills/custom/tenant-a/collision/member.txt', 'host': str(secret), 'proc-root': '/proc/self/root' + str(secret)}[target]
+        code = "from pathlib import Path; p=Path(" + repr(path) + "); print(p.read_text() if p.exists() else 'unavailable')"
+        result = run(runtime, code)
+>       assert 'unavailable' in result and 'CONTENT' not in result and 'MEMBER' not in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('unavailable' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:64: AssertionError
+_______ test_computed_paths_cannot_access_unselected_or_host_files[host] _______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6da9a90>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe6b9a0c0>)
+target = 'host'
+
+    @pytest.mark.parametrize('target', ['public', 'shared', 'host', 'proc-root'])
+    def test_computed_paths_cannot_access_unselected_or_host_files(command_runtime, target):
+        _, root, _, _, runtime, _ = command_runtime
+        secret = root.parent / 'host-only.txt'
+        secret.write_text('HOST-ONLY CONTENT')
+        path = {'public': '/mnt/skills/public/collision/member.txt', 'shared': '/mnt/skills/custom/tenant-a/collision/member.txt', 'host': str(secret), 'proc-root': '/proc/self/root' + str(secret)}[target]
+        code = "from pathlib import Path; p=Path(" + repr(path) + "); print(p.read_text() if p.exists() else 'unavailable')"
+        result = run(runtime, code)
+>       assert 'unavailable' in result and 'CONTENT' not in result and 'MEMBER' not in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('unavailable' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:64: AssertionError
+____ test_computed_paths_cannot_access_unselected_or_host_files[proc-root] _____
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe8056250>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe6a92840>)
+target = 'proc-root'
+
+    @pytest.mark.parametrize('target', ['public', 'shared', 'host', 'proc-root'])
+    def test_computed_paths_cannot_access_unselected_or_host_files(command_runtime, target):
+        _, root, _, _, runtime, _ = command_runtime
+        secret = root.parent / 'host-only.txt'
+        secret.write_text('HOST-ONLY CONTENT')
+        path = {'public': '/mnt/skills/public/collision/member.txt', 'shared': '/mnt/skills/custom/tenant-a/collision/member.txt', 'host': str(secret), 'proc-root': '/proc/self/root' + str(secret)}[target]
+        code = "from pathlib import Path; p=Path(" + repr(path) + "); print(p.read_text() if p.exists() else 'unavailable')"
+        result = run(runtime, code)
+>       assert 'unavailable' in result and 'CONTENT' not in result and 'MEMBER' not in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('unavailable' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:64: AssertionError
+___ test_selected_resources_are_readonly_and_do_not_inherit_host_environment ___
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6912550>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe6959d00>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x787fe6c73f20>
+
+    def test_selected_resources_are_readonly_and_do_not_inherit_host_environment(command_runtime, monkeypatch):
+        _, root, _, _, runtime, _ = command_runtime
+        monkeypatch.setenv('PRISMOS_HOST_PRIVATE_CANARY', 'HOST ENVIRONMENT CANARY')
+        code = "import os; from pathlib import Path; print('host-env-present', 'PRISMOS_HOST_PRIVATE_CANARY' in os.environ); p=Path('/mnt/skills/custom/tenant-a/user-a/collision/member.txt');\ntry: p.write_text('CHANGED')\nexcept OSError: print('readonly')"
+        result = run(runtime, code)
+>       assert 'host-env-present False' in result and 'readonly' in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('host-env-present False' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:72: AssertionError
+_____ test_executable_members_and_thread_virtual_environment_remain_usable _____
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6912050>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe68479b0>)
+
+    def test_executable_members_and_thread_virtual_environment_remain_usable(command_runtime):
+        _, root, _, _, runtime, _ = command_runtime
+        script = root/'custom/tenant-a/user-a/collision/run.sh'
+        script.write_text('#!/bin/sh\nprintf "SELECTED SCRIPT\\n"\n')
+        script.chmod(0o755)
+        result = tools.bash_tool.func(runtime, 'Run selected script with owned Python', '/mnt/skills/custom/tenant-a/user-a/collision/run.sh && python -m venv /mnt/user-data/workspace/.venv && /mnt/user-data/workspace/.venv/bin/python -c "import sys; print(sys.prefix)"')
+>       assert 'SELECTED SCRIPT' in result and '/mnt/user-data/workspace/.venv' in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('SELECTED SCRIPT' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:82: AssertionError
+______ test_unregistered_nested_source_is_not_granted_by_selected_parent _______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6e1a450>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe674ac90>)
+
+    def test_unregistered_nested_source_is_not_granted_by_selected_parent(command_runtime):
+        _, root, _, _, runtime, _ = command_runtime
+        unknown = root/'custom/tenant-a/user-a/collision/unknown'
+        unknown.mkdir()
+        (unknown/'SKILL.md').write_text('---\nname: unknown\ndescription: independent unknown\n---\nUNKNOWN')
+        (unknown/'secret.txt').write_text('UNKNOWN SOURCE CONTENT')
+        result = run(runtime, "from pathlib import Path; p=Path('/mnt/skills/custom/tenant-a/user-a/collision/unknown/secret.txt'); print(p.read_text() if p.exists() else 'unavailable')")
+>       assert 'unavailable' in result and 'UNKNOWN' not in result, result
+E       AssertionError: bwrap: --disable-userns requires --unshare-user
+E         
+E         Exit Code: 1
+E       assert ('unavailable' in 'bwrap: --disable-userns requires --unshare-user\n\nExit Code: 1')
+
+tests/test_skill_scoped_commands.py:93: AssertionError
+_ test_committed_withdrawal_terminates_actual_namespace_and_discards_output[agent] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6871850>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe6668bc0>)
+change = 'agent'
+
+    @pytest.mark.parametrize('change', ['agent', 'skill'])
+    def test_committed_withdrawal_terminates_actual_namespace_and_discards_output(command_runtime, change):
+        factory, _, agent_id, _, runtime, _ = command_runtime
+        output = Path(runtime.state['thread_data']['outputs_path'])/'ticks.txt'
+        code = "import os,time; from pathlib import Path; p=Path('/mnt/user-data/outputs/ticks.txt'); print('EARLY AUTHORIZED OUTPUT',flush=True); child=os.fork();\nif child==0: os.setsid()\nwhile True:\n p.write_text(str(time.time()))\n time.sleep(.05)"
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(run, runtime, code)
+            deadline = time.monotonic()+15
+            while not output.exists() and not future.done() and time.monotonic()<deadline:
+                time.sleep(.05)
+>           assert output.exists(), future.result() if future.done() else 'Process did not start'
+E           AssertionError: bwrap: --disable-userns requires --unshare-user
+E             
+E             Exit Code: 1
+E           assert False
+E            +  where False = exists()
+E            +    where exists = PosixPath('/tmp/pytest-of-root/pytest-101/test_committed_withdrawal_term0/owned-thread-data/tenants/tenant-a/users/user-a/threads/member-thread/user-data/outputs/ticks.txt').exists
+
+tests/test_skill_scoped_commands.py:106: AssertionError
+_ test_committed_withdrawal_terminates_actual_namespace_and_discards_output[skill] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x787fe6654490>, ..., execution_info=None, server_info=None), <deerflow.sandbox.local.local_sandbox.LocalSandbox object at 0x787fe5d3cc20>)
+change = 'skill'
+
+    @pytest.mark.parametrize('change', ['agent', 'skill'])
+    def test_committed_withdrawal_terminates_actual_namespace_and_discards_output(command_runtime, change):
+        factory, _, agent_id, _, runtime, _ = command_runtime
+        output = Path(runtime.state['thread_data']['outputs_path'])/'ticks.txt'
+        code = "import os,time; from pathlib import Path; p=Path('/mnt/user-data/outputs/ticks.txt'); print('EARLY AUTHORIZED OUTPUT',flush=True); child=os.fork();\nif child==0: os.setsid()\nwhile True:\n p.write_text(str(time.time()))\n time.sleep(.05)"
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(run, runtime, code)
+            deadline = time.monotonic()+15
+            while not output.exists() and not future.done() and time.monotonic()<deadline:
+                time.sleep(.05)
+>           assert output.exists(), future.result() if future.done() else 'Process did not start'
+E           AssertionError: bwrap: --disable-userns requires --unshare-user
+E             
+E             Exit Code: 1
+E           assert False
+E            +  where False = exists()
+E            +    where exists = PosixPath('/tmp/pytest-of-root/pytest-101/test_committed_withdrawal_term1/owned-thread-data/tenants/tenant-a/users/user-a/threads/member-thread/user-data/outputs/ticks.txt').exists
+
+tests/test_skill_scoped_commands.py:106: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_scoped_commands.py: 11 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_scoped_commands.py::test_actual_python_reads_selected_source_and_persists_owned_output
+FAILED tests/test_skill_scoped_commands.py::test_computed_paths_cannot_access_unselected_or_host_files[public]
+FAILED tests/test_skill_scoped_commands.py::test_computed_paths_cannot_access_unselected_or_host_files[shared]
+FAILED tests/test_skill_scoped_commands.py::test_computed_paths_cannot_access_unselected_or_host_files[host]
+FAILED tests/test_skill_scoped_commands.py::test_computed_paths_cannot_access_unselected_or_host_files[proc-root]
+FAILED tests/test_skill_scoped_commands.py::test_selected_resources_are_readonly_and_do_not_inherit_host_environment
+FAILED tests/test_skill_scoped_commands.py::test_executable_members_and_thread_virtual_environment_remain_usable
+FAILED tests/test_skill_scoped_commands.py::test_unregistered_nested_source_is_not_granted_by_selected_parent
+FAILED tests/test_skill_scoped_commands.py::test_committed_withdrawal_terminates_actual_namespace_and_discards_output[agent]
+FAILED tests/test_skill_scoped_commands.py::test_committed_withdrawal_terminates_actual_namespace_and_discards_output[skill]
+10 failed, 1 passed, 12 warnings in 16.47s

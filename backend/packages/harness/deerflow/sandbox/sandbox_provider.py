@@ -37,6 +37,9 @@ class SandboxProvider(ABC):
         """
         pass
 
+    def execute_scoped_command(self, command, skills_view, thread_data, *, env=None, validate=None):
+        raise PermissionError("This provider has no verified scoped command lease")
+
     @abstractmethod
     def release(self, sandbox_id: str) -> None:
         """Release a sandbox environment.

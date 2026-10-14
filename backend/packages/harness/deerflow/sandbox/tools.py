@@ -7,7 +7,7 @@ from langgraph.typing import ContextT
 
 from deerflow.agents.thread_state import ThreadDataState, ThreadState
 from deerflow.config.paths import VIRTUAL_PATH_PREFIX
-from deerflow.runtime import get_skill_file_provider, load_runtime_adapters
+from deerflow.runtime import get_skill_command_provider, get_skill_file_provider, load_runtime_adapters
 from deerflow.sandbox.exceptions import (
     SandboxError,
     SandboxNotFoundError,
@@ -764,8 +764,6 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
         command: The bash command to execute. Always use absolute paths for files and directories.
     """
     try:
-        sandbox = ensure_sandbox_initialized(runtime)
-        ensure_thread_directories_exist(runtime)
         thread_data = get_thread_data(runtime)
 
         thread_id = runtime.context.get("thread_id") if runtime.context else None
@@ -776,6 +774,17 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
         if thread_id and user_id:
             env = _get_text2image_env(user_id, tenant_id, thread_id)
 
+        load_runtime_adapters()
+        command_provider = get_skill_command_provider()
+        if command_provider is not None and (runtime.context or {}).get("agent_id"):
+            protected = command_provider(runtime.context or {}, command, get_sandbox_provider(), thread_data, env)
+            if protected is not None:
+                return _apply_line_limit(protected, None, None)
+        elif command_provider is None and (runtime.context or {}).get("agent_id"):
+            raise PermissionError("Current scoped command provider unavailable")
+
+        sandbox = ensure_sandbox_initialized(runtime)
+        ensure_thread_directories_exist(runtime)
         if is_local_sandbox(runtime):
             validate_local_bash_command_paths(command, thread_data)
             command = replace_virtual_paths_in_command(command, thread_data)

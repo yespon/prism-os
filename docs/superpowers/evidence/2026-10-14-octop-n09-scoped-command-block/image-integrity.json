@@ -1,0 +1,17 @@
+{
+  "image_id": "sha256:5066ee3390984ab1f5c0e1269bee20c37a058b0162dd3bbff677ea1e9e951266",
+  "source_inputs": {
+    "backend/app/runtime_adapters.py": "2f68b06666cb443bcdcfbde28f3610d9f11727613e3060c34da3d4e3555943c5",
+    "backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py": "3c789f36b355e55a29af879ac63f4f188432ec3629a1af9a741ca2c78517d919",
+    "backend/packages/harness/deerflow/runtime.py": "19f710dbd0df8212f64ed2563b94cadae811a475d9e6bdc26be145fc187b796f",
+    "backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py": "0ce84b372275911310e1378fbe4f62e9d5f0ab40fb08000b038a4c5cc7414fbb",
+    "backend/packages/harness/deerflow/sandbox/sandbox_provider.py": "30da81dcc524e7421f5de1a459c7df5fcbd2eb728a539c6ddd7d236e91b6170d",
+    "backend/packages/harness/deerflow/sandbox/tools.py": "989bd9a36b6fbb2202e27e9bdc19a214e3eeaac801201fa598d0557237228428",
+    "backend/app/integrations/skill_command_views.py": "a30860c25c96b5a2f012afb7d46c4815a19d60eac5c0847e1a3073785f1945e0",
+    "backend/packages/harness/deerflow/community/aio_sandbox/scoped_command.py": "d1d5097de83d7155a217494f7517a5beab3145a06998c943642735004b8c73bc",
+    "backend/packages/harness/deerflow/sandbox/local/scoped_command.py": "b673c244ed1e612b506eb6ba3bd667f420ba72e9687f2a82cc71e274567df485"
+  },
+  "container_modules_match_worktree": true,
+  "actual_command_cases": 17,
+  "production_publish_or_deploy": false
+}

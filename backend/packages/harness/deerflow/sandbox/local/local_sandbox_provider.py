@@ -44,6 +44,11 @@ class LocalSandboxProvider(SandboxProvider):
             return _thread_sandboxes.get(sandbox_id)
         return None
 
+    def execute_scoped_command(self, command, skills_view, thread_data, *, env=None, validate=None):
+        from deerflow.sandbox.local.scoped_command import execute_scoped_command
+
+        return execute_scoped_command(command, skills_view, thread_data, env=env, validate=validate)
+
     def release(self, sandbox_id: str) -> None:
         # LocalSandbox instances are intentionally retained for reuse in local mode.
         # Note: This method is intentionally not called by SandboxMiddleware
