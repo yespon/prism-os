@@ -3,7 +3,6 @@ import logging
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-from app.gateway.authorization import require_tenant_context
 from deerflow.agents.checkpointer import get_checkpointer
 from deerflow.config.paths import Paths, get_paths
 
@@ -77,7 +76,14 @@ async def delete_thread_data(thread_id: str, request: Request) -> ThreadDeleteRe
     This endpoint only cleans DeerFlow-managed thread directories. LangGraph
     thread state deletion remains handled by the LangGraph API.
     """
-    require_tenant_context(request)
+    from app.gateway.file_authorization import require_thread_access
+
+    # Validate before touching globally keyed checkpoint state.
+    try:
+        get_paths().thread_dir(request.state.user_id, thread_id, tenant_id=getattr(request.state, "tenant_id", None))
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    await require_thread_access(request, thread_id)
     return _delete_thread_data(
         request.state.user_id,
         thread_id,

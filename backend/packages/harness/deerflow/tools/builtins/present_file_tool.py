@@ -9,6 +9,7 @@ from langgraph.typing import ContextT
 
 from deerflow.agents.thread_state import ThreadState
 from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
+from deerflow.runtime import current_file_access
 
 OUTPUTS_VIRTUAL_PREFIX = f"{VIRTUAL_PATH_PREFIX}/outputs"
 
@@ -31,6 +32,10 @@ def _normalize_presented_filepath(
         ValueError: If runtime metadata is missing or the path is outside the
             current thread's outputs directory.
     """
+    protected = current_file_access(runtime, "present", filepath)
+    if protected is not None:
+        return protected
+
     if runtime.state is None:
         raise ValueError("Thread runtime state is not available")
 
@@ -92,7 +97,7 @@ def present_file_tool(
     """
     try:
         normalized_paths = [_normalize_presented_filepath(runtime, filepath) for filepath in filepaths]
-    except ValueError as exc:
+    except (ValueError, PermissionError, OSError) as exc:
         return Command(
             update={"messages": [ToolMessage(f"Error: {exc}", tool_call_id=tool_call_id)]},
         )

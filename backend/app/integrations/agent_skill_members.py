@@ -24,7 +24,7 @@ def _snapshot_read(directory, relative, operation, virtual_root, boundaries, exp
         opened.append(fd)
         if [os.fstat(fd).st_dev, os.fstat(fd).st_ino] != tree["directories"]["."]["identity"]:
             raise ValueError("Skill directory changed")
-        if operation == "read":
+        if operation in {"read", "read_bytes"}:
             parts = PurePosixPath(relative).parts
             if not parts:
                 raise IsADirectoryError
@@ -43,7 +43,7 @@ def _snapshot_read(directory, relative, operation, virtual_root, boundaries, exp
                 data = file.read()
                 if [info.st_dev, info.st_ino] != expected["identity"] or hashlib.sha256(data).hexdigest() != expected["sha256"]:
                     raise ValueError("Skill member changed")
-            result = data.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
+            result = data if operation == "read_bytes" else data.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
         elif operation == "ls":
             if (relative or ".") not in tree["directories"]:
                 raise ValueError("Skill member directory unavailable")
@@ -103,6 +103,11 @@ async def current_member(session, context, operation, path, container_prefix):
     base, item = max(candidates, key=lambda pair: len(pair[0].parts))
     if any(b != base and b.is_relative_to(base) and (requested == b or requested.is_relative_to(b)) for b in boundaries):
         raise ValueError("Nested resource needs its own current selection")
+    for name in item["member_snapshot"]["files"]:
+        if name.endswith("/SKILL.md"):
+            boundaries.append(base / PurePosixPath(name).parent)
+    if any(b != base and b.is_relative_to(base) and requested.is_relative_to(b) for b in boundaries):
+        raise ValueError("Nested source needs its own current selection")
     directory = root / base.relative_to(prefix).as_posix()
     relative = requested.relative_to(base).as_posix()
     return _snapshot_read(directory, "" if relative == "." else relative, operation, base, boundaries, item["member_snapshot"])

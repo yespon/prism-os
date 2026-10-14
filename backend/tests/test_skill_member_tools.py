@@ -30,6 +30,9 @@ def selected_runtime(configured, monkeypatch):
     created = http.post("/api/agents", json={"name": "member-agent", "system_prompt": "Member role", "skill_binding_mode": "selected", "skill_resources": [resources["personal"]]})
     assert created.status_code == 201, created.text
     native_id = created.json()["id"]
+    from app.platform.execution.trust import ThreadBindingRepository
+    asyncio.run(ThreadBindingRepository(factory).create("member-thread", "tenant-a", "user-a"))
+    asyncio.run(ThreadBindingRepository(factory).bind_agent("member-thread", "tenant-a", "user-a", "member-agent"))
     for folder, content in [(root / "custom/tenant-a/user-a/collision", "AUTHORIZED PERSONAL MEMBER"), (root / "custom/tenant-a/collision", "UNSELECTED SHARED MEMBER"), (root / "public/collision", "UNSELECTED PUBLIC MEMBER")]:
         (folder / "member.txt").write_text(content)
     calls = []

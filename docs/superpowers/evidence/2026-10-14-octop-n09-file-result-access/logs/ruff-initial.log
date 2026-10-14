@@ -1,0 +1,394 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/app/gateway/routers/artifacts.py:1:1
+   |
+ 1 | / import hashlib
+ 2 | | import io
+ 3 | | import logging
+ 4 | | import tempfile
+ 5 | | import mimetypes
+ 6 | | import threading
+ 7 | | import zipfile
+ 8 | | from collections import OrderedDict
+ 9 | | from pathlib import Path
+10 | | from urllib.parse import quote
+11 | |
+12 | | from fastapi import APIRouter, HTTPException, Request
+13 | | from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, Response
+14 | |
+15 | | from app.gateway.file_authorization import require_thread_access
+16 | | from app.integrations.file_access import thread_roots
+17 | | from deerflow.config.paths import get_paths
+18 | | from deerflow.sandbox.file_access import owned_path, read_owned_file
+   | |____________________________________________________________________^
+19 |
+20 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/app/integrations/file_access.py:76:17
+   |
+74 |               elif action == 'ls':
+75 |                   # List through held directories; never expose symlink targets.
+76 | /                 import os
+77 | |                 from deerflow.skills.resource_deletion_files import OwnedRemoval
+   | |________________________________________________________________________________^
+78 |                   directory = OwnedRemoval(actual)
+79 |                   try:
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/app/runtime_adapters.py:3:1
+   |
+ 1 |   """PrismOS integrations for the standalone DeerFlow harness runtime."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import asyncio
+ 6 | | import concurrent.futures
+ 7 | | import uuid
+ 8 | | from copy import deepcopy
+ 9 | | from types import SimpleNamespace
+10 | |
+11 | | from sqlalchemy import select
+12 | |
+13 | | from app.agent.prompts import TERMINAL_AGENT_SYSTEM_PROMPT
+14 | | from app.agent.terminal_tools import get_terminal_tools, set_terminal_context
+15 | | from app.alerting.governed_ticket_tool import governed_ticket_tools
+16 | | from app.models.agents import CustomAgent
+17 | | from app.platform.execution.trust import ExecutionCapabilityRepository
+18 | | from deerflow.database.session import get_session_factory
+19 | | from deerflow.runtime import (
+20 | |     ExecutionTrustError,
+21 | |     NativeAgentContext,
+22 | |     register_agent_config_provider,
+23 | |     register_agent_context_provider,
+24 | |     register_agent_identity_provider,
+25 | |     register_agent_persistence_provider,
+26 | |     register_execution_validator,
+27 | |     register_governed_action_provider,
+28 | |     register_file_access_provider,
+29 | |     register_skill_command_provider,
+30 | |     register_skill_file_provider,
+31 | |     register_skill_prompt_provider,
+32 | |     register_terminal_agent_provider,
+33 | | )
+   | |_^
+   |
+help: Organize imports
+
+E731 Do not assign a `lambda` expression, use a `def`
+  --> backend/packages/harness/deerflow/sandbox/file_access.py:51:9
+   |
+49 |             chunks.append(chunk)
+50 |         after = os.fstat(member)
+51 |         identity = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+52 |         if identity(before) != identity(after) or identity(os.stat(path.name, dir_fd=fd, follow_symlinks=False)) != identity(after):
+53 |             raise PermissionError('File changed during access')
+   |
+help: Rewrite `identity` as a `def`
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:57:1
+   |
+55 |     assert result.update['messages'][0].content.startswith('Error:')
+56 |
+57 | import base64
+   | ^^^^^^^^^^^^^
+58 | from pathlib import Path
+   |
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:58:1
+   |
+57 | import base64
+58 | from pathlib import Path
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+59 |
+60 | import pytest
+   |
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:60:1
+   |
+58 | from pathlib import Path
+59 |
+60 | import pytest
+   | ^^^^^^^^^^^^^
+61 |
+62 | from app import runtime_adapters
+   |
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:62:1
+   |
+60 | import pytest
+61 |
+62 | from app import runtime_adapters
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+63 | from app.platform.execution.trust import ThreadBindingRepository
+64 | from deerflow.config.paths import Paths
+   |
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:63:1
+   |
+62 | from app import runtime_adapters
+63 | from app.platform.execution.trust import ThreadBindingRepository
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+64 | from deerflow.config.paths import Paths
+65 | from deerflow.runtime import register_file_access_provider
+   |
+
+F401 [*] `app.platform.execution.trust.ThreadBindingRepository` imported but unused
+  --> backend/tests/test_file_access_boundaries.py:63:42
+   |
+62 | from app import runtime_adapters
+63 | from app.platform.execution.trust import ThreadBindingRepository
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^
+64 | from deerflow.config.paths import Paths
+65 | from deerflow.runtime import register_file_access_provider
+   |
+help: Remove unused import: `app.platform.execution.trust.ThreadBindingRepository`
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:64:1
+   |
+62 | from app import runtime_adapters
+63 | from app.platform.execution.trust import ThreadBindingRepository
+64 | from deerflow.config.paths import Paths
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+65 | from deerflow.runtime import register_file_access_provider
+66 | from deerflow.sandbox import tools
+   |
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:65:1
+   |
+63 | from app.platform.execution.trust import ThreadBindingRepository
+64 | from deerflow.config.paths import Paths
+65 | from deerflow.runtime import register_file_access_provider
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+66 | from deerflow.sandbox import tools
+   |
+
+E402 Module level import not at top of file
+  --> backend/tests/test_file_access_boundaries.py:66:1
+   |
+64 | from deerflow.config.paths import Paths
+65 | from deerflow.runtime import register_file_access_provider
+66 | from deerflow.sandbox import tools
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:109:60
+    |
+107 |                 row.status = 'inactive'
+108 |             elif change == 'tenant':
+109 |                 row = await session.get(Tenant, 'tenant-a'); row.status = 'inactive'
+    |                                                            ^
+110 |             elif change == 'agent':
+111 |                 row = await session.get(CustomAgent, agent); row.enabled = False
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:111:60
+    |
+109 |                 row = await session.get(Tenant, 'tenant-a'); row.status = 'inactive'
+110 |             elif change == 'agent':
+111 |                 row = await session.get(CustomAgent, agent); row.enabled = False
+    |                                                            ^
+112 |             else:
+113 |                 row = await session.get(PlatformThreadBindingRecord, 'member-thread'); row.user_id = 'another-member'
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:113:86
+    |
+111 |                 row = await session.get(CustomAgent, agent); row.enabled = False
+112 |             else:
+113 |                 row = await session.get(PlatformThreadBindingRecord, 'member-thread'); row.user_id = 'another-member'
+    |                                                                                      ^
+114 |             session.add(row); await session.commit()
+115 |     if change in {'membership', 'tenant', 'agent', 'thread-owner'}:
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:114:29
+    |
+112 |             else:
+113 |                 row = await session.get(PlatformThreadBindingRecord, 'member-thread'); row.user_id = 'another-member'
+114 |             session.add(row); await session.commit()
+    |                             ^
+115 |     if change in {'membership', 'tenant', 'agent', 'thread-owner'}:
+116 |         asyncio.run(revoke())
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:121:46
+    |
+119 |     elif change in {'symlink', 'hardlink'}:
+120 |         import os
+121 |         private = root.parent / 'private.png'; private.write_bytes(b'PRIVATE IMAGE')
+    |                                              ^
+122 |         image.unlink()
+123 |         image.symlink_to(private) if change == 'symlink' else os.link(private, image)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:125:48
+    |
+123 |         image.symlink_to(private) if change == 'symlink' else os.link(private, image)
+124 |     else:
+125 |         original = output.with_name('previous'); output.rename(original); output.symlink_to(original, target_is_directory=True)
+    |                                                ^
+126 |     result = image_tool.view_image_tool.func(runtime, '/mnt/user-data/outputs/result.png', 'deny-image')
+127 |     assert 'viewed_images' not in result.update
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:125:73
+    |
+123 |         image.symlink_to(private) if change == 'symlink' else os.link(private, image)
+124 |     else:
+125 |         original = output.with_name('previous'); output.rename(original); output.symlink_to(original, target_is_directory=True)
+    |                                                                         ^
+126 |     result = image_tool.view_image_tool.func(runtime, '/mnt/user-data/outputs/result.png', 'deny-image')
+127 |     assert 'viewed_images' not in result.update
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_boundaries.py:155:42
+    |
+153 |     assert tools.write_file_tool.func(runtime, 'Attempt source edit', selected, 'changed').startswith('Error:')
+154 |     assert (root / 'custom/tenant-a/user-a/collision/member.txt').read_text() == 'AUTHORIZED PERSONAL MEMBER'
+155 |     private = root.parent / 'private.txt'; private.write_text('PRIVATE')
+    |                                          ^
+156 |     output = Path(runtime.state['thread_data']['outputs_path'])
+157 |     (output / 'alias.txt').symlink_to(private)
+    |
+
+F401 [*] `io` imported but unused
+ --> backend/tests/test_file_access_http.py:4:8
+  |
+3 | import asyncio
+4 | import io
+  |        ^^
+5 | import zipfile
+6 | from pathlib import Path
+  |
+help: Remove unused import: `io`
+
+F401 [*] `app.platform.execution.trust.ThreadBindingRepository` imported but unused
+  --> backend/tests/test_file_access_http.py:19:42
+   |
+17 | from app.gateway.routers import artifacts, langgraph_proxy, threads, uploads
+18 | from app.platform.execution import trust
+19 | from app.platform.execution.trust import ThreadBindingRepository
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^
+20 | from deerflow.database.models import Tenant, TenantMembership
+   |
+help: Remove unused import: `app.platform.execution.trust.ThreadBindingRepository`
+
+F811 Redefinition of unused `owned_runtime` from line 12
+  --> backend/tests/test_file_access_http.py:24:17
+   |
+23 | @pytest.fixture
+24 | def file_client(owned_runtime, monkeypatch):
+   |                 ^^^^^^^^^^^^^ `owned_runtime` redefined here
+25 |     factory, root, agent, calls, runtime = owned_runtime
+26 |     monkeypatch.setattr(file_authorization, 'get_session_factory', lambda: factory)
+   |
+  ::: backend/tests/test_file_access_http.py:12:41
+   |
+10 | from fastapi.testclient import TestClient
+11 | from sqlalchemy import select
+12 | from test_file_access_boundaries import owned_runtime, selected_runtime  # noqa: F401
+   |                                         ------------- previous definition of `owned_runtime` here
+13 | from test_skill_member_tools import configured, scoped_client  # noqa: F401
+14 | from test_skill_reference_transactions import durable_sqlite  # noqa: F401
+   |
+help: Remove definition: `owned_runtime`
+
+E702 Multiple statements on one line (semicolon)
+  --> backend/tests/test_file_access_http.py:61:39
+   |
+59 |     history_calls = []
+60 |     async def forward(*args):
+61 |         history_calls.append(args[:2]); return Response(b'{"result":"OWNED HISTORY"}', media_type='application/json')
+   |                                       ^
+62 |     monkeypatch.setattr(langgraph_proxy, '_forward', forward)
+63 |     url = '/api/threads/member-thread/artifacts/mnt/user-data/outputs/report.txt'
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> backend/tests/test_file_access_http.py:85:37
+   |
+83 |         async with factory() as session:
+84 |             member = (await session.exec(select(TenantMembership).where(TenantMembership.user_id=='user-a', TenantMembership.tenant_id…
+85 |             member.status='inactive'; session.add(member); await session.commit()
+   |                                     ^
+86 |     asyncio.run(revoke())
+87 |     def should_not_delete(*args):
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> backend/tests/test_file_access_http.py:85:58
+   |
+83 |         async with factory() as session:
+84 |             member = (await session.exec(select(TenantMembership).where(TenantMembership.user_id=='user-a', TenantMembership.tenant_id…
+85 |             member.status='inactive'; session.add(member); await session.commit()
+   |                                                          ^
+86 |     asyncio.run(revoke())
+87 |     def should_not_delete(*args):
+   |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_http.py:102:44
+    |
+100 |     client, factory, _, runtime = file_client
+101 |     output = Path(runtime.state['thread_data']['outputs_path'])
+102 |     private = output.parent / 'private.txt'; private.write_text('PRIVATE CONTENT')
+    |                                            ^
+103 |     (output / 'alias.txt').symlink_to(private)
+104 |     prefix = '/api/threads/member-thread/artifacts/mnt/user-data/outputs/'
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_http.py:113:41
+    |
+111 | …         async with factory() as session:
+112 | …             member = (await session.exec(select(TenantMembership).where(TenantMembership.user_id=='user-a', TenantMembership.tenant…
+113 | …             member.status='inactive'; session.add(member); await session.commit()
+    |                                       ^
+114 | …     from app.runtime_adapters import _run_async
+115 | …     _run_async(revoke()); return data
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_http.py:113:62
+    |
+111 | …         async with factory() as session:
+112 | …             member = (await session.exec(select(TenantMembership).where(TenantMembership.user_id=='user-a', TenantMembership.tenant…
+113 | …             member.status='inactive'; session.add(member); await session.commit()
+    |                                                            ^
+114 | …     from app.runtime_adapters import _run_async
+115 | …     _run_async(revoke()); return data
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> backend/tests/test_file_access_http.py:115:29
+    |
+113 |                 member.status='inactive'; session.add(member); await session.commit()
+114 |         from app.runtime_adapters import _run_async
+115 |         _run_async(revoke()); return data
+    |                             ^
+116 |     monkeypatch.setattr(artifacts, 'read_owned_file', revoke_after_read)
+117 |     response = client.get(prefix + 'report.txt')
+    |
+
+Found 31 errors.
+[*] 6 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).

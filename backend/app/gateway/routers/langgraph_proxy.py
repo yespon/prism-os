@@ -13,7 +13,6 @@ from sqlalchemy import select
 from starlette.background import BackgroundTask
 from starlette.responses import Response, StreamingResponse
 
-from app.gateway.authorization import require_tenant_context
 from app.models.agents import CustomAgent
 from app.platform.execution.trust import (
     DEFAULT_AGENT,
@@ -85,21 +84,45 @@ async def _forward(method: str, path: str, body: dict | None, request: Request) 
     except httpx.HTTPError as exc:
         logger.warning("LangGraph upstream unavailable: %s", type(exc).__name__)
         raise HTTPException(502, "LangGraph service unavailable") from exc
-    headers = {}
-    for key in ("content-location", "cache-control", "x-request-id"):
+    headers = {"Cache-Control": "no-store"}
+    for key in ("content-location", "x-request-id"):
         if value := upstream.headers.get(key):
             headers[key] = value
     content_type = upstream.headers.get("content-type", "application/json")
     if "text/event-stream" in content_type and upstream.is_success:
+        stream_closed = False
+
+        async def close_stream():
+            nonlocal stream_closed
+            if not stream_closed:
+                stream_closed = True
+                await _close_upstream(upstream, client)
+
+        async def authorized_chunks():
+            from app.gateway.file_authorization import require_current_member
+            try:
+                async for chunk in upstream.aiter_raw():
+                    try:
+                        await require_current_member(request, factory=get_session_factory())
+                        parts = path.strip("/").split("/")
+                        if len(parts) >= 2 and parts[0] == "threads":
+                            await ThreadBindingRepository(get_session_factory()).get(parts[1], request.state.tenant_id, request.state.user_id)
+                    except (HTTPException, ExecutionTrustError):
+                        return
+                    yield chunk
+            finally:
+                await close_stream()
         return StreamingResponse(
-            upstream.aiter_raw(),
+            authorized_chunks(),
             status_code=upstream.status_code,
             media_type="text/event-stream",
             headers=headers,
-            background=BackgroundTask(_close_upstream, upstream, client),
+            background=BackgroundTask(close_stream),
         )
     try:
         content = await upstream.aread()
+        from app.gateway.file_authorization import require_current_member
+        await require_current_member(request, factory=get_session_factory())
         return Response(content, status_code=upstream.status_code, media_type=content_type, headers=headers)
     finally:
         await _close_upstream(upstream, client)
@@ -218,7 +241,9 @@ async def _run_body(
 
 @router.api_route("/{path:path}", methods=["GET", "POST", "PATCH", "DELETE"])
 async def proxy_langgraph(path: str, request: Request) -> Response:
-    tenant_id = require_tenant_context(request)
+    from app.gateway.file_authorization import require_current_member
+
+    tenant_id, user_id = await require_current_member(request, factory=get_session_factory())
     user_id = getattr(request.state, "user_id", None)
     if not isinstance(user_id, str) or not user_id:
         raise HTTPException(401, "Authentication required")

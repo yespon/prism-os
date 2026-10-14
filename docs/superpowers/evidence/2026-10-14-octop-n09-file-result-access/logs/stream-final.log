@@ -1,0 +1,51 @@
+F.......                                                                 [100%]
+=================================== FAILURES ===================================
+______________ test_proxy_preserves_sse_and_run_location[asyncio] ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7874fcce8bf0>
+proxy_setup = (<httpx.AsyncClient object at 0x7874f87cbbf0>, namespace(threads={}, calls=[('POST', 'threads/thread-1/runs/stream', {...n', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7874f978f850>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.anyio
+    async def test_proxy_preserves_sse_and_run_location(monkeypatch, proxy_setup) -> None:
+        _, _, factory = proxy_setup
+        await ThreadBindingRepository(factory).create("thread-1", "tenant-a", "user-1")
+        closed = []
+    
+        class FakeClient:
+            async def aclose(self):
+                closed.append(True)
+    
+        class FakeStream(httpx.AsyncByteStream):
+            async def __aiter__(self):
+                yield b"event: metadata\ndata: {}\n\n"
+    
+        async def upstream(method, path, body, query, **_kwargs):
+            assert (method, path, query) == ("POST", "threads/thread-1/runs/stream", "")
+            assert body == b'{"input":"hello"}'
+            return httpx.Response(
+                200,
+                headers={"content-type": "text/event-stream", "content-location": "/threads/thread-1/runs/run-1"},
+                stream=FakeStream(),
+            ), FakeClient()
+    
+        monkeypatch.setattr(langgraph_proxy, "_upstream", upstream)
+        app = FastAPI()
+    
+        @app.post("/relay")
+        async def relay(request: Request):
+            request.state.tenant_id = "tenant-a"
+            request.state.user_id = "user-1"
+            return await langgraph_proxy._forward("POST", "threads/thread-1/runs/stream", {"input": "hello"}, request)
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post("/relay")
+        assert response.status_code == 200
+>       assert response.headers["content-type"].startswith("text/event-stream")
+E       AssertionError: assert False
+E        +  where False = <built-in method startswith of str object at 0x7874f8608c70>('text/event-stream')
+E        +    where <built-in method startswith of str object at 0x7874f8608c70> = 'application/json'.startswith
+
+tests/test_langgraph_proxy_stream.py:47: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_langgraph_proxy_stream.py::test_proxy_preserves_sse_and_run_location[asyncio]
+1 failed, 7 passed in 34.55s

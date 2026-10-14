@@ -45,6 +45,7 @@ _agent_context_provider: Callable[..., NativeAgentContext] | None = None
 _skill_prompt_provider: Callable[..., str | None] | None = None
 _skill_file_provider: Callable[..., Any] | None = None
 _skill_command_provider: Callable[..., Any] | None = None
+_file_access_provider: Callable[..., Any] | None = None
 _loaded_adapter_module: str | None = None
 
 
@@ -153,6 +154,21 @@ def get_skill_command_provider():
     return _skill_command_provider
 
 
+def register_file_access_provider(provider: Callable[..., Any]) -> None:
+    global _file_access_provider
+    _file_access_provider = provider
+
+
+def current_file_access(runtime, operation, path):
+    """Delegate host file access; native execution never falls back unchecked."""
+    load_runtime_adapters()
+    if _file_access_provider is not None:
+        return _file_access_provider(runtime.context or {}, runtime.state or {}, operation, path)
+    if (runtime.context or {}).get("agent_id") or (runtime.context or {}).get("tenant_id"):
+        raise ExecutionTrustError("Current file authority unavailable")
+    return None
+
+
 def load_runtime_adapters() -> None:
     """Import the configured adapter module once.
 
@@ -173,7 +189,8 @@ def load_runtime_adapters() -> None:
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
-    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider
+    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider, _file_access_provider
+    _file_access_provider = None
     _skill_command_provider = None
     _skill_file_provider = None
     _agent_context_provider = None

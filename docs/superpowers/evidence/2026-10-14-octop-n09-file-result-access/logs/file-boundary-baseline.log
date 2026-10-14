@@ -1,0 +1,93 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______ test_image_tool_cannot_read_host_file_outside_current_execution ________
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x76b7d0a3ae10>, ....<lambda> at 0x76b7d0125760>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+
+    def test_image_tool_cannot_read_host_file_outside_current_execution(selected_runtime):
+        _, root, _, _, runtime = selected_runtime
+        private = root.parent/'host-private.png'
+        private.write_bytes(b'PRIVATE HOST IMAGE BYTES')
+        result=image_tool.view_image_tool.func(runtime,str(private),'image-boundary')
+>       assert 'viewed_images' not in result.update
+E       AssertionError: assert 'viewed_images' not in {'viewed_images': {'/tmp/pytest-of-root/pytest-119/test_image_tool_cannot_read_ho0/host-private.png': {'base64': 'UFJJ...mime_type': 'image/png'}}, 'messages': [ToolMessage(content='Successfully read image', tool_call_id='image-boundary')]}
+E        +  where {'viewed_images': {'/tmp/pytest-of-root/pytest-119/test_image_tool_cannot_read_ho0/host-private.png': {'base64': 'UFJJ...mime_type': 'image/png'}}, 'messages': [ToolMessage(content='Successfully read image', tool_call_id='image-boundary')]} = Command(update={'viewed_images': {'/tmp/pytest-of-root/pytest-119/test_image_tool_cannot_read_ho0/host-private.png': {...ime_type': 'image/png'}}, 'messages': [ToolMessage(content='Successfully read image', tool_call_id='image-boundary')]}).update
+
+tests/test_file_access_boundaries.py:23: AssertionError
+______ test_withdrawn_membership_cannot_retrieve_image_using_old_runtime _______
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x76b7d0082bd0>, ....<lambda> at 0x76b7cb68cfe0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+
+    def test_withdrawn_membership_cannot_retrieve_image_using_old_runtime(selected_runtime):
+        factory, root, _, _, runtime=selected_runtime
+        output=root.parent/'outputs'
+        output.mkdir(exist_ok=True)
+        image=output/'result.png'
+        image.write_bytes(b'OWNED BEFORE WITHDRAWAL')
+    
+        async def withdraw():
+            async with factory() as session:
+                member=(await session.exec(select(TenantMembership))).scalars().one()
+                member.status='inactive'
+                session.add(member)
+                await session.commit()
+        asyncio.run(withdraw())
+        result=image_tool.view_image_tool.func(runtime,'/mnt/user-data/outputs/result.png','image-withdrawn')
+>       assert 'viewed_images' not in result.update
+E       AssertionError: assert 'viewed_images' not in {'viewed_images': {'/mnt/user-data/outputs/result.png': {'base64': 'T1dORUQgQkVGT1JFIFdJVEhEUkFXQUw=', 'mime_type': 'image/png'}}, 'messages': [ToolMessage(content='Successfully read image', tool_call_id='image-withdrawn')]}
+E        +  where {'viewed_images': {'/mnt/user-data/outputs/result.png': {'base64': 'T1dORUQgQkVGT1JFIFdJVEhEUkFXQUw=', 'mime_type': 'image/png'}}, 'messages': [ToolMessage(content='Successfully read image', tool_call_id='image-withdrawn')]} = Command(update={'viewed_images': {'/mnt/user-data/outputs/result.png': {'base64': 'T1dORUQgQkVGT1JFIFdJVEhEUkFXQUw=', 'mime_type': 'image/png'}}, 'messages': [ToolMessage(content='Successfully read image', tool_call_id='image-withdrawn')]}).update
+
+tests/test_file_access_boundaries.py:42: AssertionError
+________ test_forged_presentation_outputs_cannot_register_another_root _________
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x76b7cb66d850>, ....<lambda> at 0x76b7cb575ee0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+
+    def test_forged_presentation_outputs_cannot_register_another_root(selected_runtime):
+        _, root, _, _, runtime=selected_runtime
+        private=root.parent/'foreign-outputs'
+        private.mkdir()
+        file=private/'report.txt'
+        file.write_text('FOREIGN RESULT')
+        runtime.state['thread_data']['outputs_path']=str(private)
+        result=present_tool.present_file_tool.func(runtime,[str(file)],'present-forged')
+>       assert 'artifacts' not in result.update
+E       assert 'artifacts' not in {'artifacts': ['/mnt/user-data/outputs/report.txt'], 'messages': [ToolMessage(content='{"type": "present_files_result", "version": 1, "filepaths": ["/mnt/user-data/outputs/report.txt"]}', tool_call_id='present-forged')]}
+E        +  where {'artifacts': ['/mnt/user-data/outputs/report.txt'], 'messages': [ToolMessage(content='{"type": "present_files_result", "version": 1, "filepaths": ["/mnt/user-data/outputs/report.txt"]}', tool_call_id='present-forged')]} = Command(update={'artifacts': ['/mnt/user-data/outputs/report.txt'], 'messages': [ToolMessage(content='{"type": "present_files_result", "version": 1, "filepaths": ["/mnt/user-data/outputs/report.txt"]}', tool_call_id='present-forged')]}).update
+
+tests/test_file_access_boundaries.py:54: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_file_access_boundaries.py::test_image_tool_cannot_read_host_file_outside_current_execution
+tests/test_file_access_boundaries.py::test_withdrawn_membership_cannot_retrieve_image_using_old_runtime
+tests/test_file_access_boundaries.py::test_forged_presentation_outputs_cannot_register_another_root
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_file_access_boundaries.py::test_image_tool_cannot_read_host_file_outside_current_execution
+FAILED tests/test_file_access_boundaries.py::test_withdrawn_membership_cannot_retrieve_image_using_old_runtime
+FAILED tests/test_file_access_boundaries.py::test_forged_presentation_outputs_cannot_register_another_root
+3 failed, 4 warnings in 11.65s

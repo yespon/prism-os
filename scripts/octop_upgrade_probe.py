@@ -23,7 +23,49 @@ def main():
     parser.add_argument("--previous-revision", required=True)
     parser.add_argument("--previous-release", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--test-file",
+        action="append",
+        help="Changed functional block tests; default retains the complete contract suite",
+    )
     args = parser.parse_args()
+    test_files = args.test_file or [
+        "tests/test_octop_integration.py",
+        "tests/test_octop_presentation.py",
+        "tests/test_octop_resources.py",
+        "tests/test_octop_resource_installations.py",
+        "tests/test_octop_skill_packages.py",
+        "tests/test_skill_import_recovery.py",
+        "tests/test_skill_resource_identity.py",
+        "tests/test_skill_mutation_boundaries.py",
+        "tests/test_skill_enablement_boundaries.py",
+        "tests/test_skill_manual_creation.py",
+        "tests/test_skill_resource_deletion.py",
+        "tests/test_skill_deletion_process.py",
+        "tests/test_skill_member_tools.py",
+        "tests/test_skill_scoped_commands.py",
+        "tests/test_skill_reference_transactions.py",
+        "tests/test_agent_skill_references.py",
+        "tests/test_diagnosis_authorization.py",
+        "tests/test_runtime_adapters.py",
+        "tests/test_incident_diagnosis.py",
+        "tests/test_governed_ticket.py",
+        "tests/test_langgraph_proxy.py",
+        "tests/test_langgraph_proxy_stream.py",
+        "tests/test_file_access_boundaries.py",
+        "tests/test_file_access_http.py",
+    ]
+    for name in test_files:
+        path = Path(name)
+        if (
+            path.parent != Path("tests")
+            or not path.name.startswith("test_")
+            or path.suffix != ".py"
+            or not (ROOT / "backend" / path).is_file()
+        ):
+            parser.error(
+                "test-file must be an existing direct backend/tests/test_*.py file"
+            )
     manifest = json.loads((ROOT / "vendor/octop/manifest.json").read_text())
     spec = importlib.util.spec_from_file_location(
         "octop_sync", ROOT / "scripts/octop_sync.py"
@@ -31,6 +73,17 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/tests/test_langgraph_proxy_stream.py",
+        "backend/app/integrations/file_access.py",
+        "backend/app/gateway/file_authorization.py",
+        "backend/app/gateway/routers/artifacts.py",
+        "backend/app/gateway/routers/threads.py",
+        "backend/app/gateway/routers/uploads.py",
+        "backend/packages/harness/deerflow/sandbox/file_access.py",
+        "backend/packages/harness/deerflow/tools/builtins/view_image_tool.py",
+        "backend/packages/harness/deerflow/tools/builtins/present_file_tool.py",
+        "backend/tests/test_file_access_boundaries.py",
+        "backend/tests/test_file_access_http.py",
         "backend/app/integrations/octop/agents.py",
         "backend/app/integrations/octop/resources.py",
         "backend/app/integrations/octop/resource_installations.py",
@@ -106,7 +159,12 @@ def main():
             "complete resource declarations, scoped installation facts, derived packages/native installation, "
             "imported pure modules and Agent host contracts"
         ),
-        "host_changed": False,
+        "host_changed": None,
+        "complete": False,
+        "test_files": test_files,
+        "test_scope": "selected changed functional block"
+        if args.test_file
+        else "complete host contract suite",
         "host_contract_sha256s": contract_hashes,
         "versions": [],
     }
@@ -158,27 +216,7 @@ def main():
                     str(ROOT / "backend/.venv/bin/python"),
                     "-m",
                     "pytest",
-                    "tests/test_octop_integration.py",
-                    "tests/test_octop_presentation.py",
-                    "tests/test_octop_resources.py",
-                    "tests/test_octop_resource_installations.py",
-                    "tests/test_octop_skill_packages.py",
-                    "tests/test_skill_import_recovery.py",
-                    "tests/test_skill_resource_identity.py",
-                    "tests/test_skill_mutation_boundaries.py",
-                    "tests/test_skill_enablement_boundaries.py",
-                    "tests/test_skill_manual_creation.py",
-                    "tests/test_skill_resource_deletion.py",
-                    "tests/test_skill_deletion_process.py",
-                    "tests/test_skill_member_tools.py",
-                    "tests/test_skill_scoped_commands.py",
-                    "tests/test_skill_reference_transactions.py",
-                    "tests/test_agent_skill_references.py",
-                    "tests/test_diagnosis_authorization.py",
-                    "tests/test_runtime_adapters.py",
-                    "tests/test_incident_diagnosis.py",
-                    "tests/test_governed_ticket.py",
-                    "tests/test_langgraph_proxy.py",
+                    *test_files,
                     "-q",
                 ],
                 cwd=ROOT / "backend",
@@ -196,13 +234,23 @@ def main():
                     "pytest": result.stdout,
                 }
             )
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(
+                json.dumps(evidence, indent=2, ensure_ascii=False) + "\n"
+            )
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
     if contract_hashes != {
         path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
         for path in contract_paths
     }:
+        evidence["host_changed"] = True
+        args.output.write_text(
+            json.dumps(evidence, indent=2, ensure_ascii=False) + "\n"
+        )
         raise ValueError("Host contract changed during upgrade probe")
+    evidence["host_changed"] = False
+    evidence["complete"] = True
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n")
     print(

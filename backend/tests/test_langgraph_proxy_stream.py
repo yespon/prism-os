@@ -1,12 +1,19 @@
 import httpx
 import pytest
 from fastapi import FastAPI, Request
+from test_langgraph_proxy import proxy_setup as proxy_fixture
+from test_langgraph_proxy import real_forward
 
 from app.gateway.routers import langgraph_proxy
+from app.platform.execution.trust import ThreadBindingRepository
+
+proxy_setup = proxy_fixture
 
 
 @pytest.mark.anyio
-async def test_proxy_preserves_sse_and_run_location(monkeypatch) -> None:
+async def test_proxy_preserves_sse_and_run_location(monkeypatch, proxy_setup) -> None:
+    _, _, factory = proxy_setup
+    await ThreadBindingRepository(factory).create("thread-1", "tenant-a", "user-1")
     closed = []
 
     class FakeClient:
@@ -31,7 +38,9 @@ async def test_proxy_preserves_sse_and_run_location(monkeypatch) -> None:
 
     @app.post("/relay")
     async def relay(request: Request):
-        return await langgraph_proxy._forward("POST", "threads/thread-1/runs/stream", {"input": "hello"}, request)
+        request.state.tenant_id = "tenant-a"
+        request.state.user_id = "user-1"
+        return await real_forward("POST", "threads/thread-1/runs/stream", {"input": "hello"}, request)
 
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post("/relay")

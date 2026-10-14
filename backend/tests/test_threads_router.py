@@ -171,3 +171,12 @@ def test_delete_thread_data_keeps_local_cleanup_when_checkpointer_delete_fails(t
     assert response.success is True
     assert not thread_dir.exists()
     assert warn.called
+
+
+@pytest.fixture(autouse=True)
+def isolated_route_contract(monkeypatch):
+    # These tests exercise filesystem/upload contracts. Current database
+    # authority is exercised separately by test_file_access_http.py.
+    async def authorized(*args, **kwargs):
+        return None
+    monkeypatch.setattr('app.gateway.file_authorization.require_thread_access', authorized)

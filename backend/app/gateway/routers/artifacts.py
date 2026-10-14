@@ -1,16 +1,23 @@
+import hashlib
+import io
 import logging
 import mimetypes
+import tempfile
 import threading
 import zipfile
 from collections import OrderedDict
 from pathlib import Path
+from secrets import token_hex
 from urllib.parse import quote
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, Response
+from starlette.responses import MalformedRangeHeader, RangeNotSatisfiable
 
-from app.gateway.authorization import require_tenant_context
-from app.gateway.path_utils import resolve_thread_virtual_path
+from app.gateway.file_authorization import require_thread_access
+from app.integrations.file_access import thread_roots
+from deerflow.config.paths import get_paths
+from deerflow.sandbox.file_access import owned_path, read_owned_file
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +68,49 @@ def _extract_file_from_skill_archive(zip_path: Path, internal_path: str) -> byte
         return None
 
 
+def _download_snapshot(request, content, filename, mime_type):
+    """Preserve Range semantics using the original parser on verified bytes."""
+    headers = {"Cache-Control": "no-store", "Accept-Ranges": "bytes",
+               "ETag": '"' + hashlib.sha256(content).hexdigest() + '"',
+               "Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename)}"}
+    range_header = request.headers.get("range")
+    if_range = request.headers.get("if-range")
+    if range_header and (not if_range or if_range == headers["ETag"]):
+        try:
+            ranges = FileResponse._parse_range_header(range_header, len(content))
+        except MalformedRangeHeader:
+            return PlainTextResponse("Invalid range", status_code=400, headers=headers)
+        except RangeNotSatisfiable:
+            headers["Content-Range"] = f"bytes */{len(content)}"
+            return Response(status_code=416, headers=headers)
+        if len(ranges) == 1:
+            start, end = ranges[0]
+            headers["Content-Range"] = f"bytes {start}-{end - 1}/{len(content)}"
+            return Response(content[start:end], status_code=206, media_type=mime_type, headers=headers)
+        if len(ranges) > 1:
+            boundary = token_hex(13)
+            _, header = FileResponse(filename, media_type=mime_type).generate_multipart(ranges, boundary, len(content), mime_type or "application/octet-stream")
+            payload = b"".join(header(start, end) + content[start:end] + b"\r\n" for start, end in ranges) + f"--{boundary}--".encode("latin-1")
+            return Response(payload, status_code=206, media_type=f"multipart/byteranges; boundary={boundary}", headers=headers)
+    return Response(content, media_type=mime_type, headers=headers)
+
+
+async def _read_artifact(request, thread_id, path):
+    await require_thread_access(request, thread_id)
+    tenant, actor = request.state.tenant_id, request.state.user_id
+    try:
+        actual, _ = owned_path(path, thread_roots(get_paths(), tenant, actor, thread_id))
+        content = read_owned_file(actual)
+    except FileNotFoundError:
+        raise HTTPException(404, "Artifact unavailable") from None
+    except IsADirectoryError:
+        raise HTTPException(400, "Path is not a file") from None
+    except (ValueError, PermissionError, OSError):
+        raise HTTPException(403, "Artifact access unavailable") from None
+    await require_thread_access(request, thread_id)
+    return actual, content
+
+
 @router.get(
     "/threads/{thread_id}/artifacts/{path:path}",
     summary="Get Artifact File",
@@ -96,25 +146,16 @@ async def get_artifact(thread_id: str, path: str, request: Request) -> Response:
         - Get HTML file: `/api/threads/abc123/artifacts/mnt/user-data/outputs/index.html`
         - Download file: `/api/threads/abc123/artifacts/mnt/user-data/outputs/data.csv?download=true`
     """
-    require_tenant_context(request)
+    await require_thread_access(request, thread_id)
 
     # Check for PPTX preview request
     if path.lower().endswith(".pptx") and request.query_params.get("preview") == "true":
-        actual_path = resolve_thread_virtual_path(
-            request.state.user_id,
-            thread_id,
-            path,
-            tenant_id=getattr(request.state, "tenant_id", None),
-        )
-        if not actual_path.exists():
-            raise HTTPException(status_code=404, detail=f"PPTX file not found: {path}")
-
-        mtime = actual_path.stat().st_mtime
-        cache_key = (str(actual_path), mtime)
+        actual_path, content = await _read_artifact(request, thread_id, path)
+        cache_key = (str(actual_path), hashlib.sha256(content).hexdigest())
 
         cached_result = _pptx_preview_cache.get(cache_key)
         if cached_result is not None:
-            return JSONResponse(content=cached_result)
+            return JSONResponse(content=cached_result, headers={"Cache-Control": "no-store"})
 
         import sys
         current_dir = Path(__file__).resolve()
@@ -138,7 +179,11 @@ async def get_artifact(thread_id: str, path: str, request: Request) -> Response:
                 keep_hidden=False,
                 inheritance_mode="flat",
             )
-            result = convert_pptx_to_svg(actual_path, output_dir=None, options=options)
+            # Convert the verified byte snapshot, never reopen a mutable path.
+            with tempfile.TemporaryDirectory(prefix="prismos-pptx-preview-") as preview_dir:
+                snapshot = Path(preview_dir) / "presentation.pptx"
+                snapshot.write_bytes(content)
+                result = convert_pptx_to_svg(snapshot, output_dir=None, options=options)
 
             slides = []
             for slide in result.slides:
@@ -154,7 +199,8 @@ async def get_artifact(thread_id: str, path: str, request: Request) -> Response:
             }
 
             _pptx_preview_cache.set(cache_key, data)
-            return JSONResponse(content=data)
+            await require_thread_access(request, thread_id)
+            return JSONResponse(content=data, headers={"Cache-Control": "no-store"})
         except Exception as e:
             logger.exception(f"Failed to convert PPTX to SVG: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to preview PPTX: {str(e)}")
@@ -167,28 +213,17 @@ async def get_artifact(thread_id: str, path: str, request: Request) -> Response:
         skill_file_path = path[: marker_pos + len(".skill")]  # e.g., "mnt/user-data/outputs/my-skill.skill"
         internal_path = path[marker_pos + len(skill_marker) :]  # e.g., "SKILL.md"
 
-        actual_skill_path = resolve_thread_virtual_path(
-            request.state.user_id,
-            thread_id,
-            skill_file_path,
-            tenant_id=getattr(request.state, "tenant_id", None),
-        )
-
-        if not actual_skill_path.exists():
-            raise HTTPException(status_code=404, detail=f"Skill file not found: {skill_file_path}")
-
-        if not actual_skill_path.is_file():
-            raise HTTPException(status_code=400, detail=f"Path is not a file: {skill_file_path}")
-
-        # Extract the file from the .skill archive
-        content = _extract_file_from_skill_archive(actual_skill_path, internal_path)
+        _, archive = await _read_artifact(request, thread_id, skill_file_path)
+        if ".." in internal_path.split("/") or internal_path.startswith("/"):
+            raise HTTPException(403, "Archive member unavailable")
+        content = _extract_file_from_skill_archive(io.BytesIO(archive), internal_path)
         if content is None:
             raise HTTPException(status_code=404, detail=f"File '{internal_path}' not found in skill archive")
 
         # Determine MIME type based on the internal file
         mime_type, _ = mimetypes.guess_type(internal_path)
         # Add cache headers to avoid repeated ZIP extraction (cache for 5 minutes)
-        cache_headers = {"Cache-Control": "private, max-age=300"}
+        cache_headers = {"Cache-Control": "no-store"}
         if mime_type and mime_type.startswith("text/"):
             return PlainTextResponse(content=content.decode("utf-8"), media_type=mime_type, headers=cache_headers)
 
@@ -198,40 +233,22 @@ async def get_artifact(thread_id: str, path: str, request: Request) -> Response:
         except UnicodeDecodeError:
             return Response(content=content, media_type=mime_type or "application/octet-stream", headers=cache_headers)
 
-    actual_path = resolve_thread_virtual_path(
-        request.state.user_id,
-        thread_id,
-        path,
-        tenant_id=getattr(request.state, "tenant_id", None),
-    )
-
-    logger.info(f"Resolving artifact path: thread_id={thread_id}, requested_path={path}, actual_path={actual_path}")
-
-    if not actual_path.exists():
-        raise HTTPException(status_code=404, detail=f"Artifact not found: {path}")
-
-    if not actual_path.is_file():
-        raise HTTPException(status_code=400, detail=f"Path is not a file: {path}")
-
+    actual_path, content = await _read_artifact(request, thread_id, path)
     mime_type, _ = mimetypes.guess_type(actual_path)
-
-    # Encode filename for Content-Disposition header (RFC 5987)
     encoded_filename = quote(actual_path.name)
-
-    # if `download` query parameter is true, return the file as a download
+    headers = {"Cache-Control": "no-store"}
     if request.query_params.get("download"):
-        return FileResponse(path=actual_path, filename=actual_path.name, media_type=mime_type, headers={"Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"})
+        return _download_snapshot(request, content, actual_path.name, mime_type)
+    if mime_type == "text/html":
+        return HTMLResponse(content=content.decode("utf-8"), headers=headers)
+    if (mime_type and mime_type.startswith("text/")) or b"\x00" not in content[:8192]:
+        try:
+            return PlainTextResponse(content=content.decode("utf-8"), media_type=mime_type, headers=headers)
+        except UnicodeDecodeError:
+            pass
+    headers["Content-Disposition"] = f"inline; filename*=UTF-8''{encoded_filename}"
+    return Response(content=content, media_type=mime_type, headers=headers)
 
-    if mime_type and mime_type == "text/html":
-        return HTMLResponse(content=actual_path.read_text(encoding="utf-8"))
-
-    if mime_type and mime_type.startswith("text/"):
-        return PlainTextResponse(content=actual_path.read_text(encoding="utf-8"), media_type=mime_type)
-
-    if is_text_file_by_content(actual_path):
-        return PlainTextResponse(content=actual_path.read_text(encoding="utf-8"), media_type=mime_type)
-
-    return Response(content=actual_path.read_bytes(), media_type=mime_type, headers={"Content-Disposition": f"inline; filename*=UTF-8''{encoded_filename}"})
 
 class LRUCache:
     def __init__(self, maxsize: int = 20):

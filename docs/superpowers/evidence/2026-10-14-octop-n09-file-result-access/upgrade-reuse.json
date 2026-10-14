@@ -1,0 +1,264 @@
+{
+  "historical_evidence": "../2026-10-14-octop-n09-scoped-command-block/upgrade.json",
+  "unchanged_inputs": {
+    "backend/app/integrations/octop/agents.py": {
+      "previous": "91c69783c0e8e61a79d31d003a33bf08b795e261f99ec76a59a879cf8173d7b3",
+      "current": "91c69783c0e8e61a79d31d003a33bf08b795e261f99ec76a59a879cf8173d7b3"
+    },
+    "backend/app/integrations/octop/resources.py": {
+      "previous": "bc7f880606e3db9d01ede6fe4eb0f4cb4f35ec7ce160fd2f9c593d0a932ed7c4",
+      "current": "bc7f880606e3db9d01ede6fe4eb0f4cb4f35ec7ce160fd2f9c593d0a932ed7c4"
+    },
+    "backend/app/integrations/octop/resource_installations.py": {
+      "previous": "7e0200a325ebec8fcafaf61fc6736cdafa575cbd1923c0799d8405da5adce51c",
+      "current": "7e0200a325ebec8fcafaf61fc6736cdafa575cbd1923c0799d8405da5adce51c"
+    },
+    "backend/app/integrations/octop/skill_packages.py": {
+      "previous": "97b3327b0b3e987fb9dfb9d6155fe85e6e8972b32533e5551eb8c5dc69049bd0",
+      "current": "97b3327b0b3e987fb9dfb9d6155fe85e6e8972b32533e5551eb8c5dc69049bd0"
+    },
+    "backend/app/integrations/skill_imports.py": {
+      "previous": "0a748b08c43901edda870d5f58be0368841fdc63b89a5b1bd0ca53c193c514a0",
+      "current": "0a748b08c43901edda870d5f58be0368841fdc63b89a5b1bd0ca53c193c514a0"
+    },
+    "backend/app/integrations/skill_mutations.py": {
+      "previous": "2a635b95076631d5876a6b5e5e76199d61237d5cad20026477309cf787d6eb6a",
+      "current": "2a635b95076631d5876a6b5e5e76199d61237d5cad20026477309cf787d6eb6a"
+    },
+    "backend/tests/test_skill_mutation_boundaries.py": {
+      "previous": "9fde6da8a9449ba3c7e6b49f7135d8240c092785442b7bb6d55291d5359cebc0",
+      "current": "9fde6da8a9449ba3c7e6b49f7135d8240c092785442b7bb6d55291d5359cebc0"
+    },
+    "backend/tests/test_skill_enablement_boundaries.py": {
+      "previous": "3a90784a54eeee24fa06d68ab8fc590bc305e33dd4179b3612425b60744d2f3c",
+      "current": "3a90784a54eeee24fa06d68ab8fc590bc305e33dd4179b3612425b60744d2f3c"
+    },
+    "backend/tests/test_skill_manual_creation.py": {
+      "previous": "df2e456f6992c92f5ad7b1ecdcfd9c4f432d3705e3d515dddfefa511d3833bd6",
+      "current": "df2e456f6992c92f5ad7b1ecdcfd9c4f432d3705e3d515dddfefa511d3833bd6"
+    },
+    "backend/tests/test_skill_resource_deletion.py": {
+      "previous": "e030983e4d83f313ec8f37e1f4aa25dd88f49b21cd520172bf4e9e6322ecdcbd",
+      "current": "e030983e4d83f313ec8f37e1f4aa25dd88f49b21cd520172bf4e9e6322ecdcbd"
+    },
+    "backend/tests/test_skill_deletion_process.py": {
+      "previous": "dcef0beb6d19eb63246c21597697655968b6179bb34a13685cf7cc3a5443fdf2",
+      "current": "dcef0beb6d19eb63246c21597697655968b6179bb34a13685cf7cc3a5443fdf2"
+    },
+    "backend/tests/test_skill_scoped_commands.py": {
+      "previous": "dbb21dfcabac4b66818cd1fbfeb66ac7faccab038122168e5d56a42c7b9524f6",
+      "current": "dbb21dfcabac4b66818cd1fbfeb66ac7faccab038122168e5d56a42c7b9524f6"
+    },
+    "backend/app/integrations/skill_command_views.py": {
+      "previous": "a30860c25c96b5a2f012afb7d46c4815a19d60eac5c0847e1a3073785f1945e0",
+      "current": "a30860c25c96b5a2f012afb7d46c4815a19d60eac5c0847e1a3073785f1945e0"
+    },
+    "backend/packages/harness/deerflow/sandbox/local/scoped_command.py": {
+      "previous": "b673c244ed1e612b506eb6ba3bd667f420ba72e9687f2a82cc71e274567df485",
+      "current": "b673c244ed1e612b506eb6ba3bd667f420ba72e9687f2a82cc71e274567df485"
+    },
+    "backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py": {
+      "previous": "0ce84b372275911310e1378fbe4f62e9d5f0ab40fb08000b038a4c5cc7414fbb",
+      "current": "0ce84b372275911310e1378fbe4f62e9d5f0ab40fb08000b038a4c5cc7414fbb"
+    },
+    "backend/packages/harness/deerflow/sandbox/sandbox_provider.py": {
+      "previous": "30da81dcc524e7421f5de1a459c7df5fcbd2eb728a539c6ddd7d236e91b6170d",
+      "current": "30da81dcc524e7421f5de1a459c7df5fcbd2eb728a539c6ddd7d236e91b6170d"
+    },
+    "backend/packages/harness/deerflow/community/aio_sandbox/scoped_command.py": {
+      "previous": "d1d5097de83d7155a217494f7517a5beab3145a06998c943642735004b8c73bc",
+      "current": "d1d5097de83d7155a217494f7517a5beab3145a06998c943642735004b8c73bc"
+    },
+    "backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py": {
+      "previous": "3c789f36b355e55a29af879ac63f4f188432ec3629a1af9a741ca2c78517d919",
+      "current": "3c789f36b355e55a29af879ac63f4f188432ec3629a1af9a741ca2c78517d919"
+    },
+    "backend/tests/test_skill_reference_transactions.py": {
+      "previous": "428af953c7e061488e0760714aff459bd202581e5d7a0734ba8168324d61ce4f",
+      "current": "428af953c7e061488e0760714aff459bd202581e5d7a0734ba8168324d61ce4f"
+    },
+    "backend/tests/test_agent_skill_references.py": {
+      "previous": "62d586dc687c169cfd6e99459de257e3f04ef1271e648f5a2aa28a29d239e13e",
+      "current": "62d586dc687c169cfd6e99459de257e3f04ef1271e648f5a2aa28a29d239e13e"
+    },
+    "backend/tests/test_runtime_adapters.py": {
+      "previous": "5b251f17a75b80ee514171b81d1eb513501ad9abb7dae6cbacc30f30b8fcf027",
+      "current": "5b251f17a75b80ee514171b81d1eb513501ad9abb7dae6cbacc30f30b8fcf027"
+    },
+    "backend/tests/test_incident_diagnosis.py": {
+      "previous": "eb1fed21674921e7a3913f680e027a19b34380ffe60bb2cd2d560d5044c0a3d8",
+      "current": "eb1fed21674921e7a3913f680e027a19b34380ffe60bb2cd2d560d5044c0a3d8"
+    },
+    "backend/tests/test_governed_ticket.py": {
+      "previous": "5161ecc3f32330de07ae5966c11017faa7cf4b614aefe9d06c514a3106a2289b",
+      "current": "5161ecc3f32330de07ae5966c11017faa7cf4b614aefe9d06c514a3106a2289b"
+    },
+    "backend/app/alerting/governed_ticket_tool.py": {
+      "previous": "00632e5d8f9dc501bd6e989be24e4423f5581e817d1710a933e7efd32a36e015",
+      "current": "00632e5d8f9dc501bd6e989be24e4423f5581e817d1710a933e7efd32a36e015"
+    },
+    "backend/app/alerting/governed_read_tool.py": {
+      "previous": "065e02e108d5ec70c516f7d9d9fc39511ea69115eec49bb948b0d2197b6b00ea",
+      "current": "065e02e108d5ec70c516f7d9d9fc39511ea69115eec49bb948b0d2197b6b00ea"
+    },
+    "backend/app/alerting/diagnosis_authorization.py": {
+      "previous": "035acc2348efd6dcb420a3ed8fd3e7c4a28699acb6a98c7dc13281feb7654b98",
+      "current": "035acc2348efd6dcb420a3ed8fd3e7c4a28699acb6a98c7dc13281feb7654b98"
+    },
+    "backend/app/platform/execution/trust.py": {
+      "previous": "ef77e4c146814297a9da44e30961ba72e72b5cb7009a43aa4a0b59db60816021",
+      "current": "ef77e4c146814297a9da44e30961ba72e72b5cb7009a43aa4a0b59db60816021"
+    },
+    "backend/app/alerting/diagnosis_helper.py": {
+      "previous": "8f85abeb7d0f92548e46bac7bbe51c68d6341c84b2637273a9e5dcd3943ae50d",
+      "current": "8f85abeb7d0f92548e46bac7bbe51c68d6341c84b2637273a9e5dcd3943ae50d"
+    },
+    "backend/app/gateway/routers/alerts.py": {
+      "previous": "b2b7e631665a74f24c4b623e5ec80703d8665839e11cf6876a93256144bac58a",
+      "current": "b2b7e631665a74f24c4b623e5ec80703d8665839e11cf6876a93256144bac58a"
+    },
+    "backend/app/integrations/agent_skill_references.py": {
+      "previous": "af3877dcf6708a24be8fc921f4327a4f66dc479f61513aac7e7cbf0b11456fd6",
+      "current": "af3877dcf6708a24be8fc921f4327a4f66dc479f61513aac7e7cbf0b11456fd6"
+    },
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": {
+      "previous": "c2ff5e897a14ef77088098a35abf2e23d256f2f02181f936791636346dba3351",
+      "current": "c2ff5e897a14ef77088098a35abf2e23d256f2f02181f936791636346dba3351"
+    },
+    "backend/packages/harness/deerflow/agents/lead_agent/prompt.py": {
+      "previous": "4aa814b5b033bda61c593bdc3c880f6f849ee0539cf2a35b7c750f3fbcf792cf",
+      "current": "4aa814b5b033bda61c593bdc3c880f6f849ee0539cf2a35b7c750f3fbcf792cf"
+    },
+    "backend/app/integrations/skill_reference_transactions.py": {
+      "previous": "da62e810b43eddabcfade3ae4e8981ef7ad6b7feb690348f76bf9673a044bafa",
+      "current": "da62e810b43eddabcfade3ae4e8981ef7ad6b7feb690348f76bf9673a044bafa"
+    },
+    "backend/app/integrations/skill_deletions.py": {
+      "previous": "c246b0c41405a0660610e24db011ca5aee7584cff7cc7ad2e41d6eb77e0175a2",
+      "current": "c246b0c41405a0660610e24db011ca5aee7584cff7cc7ad2e41d6eb77e0175a2"
+    },
+    "backend/packages/harness/deerflow/skills/resource_deletion_files.py": {
+      "previous": "8120634184bd8c75ce0a65f5783e978bbb991442393410dfb88690df7410c864",
+      "current": "8120634184bd8c75ce0a65f5783e978bbb991442393410dfb88690df7410c864"
+    },
+    "backend/packages/harness/deerflow/database/user_config_service.py": {
+      "previous": "26c6e5819ce4117be744bed1d1c0c11c8ba04bdf26323e68b43620e6e41d2c63",
+      "current": "26c6e5819ce4117be744bed1d1c0c11c8ba04bdf26323e68b43620e6e41d2c63"
+    },
+    "backend/packages/harness/deerflow/skills/loader.py": {
+      "previous": "fc36da03625385ccc6cd865e4bce6327fdae4198939d21d8f4fc964242d00c47",
+      "current": "fc36da03625385ccc6cd865e4bce6327fdae4198939d21d8f4fc964242d00c47"
+    },
+    "backend/packages/harness/deerflow/skills/resource_identity.py": {
+      "previous": "406856e713bb41a2b624cdd77c49b950105ef6f288c6d69946e4da2713147db6",
+      "current": "406856e713bb41a2b624cdd77c49b950105ef6f288c6d69946e4da2713147db6"
+    },
+    "backend/tests/test_skill_resource_identity.py": {
+      "previous": "b1949cf7901641ead60ceacda36bcd38d2fb531f19140cc1bd231a439dbc8ed8",
+      "current": "b1949cf7901641ead60ceacda36bcd38d2fb531f19140cc1bd231a439dbc8ed8"
+    },
+    "backend/packages/harness/deerflow/skills/install_receipts.py": {
+      "previous": "fd14be0a3d086615754abdc4c89bd4a757fd510a3213c643112faa85d340f16d",
+      "current": "fd14be0a3d086615754abdc4c89bd4a757fd510a3213c643112faa85d340f16d"
+    },
+    "backend/app/gateway/routers/agents.py": {
+      "previous": "092c7f1ffa5c65a0cb97cc716f0deb3953505f52d17cca0ffbd0887f6a698ad8",
+      "current": "092c7f1ffa5c65a0cb97cc716f0deb3953505f52d17cca0ffbd0887f6a698ad8"
+    },
+    "backend/app/gateway/routers/agent_catalog.py": {
+      "previous": "d4872f93df612199cf494237ca0b4ff9825af07e6a8a08a1524f4df2148d9537",
+      "current": "d4872f93df612199cf494237ca0b4ff9825af07e6a8a08a1524f4df2148d9537"
+    },
+    "backend/app/gateway/routers/skills.py": {
+      "previous": "ef1df73c92e43d853d2d4ba3ff9afb573128d01a569df1af3c7a44396ec9289c",
+      "current": "ef1df73c92e43d853d2d4ba3ff9afb573128d01a569df1af3c7a44396ec9289c"
+    },
+    "backend/packages/harness/deerflow/skills/installer.py": {
+      "previous": "9f72cf583f8a0b22db09420462826d626037c4c64a799ea0cef1cdf777156c80",
+      "current": "9f72cf583f8a0b22db09420462826d626037c4c64a799ea0cef1cdf777156c80"
+    },
+    "backend/packages/harness/deerflow/skills/validation.py": {
+      "previous": "bb0cf0c16bf422efac75434abe3723a8f040b511de7ae3b0cf8f78662f1900d1",
+      "current": "bb0cf0c16bf422efac75434abe3723a8f040b511de7ae3b0cf8f78662f1900d1"
+    },
+    "backend/tests/test_octop_integration.py": {
+      "previous": "38daf6d1116fbc7d0b25f44fb17b9934442c3adcbfae31021d44655eda540b38",
+      "current": "38daf6d1116fbc7d0b25f44fb17b9934442c3adcbfae31021d44655eda540b38"
+    },
+    "backend/tests/test_octop_presentation.py": {
+      "previous": "2afa91b22b725200474c1797fab46a9a97549fe1f8f005d7cd74ec9cb4f28b7b",
+      "current": "2afa91b22b725200474c1797fab46a9a97549fe1f8f005d7cd74ec9cb4f28b7b"
+    },
+    "backend/tests/test_octop_resources.py": {
+      "previous": "2909962749e3f02038df78677755dd0b9b2f812cda6591a14dded4b3d355452d",
+      "current": "2909962749e3f02038df78677755dd0b9b2f812cda6591a14dded4b3d355452d"
+    },
+    "backend/tests/test_octop_resource_installations.py": {
+      "previous": "8cc80518e780c79f8e7e9d572eb7ed258b3af8e5e289597a29ffcc23600e082d",
+      "current": "8cc80518e780c79f8e7e9d572eb7ed258b3af8e5e289597a29ffcc23600e082d"
+    },
+    "backend/tests/test_octop_skill_packages.py": {
+      "previous": "e076064bfec6462f26613dfcff97bbc65bc45fb7827b8bef2a74e984fdfb48e2",
+      "current": "e076064bfec6462f26613dfcff97bbc65bc45fb7827b8bef2a74e984fdfb48e2"
+    },
+    "backend/tests/test_skill_import_recovery.py": {
+      "previous": "7df302389ec709d1864a965997519fa3361637a4785bde298b93d1572de244ae",
+      "current": "7df302389ec709d1864a965997519fa3361637a4785bde298b93d1572de244ae"
+    },
+    "backend/packages/octop-capabilities/src/prismos_octop/catalog.py": {
+      "previous": "fad319a9ef40cde937301bd854df5db4b62504bc79d03584a1820790e76d5f84",
+      "current": "fad319a9ef40cde937301bd854df5db4b62504bc79d03584a1820790e76d5f84"
+    },
+    "backend/packages/octop-capabilities/src/prismos_octop/presentation.py": {
+      "previous": "bc183cccd99d019bb4b144b7a87a0eb9f5bb7210c1cbd9430f8b091e21b410ae",
+      "current": "bc183cccd99d019bb4b144b7a87a0eb9f5bb7210c1cbd9430f8b091e21b410ae"
+    },
+    "backend/packages/octop-capabilities/src/prismos_octop/resources.py": {
+      "previous": "4324a0910356b20530fca82d8f71eebd3344e8e9415c6f88821e065ca48aac79",
+      "current": "4324a0910356b20530fca82d8f71eebd3344e8e9415c6f88821e065ca48aac79"
+    },
+    "backend/packages/octop-capabilities/src/prismos_octop/source_policy.py": {
+      "previous": "eb45077cd3fc1264125f84bd131e0685bc3958f035e8ac6da64fa33ac4f55d41",
+      "current": "eb45077cd3fc1264125f84bd131e0685bc3958f035e8ac6da64fa33ac4f55d41"
+    }
+  },
+  "changed_inputs": {
+    "backend/tests/test_skill_member_tools.py": {
+      "previous": "169e85a94f9b9292fd13e27cd6340fdf652f5bddaacc47ae3cc61bb012ab6e06",
+      "current": "2363ab365111e9cd80fe1b78d5a652427a606f3a7f3df231cbd2cf519c27e1c1"
+    },
+    "backend/tests/test_diagnosis_authorization.py": {
+      "previous": "8c1da6fa5663907f2040ed65cec91d34f08fadfd456199b63dce179a9f9f57aa",
+      "current": "35c4f4cf9d0386d5f0c3fcf4effbf0b1f5fb6933128184457a6b9386c892afb9"
+    },
+    "backend/tests/test_langgraph_proxy.py": {
+      "previous": "33b8c834edf249ec85f5a33ac408231fc82e78d4366efd637a87a2d6cd5c509e",
+      "current": "6e373ec390ab11de80a34c3eec4ab2fca51f296769ffb1733c9796aa250d6ae0"
+    },
+    "backend/app/alerting/ingest.py": {
+      "previous": "6c53a46520dab11a79694b84e7c35321dfe33aad2ee6eb079a672d9cb0cee3d1",
+      "current": "6e84dd70b823087196b222a0a612f8a47654535ee71f46381eb57828bea96219"
+    },
+    "backend/app/gateway/routers/langgraph_proxy.py": {
+      "previous": "e435b9c417398f193d06b4bf6eb5b89819618f37edbda4f85741dcaa82a07fbf",
+      "current": "bab8f28a48be7ed21e1640684a5aeb24b7afe0e61151b9e27e497092d7ec796d"
+    },
+    "backend/app/integrations/agent_skill_members.py": {
+      "previous": "d7d5937aa424ca66ca8067587251b1ac55a5e3940bc43f3bd2b64fe3dce4bb9e",
+      "current": "11801b04453747135d2570caa434e10b15ba0cf207e5892883d7f5f690e2ac8d"
+    },
+    "backend/packages/harness/deerflow/sandbox/tools.py": {
+      "previous": "989bd9a36b6fbb2202e27e9bdc19a214e3eeaac801201fa598d0557237228428",
+      "current": "a84c6a5c149fde25c9818ff7ebccb57a4c559d34e24ce1c0c8ed790c58de27de"
+    },
+    "backend/app/runtime_adapters.py": {
+      "previous": "2f68b06666cb443bcdcfbde28f3610d9f11727613e3060c34da3d4e3555943c5",
+      "current": "454d5c0e74ded61ba10ba69f925eb42d2bb08e4f1e0bba9cbdb70af6019c0d5d"
+    },
+    "backend/packages/harness/deerflow/runtime.py": {
+      "previous": "19f710dbd0df8212f64ed2563b94cadae811a475d9e6bdc26be145fc187b796f",
+      "current": "712441f95922fc2d06dbaa399403159dea390ed75ad20f097cfb02687f1a9f76"
+    }
+  },
+  "reuse_scope": "Original b5/b6/b5 installation, enablement, manual creation, deletion/recovery and immutable source/package contracts retain historical coverage where these inputs match. Current file/result/thread authority and impacted runtime/governance/selection tests are separately executed against fixed host inputs; no claim of a new complete 435-case upgrade suite."
+}

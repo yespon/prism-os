@@ -24,6 +24,7 @@ from deerflow.runtime import (
     register_agent_identity_provider,
     register_agent_persistence_provider,
     register_execution_validator,
+    register_file_access_provider,
     register_governed_action_provider,
     register_skill_command_provider,
     register_skill_file_provider,
@@ -177,6 +178,10 @@ def _current_skill_member(context, operation, path, container_prefix):
         async with get_session_factory()() as session:
             tenant, actor = context.get("tenant_id"), context.get("user_id")
             await begin_reference_transaction(session, tenant)
+            from app.integrations.file_access import verify_thread
+            binding = await verify_thread(session, tenant, actor, context.get("thread_id"))
+            if binding.agent_name is not None and binding.agent_name != context.get("agent_name"):
+                raise ExecutionTrustError("Current thread Agent unavailable")
             await verify_native_selection(session, tenant, actor, context.get("agent_name"), context["agent_id"])
             from app.integrations.agent_skill_references import current_skill_resources
 
@@ -185,6 +190,7 @@ def _current_skill_member(context, operation, path, container_prefix):
             before = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
             result = await current_member(session, context, operation, path, container_prefix)
             await verify_native_selection(session, tenant, actor, context.get("agent_name"), context["agent_id"])
+            await verify_thread(session, tenant, actor, context.get("thread_id"))
             after = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
             if before != after or record.model_dump() != values:
                 raise ExecutionTrustError("Current Skill selection changed during access")
@@ -259,6 +265,12 @@ def _current_skill_command(context, command, provider, thread_data, env):
         raise ExecutionTrustError("Current scoped command access unavailable or changed; inspect outputs and any external effects") from None
 
 
+def _current_file_access(context, state, operation, path):
+    from app.integrations.file_access import runtime_file_access
+
+    return _run_async(runtime_file_access(context, state, operation, path, get_session_factory()))
+
+
 def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
@@ -274,6 +286,7 @@ def register_runtime_adapters() -> None:
     register_execution_validator(_consume_graph_capability)
     register_skill_prompt_provider(_current_skill_prompt)
     register_skill_file_provider(_current_skill_member)
+    register_file_access_provider(_current_file_access)
     register_skill_command_provider(_current_skill_command)
 
 

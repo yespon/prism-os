@@ -1,0 +1,150 @@
+{
+  "base_commit": "469465007fa11efedb33b4409b3887011981a822",
+  "branch": "codex/octop-integration",
+  "status": "file_image_thread_result_access_verified_first_milestone_pending",
+  "original_regressions": {
+    "baseline_failed": 3,
+    "fixed_passed": 3,
+    "baseline_log": "logs/file-boundary-baseline.log",
+    "tests_preserved": true
+  },
+  "related": {
+    "passed": 92,
+    "note": "Before final listing/Range/SSE/automatic ownership deltas; applicable scope retained."
+  },
+  "full_backend": {
+    "passed": 1909,
+    "skipped": 18,
+    "failed": 1,
+    "observed_exit_code": 1,
+    "failure": "old SSE transport fixture lacked current member/thread facts",
+    "fixed_by": "stream-fixed.log (8 passed) and delta-accepted.log (34 passed)",
+    "scope": "Full backend was collected before final Range/SSE cleanup/automatic ownership delta; changed paths independently revalidated, not represented as a second complete green run. Initial incorrect-cwd run retained separately."
+  },
+  "final_permission_integration": {
+    "passed": 34,
+    "observed_exit_code": 0
+  },
+  "automatic_thread_ownership": {
+    "passed": 54,
+    "note": "SDK contract and real DB facts; no real model calls"
+  },
+  "postgres": {
+    "file_result_member_paths": 48,
+    "automatic_ownership_paths": 54,
+    "observed_return_codes": [
+      0,
+      0
+    ],
+    "owned_containers_removed": true,
+    "unchanged_database_migrations_reused_only_within_original_scope": true
+  },
+  "final_backend_image": {
+    "image_id": "sha256:06d36cfd88be46e79f9c8e95d21ff1ef3345c69bc803e7245a26374fb738a129",
+    "matching_runtime_modules": 14,
+    "runtime_integration_passed": 34,
+    "runtime_observed_exit_code": 0,
+    "inspection_container_removed": true,
+    "runtime_container_removed": true,
+    "build_final_stdout_completed": true,
+    "historical_session_handle_unavailable_after_quota_restore": true,
+    "deployment_or_publish": false
+  },
+  "upgrade": {
+    "complete": true,
+    "host_changed": false,
+    "host_inputs": 75,
+    "test_scope": "selected changed functional block",
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest_summary": "156 passed, 108 warnings in 347.64s (0:05:47)"
+      },
+      {
+        "release": "b6",
+        "returncode": 0,
+        "pytest_summary": "156 passed, 108 warnings in 264.82s (0:04:24)"
+      },
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest_summary": "156 passed, 108 warnings in 216.71s (0:03:36)"
+      }
+    ],
+    "original_default_complete_gate_retained": true,
+    "historical_unchanged_scope": "upgrade-reuse.json",
+    "outer_session_unavailable_after_quota_restore": true,
+    "completion_stdout_passed": true,
+    "changed_input_prior_probe_not_accepted": true
+  },
+  "static": {
+    "ruff_paths": 80,
+    "passed": true,
+    "compile_changed_modules": true,
+    "git_diff_check_passed": true,
+    "source_imported_files": 902,
+    "external_locked_packages": 4,
+    "external_artifacts": 7,
+    "original_brand_allowlist": 526,
+    "inventory_current_future": [
+      42,
+      12
+    ]
+  },
+  "historical_reuse": {
+    "unchanged_frontend_files": 499,
+    "new_frontend_full_build_or_tests": false,
+    "locks_and_distributions_unchanged": true,
+    "manifest": "inputs-and-reuse.json"
+  },
+  "pending": [
+    "automatic source/incident conditions during command/read execution and remote cancellation/unknown",
+    "legacy/default/terminal scoped command paths and remote sandbox mount/tools",
+    "derived-result provenance/version/target reauthorization and share/copy",
+    "large file bounded streaming",
+    "N04 real environment/model/external tool/countable ticket endpoint references",
+    "N07 actual remote CI",
+    "complete first milestone gates; N08 not started"
+  ],
+  "raw_log_sha256": {
+    "logs/automatic-binding-final.log": "ed83ccdc4b81eedf1323e0f48fcb84deac3e9be24663c94d6007227024982425",
+    "logs/automatic-binding.log": "9152f1c3793a771c93cfb4397760f41104d3e2392e5d8dcda81e2990c4828935",
+    "logs/automatic-static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/backend-full-final.log": "0b22579a8136ff1665b9560d552eb0499ca8f2814f5a940dc799efcec445bc18",
+    "logs/backend-full.log": "2f784d944240530d1da5091a4918c53831e5a02f9fd45e367ecabdbd279defa7",
+    "logs/backend-image-accepted.log": "07fd723407eb9da98ce48fbf8c19f7a45de6989fcfe39485e7c67011cb591fbc",
+    "logs/backend-image-final.log": "bd14a42e7caa34ce95a81a3186de1286de2d91efe70a17c55a9badefc049cd80",
+    "logs/backend-image-owner.log": "4ae049f3a20df4acab75f28f4d7e6b3f73ed5c01b03daee315ccda6fcd16a397",
+    "logs/backend-image.log": "5b00cc31f571cec80ebfb1b1a6636e6174c943c0a83faf5c61010580ddfc8662",
+    "logs/brand.log": "4caf4810ea4d96611c38b8c7c8193aeea12174509c92292623146f46a537e4ad",
+    "logs/collection.log": "0bf033baaf123e8da479cb0c24cb20b58e620eee53f6a46ee1cb835298c59d51",
+    "logs/delta-accepted.log": "8e898b98f0a616a58661940ba500d1d2efe83105cb7dd4cdee23dab8c457fd16",
+    "logs/external.log": "78abc64b52e8d5fb1dccf50fbc93848fb26c0afabf49f8b24ff294cf55e2ded4",
+    "logs/file-boundary-baseline.log": "d4d88c1e1a6de1a0b0bc627c997c7a665e80fec51955bc6494fd8364ad4b82eb",
+    "logs/file-fixes.log": "b71a032252e929ec74d515844ee5aafe17390a8df45f2e5fc0352bf6c67e3bc7",
+    "logs/file-targeted.log": "eeddfd0d106b76e7bba540788b3d2d83f48353a98754d463bfed0d8dc05e3521",
+    "logs/history.log": "988917789933f3821a56de213b1ebeb028bc9d06b0b4b4edd795cd5473005e5a",
+    "logs/http-targeted.log": "eaf5a04cc73e3cdee9e2731f89a13e71d53b76839554846dcb7c5adef449a6ea",
+    "logs/image-runtime.log": "ce535bc7a2289c6f673f0e46036e37ed76ac4916743d39c0113529808bc06ba0",
+    "logs/inventory.log": "528b0949e856809fa6a7d57313fa0b24c280be4dac8cc1240d26fe32952a64f8",
+    "logs/mcp-neighbor.log": "56025ebff2d631fdb451e0b296d4112b0fcae1e3f2ecd3adfd273801e0323375",
+    "logs/postgres-auto.log": "e4f0f90af68b5fa8e697592afb09dbbb0b39a185b59df57a210f138ee8b3a08a",
+    "logs/postgres.log": "72c841be049dce7b737dd485ac95839d528e3e99398f1582581981e100683cdf",
+    "logs/range-final.log": "fd947c7c53d94729670f31321e3561ebbbbce5e25f001f15dee4f26dbbb743a5",
+    "logs/range-fixed.log": "dd56a09dfffbb90629ffca82d4f9000eba3d777baed6a7c91b4899a23e0631f5",
+    "logs/related-final.log": "a00777f24e93acebb849e002fe94259d3f53eab8a61fe557caa4347a931f66ff",
+    "logs/related.log": "594eedf4f17ef997c3143fa6f73edb47d4fef91c2f21cd31647172d782918f3e",
+    "logs/ruff-accepted.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/ruff-fixes.log": "28229e10c3e50a836bd1b6ab41d3fbac78f10dc646eeac936dbb564bf1cdc0a0",
+    "logs/ruff-initial.log": "fa9452c4ef38616dd534b8d690a78018cd832760eb21621363052cf9a181bc0d",
+    "logs/source.log": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03",
+    "logs/stream-final.log": "671d48497c008ffce58a92053337f08e89a7ef549aba87b5b14cdd51b209ad48",
+    "logs/stream-fixed.log": "1b1d3fdb3ce31e8debb543fffc925e2c715191aa26806dfd8b0c12661ac64641",
+    "logs/upgrade-accepted.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/upgrade-final.log": "c71efe9ba177605c85dbe0f67b37c210e8f5d47ba4450ea1518335732ed92ecd",
+    "logs/upgrade.log": "9ba08d63d1777aedaffe6099e43e71681a17bf41a48f7cfa7991af73de18ddfd",
+    "logs/postgres-files.log": "b47407b75afc8ca4fa2a451087286b4452f4d3feefddf980f2e808773c4dd51a"
+  }
+}

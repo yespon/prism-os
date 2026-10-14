@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from fastapi import UploadFile
 
 from app.gateway.routers import uploads
@@ -255,3 +256,13 @@ def test_upload_files_skips_virtual_sync_for_thread_bound_local_sandbox(tmp_path
     assert result.success is True
     assert (thread_uploads_dir / "2507.log").read_bytes() == b"log content"
     sandbox.update_file.assert_not_called()
+
+
+@pytest.fixture(autouse=True)
+def isolated_route_contract(monkeypatch):
+    # These tests exercise filesystem/upload contracts. Current database
+    # authority is exercised separately by test_file_access_http.py.
+    async def authorized(*args, **kwargs):
+        return None
+    monkeypatch.setattr('app.gateway.file_authorization.require_thread_access', authorized)
+    monkeypatch.setattr(uploads, 'require_thread_access', authorized)

@@ -296,6 +296,8 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                 thread = await client.threads.create(metadata={
                     "incident_id": incident.id,
                     "tenant_id": tenant_id,
+                    "owner_tenant_id": tenant_id,
+                    "owner_user_id": actor_id,
                 })
                 thread_id = thread["thread_id"]
 
@@ -305,6 +307,11 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                 if fresh_inc is None:
                     raise RuntimeError("Current diagnosis incident is unavailable")
                 actor_id, agent = await current_authorization(session, source_id, tenant_id, diagnosis_agent_id, expected_actor=actor_id, expected_revision=source_revision, severity=fresh_inc.severity)
+                from app.platform.execution.trust import ThreadBindingRepository
+
+                bindings = ThreadBindingRepository(get_session_factory())
+                await bindings.create(thread_id, tenant_id, actor_id)
+                await bindings.bind_agent(thread_id, tenant_id, actor_id, agent.name)
                 prompt = await build_incident_diagnosis_prompt(session, fresh_inc, tenant_id, include_agent_configuration=False)
                 result = await client.runs.wait(
                     thread_id,

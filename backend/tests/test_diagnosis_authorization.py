@@ -206,6 +206,10 @@ def test_actual_auto_dispatch_uses_real_admin_and_stops_after_async_authority_ch
         return {"thread_id": "runtime-thread"}
 
     async def execute(*args, **kwargs):
+        owned = await trust.ThreadBindingRepository(factory).get(args[0], "tenant-a", "user-a")
+        assert owned.agent_name == "collision-agent"
+        assert calls[0][1]["metadata"]["owner_user_id"] == "user-a"
+        assert calls[0][1]["metadata"]["owner_tenant_id"] == "tenant-a"
         calls.append(("run", kwargs))
         context = kwargs["context"]
         assert context["user_id"] == "user-a" and context["agent_id"] == "shared-id"

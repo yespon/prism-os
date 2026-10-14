@@ -824,7 +824,11 @@ def ls_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, path:
     """
     requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+
         protected = _current_skill_file(runtime, "ls", path)
+        if protected is None:
+            protected = current_file_access(runtime, "ls", path)
         if protected is not None:
             result = "\n".join(protected[:MAX_LS_ENTRIES]) if protected else "(empty)"
             if len(protected) > MAX_LS_ENTRIES:
@@ -878,7 +882,11 @@ def read_file_tool(
     """
     requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+
         protected = _current_skill_file(runtime, "read", path)
+        if protected is None:
+            protected = current_file_access(runtime, "read", path)
         if protected is not None:
             return _apply_line_limit(protected, start_line, end_line)
         sandbox = ensure_sandbox_initialized(runtime)
@@ -920,7 +928,12 @@ def write_file_tool(
         path: The **absolute** path to the file to write to. ALWAYS PROVIDE THIS PARAMETER SECOND.
         content: The content to write to the file. ALWAYS PROVIDE THIS PARAMETER THIRD.
     """
+    requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+        protected = current_file_access(runtime, ("write", content, append), path)
+        if protected is not None:
+            return protected
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path
@@ -961,7 +974,12 @@ def str_replace_tool(
         new_str: The new substring. ALWAYS PROVIDE THIS PARAMETER FOURTH.
         replace_all: Whether to replace all occurrences of the substring. If False, only the first occurrence will be replaced. Default is False.
     """
+    requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+        protected = current_file_access(runtime, ("replace", old_str, new_str, replace_all), path)
+        if protected is not None:
+            return protected
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path
