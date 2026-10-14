@@ -1,0 +1,15 @@
+{
+  "image_id": "sha256:8e076dbfd9cf55f521a7de880867203233448e831a56a58c15fcad281f5a3b2d",
+  "matching_modules": [
+    {
+      "path": "backend/app/alerting/diagnosis_delivery.py",
+      "sha256": "5934fa4a295bbde5858873a06a859be238d28eef1bcb56f62a522cb9b839978c"
+    },
+    {
+      "path": "backend/app/gateway/routers/alerts.py",
+      "sha256": "2d69df0609a66bb03c83ff2122f3bef4144d57d150f5e76ba17922ae9453fe88"
+    }
+  ],
+  "inspection_container_removed": true,
+  "deploy_or_publish": false
+}

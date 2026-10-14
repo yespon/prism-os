@@ -73,6 +73,9 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/app/alerting/diagnosis_delivery.py",
+        "backend/tests/test_diagnosis_delivery.py",
+        "backend/tests/test_incident_diagnosis.py",
         "backend/app/alerting/diagnosis_run_control.py",
         "backend/tests/test_diagnosis_run_control.py",
         "backend/tests/test_runtime_source_revocation.py",

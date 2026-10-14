@@ -1578,6 +1578,7 @@ async def diagnose_incident(
     async def event_stream():
         import asyncio
 
+        from app.alerting.diagnosis_delivery import verify_delivery
         from app.alerting.diagnosis_sse import _step_finished, _step_started, _text_message_content, msg_done, msg_thread
 
         # Capture current length of text buffer
@@ -1590,9 +1591,15 @@ async def diagnose_incident(
         queue = asyncio.Queue()
         diagnosis_task_manager.register_queue(incident_id, queue)
 
+        async def verify_current_delivery():
+            return await verify_delivery(get_session_factory(), tenant_id, user_id, agent_name, agent_id, incident_id,
+                diagnosis_task_manager.get_thread_id(incident_id),
+                new_thread_pending=diagnosis_task_manager.is_running(incident_id) and not diagnosis_task_manager.get_thread_id(incident_id))
+
         try:
-            thread_id = diagnosis_task_manager.get_thread_id(incident_id)
+            thread_id = await verify_current_delivery()
             if thread_id:
+                await verify_current_delivery()
                 yield msg_thread(thread_id, diagnosis_task_manager.get_agent_name(incident_id) or agent_name)
                 yielded_run_started = True
 
@@ -1609,21 +1616,28 @@ async def diagnose_incident(
                         if isinstance(todo, dict):
                             step_name = todo.get("name") or todo.get("title") or todo.get("content") or str(todo)
                             step_status = str(todo.get("status", "")).lower()
+                            await verify_current_delivery()
                             yield _step_started(step_name)
                             if step_status in ("done", "completed", "finished", "success"):
+                                await verify_current_delivery()
                                 yield _step_finished(step_name)
+                except ExecutionTrustError:
+                    raise
                 except Exception as ex:
                     logger.warning("diagnose reconnect: could not fetch thread state: %s", ex)
 
             # Replay accumulated text buffer so far
             if stream_state and stream_state.full_text_buffer:
+                await verify_current_delivery()
                 yield _text_message_content("catchup-msg-id", stream_state.full_text_buffer)
 
             # If task is not running anymore, yield final done and finish
             if not diagnosis_task_manager.is_running(incident_id):
                 if stream_state and stream_state.full_text_buffer:
+                    await verify_current_delivery()
                     yield msg_done(thread_id, stream_state.full_text_buffer)
                 elif incident.diagnosis_status in ("completed", "failed", "cancelled"):
+                    await verify_current_delivery()
                     yield msg_done(thread_id, incident.diagnosis_result or "")
                 return
 
@@ -1642,23 +1656,26 @@ async def diagnose_incident(
                     if len(current_text) > sent_chars:
                         new_delta = current_text[sent_chars:]
                         sent_chars = len(current_text)
+                        await verify_current_delivery()
                         yield _text_message_content("live-msg-id", new_delta)
                 else:
+                    await verify_current_delivery()
                     yield msg
 
                 if "RUN_FINISHED" in msg or "RUN_ERROR" in msg:
                     break
 
+        except ExecutionTrustError:
+            logger.info("diagnose: delivery authorization withdrawn for incident=%s", incident_id)
         except (asyncio.CancelledError, GeneratorExit):
             logger.info("diagnose: client disconnected from SSE stream for incident=%s", incident_id)
         finally:
             diagnosis_task_manager.unregister_queue(incident_id, queue)
-
     return StreamingResponse(
         event_stream(),
         media_type="text/event-stream",
         headers={
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-store",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },

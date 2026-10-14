@@ -1,0 +1,857 @@
+FFF...F...................................FFFF.....FFF........           [100%]
+=================================== FAILURES ===================================
+______________ TestIncidentDiagnosis.test_diagnose_default_agent _______________
+
+self = <test_incident_diagnosis.TestIncidentDiagnosis object at 0x71cfb5892ff0>
+test_session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x71cfb3c0ef50>, autoflush=True, expire_on_commit=False)
+client = <starlette.testclient.TestClient object at 0x71cfb2b22f30>
+mock_langgraph = <MagicMock id='125136870360176'>
+
+    def test_diagnose_default_agent(self, test_session_factory, client, mock_langgraph):
+        asyncio.run(self._setup_data(test_session_factory))
+    
+        # Patch get_session_factory so the SSE write session uses test DB
+        with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+            response = client.post(
+                "/api/incidents/incident-1/diagnose",
+                headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+            )
+            assert response.status_code == 200
+            # Read streaming response chunks
+            chunks = response.text.split("\n\n")
+            assert any("thread" in chunk and "mock-thread-xyz" in chunk for chunk in chunks)
+            # Check for token messages (new SSE format)
+            assert any("token" in chunk and "Mock diagnosis token" in chunk for chunk in chunks)
+    
+            # Verify Incident in DB has completed status and thread/agent linked
+            async def verify_db():
+                async with test_session_factory() as session:
+                    inc = await session.get(Incident, "incident-1")
+                    assert inc.diagnosis_status == "completed"
+                    assert inc.agent_id == "agent-shared"
+                    # thread_id is cleared after completion in new code
+>           asyncio.run(verify_db())
+
+tests/test_incident_diagnosis.py:230: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def verify_db():
+        async with test_session_factory() as session:
+            inc = await session.get(Incident, "incident-1")
+>           assert inc.diagnosis_status == "completed"
+E           AssertionError: assert 'running' == 'completed'
+E             
+E             - completed
+E             + running
+
+tests/test_incident_diagnosis.py:227: AssertionError
+___________ TestIncidentDiagnosis.test_diagnose_custom_private_agent ___________
+
+self = <test_incident_diagnosis.TestIncidentDiagnosis object at 0x71cfb58932c0>
+test_session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x71cfb3408510>, autoflush=True, expire_on_commit=False)
+client = <starlette.testclient.TestClient object at 0x71cfb2b23650>
+mock_langgraph = <MagicMock id='125136860571136'>
+
+    def test_diagnose_custom_private_agent(self, test_session_factory, client, mock_langgraph):
+        asyncio.run(self._setup_data(test_session_factory))
+    
+        with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+            response = client.post(
+                "/api/incidents/incident-1/diagnose?agent_id=agent-private",
+                headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+            )
+            assert response.status_code == 200
+            chunks = response.text.split("\n\n")
+            assert any("thread" in chunk and "mock-thread-xyz" in chunk for chunk in chunks)
+    
+            async def verify_db():
+                async with test_session_factory() as session:
+                    inc = await session.get(Incident, "incident-1")
+                    assert inc.diagnosis_status == "completed"
+                    assert inc.agent_id == "agent-private"
+                    # thread_id is cleared after completion in new code
+>           asyncio.run(verify_db())
+
+tests/test_incident_diagnosis.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def verify_db():
+        async with test_session_factory() as session:
+            inc = await session.get(Incident, "incident-1")
+>           assert inc.diagnosis_status == "completed"
+E           AssertionError: assert 'running' == 'completed'
+E             
+E             - completed
+E             + running
+
+tests/test_incident_diagnosis.py:247: AssertionError
+___________ TestIncidentDiagnosis.test_diagnose_custom_shared_agent ____________
+
+self = <test_incident_diagnosis.TestIncidentDiagnosis object at 0x71cfb5893590>
+test_session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x71cfb39e3e90>, autoflush=True, expire_on_commit=False)
+client = <starlette.testclient.TestClient object at 0x71cfb34f5490>
+mock_langgraph = <MagicMock id='125136859533040'>
+
+    def test_diagnose_custom_shared_agent(self, test_session_factory, client, mock_langgraph):
+        asyncio.run(self._setup_data(test_session_factory))
+    
+        with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+            response = client.post(
+                "/api/incidents/incident-1/diagnose?agent_id=agent-shared",
+                headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+            )
+            assert response.status_code == 200
+            chunks = response.text.split("\n\n")
+            assert any("thread" in chunk and "mock-thread-xyz" in chunk for chunk in chunks)
+    
+            async def verify_db():
+                async with test_session_factory() as session:
+                    inc = await session.get(Incident, "incident-1")
+                    assert inc.diagnosis_status == "completed"
+                    assert inc.agent_id == "agent-shared"
+>           asyncio.run(verify_db())
+
+tests/test_incident_diagnosis.py:269: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def verify_db():
+        async with test_session_factory() as session:
+            inc = await session.get(Incident, "incident-1")
+>           assert inc.diagnosis_status == "completed"
+E           AssertionError: assert 'running' == 'completed'
+E             
+E             - completed
+E             + running
+
+tests/test_incident_diagnosis.py:267: AssertionError
+_________ TestIncidentDiagnosis.test_diagnose_stream_failure_handling __________
+
+self = <test_incident_diagnosis.TestIncidentDiagnosis object at 0x71cfb58c4110>
+test_session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x71cfb34c8e50>, autoflush=True, expire_on_commit=False)
+client = <starlette.testclient.TestClient object at 0x71cfb1dada00>
+mock_langgraph = <MagicMock id='125136854542736'>
+
+    def test_diagnose_stream_failure_handling(self, test_session_factory, client, mock_langgraph):
+        asyncio.run(self._setup_data(test_session_factory))
+    
+        # Force runs.stream to raise an Exception
+        async def failing_stream(*args, **kwargs):
+            yield ("messages-tuple", MagicMock(content="Token before fail"))
+            raise RuntimeError("LangGraph connection failed")
+    
+        mock_langgraph.runs.stream = failing_stream
+    
+        with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+            response = client.post(
+                "/api/incidents/incident-1/diagnose",
+                headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+            )
+            assert response.status_code == 200
+            chunks = response.text.split("\n\n")
+            # AG-UI protocol uses RUN_ERROR event type
+            assert any("RUN_ERROR" in chunk and "LangGraph connection failed" in chunk for chunk in chunks)
+    
+            # Verify Incident in DB has failed status
+            async def verify_db():
+                async with test_session_factory() as session:
+                    inc = await session.get(Incident, "incident-1")
+                    assert inc.diagnosis_status == "failed"
+>           asyncio.run(verify_db())
+
+tests/test_incident_diagnosis.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def verify_db():
+        async with test_session_factory() as session:
+            inc = await session.get(Incident, "incident-1")
+>           assert inc.diagnosis_status == "failed"
+E           AssertionError: assert 'running' == 'failed'
+E             
+E             - failed
+E             + running
+
+tests/test_incident_diagnosis.py:337: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.gateway.routers.alerts:alerts.py:1470 diagnose: background task failed for incident=incident-1: LangGraph connection failed
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/alerts.py", line 1387, in _run_diagnosis_background_task
+    async for chunk in client.runs.stream(
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_incident_diagnosis.py", line 319, in failing_stream
+    raise RuntimeError("LangGraph connection failed")
+RuntimeError: LangGraph connection failed
+_ test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-disabled] _
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfb3101b80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfb3328890>
+selected_id = 'shared-id', change = 'disabled'
+
+    @pytest.mark.parametrize("selected_id,change", [
+        ("shared-id", None), ("personal-id", None), ("shared-id", "agent"), ("shared-id", "incident"),
+        ("shared-id", "disabled"), ("shared-id", "membership"), ("shared-id", "incident_tenant"), ("shared-id", "incident_removed"),
+    ])
+    def test_actual_manual_diagnosis_stream_uses_current_native_identity(delegated, monkeypatch, selected_id, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app import runtime_adapters
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+    
+        http, factory, config = delegated
+        manager = alerts.DiagnosisTaskManager()
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", manager)
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off")
+        http.app.include_router(alerts.router)
+        requests = []
+    
+        async def thread(**kwargs):
+            if change:
+                async with factory() as writer:
+                    if change in {"agent", "disabled"}:
+                        row = await writer.get(CustomAgent, selected_id)
+                        if change == "agent":
+                            row.system_prompt = "CURRENT MANUAL SOUL"
+                        else:
+                            row.enabled = False
+                    elif change == "membership":
+                        row = (await writer.exec(select(TenantMembership))).scalars().one()
+                        row.status = "inactive"
+                    else:
+                        row = await writer.get(Incident, "manual-incident")
+                        if change == "incident":
+                            row.title = "Current manual incident"
+                        elif change == "incident_tenant":
+                            row.tenant_id = "tenant-b"
+                        else:
+                            await writer.delete(row)
+                    if change != "incident_removed":
+                        writer.add(row)
+                    await writer.commit()
+            return {"thread_id": "manual-thread"}
+    
+        async def stream(*args, **kwargs):
+            requests.append(kwargs)
+            context = kwargs["context"]
+            if "agent_id" in context:
+                selected = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "manual-thread", context["agent_name"], include_selection=True)
+                requests[-1]["consumed_selection"] = selected
+                requests[-1]["current_soul"] = runtime_adapters._load_agent_by_id(context["agent_name"], "user-a", "tenant-a", selected["agent_id"]).system_prompt
+            yield SimpleNamespace(event="messages-tuple", data=[{"type": "ai", "id": "manual-message", "content": "Verified manual output"}, {}])
+    
+        client = SimpleNamespace(threads=SimpleNamespace(create=thread, get_state=lambda *args: None), runs=SimpleNamespace(stream=stream))
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: client)
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="manual-incident", tenant_id="tenant-a", incident_key="INC-MANUAL", severity="warning", title="Old manual incident"))
+                await session.commit()
+        asyncio.run(seed())
+        response = http.post("/api/incidents/manual-incident/diagnose", params={"agent_id": selected_id})
+        assert response.status_code == 200, response.text
+        allowed = change in {None, "agent", "incident"}
+        assert len(requests) == (1 if allowed else 0)
+        if allowed:
+            context = requests[0]["context"]
+            assert context["agent_id"] == selected_id and context["diagnosis_incident_id"] == "manual-incident"
+            assert requests[0]["consumed_selection"] == {"incident_id": "manual-incident", "agent_id": selected_id}
+            human = requests[0]["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "PERSONAL SOUL" not in human
+            if change == "agent":
+                assert requests[0]["current_soul"] == "CURRENT MANUAL SOUL"
+            if change == "incident":
+                assert "Current manual incident" in human and "Old manual incident" not in human
+        else:
+>           assert "RUN_ERROR" in response.text
+E           AssertionError: assert 'RUN_ERROR' in ''
+E            +  where '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:583: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.gateway.routers.alerts:alerts.py:1470 diagnose: background task failed for incident=manual-incident: Native Agent selection unavailable
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/alerts.py", line 1360, in _run_diagnosis_background_task
+    await verify_native_selection(selection_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/runtime_adapters.py", line 72, in verify_native_selection
+    raise ExecutionTrustError("Native Agent selection unavailable")
+deerflow.runtime.ExecutionTrustError: Native Agent selection unavailable
+_ test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-membership] _
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfb33880e0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfb1dacf50>
+selected_id = 'shared-id', change = 'membership'
+
+    @pytest.mark.parametrize("selected_id,change", [
+        ("shared-id", None), ("personal-id", None), ("shared-id", "agent"), ("shared-id", "incident"),
+        ("shared-id", "disabled"), ("shared-id", "membership"), ("shared-id", "incident_tenant"), ("shared-id", "incident_removed"),
+    ])
+    def test_actual_manual_diagnosis_stream_uses_current_native_identity(delegated, monkeypatch, selected_id, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app import runtime_adapters
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+    
+        http, factory, config = delegated
+        manager = alerts.DiagnosisTaskManager()
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", manager)
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off")
+        http.app.include_router(alerts.router)
+        requests = []
+    
+        async def thread(**kwargs):
+            if change:
+                async with factory() as writer:
+                    if change in {"agent", "disabled"}:
+                        row = await writer.get(CustomAgent, selected_id)
+                        if change == "agent":
+                            row.system_prompt = "CURRENT MANUAL SOUL"
+                        else:
+                            row.enabled = False
+                    elif change == "membership":
+                        row = (await writer.exec(select(TenantMembership))).scalars().one()
+                        row.status = "inactive"
+                    else:
+                        row = await writer.get(Incident, "manual-incident")
+                        if change == "incident":
+                            row.title = "Current manual incident"
+                        elif change == "incident_tenant":
+                            row.tenant_id = "tenant-b"
+                        else:
+                            await writer.delete(row)
+                    if change != "incident_removed":
+                        writer.add(row)
+                    await writer.commit()
+            return {"thread_id": "manual-thread"}
+    
+        async def stream(*args, **kwargs):
+            requests.append(kwargs)
+            context = kwargs["context"]
+            if "agent_id" in context:
+                selected = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "manual-thread", context["agent_name"], include_selection=True)
+                requests[-1]["consumed_selection"] = selected
+                requests[-1]["current_soul"] = runtime_adapters._load_agent_by_id(context["agent_name"], "user-a", "tenant-a", selected["agent_id"]).system_prompt
+            yield SimpleNamespace(event="messages-tuple", data=[{"type": "ai", "id": "manual-message", "content": "Verified manual output"}, {}])
+    
+        client = SimpleNamespace(threads=SimpleNamespace(create=thread, get_state=lambda *args: None), runs=SimpleNamespace(stream=stream))
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: client)
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="manual-incident", tenant_id="tenant-a", incident_key="INC-MANUAL", severity="warning", title="Old manual incident"))
+                await session.commit()
+        asyncio.run(seed())
+        response = http.post("/api/incidents/manual-incident/diagnose", params={"agent_id": selected_id})
+        assert response.status_code == 200, response.text
+        allowed = change in {None, "agent", "incident"}
+        assert len(requests) == (1 if allowed else 0)
+        if allowed:
+            context = requests[0]["context"]
+            assert context["agent_id"] == selected_id and context["diagnosis_incident_id"] == "manual-incident"
+            assert requests[0]["consumed_selection"] == {"incident_id": "manual-incident", "agent_id": selected_id}
+            human = requests[0]["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "PERSONAL SOUL" not in human
+            if change == "agent":
+                assert requests[0]["current_soul"] == "CURRENT MANUAL SOUL"
+            if change == "incident":
+                assert "Current manual incident" in human and "Old manual incident" not in human
+        else:
+>           assert "RUN_ERROR" in response.text
+E           AssertionError: assert 'RUN_ERROR' in ''
+E            +  where '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:583: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.gateway.routers.alerts:alerts.py:1470 diagnose: background task failed for incident=manual-incident: Native Agent selection unavailable
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/alerts.py", line 1360, in _run_diagnosis_background_task
+    await verify_native_selection(selection_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/runtime_adapters.py", line 72, in verify_native_selection
+    raise ExecutionTrustError("Native Agent selection unavailable")
+deerflow.runtime.ExecutionTrustError: Native Agent selection unavailable
+_ test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-incident_tenant] _
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfb063bd40>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfa37029f0>
+selected_id = 'shared-id', change = 'incident_tenant'
+
+    @pytest.mark.parametrize("selected_id,change", [
+        ("shared-id", None), ("personal-id", None), ("shared-id", "agent"), ("shared-id", "incident"),
+        ("shared-id", "disabled"), ("shared-id", "membership"), ("shared-id", "incident_tenant"), ("shared-id", "incident_removed"),
+    ])
+    def test_actual_manual_diagnosis_stream_uses_current_native_identity(delegated, monkeypatch, selected_id, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app import runtime_adapters
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+    
+        http, factory, config = delegated
+        manager = alerts.DiagnosisTaskManager()
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", manager)
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off")
+        http.app.include_router(alerts.router)
+        requests = []
+    
+        async def thread(**kwargs):
+            if change:
+                async with factory() as writer:
+                    if change in {"agent", "disabled"}:
+                        row = await writer.get(CustomAgent, selected_id)
+                        if change == "agent":
+                            row.system_prompt = "CURRENT MANUAL SOUL"
+                        else:
+                            row.enabled = False
+                    elif change == "membership":
+                        row = (await writer.exec(select(TenantMembership))).scalars().one()
+                        row.status = "inactive"
+                    else:
+                        row = await writer.get(Incident, "manual-incident")
+                        if change == "incident":
+                            row.title = "Current manual incident"
+                        elif change == "incident_tenant":
+                            row.tenant_id = "tenant-b"
+                        else:
+                            await writer.delete(row)
+                    if change != "incident_removed":
+                        writer.add(row)
+                    await writer.commit()
+            return {"thread_id": "manual-thread"}
+    
+        async def stream(*args, **kwargs):
+            requests.append(kwargs)
+            context = kwargs["context"]
+            if "agent_id" in context:
+                selected = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "manual-thread", context["agent_name"], include_selection=True)
+                requests[-1]["consumed_selection"] = selected
+                requests[-1]["current_soul"] = runtime_adapters._load_agent_by_id(context["agent_name"], "user-a", "tenant-a", selected["agent_id"]).system_prompt
+            yield SimpleNamespace(event="messages-tuple", data=[{"type": "ai", "id": "manual-message", "content": "Verified manual output"}, {}])
+    
+        client = SimpleNamespace(threads=SimpleNamespace(create=thread, get_state=lambda *args: None), runs=SimpleNamespace(stream=stream))
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: client)
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="manual-incident", tenant_id="tenant-a", incident_key="INC-MANUAL", severity="warning", title="Old manual incident"))
+                await session.commit()
+        asyncio.run(seed())
+        response = http.post("/api/incidents/manual-incident/diagnose", params={"agent_id": selected_id})
+        assert response.status_code == 200, response.text
+        allowed = change in {None, "agent", "incident"}
+        assert len(requests) == (1 if allowed else 0)
+        if allowed:
+            context = requests[0]["context"]
+            assert context["agent_id"] == selected_id and context["diagnosis_incident_id"] == "manual-incident"
+            assert requests[0]["consumed_selection"] == {"incident_id": "manual-incident", "agent_id": selected_id}
+            human = requests[0]["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "PERSONAL SOUL" not in human
+            if change == "agent":
+                assert requests[0]["current_soul"] == "CURRENT MANUAL SOUL"
+            if change == "incident":
+                assert "Current manual incident" in human and "Old manual incident" not in human
+        else:
+>           assert "RUN_ERROR" in response.text
+E           AssertionError: assert 'RUN_ERROR' in ''
+E            +  where '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:583: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.gateway.routers.alerts:alerts.py:1470 diagnose: background task failed for incident=manual-incident: Current diagnosis incident unavailable
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/alerts.py", line 1360, in _run_diagnosis_background_task
+    await verify_native_selection(selection_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/runtime_adapters.py", line 79, in verify_native_selection
+    raise ExecutionTrustError("Current diagnosis incident unavailable")
+deerflow.runtime.ExecutionTrustError: Current diagnosis incident unavailable
+_ test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-incident_removed] _
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfb0391550>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfa3887710>
+selected_id = 'shared-id', change = 'incident_removed'
+
+    @pytest.mark.parametrize("selected_id,change", [
+        ("shared-id", None), ("personal-id", None), ("shared-id", "agent"), ("shared-id", "incident"),
+        ("shared-id", "disabled"), ("shared-id", "membership"), ("shared-id", "incident_tenant"), ("shared-id", "incident_removed"),
+    ])
+    def test_actual_manual_diagnosis_stream_uses_current_native_identity(delegated, monkeypatch, selected_id, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app import runtime_adapters
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+    
+        http, factory, config = delegated
+        manager = alerts.DiagnosisTaskManager()
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", manager)
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "off")
+        http.app.include_router(alerts.router)
+        requests = []
+    
+        async def thread(**kwargs):
+            if change:
+                async with factory() as writer:
+                    if change in {"agent", "disabled"}:
+                        row = await writer.get(CustomAgent, selected_id)
+                        if change == "agent":
+                            row.system_prompt = "CURRENT MANUAL SOUL"
+                        else:
+                            row.enabled = False
+                    elif change == "membership":
+                        row = (await writer.exec(select(TenantMembership))).scalars().one()
+                        row.status = "inactive"
+                    else:
+                        row = await writer.get(Incident, "manual-incident")
+                        if change == "incident":
+                            row.title = "Current manual incident"
+                        elif change == "incident_tenant":
+                            row.tenant_id = "tenant-b"
+                        else:
+                            await writer.delete(row)
+                    if change != "incident_removed":
+                        writer.add(row)
+                    await writer.commit()
+            return {"thread_id": "manual-thread"}
+    
+        async def stream(*args, **kwargs):
+            requests.append(kwargs)
+            context = kwargs["context"]
+            if "agent_id" in context:
+                selected = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "manual-thread", context["agent_name"], include_selection=True)
+                requests[-1]["consumed_selection"] = selected
+                requests[-1]["current_soul"] = runtime_adapters._load_agent_by_id(context["agent_name"], "user-a", "tenant-a", selected["agent_id"]).system_prompt
+            yield SimpleNamespace(event="messages-tuple", data=[{"type": "ai", "id": "manual-message", "content": "Verified manual output"}, {}])
+    
+        client = SimpleNamespace(threads=SimpleNamespace(create=thread, get_state=lambda *args: None), runs=SimpleNamespace(stream=stream))
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: client)
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="manual-incident", tenant_id="tenant-a", incident_key="INC-MANUAL", severity="warning", title="Old manual incident"))
+                await session.commit()
+        asyncio.run(seed())
+        response = http.post("/api/incidents/manual-incident/diagnose", params={"agent_id": selected_id})
+        assert response.status_code == 200, response.text
+        allowed = change in {None, "agent", "incident"}
+        assert len(requests) == (1 if allowed else 0)
+        if allowed:
+            context = requests[0]["context"]
+            assert context["agent_id"] == selected_id and context["diagnosis_incident_id"] == "manual-incident"
+            assert requests[0]["consumed_selection"] == {"incident_id": "manual-incident", "agent_id": selected_id}
+            human = requests[0]["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "PERSONAL SOUL" not in human
+            if change == "agent":
+                assert requests[0]["current_soul"] == "CURRENT MANUAL SOUL"
+            if change == "incident":
+                assert "Current manual incident" in human and "Old manual incident" not in human
+        else:
+>           assert "RUN_ERROR" in response.text
+E           AssertionError: assert 'RUN_ERROR' in ''
+E            +  where '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:583: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.gateway.routers.alerts:alerts.py:1470 diagnose: background task failed for incident=manual-incident: Current diagnosis incident unavailable
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/alerts.py", line 1360, in _run_diagnosis_background_task
+    await verify_native_selection(selection_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/runtime_adapters.py", line 79, in verify_native_selection
+    raise ExecutionTrustError("Current diagnosis incident unavailable")
+deerflow.runtime.ExecutionTrustError: Current diagnosis incident unavailable
+_ test_manual_retry_cancels_only_a_proven_owned_previous_thread[native-foreign] _
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfa38d4fe0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfb0d50080>
+ownership = 'native-foreign'
+
+    @pytest.mark.parametrize("ownership", ["native-own", "native-foreign", "legacy-own", "legacy-foreign"])
+    def test_manual_retry_cancels_only_a_proven_owned_previous_thread(delegated, monkeypatch, ownership):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution.trust import ThreadBindingRepository
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", alerts.DiagnosisTaskManager())
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        http.app.include_router(alerts.router)
+        cancellations, metadata_reads = [], []
+    
+        async def create(**kwargs):
+            return {"thread_id": "new-owned-thread"}
+    
+        async def previous(thread_id):
+            metadata_reads.append(thread_id)
+            return {"metadata": {"owner_user_id": "user-a" if ownership.endswith("own") else "other-user", "owner_tenant_id": "tenant-a"}}
+    
+        async def running(thread_id, **kwargs):
+            return [{"run_id": "previous-run"}]
+    
+        async def cancel(thread_id, run_id, **kwargs):
+            cancellations.append((thread_id, run_id))
+    
+        async def stream(*args, **kwargs):
+            context = kwargs["context"]
+            chosen = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "new-owned-thread", "collision-agent", include_selection=True)
+            assert chosen["agent_id"] == "shared-id"
+            yield SimpleNamespace(event="metadata", data={})
+    
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=create, get=previous), runs=SimpleNamespace(stream=stream, list=running, cancel=cancel)))
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="retry-incident", tenant_id="tenant-a", incident_key="INC-RETRY", thread_id="previous-thread", diagnosis_status="failed"))
+                await session.commit()
+            if ownership.startswith("native"):
+                await ThreadBindingRepository(factory).create("previous-thread", "tenant-a", "user-a" if ownership.endswith("own") else "other-user")
+        asyncio.run(seed())
+        response = http.post("/api/incidents/retry-incident/diagnose", params={"agent_id": "shared-id"})
+>       assert response.status_code == 200 and "RUN_FINISHED" in response.text and "RUN_ERROR" not in response.text
+E       AssertionError: assert (200 == 200 and 'RUN_FINISHED' in '')
+E        +  where 200 = <Response [200 OK]>.status_code
+E        +  and   '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:714: AssertionError
+---------------------------- Captured log teardown -----------------------------
+ERROR    sqlalchemy.pool.impl.AsyncAdaptedQueuePool:base.py:1008 Exception during reset or similar
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 986, in _finalize_fairy
+    fairy._reset(
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1441, in _reset
+    pool._dialect.do_rollback(self)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 712, in do_rollback
+    dbapi_connection.rollback()
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 307, in rollback
+    self.await_(self._connection.rollback())
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 197, in rollback
+    await self._execute(self._conn.rollback)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+__ test_manual_retry_cancels_only_a_proven_owned_previous_thread[legacy-own] ___
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfb0c4cd70>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfb33fc0e0>
+ownership = 'legacy-own'
+
+    @pytest.mark.parametrize("ownership", ["native-own", "native-foreign", "legacy-own", "legacy-foreign"])
+    def test_manual_retry_cancels_only_a_proven_owned_previous_thread(delegated, monkeypatch, ownership):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution.trust import ThreadBindingRepository
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", alerts.DiagnosisTaskManager())
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        http.app.include_router(alerts.router)
+        cancellations, metadata_reads = [], []
+    
+        async def create(**kwargs):
+            return {"thread_id": "new-owned-thread"}
+    
+        async def previous(thread_id):
+            metadata_reads.append(thread_id)
+            return {"metadata": {"owner_user_id": "user-a" if ownership.endswith("own") else "other-user", "owner_tenant_id": "tenant-a"}}
+    
+        async def running(thread_id, **kwargs):
+            return [{"run_id": "previous-run"}]
+    
+        async def cancel(thread_id, run_id, **kwargs):
+            cancellations.append((thread_id, run_id))
+    
+        async def stream(*args, **kwargs):
+            context = kwargs["context"]
+            chosen = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "new-owned-thread", "collision-agent", include_selection=True)
+            assert chosen["agent_id"] == "shared-id"
+            yield SimpleNamespace(event="metadata", data={})
+    
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=create, get=previous), runs=SimpleNamespace(stream=stream, list=running, cancel=cancel)))
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="retry-incident", tenant_id="tenant-a", incident_key="INC-RETRY", thread_id="previous-thread", diagnosis_status="failed"))
+                await session.commit()
+            if ownership.startswith("native"):
+                await ThreadBindingRepository(factory).create("previous-thread", "tenant-a", "user-a" if ownership.endswith("own") else "other-user")
+        asyncio.run(seed())
+        response = http.post("/api/incidents/retry-incident/diagnose", params={"agent_id": "shared-id"})
+>       assert response.status_code == 200 and "RUN_FINISHED" in response.text and "RUN_ERROR" not in response.text
+E       AssertionError: assert (200 == 200 and 'RUN_FINISHED' in '')
+E        +  where 200 = <Response [200 OK]>.status_code
+E        +  and   '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:714: AssertionError
+_ test_manual_retry_cancels_only_a_proven_owned_previous_thread[legacy-foreign] _
+
+delegated = (<starlette.testclient.TestClient object at 0x71cfb0d94a10>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71cfb3351c40>
+ownership = 'legacy-foreign'
+
+    @pytest.mark.parametrize("ownership", ["native-own", "native-foreign", "legacy-own", "legacy-foreign"])
+    def test_manual_retry_cancels_only_a_proven_owned_previous_thread(delegated, monkeypatch, ownership):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+    
+        from app.gateway.routers import alerts
+        from app.models.alerting import Incident
+        from app.platform.execution.trust import ThreadBindingRepository
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(alerts, "diagnosis_task_manager", alerts.DiagnosisTaskManager())
+        monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+        http.app.include_router(alerts.router)
+        cancellations, metadata_reads = [], []
+    
+        async def create(**kwargs):
+            return {"thread_id": "new-owned-thread"}
+    
+        async def previous(thread_id):
+            metadata_reads.append(thread_id)
+            return {"metadata": {"owner_user_id": "user-a" if ownership.endswith("own") else "other-user", "owner_tenant_id": "tenant-a"}}
+    
+        async def running(thread_id, **kwargs):
+            return [{"run_id": "previous-run"}]
+    
+        async def cancel(thread_id, run_id, **kwargs):
+            cancellations.append((thread_id, run_id))
+    
+        async def stream(*args, **kwargs):
+            context = kwargs["context"]
+            chosen = await _repository(factory).consume(context["prismos_execution_capability"], "tenant-a", "user-a", "new-owned-thread", "collision-agent", include_selection=True)
+            assert chosen["agent_id"] == "shared-id"
+            yield SimpleNamespace(event="metadata", data={})
+    
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=create, get=previous), runs=SimpleNamespace(stream=stream, list=running, cancel=cancel)))
+    
+        async def seed():
+            async with factory() as session:
+                session.add(Incident(id="retry-incident", tenant_id="tenant-a", incident_key="INC-RETRY", thread_id="previous-thread", diagnosis_status="failed"))
+                await session.commit()
+            if ownership.startswith("native"):
+                await ThreadBindingRepository(factory).create("previous-thread", "tenant-a", "user-a" if ownership.endswith("own") else "other-user")
+        asyncio.run(seed())
+        response = http.post("/api/incidents/retry-incident/diagnose", params={"agent_id": "shared-id"})
+>       assert response.status_code == 200 and "RUN_FINISHED" in response.text and "RUN_ERROR" not in response.text
+E       AssertionError: assert (200 == 200 and 'RUN_FINISHED' in '')
+E        +  where 200 = <Response [200 OK]>.status_code
+E        +  and   '' = <Response [200 OK]>.text
+
+tests/test_diagnosis_authorization.py:714: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_diagnosis_authorization.py: 54 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_incident_diagnosis.py::TestIncidentDiagnosis::test_diagnose_default_agent
+FAILED tests/test_incident_diagnosis.py::TestIncidentDiagnosis::test_diagnose_custom_private_agent
+FAILED tests/test_incident_diagnosis.py::TestIncidentDiagnosis::test_diagnose_custom_shared_agent
+FAILED tests/test_incident_diagnosis.py::TestIncidentDiagnosis::test_diagnose_stream_failure_handling
+FAILED tests/test_diagnosis_authorization.py::test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-disabled]
+FAILED tests/test_diagnosis_authorization.py::test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-membership]
+FAILED tests/test_diagnosis_authorization.py::test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-incident_tenant]
+FAILED tests/test_diagnosis_authorization.py::test_actual_manual_diagnosis_stream_uses_current_native_identity[shared-id-incident_removed]
+FAILED tests/test_diagnosis_authorization.py::test_manual_retry_cancels_only_a_proven_owned_previous_thread[native-foreign]
+FAILED tests/test_diagnosis_authorization.py::test_manual_retry_cancels_only_a_proven_owned_previous_thread[legacy-own]
+FAILED tests/test_diagnosis_authorization.py::test_manual_retry_cancels_only_a_proven_owned_previous_thread[legacy-foreign]
+11 failed, 51 passed, 55 warnings in 53.56s

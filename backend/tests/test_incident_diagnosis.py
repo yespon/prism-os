@@ -19,9 +19,9 @@ from deerflow.database.models import Tenant, TenantMembership
 # Engine & Session Fixtures
 # ---------------------------------------------------------------------------
 
-def _make_test_engine() -> AsyncEngine:
+def _make_test_engine(path=None) -> AsyncEngine:
     return create_async_engine(
-        "sqlite+aiosqlite://",
+        f"sqlite+aiosqlite:///{path}" if path else "sqlite+aiosqlite://",
         echo=False,
         connect_args={"check_same_thread": False},
     )
@@ -37,8 +37,10 @@ async def _drop_tables(engine: AsyncEngine) -> None:
         await conn.run_sync(SQLModel.metadata.drop_all)
 
 @pytest.fixture()
-def test_session_factory():
-    engine = _make_test_engine()
+def test_session_factory(tmp_path):
+    # Fresh delivery checks require independent transactions; a single
+    # in-memory connection can roll back a concurrent background writer.
+    engine = _make_test_engine(tmp_path / "diagnosis.db")
     asyncio.run(_create_tables(engine))
 
     from sqlalchemy.ext.asyncio import async_sessionmaker

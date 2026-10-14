@@ -580,7 +580,9 @@ def test_actual_manual_diagnosis_stream_uses_current_native_identity(delegated, 
         if change == "incident":
             assert "Current manual incident" in human and "Old manual incident" not in human
     else:
-        assert "RUN_ERROR" in response.text
+        # A withdrawn member/Agent/incident cannot receive even the old
+        # diagnostic error stream; server-side failure is verified below.
+        assert not response.text
     if change == "incident_tenant":
         async def foreign_state():
             async with factory() as session:
@@ -920,3 +922,51 @@ def test_native_context_rechecks_protected_authority_after_capability_consumptio
     asyncio.run(change())
     with pytest.raises(ExecutionTrustError):
         runtime_adapters._load_agent_context("collision-agent", "user-a", "tenant-a", "shared-id", **{key: verified[key] for key in ["diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id"]})
+
+
+def test_actual_incident_checkpoint_and_cached_replay_are_discarded_after_member_withdrawal(delegated, monkeypatch):
+    from types import SimpleNamespace
+
+    import langgraph_sdk
+
+    from app.alerting.diagnosis_sse import StreamState
+    from app.gateway.routers import alerts
+    from app.models.alerting import Incident
+    from app.platform.execution.trust import ThreadBindingRepository
+
+    http, factory, _ = delegated
+    manager = alerts.DiagnosisTaskManager()
+    manager._identities["delivery-live"] = ("tenant-a", "user-a", "shared-id")
+    manager._stream_states["delivery-live"] = StreamState()
+    manager._stream_states["delivery-live"].full_text_buffer = "PRIVATE CACHED RESULT"
+    manager._thread_ids["delivery-live"] = "owned-delivery"
+    status = SimpleNamespace(done=False)
+    manager._tasks["delivery-live"] = SimpleNamespace(done=lambda: status.done)
+    monkeypatch.setattr(alerts, "diagnosis_task_manager", manager)
+    monkeypatch.setattr(alerts, "get_session_factory", lambda: factory)
+    http.app.include_router(alerts.router)
+
+    async def seed():
+        async with factory() as session:
+            session.add(Incident(id="delivery-live", tenant_id="tenant-a", incident_key="DELIVERY-LIVE",
+                thread_id="owned-delivery", agent_id="shared-id", diagnosis_status="running"))
+            await session.commit()
+        await ThreadBindingRepository(factory).create("owned-delivery", "tenant-a", "user-a")
+
+    async def checkpoint(thread):
+        async with factory() as session:
+            row = (await session.exec(select(TenantMembership))).scalars().one()
+            row.status = "inactive"
+            session.add(row)
+            await session.commit()
+        status.done = True
+        return {"values": {"todos": [{"name": "PRIVATE CHECKPOINT STEP", "status": "done"}]}}
+
+    monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(get_state=checkpoint)))
+    asyncio.run(seed())
+    response = http.post("/api/incidents/delivery-live/diagnose", params={"agent_id": "shared-id"})
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    assert "PRIVATE CACHED RESULT" not in response.text and "PRIVATE CHECKPOINT STEP" not in response.text
+    assert "RUN_FINISHED" not in response.text
+    assert "delivery-live" not in manager._queues
