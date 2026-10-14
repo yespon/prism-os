@@ -1,0 +1,442 @@
+FFF..                                                                    [100%]
+=================================== FAILURES ===================================
+_ test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[agent] _
+
+delegated = (<starlette.testclient.TestClient object at 0x7eb72afda3c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+configured = (<starlette.testclient.TestClient object at 0x7eb72afda3c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:de858244537e2a364769ab26c731befe723ee250971e2c27917485f023ea4b17'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7eb72b0abf50>
+change = 'agent'
+
+    @pytest.mark.parametrize("change", ["agent", "skill", "incident", "disabled_skill", "consume_severity"])
+    def test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident(delegated, configured, monkeypatch, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+        from test_lead_agent_model_resolution import _make_app_config, _make_model
+    
+        import deerflow.tools as tools
+        from app import runtime_adapters
+        from app.alerting import ingest
+        from app.integrations import agent_skill_references as refs
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+        from deerflow.agents.lead_agent import agent as graph
+        from deerflow.agents.lead_agent import prompt as template
+        from deerflow.database import session as session_module
+        from deerflow.database.models import TenantSkill
+    
+        http, factory, config = delegated
+        _, _, root, resources = configured
+        requests, models = [], []
+        monkeypatch.setattr(session_module, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+        monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+        monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+        monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+        monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+        monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name cache"))
+        monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
+        monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["safe"])
+        monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+        monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: models.append(kwargs) or object())
+        monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+        monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: [])
+        monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+        monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name soul"))
+        monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+    
+        async def change_after_thread(**kwargs):
+            async with factory() as writer:
+                if change == "agent":
+                    row = await writer.get(CustomAgent, "shared-id")
+                    row.system_prompt = "CURRENT SHARED SOUL"
+                elif change == "incident":
+                    row = await writer.get(Incident, "fresh-incident")
+                    row.title = "Current incident title"
+                elif change == "disabled_skill":
+                    row = (await writer.exec(select(TenantSkill).where(TenantSkill.user_id == "__tenant_shared_skill__:tenant-a"))).scalars().one()
+                    row.enabled = False
+                else:
+                    row = None
+                if row is not None:
+                    writer.add(row)
+                    await writer.commit()
+            if change == "skill":
+                path = root / "custom/tenant-a/__tenant_shared_skill__:tenant-a/collision/SKILL.md"
+                path.write_text(path.read_text().replace("SHARED ONLY", "CURRENT SHARED CONTENT"))
+            return {"thread_id": "fresh-thread"}
+    
+        async def execute(*args, **kwargs):
+            requests.append(kwargs)
+            human = kwargs["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "SHARED ONLY" not in human
+            assert "CURRENT SHARED CONTENT" not in human
+            if change == "incident":
+                assert "Current incident title" in human and "Old incident title" not in human
+            if change == "consume_severity":
+                async with factory() as writer:
+                    row = await writer.get(Incident, "fresh-incident")
+                    row.severity = "warning"
+                    writer.add(row)
+                    await writer.commit()
+            built = graph.make_lead_agent({"context": kwargs["context"] | {"model_name": "safe"}})
+            if change in {"disabled_skill", "consume_severity"}:
+                pytest.fail("Revoked diagnosis reached model assembly")
+            assert ("CURRENT SHARED SOUL" if change == "agent" else "SHARED SOUL") in built["system_prompt"]
+            assert ("CURRENT SHARED CONTENT" if change == "skill" else "SHARED ONLY") in built["system_prompt"]
+            if change == "skill":
+                assert "SHARED ONLY" not in built["system_prompt"]
+            return {"messages": [{"type": "ai", "content": "Current authorized configuration"}]}
+    
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=change_after_thread), runs=SimpleNamespace(wait=execute)))
+    
+        async def scenario():
+            async with factory() as session:
+                agent = await session.get(CustomAgent, "shared-id")
+                agent.skills = ["collision"]
+                agent.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                incident = Incident(id="fresh-incident", tenant_id="tenant-a", incident_key="INC-FRESH", severity="critical", title="Old incident title")
+                session.add(agent)
+                session.add(source)
+                session.add(incident)
+                await session.commit()
+            await ingest._schedule_agent_diagnosis(incident, "tenant-a", "shared-id", "source-id")
+            async with factory() as session:
+                return await session.get(Incident, "fresh-incident")
+    
+        result = asyncio.run(scenario())
+        assert len(requests) == 1
+>       assert len(models) == (0 if change in {"disabled_skill", "consume_severity"} else 1)
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_diagnosis_authorization.py:441: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.alerting.ingest:ingest.py:362 diagnose: auto-failed for incident=INC-FRESH
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/alerting/ingest.py", line 313, in _run
+    result = await client.runs.wait(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_diagnosis_authorization.py", line 400, in execute
+    assert "SHARED SOUL" not in human and "SHARED ONLY" not in human
+AssertionError: assert ('SHARED SOUL' not in '## Incident... next steps.'
+  
+  'SHARED SOUL' is contained here:
+    Prompt**: SHARED SOUL
+    - **Bound Skills**: collision
+    <skill_system>
+    Use only these current selected sources; recheck access when loading referenced members.
+    <selected_skill name="collision" scope="tenant" resource_id="skill:2:5eba3abce917e2917276977e185e25e26e1eebdbd0fc32d20e2b9f01a31aeed1" file_sha256="a28846be4ccafd87ebfb76c66a1a8ef76478792710b884141d401773384a881b">...
+  
+  ...Full output truncated (25 lines hidden), use '-vv' to show)
+_ test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[skill] _
+
+delegated = (<starlette.testclient.TestClient object at 0x7eb72afd84d0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+configured = (<starlette.testclient.TestClient object at 0x7eb72afd84d0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:4b3343c1d9b256c3a95b595980947991dd1d827a2dc8387cc9835c8ee14d0ba3'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7eb72af9b890>
+change = 'skill'
+
+    @pytest.mark.parametrize("change", ["agent", "skill", "incident", "disabled_skill", "consume_severity"])
+    def test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident(delegated, configured, monkeypatch, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+        from test_lead_agent_model_resolution import _make_app_config, _make_model
+    
+        import deerflow.tools as tools
+        from app import runtime_adapters
+        from app.alerting import ingest
+        from app.integrations import agent_skill_references as refs
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+        from deerflow.agents.lead_agent import agent as graph
+        from deerflow.agents.lead_agent import prompt as template
+        from deerflow.database import session as session_module
+        from deerflow.database.models import TenantSkill
+    
+        http, factory, config = delegated
+        _, _, root, resources = configured
+        requests, models = [], []
+        monkeypatch.setattr(session_module, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+        monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+        monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+        monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+        monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+        monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name cache"))
+        monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
+        monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["safe"])
+        monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+        monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: models.append(kwargs) or object())
+        monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+        monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: [])
+        monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+        monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name soul"))
+        monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+    
+        async def change_after_thread(**kwargs):
+            async with factory() as writer:
+                if change == "agent":
+                    row = await writer.get(CustomAgent, "shared-id")
+                    row.system_prompt = "CURRENT SHARED SOUL"
+                elif change == "incident":
+                    row = await writer.get(Incident, "fresh-incident")
+                    row.title = "Current incident title"
+                elif change == "disabled_skill":
+                    row = (await writer.exec(select(TenantSkill).where(TenantSkill.user_id == "__tenant_shared_skill__:tenant-a"))).scalars().one()
+                    row.enabled = False
+                else:
+                    row = None
+                if row is not None:
+                    writer.add(row)
+                    await writer.commit()
+            if change == "skill":
+                path = root / "custom/tenant-a/__tenant_shared_skill__:tenant-a/collision/SKILL.md"
+                path.write_text(path.read_text().replace("SHARED ONLY", "CURRENT SHARED CONTENT"))
+            return {"thread_id": "fresh-thread"}
+    
+        async def execute(*args, **kwargs):
+            requests.append(kwargs)
+            human = kwargs["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "SHARED ONLY" not in human
+            assert "CURRENT SHARED CONTENT" not in human
+            if change == "incident":
+                assert "Current incident title" in human and "Old incident title" not in human
+            if change == "consume_severity":
+                async with factory() as writer:
+                    row = await writer.get(Incident, "fresh-incident")
+                    row.severity = "warning"
+                    writer.add(row)
+                    await writer.commit()
+            built = graph.make_lead_agent({"context": kwargs["context"] | {"model_name": "safe"}})
+            if change in {"disabled_skill", "consume_severity"}:
+                pytest.fail("Revoked diagnosis reached model assembly")
+            assert ("CURRENT SHARED SOUL" if change == "agent" else "SHARED SOUL") in built["system_prompt"]
+            assert ("CURRENT SHARED CONTENT" if change == "skill" else "SHARED ONLY") in built["system_prompt"]
+            if change == "skill":
+                assert "SHARED ONLY" not in built["system_prompt"]
+            return {"messages": [{"type": "ai", "content": "Current authorized configuration"}]}
+    
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=change_after_thread), runs=SimpleNamespace(wait=execute)))
+    
+        async def scenario():
+            async with factory() as session:
+                agent = await session.get(CustomAgent, "shared-id")
+                agent.skills = ["collision"]
+                agent.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                incident = Incident(id="fresh-incident", tenant_id="tenant-a", incident_key="INC-FRESH", severity="critical", title="Old incident title")
+                session.add(agent)
+                session.add(source)
+                session.add(incident)
+                await session.commit()
+            await ingest._schedule_agent_diagnosis(incident, "tenant-a", "shared-id", "source-id")
+            async with factory() as session:
+                return await session.get(Incident, "fresh-incident")
+    
+        result = asyncio.run(scenario())
+>       assert len(requests) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_diagnosis_authorization.py:440: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.alerting.ingest:ingest.py:362 diagnose: auto-failed for incident=INC-FRESH
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/alerting/ingest.py", line 305, in _run
+    thread = await client.threads.create(metadata={
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_diagnosis_authorization.py", line 394, in change_after_thread
+    path.write_text(path.read_text().replace("SHARED ONLY", "CURRENT SHARED CONTENT"))
+                    ^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-root/pytest-43/test_auto_diagnosis_keeps_conf1/skills/custom/tenant-a/__tenant_shared_skill__:tenant-a/collision/SKILL.md'
+_ test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[incident] _
+
+delegated = (<starlette.testclient.TestClient object at 0x7eb72910db80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+configured = (<starlette.testclient.TestClient object at 0x7eb72910db80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:c7a438ffbf5dcabcfddaa92aefd2b84cf463245b6f786ec9aec0767eff94a694'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7eb72882b830>
+change = 'incident'
+
+    @pytest.mark.parametrize("change", ["agent", "skill", "incident", "disabled_skill", "consume_severity"])
+    def test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident(delegated, configured, monkeypatch, change):
+        from types import SimpleNamespace
+    
+        import langgraph_sdk
+        from test_lead_agent_model_resolution import _make_app_config, _make_model
+    
+        import deerflow.tools as tools
+        from app import runtime_adapters
+        from app.alerting import ingest
+        from app.integrations import agent_skill_references as refs
+        from app.models.alerting import Incident
+        from app.platform.execution import trust
+        from deerflow.agents.lead_agent import agent as graph
+        from deerflow.agents.lead_agent import prompt as template
+        from deerflow.database import session as session_module
+        from deerflow.database.models import TenantSkill
+    
+        http, factory, config = delegated
+        _, _, root, resources = configured
+        requests, models = [], []
+        monkeypatch.setattr(session_module, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+        monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+        monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+        monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+        monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+        monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name cache"))
+        monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
+        monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["safe"])
+        monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+        monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: models.append(kwargs) or object())
+        monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+        monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: [])
+        monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+        monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name soul"))
+        monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+    
+        async def change_after_thread(**kwargs):
+            async with factory() as writer:
+                if change == "agent":
+                    row = await writer.get(CustomAgent, "shared-id")
+                    row.system_prompt = "CURRENT SHARED SOUL"
+                elif change == "incident":
+                    row = await writer.get(Incident, "fresh-incident")
+                    row.title = "Current incident title"
+                elif change == "disabled_skill":
+                    row = (await writer.exec(select(TenantSkill).where(TenantSkill.user_id == "__tenant_shared_skill__:tenant-a"))).scalars().one()
+                    row.enabled = False
+                else:
+                    row = None
+                if row is not None:
+                    writer.add(row)
+                    await writer.commit()
+            if change == "skill":
+                path = root / "custom/tenant-a/__tenant_shared_skill__:tenant-a/collision/SKILL.md"
+                path.write_text(path.read_text().replace("SHARED ONLY", "CURRENT SHARED CONTENT"))
+            return {"thread_id": "fresh-thread"}
+    
+        async def execute(*args, **kwargs):
+            requests.append(kwargs)
+            human = kwargs["input"]["messages"][0]["content"]
+            assert "SHARED SOUL" not in human and "SHARED ONLY" not in human
+            assert "CURRENT SHARED CONTENT" not in human
+            if change == "incident":
+                assert "Current incident title" in human and "Old incident title" not in human
+            if change == "consume_severity":
+                async with factory() as writer:
+                    row = await writer.get(Incident, "fresh-incident")
+                    row.severity = "warning"
+                    writer.add(row)
+                    await writer.commit()
+            built = graph.make_lead_agent({"context": kwargs["context"] | {"model_name": "safe"}})
+            if change in {"disabled_skill", "consume_severity"}:
+                pytest.fail("Revoked diagnosis reached model assembly")
+            assert ("CURRENT SHARED SOUL" if change == "agent" else "SHARED SOUL") in built["system_prompt"]
+            assert ("CURRENT SHARED CONTENT" if change == "skill" else "SHARED ONLY") in built["system_prompt"]
+            if change == "skill":
+                assert "SHARED ONLY" not in built["system_prompt"]
+            return {"messages": [{"type": "ai", "content": "Current authorized configuration"}]}
+    
+        monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=change_after_thread), runs=SimpleNamespace(wait=execute)))
+    
+        async def scenario():
+            async with factory() as session:
+                agent = await session.get(CustomAgent, "shared-id")
+                agent.skills = ["collision"]
+                agent.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                incident = Incident(id="fresh-incident", tenant_id="tenant-a", incident_key="INC-FRESH", severity="critical", title="Old incident title")
+                session.add(agent)
+                session.add(source)
+                session.add(incident)
+                await session.commit()
+            await ingest._schedule_agent_diagnosis(incident, "tenant-a", "shared-id", "source-id")
+            async with factory() as session:
+                return await session.get(Incident, "fresh-incident")
+    
+        result = asyncio.run(scenario())
+        assert len(requests) == 1
+>       assert len(models) == (0 if change in {"disabled_skill", "consume_severity"} else 1)
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_diagnosis_authorization.py:441: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.alerting.ingest:ingest.py:362 diagnose: auto-failed for incident=INC-FRESH
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/alerting/ingest.py", line 313, in _run
+    result = await client.runs.wait(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_diagnosis_authorization.py", line 400, in execute
+    assert "SHARED SOUL" not in human and "SHARED ONLY" not in human
+AssertionError: assert ('SHARED SOUL' not in '## Incident... next steps.'
+  
+  'SHARED SOUL' is contained here:
+    Prompt**: SHARED SOUL
+    - **Bound Skills**: collision
+    <skill_system>
+    Use only these current selected sources; recheck access when loading referenced members.
+    <selected_skill name="collision" scope="tenant" resource_id="skill:2:9d44d1973e46c679c2e3e07d4940df9a736ce876908d0682b090726a7a93b3bc" file_sha256="a28846be4ccafd87ebfb76c66a1a8ef76478792710b884141d401773384a881b">...
+  
+  ...Full output truncated (25 lines hidden), use '-vv' to show)
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[agent]
+tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[skill]
+tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[incident]
+tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[disabled_skill]
+tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[consume_severity]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[agent]
+FAILED tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[skill]
+FAILED tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[incident]
+3 failed, 2 passed, 21 deselected, 6 warnings in 6.97s

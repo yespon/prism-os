@@ -77,12 +77,12 @@ from app.gateway.authorization import require_tenant_context
 from app.runtime_adapters import _current_skill_prompt
 from deerflow.runtime import ExecutionTrustError
 from app.alerting.diagnosis_authorization import current_authorization, revision
-from app.models.alerting import AlertSource
+from app.models.alerting import AlertSource, Incident
 from app.platform.execution.trust import ExecutionCapabilityRepository
 from app.runtime_adapters import verify_native_selection
 from deerflow.database.session import get_session_factory
 @app.get("/api/probe/source-capability/{{source_id}}")
-async def owned_source_capability(source_id: str, request: Request):
+async def owned_source_capability(source_id: str, request: Request, revoke_after_issue: bool = False):
     tenant = require_tenant_context(request)
     factory = get_session_factory()
     try:
@@ -95,10 +95,23 @@ async def owned_source_capability(source_id: str, request: Request):
             if actor != request.state.user_id:
                 raise HTTPException(403, "Source confirmation required")
             digest = revision(source.config_json)
+            incident_id = "probe-" + source_id
+            incident = await session.get(Incident, incident_id)
+            if incident is None:
+                incident = Incident(id=incident_id, tenant_id=tenant, incident_key="CAP-" + source_id, severity="critical")
+            incident.severity = "critical"
+            session.add(incident)
+            await session.commit()
         repository = ExecutionCapabilityRepository(factory, native_selection_validator=verify_native_selection)
-        opaque = await repository.issue(tenant, actor, "owned-probe-thread", agent.name, agent_id=agent.id, diagnosis_source_id=source_id, diagnosis_source_revision=digest)
+        opaque = await repository.issue(tenant, actor, "owned-probe-thread", agent.name, agent_id=agent.id, diagnosis_source_id=source_id, diagnosis_source_revision=digest, diagnosis_incident_id=incident_id)
+        if revoke_after_issue:
+            async with factory() as session:
+                incident = await session.get(Incident, incident_id)
+                incident.severity = "warning"
+                session.add(incident)
+                await session.commit()
         result = await repository.consume(opaque, tenant, actor, "owned-probe-thread", agent.name, include_selection=True)
-        return {{"actor_id": actor, "agent_id": result["agent_id"]}}
+        return {{"actor_id": actor, "agent_id": result["agent_id"], "action_authorized": result["incident_id"] is not None}}
     except ExecutionTrustError:
         raise HTTPException(403, "Current source authorization unavailable") from None
 @app.get("/api/probe/skill-choice/{{agent_name}}")
@@ -350,14 +363,19 @@ async def owned_skill_choice(agent_name: str, request: Request):
                 assert code == 201
                 code, shared_authority = request("/api/agents", {"name": "shared-authority-probe", "system_prompt": "Shared target", "is_shared": True}, token)
                 assert code == 201 and shared_authority["id"] != private_collision["id"]
-                source_body = {"name": "authority-source", "ai_analysis_enabled": True, "diagnosis_agent_id": shared_authority["id"], "config_json": {"analysis_trigger": {"diagnosis_authorization": {"actor_id": "forged"}}}}
+                source_body = {
+                    "name": "authority-source", "ai_analysis_enabled": True,
+                    "ai_analysis_severities": ["critical"], "diagnosis_agent_id": shared_authority["id"],
+                    "config_json": {"analysis_trigger": {"diagnosis_authorization": {"actor_id": "forged"}}},
+                }
                 assert request("/api/alert-sources", source_body)[0] == 401
                 code, source_authority = request("/api/alert-sources", source_body, token)
                 assert code == 201
                 assert source_authority["config_json"]["analysis_trigger"]["diagnosis_authorization"]["actor_id"] == "catalog-smoke-user"
                 authority_url = "/api/probe/source-capability/" + source_authority["id"]
                 code, verified_authority = request(authority_url, token=token)
-                assert code == 200 and verified_authority == {"actor_id": "catalog-smoke-user", "agent_id": shared_authority["id"]}
+                assert code == 200 and verified_authority == {"actor_id": "catalog-smoke-user", "agent_id": shared_authority["id"], "action_authorized": False}
+                assert request(authority_url + "?revoke_after_issue=true", token=token)[0] == 403
                 code, enabled_sources = request("/api/skills/available", token=token)
                 shared_source = next(item for item in enabled_sources["skills"] if item["name"] == "enablement-owned" and item["scope"] == "tenant")
                 shared_url = "/api/tenants/skills/enablement-owned"
@@ -454,6 +472,7 @@ async def owned_skill_choice(agent_name: str, request: Request):
                     "old_receipt_cannot_restore_or_rebind_same_name_replacement": True,
                     "concrete_agent_choice_revision_and_current_authorized_snapshot": True,
                     "source_admin_confirmation_native_capability_and_role_withdrawal": True,
+                    "diagnosis_incident_current_condition_recheck_without_action_authority": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)

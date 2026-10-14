@@ -70,13 +70,15 @@ async def test_browser_identity_is_replaced_and_thread_agent_stays_bound(proxy_s
     body = {"assistant_id": "lead_agent", "context": {
         "agent_name": "diagnosis", "user_id": "victim", "tenant_id": "tenant-b",
         "thread_id": "foreign", "is_bootstrap": True,
-        "prismos_execution_capability": "forged",
-    }, "config": {"configurable": {"user_id": "victim", "is_bootstrap": True},
-                  "metadata": {"tenant_id": "tenant-b", "agent_name": "other"}},
-       "metadata": {"owner_user_id": "victim", "owner_tenant_id": "tenant-b"}}
+        "prismos_execution_capability": "forged", "diagnosis_incident_id": "victim-incident",
+    }, "config": {"configurable": {"user_id": "victim", "is_bootstrap": True, "diagnosis_incident_id": "victim-incident"},
+                  "metadata": {"tenant_id": "tenant-b", "agent_name": "other", "diagnosis_incident_id": "victim-incident"}},
+       "metadata": {"owner_user_id": "victim", "owner_tenant_id": "tenant-b", "diagnosis_incident_id": "victim-incident"}}
     run = await client.post(f"/api/langgraph/threads/{thread_id}/runs/stream", json=body)
     assert run.status_code == 200
     forwarded = state.calls[-1][2]
+    for section in [forwarded["context"], forwarded["config"]["configurable"], forwarded["config"]["metadata"], forwarded["metadata"]]:
+        assert "diagnosis_incident_id" not in section
     assert forwarded["context"]["user_id"] == "user-1"
     assert forwarded["context"]["tenant_id"] == "tenant-a"
     assert forwarded["context"]["thread_id"] == thread_id

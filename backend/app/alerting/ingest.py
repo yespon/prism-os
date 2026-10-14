@@ -291,15 +291,6 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                 actor_id, agent = await current_authorization(session, source_id, tenant_id, diagnosis_agent_id, severity=fresh_inc.severity)
                 source_revision = revision((await session.get(AlertSource, source_id)).config_json)
 
-                # Build diagnosis prompt with incident context using helper
-                prompt = await build_incident_diagnosis_prompt(
-                    session, fresh_inc, tenant_id,
-                    agent_system_prompt=agent.system_prompt,
-                    agent_skills=agent.skills,
-                    agent_tool_groups=agent.tool_groups,
-                    agent=agent, actor_id=actor_id,
-                )
-
                 langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2024")
                 client = get_client(url=langgraph_url)
                 thread = await client.threads.create(metadata={
@@ -308,8 +299,13 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                 })
                 thread_id = thread["thread_id"]
 
-                # Recheck source and principal after asynchronous thread creation.
-                await current_authorization(session, source_id, tenant_id, diagnosis_agent_id, expected_actor=actor_id, expected_revision=source_revision, severity=(await session.get(Incident, incident.id, populate_existing=True)).severity)
+                # Refresh incident data after the network wait; Agent/Skill
+                # configuration belongs to the current authorized graph prompt.
+                fresh_inc = (await session.exec(select(Incident).where(Incident.id == incident.id, Incident.tenant_id == tenant_id).execution_options(populate_existing=True))).scalars().first()
+                if fresh_inc is None:
+                    raise RuntimeError("Current diagnosis incident is unavailable")
+                actor_id, agent = await current_authorization(session, source_id, tenant_id, diagnosis_agent_id, expected_actor=actor_id, expected_revision=source_revision, severity=fresh_inc.severity)
+                prompt = await build_incident_diagnosis_prompt(session, fresh_inc, tenant_id, include_agent_configuration=False)
                 result = await client.runs.wait(
                     thread_id,
                     "lead_agent",
@@ -324,6 +320,7 @@ def _schedule_agent_diagnosis(incident, tenant_id: str, diagnosis_agent_id: str,
                         "agent_id": agent.id,
                         "diagnosis_source_id": source_id,
                         "diagnosis_source_revision": source_revision,
+                        "diagnosis_incident_id": fresh_inc.id,
                         "thread_id": thread_id,
                     }, native_selection_validator=verify_native_selection),
                 )

@@ -55,7 +55,7 @@ def _load_agent(name: str, user_id: str | None, tenant_id: str | None) -> Custom
     return _run_async(_query())
 
 
-async def verify_native_selection(session, tenant_id, user_id, agent_name, agent_id, source_id=None, source_revision=None):
+async def verify_native_selection(session, tenant_id, user_id, agent_name, agent_id, source_id=None, source_revision=None, *, diagnosis_incident_id=None):
     from deerflow.database.models import Tenant, TenantMembership
 
     agent = await session.get(CustomAgent, agent_id, populate_existing=True)
@@ -66,7 +66,15 @@ async def verify_native_selection(session, tenant_id, user_id, agent_name, agent
     if source_id is not None:
         from app.alerting.diagnosis_authorization import current_authorization
 
-        await current_authorization(session, source_id, tenant_id, agent_id, expected_actor=user_id, expected_revision=source_revision)
+        severity = None
+        if diagnosis_incident_id is not None:
+            from app.models.alerting import Incident
+
+            incident = (await session.exec(select(Incident).where(Incident.id == diagnosis_incident_id, Incident.tenant_id == tenant_id).execution_options(populate_existing=True))).scalars().first()
+            if incident is None:
+                raise ExecutionTrustError("Current diagnosis incident unavailable")
+            severity = incident.severity
+        await current_authorization(session, source_id, tenant_id, agent_id, expected_actor=user_id, expected_revision=source_revision, severity=severity)
 
 
 def _load_agent_by_id(name, user_id, tenant_id, agent_id):

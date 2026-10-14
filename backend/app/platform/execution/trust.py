@@ -137,6 +137,7 @@ class ExecutionCapabilityRepository:
         agent_id: str | None = None,
         diagnosis_source_id: str | None = None,
         diagnosis_source_revision: str | None = None,
+        diagnosis_incident_id: str | None = None,
         at: datetime | None = None,
         ttl_seconds: int = 60,
     ) -> str:
@@ -144,6 +145,8 @@ class ExecutionCapabilityRepository:
             raise ExecutionTrustError("invalid execution capability request")
         if diagnosis_source_id is not None and (agent_id is None or not isinstance(diagnosis_source_id, str) or not diagnosis_source_id or not isinstance(diagnosis_source_revision, str) or len(diagnosis_source_revision) != 64):
             raise ExecutionTrustError("Invalid diagnosis source selection")
+        if diagnosis_incident_id is not None and (diagnosis_source_id is None or not isinstance(diagnosis_incident_id, str) or not diagnosis_incident_id or len(diagnosis_incident_id) > 255):
+            raise ExecutionTrustError("Invalid diagnosis incident selection")
         instant = at or datetime.now(UTC)
         token = secrets.token_urlsafe(32)
         if agent_id is not None:
@@ -152,6 +155,8 @@ class ExecutionCapabilityRepository:
             payload = {"version": 1, "nonce": token, "agent_id": agent_id}
             if diagnosis_source_id is not None:
                 payload.update(source_id=diagnosis_source_id, source_revision=diagnosis_source_revision)
+                if diagnosis_incident_id is not None:
+                    payload["diagnosis_incident_id"] = diagnosis_incident_id
             token = "prismos-native-v1." + base64.urlsafe_b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode().rstrip("=")
         row = PlatformExecutionCapabilityRecord(
             token_hash=sha256(token.encode()).hexdigest(),
@@ -165,14 +170,15 @@ class ExecutionCapabilityRepository:
         )
         async with self._session_factory() as session, session.begin():
             if agent_id is not None:
-                await self._verify_selection(session, tenant_id, user_id, agent_name, agent_id, diagnosis_source_id, diagnosis_source_revision)
+                await self._verify_selection(session, tenant_id, user_id, agent_name, agent_id, diagnosis_source_id, diagnosis_source_revision, diagnosis_incident_id)
             session.add(row)
         return token
 
-    async def _verify_selection(self, session, tenant_id, user_id, agent_name, agent_id, source_id=None, source_revision=None):
+    async def _verify_selection(self, session, tenant_id, user_id, agent_name, agent_id, source_id=None, source_revision=None, diagnosis_incident_id=None):
         if self._native_selection_validator is None:
             raise ExecutionTrustError("native selection validator unavailable")
-        await self._native_selection_validator(session, tenant_id, user_id, agent_name, agent_id, source_id, source_revision)
+        incident = {"diagnosis_incident_id": diagnosis_incident_id} if diagnosis_incident_id is not None else {}
+        await self._native_selection_validator(session, tenant_id, user_id, agent_name, agent_id, source_id, source_revision, **incident)
 
     @staticmethod
     def _native_selection(token):
@@ -183,7 +189,7 @@ class ExecutionCapabilityRepository:
             value = json.loads(base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)))
             if (
                 not isinstance(value, dict)
-                or set(value) not in ({"version", "nonce", "agent_id"}, {"version", "nonce", "agent_id", "source_id", "source_revision"})
+                or set(value) not in ({"version", "nonce", "agent_id"}, {"version", "nonce", "agent_id", "source_id", "source_revision"}, {"version", "nonce", "agent_id", "source_id", "source_revision", "diagnosis_incident_id"})
                 or value["version"] != 1
                 or not isinstance(value["nonce"], str)
                 or len(value["nonce"]) < 32
@@ -193,6 +199,8 @@ class ExecutionCapabilityRepository:
             ):
                 raise ValueError()
             if "source_id" in value and (not isinstance(value["source_id"], str) or not value["source_id"] or not isinstance(value["source_revision"], str) or len(value["source_revision"]) != 64):
+                raise ValueError()
+            if "diagnosis_incident_id" in value and (not isinstance(value["diagnosis_incident_id"], str) or not value["diagnosis_incident_id"] or len(value["diagnosis_incident_id"]) > 255):
                 raise ValueError()
             return value
         except (ValueError, TypeError, UnicodeError):
@@ -225,7 +233,7 @@ class ExecutionCapabilityRepository:
             selection = self._native_selection(token)
             native_id = selection.get("agent_id")
             if native_id is not None:
-                await self._verify_selection(session, tenant_id, user_id, agent_name, native_id, selection.get("source_id"), selection.get("source_revision"))
+                await self._verify_selection(session, tenant_id, user_id, agent_name, native_id, selection.get("source_id"), selection.get("source_revision"), selection.get("diagnosis_incident_id"))
             result = await session.exec(
                 update(PlatformExecutionCapabilityRecord)
                 .where(
@@ -253,5 +261,6 @@ async def attach_execution_capability(context: dict, *, action_incident_id: str 
         agent_id=trusted.get("agent_id"),
         diagnosis_source_id=trusted.get("diagnosis_source_id"),
         diagnosis_source_revision=trusted.get("diagnosis_source_revision"),
+        diagnosis_incident_id=trusted.get("diagnosis_incident_id"),
     )
     return trusted

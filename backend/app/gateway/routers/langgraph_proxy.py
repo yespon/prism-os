@@ -31,6 +31,7 @@ _IDENTITY_KEYS = {
     "agent_id",
     "diagnosis_source_id",
     "diagnosis_source_revision",
+    "diagnosis_incident_id",
     "tenant_id",
     "user_id",
     "agent_name",

@@ -1,0 +1,9 @@
+
+ RUN  v4.1.2 /tmp/prismos-n09n-independent/frontend
+
+
+ Test Files  57 passed (57)
+      Tests  249 passed (249)
+   Start at  08:58:14
+   Duration  77.14s (transform 3.61s, setup 6.71s, import 25.30s, tests 33.17s, environment 74.33s)
+

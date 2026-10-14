@@ -331,3 +331,165 @@ def test_native_capability_cannot_be_used_for_bootstrap_or_forged_selection(dele
     boot["is_bootstrap"] = True
     with pytest.raises(ExecutionTrustError, match="bootstrap"):
         graph.make_lead_agent({"context": boot})
+
+
+@pytest.mark.parametrize("change", ["agent", "skill", "incident", "disabled_skill", "consume_severity"])
+def test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident(delegated, configured, monkeypatch, change):
+    from types import SimpleNamespace
+
+    import langgraph_sdk
+    from test_lead_agent_model_resolution import _make_app_config, _make_model
+
+    import deerflow.tools as tools
+    from app import runtime_adapters
+    from app.alerting import ingest
+    from app.integrations import agent_skill_references as refs
+    from app.models.alerting import Incident
+    from app.platform.execution import trust
+    from deerflow.agents.lead_agent import agent as graph
+    from deerflow.agents.lead_agent import prompt as template
+    from deerflow.database import session as session_module
+    from deerflow.database.models import TenantSkill
+
+    http, factory, config = delegated
+    _, _, root, resources = configured
+    requests, models, graphs = [], [], []
+    monkeypatch.setattr(session_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(trust, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+    monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+    monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+    monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+    monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name cache"))
+    monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
+    monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["safe"])
+    monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+    monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: models.append(kwargs) or object())
+    monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+    monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: [])
+    monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+    monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name soul"))
+    monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+
+    async def change_after_thread(**kwargs):
+        async with factory() as writer:
+            if change == "agent":
+                row = await writer.get(CustomAgent, "shared-id")
+                row.system_prompt = "CURRENT SHARED SOUL"
+            elif change == "incident":
+                row = await writer.get(Incident, "fresh-incident")
+                row.title = "Current incident title"
+            elif change == "disabled_skill":
+                row = (await writer.exec(select(TenantSkill).where(TenantSkill.user_id == "__tenant_shared_skill__:tenant-a"))).scalars().one()
+                row.enabled = False
+            else:
+                row = None
+            if row is not None:
+                writer.add(row)
+                await writer.commit()
+        if change == "skill":
+            from pathlib import Path
+            async with factory() as reader:
+                row = (await reader.exec(select(TenantSkill).where(TenantSkill.user_id == "__tenant_shared_skill__:tenant-a"))).scalars().one()
+                path = Path(row.install_dir) / "SKILL.md"
+            path.write_text(path.read_text().replace("SHARED ONLY", "CURRENT SHARED CONTENT"))
+        return {"thread_id": "fresh-thread"}
+
+    async def execute(*args, **kwargs):
+        requests.append(kwargs)
+        if change == "consume_severity":
+            async with factory() as writer:
+                row = await writer.get(Incident, "fresh-incident")
+                row.severity = "warning"
+                writer.add(row)
+                await writer.commit()
+        built = graph.make_lead_agent({"context": kwargs["context"] | {"model_name": "safe"}})
+        graphs.append(built)
+        return {"messages": [{"type": "ai", "content": "Current authorized configuration"}]}
+
+    monkeypatch.setattr(langgraph_sdk, "get_client", lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=change_after_thread), runs=SimpleNamespace(wait=execute)))
+
+    async def scenario():
+        async with factory() as session:
+            agent = await session.get(CustomAgent, "shared-id")
+            agent.skills = ["collision"]
+            agent.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+            source = await session.get(AlertSource, "source-id")
+            selected = dict(source.config_json["analysis_trigger"])
+            selected.update(mode="conditional", conditions={"severity": ["critical"]})
+            source.config_json = {"analysis_trigger": selected}
+            incident = Incident(id="fresh-incident", tenant_id="tenant-a", incident_key="INC-FRESH", severity="critical", title="Old incident title")
+            session.add(agent)
+            session.add(source)
+            session.add(incident)
+            await session.commit()
+        await ingest._schedule_agent_diagnosis(incident, "tenant-a", "shared-id", "source-id")
+        async with factory() as session:
+            return await session.get(Incident, "fresh-incident")
+
+    result = asyncio.run(scenario())
+    assert len(requests) == 1
+    assert len(models) == (0 if change in {"disabled_skill", "consume_severity"} else 1)
+    assert result.diagnosis_status == ("failed" if change in {"disabled_skill", "consume_severity"} else "completed")
+    human = requests[0]["input"]["messages"][0]["content"]
+    assert "SHARED SOUL" not in human and "SHARED ONLY" not in human
+    assert "CURRENT SHARED CONTENT" not in human
+    if change == "incident":
+        assert "Current incident title" in human and "Old incident title" not in human
+    if graphs:
+        assert ("CURRENT SHARED SOUL" if change == "agent" else "SHARED SOUL") in graphs[0]["system_prompt"]
+        assert ("CURRENT SHARED CONTENT" if change == "skill" else "SHARED ONLY") in graphs[0]["system_prompt"]
+        if change == "skill":
+            assert "SHARED ONLY" not in graphs[0]["system_prompt"]
+
+
+@pytest.mark.parametrize("change", ["removed", "tenant", "severity", "retargeted_token"])
+def test_source_incident_capability_rechecks_current_incident_and_keeps_action_authority_separate(delegated, change):
+    from app.models.alerting import Incident
+
+    http, factory, config = delegated
+
+    async def seed():
+        async with factory() as session:
+            source = await session.get(AlertSource, "source-id")
+            selected = dict(source.config_json["analysis_trigger"])
+            selected.update(mode="conditional", conditions={"severity": ["critical"]})
+            source.config_json = {"analysis_trigger": selected}
+            session.add(source)
+            session.add(Incident(id="cap-incident", tenant_id="tenant-a", incident_key="INC-CAP", severity="critical"))
+            await session.commit()
+            return authorization.revision(source.config_json)
+
+    source_revision = asyncio.run(seed())
+    repo = _repository(factory)
+    token = asyncio.run(repo.issue("tenant-a", "user-a", "thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=source_revision, diagnosis_incident_id="cap-incident"))
+    if change == "retargeted_token":
+        payload = json.loads(base64.urlsafe_b64decode(token.split(".", 1)[1] + "=="))
+        payload["diagnosis_incident_id"] = "another-incident"
+        tampered = "prismos-native-v1." + base64.urlsafe_b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode().rstrip("=")
+        with pytest.raises(ExecutionTrustError):
+            asyncio.run(repo.consume(tampered, "tenant-a", "user-a", "thread", "collision-agent", include_selection=True))
+        consumed = asyncio.run(repo.consume(token, "tenant-a", "user-a", "thread", "collision-agent", include_selection=True))
+        assert consumed == {"incident_id": None, "agent_id": "shared-id"}
+        with pytest.raises(ExecutionTrustError):
+            asyncio.run(repo.consume(token, "tenant-a", "user-a", "thread", "collision-agent"))
+    else:
+        async def alter():
+            async with factory() as session:
+                incident = await session.get(Incident, "cap-incident")
+                if change == "removed":
+                    await session.delete(incident)
+                elif change == "tenant":
+                    incident.tenant_id = "tenant-b"
+                    session.add(incident)
+                else:
+                    incident.severity = "warning"
+                    session.add(incident)
+                await session.commit()
+        asyncio.run(alter())
+        with pytest.raises(ExecutionTrustError):
+            asyncio.run(repo.consume(token, "tenant-a", "user-a", "thread", "collision-agent"))
+        with pytest.raises(ExecutionTrustError):
+            asyncio.run(repo.issue("tenant-a", "user-a", "another-thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=source_revision, diagnosis_incident_id="cap-incident"))
