@@ -47,7 +47,7 @@ jobs:
       - name: Check host adapters
         run: >-
           cd backend && uv run --locked ruff check
-          app/integrations/octop app/runtime_adapters.py app/gateway/routers/agent_catalog.py
+          app/integrations/octop app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py
           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
           ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
           packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py

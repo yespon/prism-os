@@ -223,6 +223,7 @@ class ExecutionCapabilityRepository:
         *,
         at: datetime | None = None,
         include_selection: bool = False,
+        include_context: bool = False,
     ) -> str | dict | None:
         if not isinstance(token, str) or len(token) < 32:
             raise ExecutionTrustError("trusted execution capability required")
@@ -251,7 +252,12 @@ class ExecutionCapabilityRepository:
             )
             if result.rowcount != 1:
                 raise ExecutionTrustError("execution capability replay")
-            return {"incident_id": row.action_incident_id, "agent_id": native_id} if include_selection else row.action_incident_id
+            if include_selection:
+                value = {"incident_id": row.action_incident_id, "agent_id": native_id}
+                if include_context:
+                    value.update(diagnosis_source_id=selection.get("source_id"), diagnosis_source_revision=selection.get("source_revision"), diagnosis_incident_id=selection.get("diagnosis_incident_id"))
+                return value
+            return row.action_incident_id
 
 
 async def attach_execution_capability(context: dict, *, action_incident_id: str | None = None, native_selection_validator=None, session_factory=None) -> dict:

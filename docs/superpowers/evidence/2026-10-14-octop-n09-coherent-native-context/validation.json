@@ -1,0 +1,147 @@
+{
+  "status": "coherent_native_context_candidate_not_complete_C2_N09",
+  "base_commit": "363fdbc54534687db2e47f86f0a907ed0ed3f7a5",
+  "backend": {
+    "passed": 1823,
+    "skipped": 18,
+    "warnings": 215,
+    "cwd": "backend",
+    "observed_exit_code": 0
+  },
+  "neighbors": {
+    "passed": 106,
+    "warnings": 55,
+    "observed_exit_code": 0
+  },
+  "new_cases_added": 7,
+  "baseline_actual_failures": 1,
+  "postgres": {
+    "passed": 201,
+    "warnings": 142,
+    "owned_container_removed": true,
+    "observed_exit_code": 0
+  },
+  "octop_check": {
+    "current": {
+      "backend_passed": 553,
+      "frontend_passed": 162,
+      "observed_exit_code": 0
+    },
+    "independent": {
+      "backend_passed": 553,
+      "frontend_passed": 162,
+      "observed_prebuild_pipeline_exit_code": 0
+    }
+  },
+  "frontend": {
+    "current_source_unchanged_from_base": true,
+    "current_full_249_is_baseline_history": true,
+    "baseline_commit": "363fdbc54534687db2e47f86f0a907ed0ed3f7a5",
+    "tracked_source_paths": 499,
+    "source_aggregate_sha256": "f4c64aba602126913b25236df4be906df5745c2465dad3beebe6fd4e4f2bf198",
+    "independent_fresh": {
+      "files": 57,
+      "passed": 249,
+      "observed_prebuild_pipeline_exit_code": 0
+    }
+  },
+  "gateway": {
+    "current_and_independent_real_auth_session_and_membership": true,
+    "original_manual_sse_with_test_only_controlled_sdk_then_joint_context": true,
+    "migration_head": "n8h9i0j1k2l3",
+    "real_external_model_tool_or_ticket_calls": false
+  },
+  "build": {
+    "current_observed_exit_code": 0,
+    "independent_observed_exit_code": 0,
+    "strict_typegen_tsc_webpack": true,
+    "current_trace_files": 50,
+    "independent_trace_files": 50,
+    "outside_frontend": [],
+    "wheel_sdist_offline_from_verified_cache": true
+  },
+  "upgrade": {
+    "host_inputs": 53,
+    "host_changed": false,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 371,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "passed": 371,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 371,
+        "observed_exit_code": 0
+      }
+    ]
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "cef13a18686ed7da80b20b41cbb9bb7607bbc361f4a2b949dd6ccf3623a7107a",
+    "backend/app/platform/execution/trust.py": "ef77e4c146814297a9da44e30961ba72e72b5cb7009a43aa4a0b59db60816021",
+    "backend/app/runtime_adapters.py": "4bbc1bcaf96ff687a49a897d792c022a2a8a65bd8bac580fffef878ff7006c60",
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": "c2ff5e897a14ef77088098a35abf2e23d256f2f02181f936791636346dba3351",
+    "backend/packages/harness/deerflow/runtime.py": "8e103078976dbdf6f8792606460be03361ae53afe5d78a96ae79ef9c5897b962",
+    "backend/tests/test_diagnosis_authorization.py": "8c1da6fa5663907f2040ed65cec91d34f08fadfd456199b63dce179a9f9f57aa",
+    "backend/tests/test_runtime_adapters.py": "5b251f17a75b80ee514171b81d1eb513501ad9abb7dae6cbacc30f30b8fcf027",
+    "scripts/octop_gateway_smoke.py": "e29fd1a13f12b3f2c152bc2860d82984e9fd8693988f2aa303e622a5e9ec5fba",
+    "scripts/octop_upgrade_probe.py": "6cdd9ac93a88485bd36f9f9d2dd484a29440bb0ee8f56b6427207b9312f921f0"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifact_sha256s": {
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "pending": [
+    "Local joint read is not distributed DB/FS transaction or N08 immutable AgentVersion; updates after transaction release and in-flight revocation/cancellation/unknown remain.",
+    "Ordinary chat and diagnosis thread continuation need persistent exact instance binding; legacy-name/default/terminal and old Skill paths still require authorization.",
+    "All member file/tool current resource authority, full results/history ACL, deletion real process recovery and complete copy/share target authorization.",
+    "N04 real environment/model/tool/countable receiver and N07-B remote CI; M1 not exited; N08 persistence/delegation not started.",
+    "Full N01-N15/O01-O42/F01-F12, 33 non-Skill groups, 18 experts/subagents, independent Office, external runtime/MCP compatibility and original PrismOS scope."
+  ],
+  "evidence_sha256s": {
+    "README.md": "afe3f5f60709b0b5e5e29fbe62f348b858771204fd4d49d389c64682f4a5e7c1",
+    "gateway.json": "90497252e6e695e8b97157a85c036cf25f128e718bd3732b33a91f9cf44e12f4",
+    "independent-gateway.json": "90497252e6e695e8b97157a85c036cf25f128e718bd3732b33a91f9cf44e12f4",
+    "independent-inputs.json": "1afeb03b8acd87471c23f721a75621e87141c31bba96e9fc7a795674aa9299de",
+    "integrity.json": "6a379584e425ef04b48b460275ecb230f6d336e6518cd6a6620e26c25a7e82b5",
+    "logs/backend-full.log": "a524735973f99db5e1afa99fa60afe6500c83a8a7fb9f7b5b43958324665883c",
+    "logs/brand-final.log": "daf46e8e15e6e5c8e98649b1db2bca9fcd6bc20baba43d431cb99b4655a95cf8",
+    "logs/brand.log": "14ce584d3b0d9d4927c035ec69634149d07d4799d5ea9f1aa05b4f317839fd91",
+    "logs/ci-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/context-baseline-failure.log": "851868e4265ebd46fd256e41f361e9b0650901dae3fe45b49f2169e5a323e43e",
+    "logs/context-fixed.log": "c4cb4f0127f53990d47caa6637e021186be6c88ab184deac450a7fa187154b0d",
+    "logs/gateway.log": "0fb07f7fe78f1fa2aed3dbfc307f72c317cd150c1bdda7a98cc076529c842eef",
+    "logs/independent-dependencies.log": "72fbe7f678df4e77e7fb0ccf8e3be215327dec1b80c282f6044b8b3579b5254d",
+    "logs/independent-frontend-full.log": "f1518cc3a72070d08cadf3bc4dde136d49b0583765c622eda9d5fe8e95da36ed",
+    "logs/independent-gateway.log": "0fb07f7fe78f1fa2aed3dbfc307f72c317cd150c1bdda7a98cc076529c842eef",
+    "logs/independent-octop-check.log": "dc674586242e3ebc6121be42fe20ed26cd870cf4e2ef3bf4538b6529fb879bad",
+    "logs/independent-production-build.log": "a164d5060a4853727c1a1a6dfafc8a2a5038e0b5df746e97bce8cadd79007676",
+    "logs/independent-wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/independent-wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/neighbors.log": "7331c195a95ca1a00597e81499f9680bac0742e732da8c709e61446a19f07f7f",
+    "logs/octop-check.log": "6e49ce7526576445122f536ced63dc0ae437235c73c5eae049937c2707a2842e",
+    "logs/postgres-run.log": "c1cf448e3d29b4d4babb8d7eeb182cea5c4fb29ddb5517253153e987d8887680",
+    "logs/postgres.log": "b0535ab620e2a59cefd2cfbb71c9ef660abe5a2fe32fc2c37f6f50c8a3232233",
+    "logs/production-build.log": "7d9ba3010ca8131d1075837bdf41f7579a451a7068ef9c1f41aa3da856023169",
+    "logs/source.log": "714452369f6aaca58cf458eaadc743b103d0ede8a825ba1faebb25741cb4a698",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "postgres.json": "d3a6ea656c71328810b46d6cbf6f5f644a55447efa0f046dc23f77f55ddde32b",
+    "previous-source-receipt.json": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068",
+    "scope-audit.md": "e1e3dfe698671183410dd5fbab5aa958e9d5dd030f4ab879c4977938b20a143d",
+    "upgrade.json": "3655d4e6f8d41b70392c532e622b12b369e8be51d0f5977495539b4c0b52542e"
+  }
+}

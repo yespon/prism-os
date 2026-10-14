@@ -63,3 +63,9 @@ graph 内并发配置/引用变化、运行中撤权、人工/普通/旧入口�
 人工初始 SSE 已按当前原生实例/actor/事件接入原凭据和线程 owner，原 Action/读取事实记录 Native ID并拒绝同名实例借用；最终后端1816/18skip、PostgreSQL195、当前/独立统一门546后端/162前端、独立完整前端249和默认构建、固定52宿主升级/回退各360通过，见[证据](../evidence/2026-10-14-octop-n09-manual-diagnosis-identity/README.md)。
 
 普通聊天及人工线程续接持久实例、旧/default/terminal、并发配置/引用与运行中撤权、真实下游取消/unknown、全部文件/工具/结果访问、删除恢复与复制分享继续按[完整后续队列](2026-10-14-octop-n09-manual-diagnosis-identity.md)推进。原完整目标、N04/N07-B/M1/N08门保持，不能把初始人工传播当作全部运行/版本退出。
+
+## Native联合装配接续（2026-10-14）
+
+当前Native图使用原引用事务中的一次宿主配置/Skill装配，避免混用，原凭据保护的来源/事件装配前后复核；最终后端1823/18skip、PostgreSQL201、当前/独立统一门553后端/162前端、独立前端249与默认构建、固定53宿主升级/回退各371通过，见[证据](../evidence/2026-10-14-octop-n09-coherent-native-context/README.md)。
+
+本地联合读取不是持久版本/分布式事务；普通续接、旧/default/terminal、全部文件工具/历史ACL、运行中撤权和真实取消/unknown、删除进程恢复/复制分享及原全部能力与M1/N04/N07/N08门继续保持，按[完整后续队列](2026-10-14-octop-n09-coherent-native-context.md)推进。

@@ -11,11 +11,20 @@ from __future__ import annotations
 import importlib
 import os
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any
 
 
 class ExecutionTrustError(PermissionError):
     """A graph execution identity or one-use capability is untrusted."""
+
+
+@dataclass(frozen=True)
+class NativeAgentContext:
+    """One local host read of native configuration and its Skill prompt."""
+
+    record: Any
+    skill_section: str | None
 
 
 ExecutionValidator = Callable[[str | None, str, str, str, str | None], Any]
@@ -32,6 +41,7 @@ _terminal_provider: dict[str, Any] | None = None
 _governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
 _execution_validator: ExecutionValidator | None = None
 _agent_identity_provider: Callable[..., Any] | None = None
+_agent_context_provider: Callable[..., NativeAgentContext] | None = None
 _skill_prompt_provider: Callable[..., str | None] | None = None
 _loaded_adapter_module: str | None = None
 
@@ -105,6 +115,15 @@ def get_agent_identity_provider():
     return _agent_identity_provider
 
 
+def register_agent_context_provider(provider: Callable[..., NativeAgentContext]) -> None:
+    global _agent_context_provider
+    _agent_context_provider = provider
+
+
+def get_agent_context_provider():
+    return _agent_context_provider
+
+
 def register_skill_prompt_provider(provider: Callable[..., str | None]) -> None:
     global _skill_prompt_provider
     _skill_prompt_provider = provider
@@ -134,7 +153,8 @@ def load_runtime_adapters() -> None:
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
-    global _skill_prompt_provider, _agent_identity_provider
+    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider
+    _agent_context_provider = None
     _agent_identity_provider = None
     _skill_prompt_provider = None
     _agent_loader = None

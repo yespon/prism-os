@@ -291,7 +291,7 @@ def test_original_graph_uses_protected_shared_config_and_soul_not_personal_same_
     monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
     monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
     monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
-    monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+    monkeypatch.setattr(graph, "get_agent_context_provider", lambda: runtime_adapters._load_agent_context)
     monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
     monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Protected ID fell back to a name cache"))
     monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
@@ -360,7 +360,7 @@ def test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incid
     monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
     monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
     monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
-    monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+    monkeypatch.setattr(graph, "get_agent_context_provider", lambda: runtime_adapters._load_agent_context)
     monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
     monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Native diagnosis used a name cache"))
     monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
@@ -759,3 +759,160 @@ def test_manual_capability_cannot_bind_a_different_action_incident(delegated):
     http, factory, config = delegated
     with pytest.raises(ExecutionTrustError, match="selections differ"):
         asyncio.run(_repository(factory).issue("tenant-a", "user-a", "thread", "collision-agent", agent_id="shared-id", diagnosis_incident_id="diagnosis-incident", action_incident_id="other-action-incident"))
+
+
+def test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding(delegated, configured, monkeypatch):
+    from test_lead_agent_model_resolution import _make_app_config, _make_model
+
+    import deerflow.tools as tools
+    from app import runtime_adapters
+    from app.integrations import agent_skill_references as refs
+    from deerflow.agents.lead_agent import agent as graph
+    from deerflow.agents.lead_agent import prompt as template
+
+    http, factory, config = delegated
+    _, _, root, resources = configured
+    monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+    monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+    monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+    monkeypatch.setattr(graph, "get_agent_context_provider", lambda: runtime_adapters._load_agent_context)
+    monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+    monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("old-model", supports_thinking=False), _make_model("new-model", supports_thinking=False)]))
+    monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["old-model", "new-model"])
+    monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+    monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: kwargs)
+    monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+    groups = []
+    monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: groups.append(kwargs["groups"]) or [])
+    monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+    monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native soul fell back to name"))
+    monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+
+    async def seed():
+        async with factory() as session:
+            row = await session.get(CustomAgent, "shared-id")
+            row.system_prompt = "OLD COHERENT SOUL"
+            row.model = "old-model"
+            row.tool_groups = ["old-group"]
+            row.skills = ["collision"]
+            row.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+            session.add(row)
+            await session.commit()
+    asyncio.run(seed())
+    original = graph._db_agent_to_config
+
+    def edit_after_configuration_read(record):
+        result = original(record)
+        async def edit():
+            async with factory() as writer:
+                row = await writer.get(CustomAgent, "shared-id")
+                row.system_prompt = "NEW COHERENT SOUL"
+                row.model = "new-model"
+                row.tool_groups = ["new-group"]
+                row.skills = []
+                row.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [], "legacy_names": []}}
+                writer.add(row)
+                await writer.commit()
+        asyncio.run(edit())
+        return result
+    monkeypatch.setattr(graph, "_db_agent_to_config", edit_after_configuration_read)
+    token = asyncio.run(_repository(factory).issue("tenant-a", "user-a", "coherent-thread", "collision-agent", agent_id="shared-id"))
+    built = graph.make_lead_agent({"context": {"tenant_id": "tenant-a", "user_id": "user-a", "thread_id": "coherent-thread", "agent_name": "collision-agent", "agent_id": "shared-id", "prismos_execution_capability": token}})
+    assert built["model"]["name"] == "old-model" and groups == [["old-group"]]
+    assert "OLD COHERENT SOUL" in built["system_prompt"] and "SHARED ONLY" in built["system_prompt"]
+    assert "NEW COHERENT SOUL" not in built["system_prompt"]
+
+
+def test_native_context_coordinates_real_agent_edit_without_mixing_binding(configured, monkeypatch):
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
+    from app import runtime_adapters
+    from app.gateway.routers import agents
+    from app.integrations import agent_skill_references as refs
+
+    http, factory, root, resources = configured
+    created = http.post("/api/agents", json={"name": "coordinated-context", "system_prompt": "OLD COORDINATED SOUL", "skill_binding_mode": "selected", "skill_resources": [resources["personal"]]})
+    assert created.status_code == 201, created.text
+    identity = created.json()["id"]
+    monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    reading, release, writing = threading.Event(), threading.Event(), threading.Event()
+    original_prompt = refs.current_skill_prompt
+    original_transaction = agents.begin_reference_transaction
+
+    async def pause(*args, **kwargs):
+        reading.set()
+        assert await asyncio.to_thread(release.wait, 5), "Context read release was not delivered"
+        return await original_prompt(*args, **kwargs)
+
+    async def writer_lock(*args, **kwargs):
+        writing.set()
+        await original_transaction(*args, **kwargs)
+
+    monkeypatch.setattr(refs, "current_skill_prompt", pause)
+    monkeypatch.setattr(agents, "begin_reference_transaction", writer_lock)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        reader = pool.submit(runtime_adapters._load_agent_context, "coordinated-context", "user-a", "tenant-a", identity)
+        writer = None
+        try:
+            assert reading.wait(5)
+            update = {"system_prompt": "NEW COORDINATED SOUL", "skill_binding_mode": "selected", "skill_resources": [],
+                      "expected_agent_id": identity, "expected_revision": created.json()["revision"]}
+            writer = pool.submit(http.put, "/api/agents/coordinated-context", json=update)
+            assert writing.wait(5)
+            assert not writer.done()
+        finally:
+            release.set()
+        first = reader.result(10)
+        result = writer.result(10)
+    assert first.record.system_prompt == "OLD COORDINATED SOUL" and "PERSONAL ONLY" in first.skill_section
+    assert result.status_code == 200, result.text
+    next_context = runtime_adapters._load_agent_context("coordinated-context", "user-a", "tenant-a", identity)
+    assert next_context.record.system_prompt == "NEW COORDINATED SOUL" and "PERSONAL ONLY" not in next_context.skill_section
+
+
+@pytest.mark.parametrize("withdraw", ["source", "member", "incident", "severity"])
+def test_native_context_rechecks_protected_authority_after_capability_consumption(delegated, monkeypatch, withdraw):
+    from app import runtime_adapters
+    from app.models.alerting import Incident
+
+    http, factory, config = delegated
+    monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+
+    async def issue():
+        async with factory() as session:
+            source = await session.get(AlertSource, "source-id")
+            selected = dict(source.config_json["analysis_trigger"])
+            selected.update(mode="conditional", conditions={"severity": ["critical"]})
+            source.config_json = {"analysis_trigger": selected}
+            session.add(source)
+            session.add(Incident(id="context-incident", tenant_id="tenant-a", incident_key="INC-CONTEXT", severity="critical"))
+            await session.commit()
+            digest = authorization.revision(source.config_json)
+        return await _repository(factory).issue("tenant-a", "user-a", "context-thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=digest, diagnosis_incident_id="context-incident")
+
+    token = asyncio.run(issue())
+    verified = asyncio.run(runtime_adapters._consume_graph_capability(token, "tenant-a", "user-a", "context-thread", "collision-agent"))
+    assert verified["diagnosis_source_id"] == "source-id" and verified["diagnosis_incident_id"] == "context-incident"
+
+    async def change():
+        async with factory() as session:
+            if withdraw == "source":
+                row = await session.get(AlertSource, "source-id")
+                row.status = "disabled"
+            elif withdraw == "member":
+                row = (await session.exec(select(TenantMembership))).scalars().one()
+                row.status = "inactive"
+            else:
+                row = await session.get(Incident, "context-incident")
+                if withdraw == "incident":
+                    await session.delete(row)
+                else:
+                    row.severity = "warning"
+            if withdraw != "incident":
+                session.add(row)
+            await session.commit()
+    asyncio.run(change())
+    with pytest.raises(ExecutionTrustError):
+        runtime_adapters._load_agent_context("collision-agent", "user-a", "tenant-a", "shared-id", **{key: verified[key] for key in ["diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id"]})

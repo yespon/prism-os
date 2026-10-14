@@ -5,6 +5,8 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import uuid
+from copy import deepcopy
+from types import SimpleNamespace
 
 from sqlalchemy import select
 
@@ -16,7 +18,9 @@ from app.platform.execution.trust import ExecutionCapabilityRepository
 from deerflow.database.session import get_session_factory
 from deerflow.runtime import (
     ExecutionTrustError,
+    NativeAgentContext,
     register_agent_config_provider,
+    register_agent_context_provider,
     register_agent_identity_provider,
     register_agent_persistence_provider,
     register_execution_validator,
@@ -85,6 +89,30 @@ def _load_agent_by_id(name, user_id, tenant_id, agent_id):
 
     return _run_async(load())
 
+def _load_agent_context(name, user_id, tenant_id, agent_id, skill_name=None, resource_id=None, *, diagnosis_source_id=None, diagnosis_source_revision=None, diagnosis_incident_id=None):
+    from app.integrations.agent_skill_references import current_skill_prompt
+    from app.integrations.skill_reference_transactions import begin_reference_transaction
+
+    async def load():
+        for _ in range(3):
+            async with get_session_factory()() as session:
+                await begin_reference_transaction(session, tenant_id)
+                await verify_native_selection(session, tenant_id, user_id, name, agent_id, diagnosis_source_id, diagnosis_source_revision, diagnosis_incident_id=diagnosis_incident_id)
+                record = await session.get(CustomAgent, agent_id)
+                values = deepcopy(record.model_dump())
+                section = await current_skill_prompt(session, name, tenant_id, user_id, skill_name, resource_id, selected_agent_id=agent_id)
+                # Re-read current authority after assembling file content. A
+                # non-participating writer must not silently create a hybrid.
+                await verify_native_selection(session, tenant_id, user_id, name, agent_id, diagnosis_source_id, diagnosis_source_revision, diagnosis_incident_id=diagnosis_incident_id)
+                if record.model_dump() == values:
+                    return NativeAgentContext(SimpleNamespace(**values), section)
+        raise ExecutionTrustError("Native Agent configuration changed during assembly")
+
+    try:
+        return _run_async(load())
+    except Exception:
+        raise ExecutionTrustError("Current native Agent context or use authorization is unavailable") from None
+
 
 def _list_agents(user_id: str | None, tenant_id: str | None) -> list[CustomAgent]:
     async def _query() -> list[CustomAgent]:
@@ -119,7 +147,7 @@ def _persist_agent(*, agent_name: str, soul: str, description: str, user_id: str
 
 
 async def _consume_graph_capability(token, tenant_id, user_id, thread_id, agent_name):
-    return await ExecutionCapabilityRepository(get_session_factory(), native_selection_validator=verify_native_selection).consume(token, tenant_id, user_id, thread_id, agent_name, include_selection=True)
+    return await ExecutionCapabilityRepository(get_session_factory(), native_selection_validator=verify_native_selection).consume(token, tenant_id, user_id, thread_id, agent_name, include_selection=True, include_context=True)
 
 
 def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resource_id=None, agent_id=None):
@@ -141,6 +169,7 @@ def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
     register_agent_identity_provider(_load_agent_by_id)
+    register_agent_context_provider(_load_agent_context)
     register_agent_persistence_provider(_persist_agent)
     register_terminal_agent_provider(
         get_tools=get_terminal_tools,

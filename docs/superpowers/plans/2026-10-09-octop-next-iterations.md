@@ -326,3 +326,11 @@ N07-B、N04 保持 P0，真实测试环境的位置、配置引用、模型与�
 原 Action/读取 ExecutionEnvelope 保留 workload 命名，并以既有 attributes 的 Native ID 拒绝同名另一实例复用旧决定；原 canary、Policy/Approval、单次发送、unknown及审计保持，无新schema/注册表/Run事实。最终后端 1816 passed / 18 skipped、相邻门 95、PostgreSQL 195、当前/独立统一门各 546 后端/162 前端、真实 Gateway/人工 SSE、默认构建与制品通过。独立完整前端 249 项为新运行；499 个当前前端源码未变，当前完整前端属基线历史。固定 52 宿主输入 b5→b6→b5 各 360 项，来源/锁/制品一致，生产追踪各50文件无越界。详见[本批证据](../evidence/2026-10-14-octop-n09-manual-diagnosis-identity/README.md)。受控SDK与模型流不替代N04真实外部环境。
 
 继续[完整后续队列](2026-10-14-octop-n09-manual-diagnosis-identity.md)：普通聊天/人工线程续接的具体实例持久绑定、旧名称/default/terminal、graph内并发配置/引用及运行中撤权与真实取消/unknown、全部文件工具和结果/历史访问，真实删除进程恢复及复制分享目标重授权。随后原C3–C5、33非Skill、18专家/子Agent、独立Office及外部运行/MCP接缝。完整C2/N09/M1未退出，N04/N07-B为P0，N08持久执行/委派不启动；原全部N01–N15/O01–O42/F01–F12和PrismOS规划/能力/门保持。
+
+### N09-C2：Native配置与Skill联合装配（2026-10-14，未退出）
+
+基线`363fdbc`。原图实际重现旧模型/工具/soul与新Skill绑定混用；宿主在原租户引用事务中联合读取配置与已确认Skill段，读取前后复核当前身份/实例/受保护来源及事件，深拷贝结果给原graph，原CRUD/撤回按既有协调顺序等待；非参与写入变化有限重读，不静默混用。原capability默认返回兼容，宿主内部取得摘要保护条件再复核；无新schema/配置仓/持久AgentVersion/Run事实。
+
+最终完整后端1823 passed/18 skipped、相邻门106、PostgreSQL201、当前/独立统一门553后端/162前端、真实Gateway/联合装配、默认构建与制品通过。独立完整前端249为新运行，499个当前前端源码未变，当前全前端仍属基线历史；固定53宿主输入b5→b6→b5各371、原来源/锁/制品一致，生产追踪各50文件无越界。详见[证据](../evidence/2026-10-14-octop-n09-coherent-native-context/README.md)。受控SDK/模型不替代N04真实环境。
+
+继续[完整队列](2026-10-14-octop-n09-coherent-native-context.md)：释放事务后变化、运行中撤权/真实取消/unknown、普通聊天与人工线程续接持久实例、旧/default/terminal、全部文件工具与结果历史ACL，真删除进程恢复及完整复制分享目标重授权，随后原C3–C5、33非Skill、18专家/子Agent、独立Office与外部运行/MCP接缝。完整C2/N09/M1未退出，N04/N07-B为P0，N08持久执行/委派不启动；原N01–N15/O01–O42/F01–F12和PrismOS全规划/能力/门保持。

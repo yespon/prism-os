@@ -133,3 +133,17 @@ def test_cached_host_module_can_restore_execution_validator(monkeypatch) -> None
         assert calls == ["registered", "registered"]
     finally:
         reset_runtime_adapters()
+
+
+def test_native_context_provider_registration_is_local_and_resettable():
+    from deerflow.runtime import NativeAgentContext, get_agent_context_provider, register_agent_context_provider
+
+    def provider(*args, **kwargs):
+        return NativeAgentContext("record", "section")
+    try:
+        register_agent_context_provider(provider)
+        assert get_agent_context_provider() is provider
+        assert provider().skill_section == "section"
+    finally:
+        reset_runtime_adapters()
+    assert get_agent_context_provider() is None

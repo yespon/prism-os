@@ -21,7 +21,7 @@ from deerflow.database.user_config_store import load_enabled_tenant_model_names
 from deerflow.models.factory import create_chat_model
 from deerflow.runtime import (
     ExecutionTrustError,
-    get_agent_identity_provider,
+    get_agent_context_provider,
     get_execution_validator,
     get_governed_action_provider,
     get_skill_prompt_provider,
@@ -124,7 +124,8 @@ def _validate_execution_context(config: dict) -> dict[str, str] | None:
     if requested_id is not None and requested_id != agent_id:
         raise ExecutionTrustError("native Agent selection is not covered by the capability")
     if incident_id or agent_id:
-        return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id, "agent_name": agent_name, "incident_id": incident_id, "agent_id": agent_id}
+        authority = {key: result.get(key) for key in ("diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id")} if isinstance(result, dict) else {}
+        return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id, "agent_name": agent_name, "incident_id": incident_id, "agent_id": agent_id, **authority}
 
 
 def make_lead_agent(config):
@@ -169,14 +170,16 @@ def make_lead_agent(config):
         if agent_name == "terminal-agent" and not trusted_agent_id:
             return _make_terminal_agent(config)
 
+        native_context = None
         if trusted_agent_id:
-            identity_loader = get_agent_identity_provider()
-            if identity_loader is None:
-                raise ExecutionTrustError("Native Agent identity provider unavailable")
-            record = identity_loader(agent_name, user_id, tenant_id, trusted_agent_id)
-            if record is None:
+            context_provider = get_agent_context_provider()
+            if context_provider is None:
+                raise ExecutionTrustError("Native Agent context provider unavailable")
+            authority = {key: trusted_execution.get(key) for key in ("diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id")}
+            native_context = context_provider(agent_name, user_id, tenant_id, trusted_agent_id, skill_name, cfg.get("skill_resource_id") or runtime_context.get("skill_resource_id"), **authority)
+            if native_context is None or native_context.record is None:
                 raise ExecutionTrustError("Current native Agent unavailable")
-            agent_config = _db_agent_to_config(record)
+            agent_config = _db_agent_to_config(native_context.record)
         else:
             agent_config = load_agent_config(agent_name, user_id=user_id) if not is_bootstrap else None
         if agent_name and not is_bootstrap and agent_config is None:
@@ -241,10 +244,11 @@ def make_lead_agent(config):
 
         agent_skills = set(agent_config.skills) if (agent_config and agent_config.skills is not None) else None
         effective_skills = {skill_name} if skill_name else agent_skills
-        skill_provider = get_skill_prompt_provider()
-        verified_skill_section = (
-            skill_provider(agent_name, tenant_id, user_id, skill_name, cfg.get("skill_resource_id") or runtime_context.get("skill_resource_id"), **({"agent_id": trusted_agent_id} if trusted_agent_id else {})) if skill_provider else None
-        )
+        if native_context is not None:
+            verified_skill_section = native_context.skill_section
+        else:
+            skill_provider = get_skill_prompt_provider()
+            verified_skill_section = skill_provider(agent_name, tenant_id, user_id, skill_name, cfg.get("skill_resource_id") or runtime_context.get("skill_resource_id")) if skill_provider else None
         action_provider = get_governed_action_provider()
         action_tools = action_provider(trusted_action) if trusted_action and action_provider else []
         action_prompt = (

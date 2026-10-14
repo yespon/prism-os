@@ -1,0 +1,27 @@
+{
+  "base_commit": "363fdbc54534687db2e47f86f0a907ed0ed3f7a5",
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "cef13a18686ed7da80b20b41cbb9bb7607bbc361f4a2b949dd6ccf3623a7107a",
+    "backend/app/platform/execution/trust.py": "ef77e4c146814297a9da44e30961ba72e72b5cb7009a43aa4a0b59db60816021",
+    "backend/app/runtime_adapters.py": "4bbc1bcaf96ff687a49a897d792c022a2a8a65bd8bac580fffef878ff7006c60",
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": "c2ff5e897a14ef77088098a35abf2e23d256f2f02181f936791636346dba3351",
+    "backend/packages/harness/deerflow/runtime.py": "8e103078976dbdf6f8792606460be03361ae53afe5d78a96ae79ef9c5897b962",
+    "backend/tests/test_diagnosis_authorization.py": "8c1da6fa5663907f2040ed65cec91d34f08fadfd456199b63dce179a9f9f57aa",
+    "backend/tests/test_runtime_adapters.py": "5b251f17a75b80ee514171b81d1eb513501ad9abb7dae6cbacc30f30b8fcf027",
+    "scripts/octop_gateway_smoke.py": "e29fd1a13f12b3f2c152bc2860d82984e9fd8693988f2aa303e622a5e9ec5fba",
+    "scripts/octop_upgrade_probe.py": "6cdd9ac93a88485bd36f9f9d2dd484a29440bb0ee8f56b6427207b9312f921f0"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "link_sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3",
+      "reason": "absolute host tool metadata; target not read"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "link_sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db",
+      "reason": "absolute host tool metadata; target not read"
+    }
+  ],
+  "independent_directory": "/tmp/prismos-n09p-independent"
+}

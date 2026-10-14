@@ -74,7 +74,7 @@ for module in (loader,skills,skill_imports,resource_installations,installer,user
     module.get_skills_root_path = lambda: Path({str(isolated_skills)!r})
 from fastapi import HTTPException, Request
 from app.gateway.authorization import require_tenant_context
-from app.runtime_adapters import _current_skill_prompt
+from app.runtime_adapters import _current_skill_prompt, _load_agent_context
 from deerflow.runtime import ExecutionTrustError
 from app.alerting.diagnosis_authorization import current_authorization, revision
 from app.models.alerting import AlertSource, Incident
@@ -93,7 +93,9 @@ async def _owned_manual_runs(*args, **kwargs):
     return []
 async def _owned_manual_stream(thread_id, assistant, *, context, **kwargs):
     repository = ExecutionCapabilityRepository(get_session_factory(), native_selection_validator=verify_native_selection)
-    chosen = await repository.consume(context["prismos_execution_capability"], context["tenant_id"], context["user_id"], thread_id, context["agent_name"], include_selection=True)
+    chosen = await repository.consume(context["prismos_execution_capability"], context["tenant_id"], context["user_id"], thread_id, context["agent_name"], include_selection=True, include_context=True)
+    assembled = _load_agent_context(context["agent_name"], context["user_id"], context["tenant_id"], chosen["agent_id"], **{{key: chosen[key] for key in ("diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id")}})
+    assert assembled.record.id == chosen["agent_id"]
     _manual_selections.append({{"tenant_id": context["tenant_id"], "user_id": context["user_id"], "agent_id": chosen["agent_id"], "incident_id": chosen["incident_id"]}})
     yield SimpleNamespace(event="messages-tuple", data=[{{"type": "ai", "id": "owned-manual-message", "content": "Verified native manual diagnosis"}}, {{}}])
 langgraph_sdk.get_client = lambda **kwargs: SimpleNamespace(threads=SimpleNamespace(create=_owned_manual_thread, get_state=_owned_manual_state), runs=SimpleNamespace(stream=_owned_manual_stream, list=_owned_manual_runs))
@@ -506,6 +508,7 @@ async def owned_skill_choice(agent_name: str, request: Request):
                     "source_admin_confirmation_native_capability_and_role_withdrawal": True,
                     "diagnosis_incident_current_condition_recheck_without_action_authority": True,
                     "manual_diagnosis_real_session_native_selection_and_member_usage": True,
+                    "native_agent_context_combines_record_and_skill_after_capability": True,
                 }
                 if args.output:
                     args.output.parent.mkdir(parents=True, exist_ok=True)
