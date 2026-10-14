@@ -1,0 +1,123 @@
+F....FFF....F..........................................................  [100%]
+=================================== FAILURES ===================================
+______ test_default_actual_command_and_member_read_share_current_catalog _______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x744fd2971750>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x744fd1704290>)
+
+>   ???
+E   AssertionError: bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system
+E     
+E     Exit Code: 1
+E   assert ('AUTHORIZED PERSONAL MEMBER' in 'bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system\n\nExit Code: 1')
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_legacy_default_scope.py:52: AssertionError
+____ test_default_live_withdrawal_stops_actual_process_and_discards_stdout _____
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x744fcbe4f110>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x744fcbd7a810>)
+
+>   ???
+E   AssertionError: bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system
+E     
+E     Exit Code: 1
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/tmp/pytest-of-root/pytest-0/test_default_live_withdrawal_s0/owned-thread-data/tenants/tenant-a/users/user-a/threads/member-thread/user-data/outputs/started.txt').exists
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_legacy_default_scope.py:90: AssertionError
+________ test_old_named_agent_uses_concrete_selection_without_native_id ________
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x744fcbfca4d0>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x744fcbc912e0>)
+
+>   ???
+E   AssertionError: bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system
+E     
+E     Exit Code: 1
+E   assert ('AUTHORIZED PERSONAL MEMBER' in 'bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system\n\nExit Code: 1')
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_legacy_default_scope.py:105: AssertionError
+_ test_legacy_names_require_source_choice_but_empty_agent_remains_usable[names0] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x744fcbd34a50>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x744fcb34a8a0>)
+names = []
+
+>   ???
+E   AssertionError: bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system
+E     
+E     Exit Code: 1
+E   assert ('OWN THREAD USABLE' in 'bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system\n\nExit Code: 1')
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_legacy_default_scope.py:124: AssertionError
+____ test_default_disabled_resource_is_absent_from_command_and_member_read _____
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x744fcb101550>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x744fcafcce90>)
+
+>   ???
+E   AssertionError: bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system
+E     
+E     Exit Code: 1
+E   assert ('False' in 'bwrap: cannot open /proc/sys/user/max_user_namespaces: Read-only file system\n\nExit Code: 1')
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_legacy_default_scope.py:167: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /app/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_legacy_default_scope.py: 13 warnings
+tests/test_agent_skill_references.py: 18 warnings
+tests/test_skill_member_tools.py: 27 warnings
+tests/test_file_access_boundaries.py: 15 warnings
+  /app/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_agent_skill_references.py::test_host_provider_rechecks_disabled_instance_and_masks_failure
+tests/test_agent_skill_references.py::test_graph_checks_actual_current_source_before_model_creation
+  /app/backend/app/integrations/skill_mutations.py:105: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_legacy_default_scope.py::test_default_actual_command_and_member_read_share_current_catalog
+FAILED tests/test_legacy_default_scope.py::test_default_live_withdrawal_stops_actual_process_and_discards_stdout
+FAILED tests/test_legacy_default_scope.py::test_old_named_agent_uses_concrete_selection_without_native_id
+FAILED tests/test_legacy_default_scope.py::test_legacy_names_require_source_choice_but_empty_agent_remains_usable[names0]
+FAILED tests/test_legacy_default_scope.py::test_default_disabled_resource_is_absent_from_command_and_member_read
+5 failed, 66 passed, 76 warnings in 144.76s (0:02:24)

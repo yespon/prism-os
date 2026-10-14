@@ -78,7 +78,7 @@ async def current_member(session, context, operation, path, container_prefix):
     if ".." in path.split("/") or not requested.is_relative_to(prefix):
         raise ValueError("Skill path unavailable")
     root = get_skills_root_path().resolve()
-    resolved = await current_skill_resources(session, context["agent_name"], context["tenant_id"], context["user_id"], selected_agent_id=context["agent_id"], root=root, include_snapshot=True)
+    resolved = await current_skill_resources(session, context.get("agent_name"), context["tenant_id"], context["user_id"], selected_agent_id=context.get("agent_id"), root=root, include_snapshot=True)
     if resolved is None:
         return None
     choices = [(prefix / PurePosixPath(item["location"]).parent, item) for item in resolved]

@@ -62,7 +62,7 @@ def copy_verified_tree(directory, expected, destination, excluded):
 
 async def materialize(session, context, destination):
     tenant, actor = context["tenant_id"], context["user_id"]
-    resources = await current_skill_resources(session, context["agent_name"], tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
+    resources = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context.get("agent_id"), include_snapshot=True)
     if resources is None:
         return None
     root = get_skills_root_path().resolve()

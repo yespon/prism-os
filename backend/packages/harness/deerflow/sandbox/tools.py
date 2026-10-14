@@ -776,11 +776,12 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
 
         load_runtime_adapters()
         command_provider = get_skill_command_provider()
-        if command_provider is not None and (runtime.context or {}).get("agent_id"):
+        if command_provider is not None and ((runtime.context or {}).get("agent_id") or (runtime.context or {}).get("tenant_id")):
             protected = command_provider(runtime.context or {}, command, get_sandbox_provider(), thread_data, env)
-            if protected is not None:
-                return _apply_line_limit(protected, None, None)
-        elif command_provider is None and (runtime.context or {}).get("agent_id"):
+            if protected is None:
+                raise PermissionError("Current scoped command authority unavailable")
+            return _apply_line_limit(protected, None, None)
+        elif command_provider is None and ((runtime.context or {}).get("agent_id") or (runtime.context or {}).get("tenant_id")):
             raise PermissionError("Current scoped command provider unavailable")
 
         sandbox = ensure_sandbox_initialized(runtime)
@@ -808,7 +809,7 @@ def _current_skill_file(runtime, operation, path):
     provider = get_skill_file_provider()
     context = runtime.context or {}
     if provider is None:
-        if context.get("agent_id"):
+        if context.get("agent_id") or context.get("tenant_id"):
             raise PermissionError("Current Skill access provider unavailable")
         return None
     return provider(context, operation, path, _get_skills_container_path())

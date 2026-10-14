@@ -89,7 +89,7 @@ async def verify_runtime_selection(session, context):
     from app.integrations.file_access import verify_thread
 
     binding = await verify_thread(session, context.get("tenant_id"), context.get("user_id"), context.get("thread_id"))
-    if binding.agent_name is not None and binding.agent_name != context.get("agent_name"):
+    if binding.agent_name is not None and binding.agent_name != (context.get("agent_name") or "__default__"):
         raise ExecutionTrustError("Current thread Agent unavailable")
     source = context.get("diagnosis_source_id")
     revision = context.get("diagnosis_source_revision")
@@ -98,6 +98,10 @@ async def verify_runtime_selection(session, context):
         raise ExecutionTrustError("Protected automatic diagnosis context incomplete")
     if source is None and revision is not None:
         raise ExecutionTrustError("Protected diagnosis source unavailable")
+    if not context.get("agent_id"):
+        if context.get("agent_name") not in {None, "__default__"} or source is not None or incident is not None:
+            raise ExecutionTrustError("Current Agent selection incomplete")
+        return
     await verify_native_selection(session, context.get("tenant_id"), context.get("user_id"), context.get("agent_name"), context.get("agent_id"), source, revision, diagnosis_incident_id=incident)
     if incident is not None:
         from app.alerting.diagnosis_run_control import DiagnosisStopRequested
@@ -180,7 +184,7 @@ async def _consume_graph_capability(token, tenant_id, user_id, thread_id, agent_
 
 
 def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resource_id=None, agent_id=None):
-    if not agent_name:
+    if not tenant_id and not agent_id:
         return None
     from app.integrations.agent_skill_references import current_skill_prompt
 
@@ -194,9 +198,34 @@ def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resou
         raise ExecutionTrustError("Current Agent Skill choice or use authorization is unavailable") from None
 
 
+def _scoped_context(context):
+    """Resolve old named executions once; pin the original identity per use."""
+    if not context.get("tenant_id") and not context.get("agent_id"):
+        return None
+    protected = dict(context)
+    if not protected.get("agent_id") and protected.get("agent_name") not in {None, "__default__"}:
+        async def resolve():
+            from app.integrations.file_access import verify_thread
+
+            async with get_session_factory()() as session:
+                await verify_thread(session, protected.get("tenant_id"), protected.get("user_id"), protected.get("thread_id"))
+                rows = (await session.exec(select(CustomAgent).where(
+                    CustomAgent.tenant_id == protected.get("tenant_id"),
+                    CustomAgent.user_id.in_([protected.get("user_id"), "tenant-shared"]),
+                    CustomAgent.name == protected.get("agent_name"),
+                ))).scalars().all()
+                agent = next((row for row in rows if row.user_id == protected.get("user_id")), rows[0] if rows else None)
+                if agent is None:
+                    raise ExecutionTrustError("Current named Agent unavailable")
+                return agent.id
+        protected["agent_id"] = _run_async(resolve())
+    return protected
+
+
 def _current_skill_member(context, operation, path, container_prefix):
-    if not context.get("agent_id"):
-        return None  # Legacy/default/terminal access remains a separate migration.
+    context = _scoped_context(context)
+    if context is None:
+        return None
     from app.integrations.agent_skill_members import current_member
     from app.integrations.skill_reference_transactions import begin_reference_transaction
 
@@ -207,13 +236,13 @@ def _current_skill_member(context, operation, path, container_prefix):
             await verify_runtime_selection(session, context)
             from app.integrations.agent_skill_references import current_skill_resources
 
-            record = await session.get(CustomAgent, context["agent_id"])
-            values = deepcopy(record.model_dump())
-            before = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
+            record = await session.get(CustomAgent, context["agent_id"]) if context.get("agent_id") else None
+            values = deepcopy(record.model_dump()) if record is not None else None
+            before = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context.get("agent_id"), include_snapshot=True)
             result = await current_member(session, context, operation, path, container_prefix)
             await verify_runtime_selection(session, context)
-            after = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
-            if before != after or record.model_dump() != values:
+            after = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context.get("agent_id"), include_snapshot=True)
+            if before != after or (record.model_dump() if record is not None else None) != values:
                 raise ExecutionTrustError("Current Skill selection changed during access")
             return result
 
@@ -224,7 +253,8 @@ def _current_skill_member(context, operation, path, container_prefix):
 
 
 def _current_skill_command(context, command, provider, thread_data, env):
-    if not context.get("agent_id"):
+    context = _scoped_context(context)
+    if context is None:
         return None
     from tempfile import TemporaryDirectory
 
@@ -233,7 +263,7 @@ def _current_skill_command(context, command, provider, thread_data, env):
     from app.integrations.skill_reference_transactions import begin_reference_transaction
     from deerflow.config.paths import get_paths
 
-    tenant, actor, agent_id = context.get("tenant_id"), context.get("user_id"), context["agent_id"]
+    tenant, actor, agent_id = context.get("tenant_id"), context.get("user_id"), context.get("agent_id")
     name, thread_id = context.get("agent_name"), context.get("thread_id")
     paths = get_paths()
     if not thread_id:
@@ -249,11 +279,11 @@ def _current_skill_command(context, command, provider, thread_data, env):
         async with get_session_factory()() as session:
             await begin_reference_transaction(session, tenant)
             await verify_runtime_selection(session, context)
-            record = await session.get(CustomAgent, agent_id)
-            values = deepcopy(record.model_dump())
+            record = await session.get(CustomAgent, agent_id) if agent_id else None
+            values = deepcopy(record.model_dump()) if record is not None else None
             resources = await materialize(session, context, destination) if destination is not None else await current_skill_resources(session, name, tenant, actor, selected_agent_id=agent_id, include_snapshot=True)
             await verify_runtime_selection(session, context)
-            if record.model_dump() != values:
+            if (record.model_dump() if record is not None else None) != values:
                 raise ExecutionTrustError("Command configuration changed during assembly")
             return values, resources
 

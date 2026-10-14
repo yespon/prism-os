@@ -1,0 +1,41 @@
+{
+  "image_id": "sha256:c95e0e0238f1a453acb0118fb2b26b45d89e86ee2dc3b7b9bd25e2e4c1fefc2e",
+  "modules": {
+    "backend/app/integrations/agent_skill_members.py": {
+      "host": "94d27d8897116e90cc9698ddc7a3279cbec9889443c9149a51f73b1b500dde11",
+      "image": "94d27d8897116e90cc9698ddc7a3279cbec9889443c9149a51f73b1b500dde11",
+      "matches": true
+    },
+    "backend/app/integrations/agent_skill_references.py": {
+      "host": "99e9da466c6d94d31e907240ef8e443e479a689b1111d20f21614f744cb501a9",
+      "image": "99e9da466c6d94d31e907240ef8e443e479a689b1111d20f21614f744cb501a9",
+      "matches": true
+    },
+    "backend/app/integrations/file_access.py": {
+      "host": "1d3c465dacff9c6e09f3d0494f1c0839006d25b1a006bdc12889668305df9182",
+      "image": "1d3c465dacff9c6e09f3d0494f1c0839006d25b1a006bdc12889668305df9182",
+      "matches": true
+    },
+    "backend/app/integrations/skill_command_views.py": {
+      "host": "150fd4c9cc5d61930884715935118a847a1a78820de03961729369f9e7641a88",
+      "image": "150fd4c9cc5d61930884715935118a847a1a78820de03961729369f9e7641a88",
+      "matches": true
+    },
+    "backend/app/runtime_adapters.py": {
+      "host": "09801fc7798ae42a040d8442a4fea860531d76172a39caaa1a80e24772a600d4",
+      "image": "09801fc7798ae42a040d8442a4fea860531d76172a39caaa1a80e24772a600d4",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/sandbox/tools.py": {
+      "host": "af1e323adf77be47df2619f0e6a575e4a272b915fe62e496f19050c77545732c",
+      "image": "af1e323adf77be47df2619f0e6a575e4a272b915fe62e496f19050c77545732c",
+      "matches": true
+    },
+    "backend/tests/test_legacy_default_scope.py": {
+      "host": "be372aa981fecaf43304d270626621ff0d0b7f89fe18d85f817eb1ed7b12417e",
+      "image": "be372aa981fecaf43304d270626621ff0d0b7f89fe18d85f817eb1ed7b12417e",
+      "matches": true
+    }
+  },
+  "owned_container_removed": true
+}

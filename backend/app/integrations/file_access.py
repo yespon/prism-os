@@ -56,8 +56,7 @@ async def runtime_file_access(context, state, operation, path, factory):
 
     async def verify(session):
         binding = await verify_thread(session, tenant, actor, thread)
-        if context.get("agent_id"):
-            await runtime_adapters.verify_runtime_selection(session, context)
+        await runtime_adapters.verify_runtime_selection(session, runtime_adapters._scoped_context(context))
         if binding.agent_name is not None and binding.agent_name != (context.get("agent_name") or "__default__"):
             raise ExecutionTrustError("Current thread Agent unavailable")
 

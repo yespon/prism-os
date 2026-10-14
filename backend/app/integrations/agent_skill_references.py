@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 
 from app.models.agents import CustomAgent
-from deerflow.database.models import Tenant, TenantMembership, TenantSkill
+from deerflow.database.models import TenantSkill
 from deerflow.skills import get_skills_root_path
 from deerflow.skills.resource_deletion_files import OwnedRemoval
 from deerflow.skills.resource_identity import public_resource_id, registered_resource_id, resource_directory
@@ -192,19 +192,24 @@ async def current_skill_resources(session, agent_name, tenant, actor, skill_name
         .all()
     )
     agent = next((a for a in rows if a.user_id == actor), rows[0] if rows else None)
-    if agent is None or not agent.enabled:
-        raise HTTPException(403, "Current Agent is unavailable")
-    if expected_agent_id is not None and agent.id != expected_agent_id:
-        raise HTTPException(409, "Selected Agent identity differs from name-based execution")
-    selected = binding(agent)
-    if selected is None:
-        return None  # Legacy-name migration/use review remains explicit work.
-    if selected.mode == "unresolved":
-        raise HTTPException(409, "Confirm unresolved Skill source choices before use")
-    member = (await session.exec(select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == actor, TenantMembership.status == "active"))).scalars().first()
-    tenant_row = await session.get(Tenant, tenant)
-    if not agent.enabled or member is None or tenant_row is None or tenant_row.status != "active":
-        raise HTTPException(403, "Current Agent or membership is unavailable")
+    from app.integrations.file_access import verify_member
+
+    await verify_member(session, tenant, actor)
+    if agent_name in {None, "__default__"} and selected_agent_id is None:
+        selected = SkillBinding(mode="all")
+        agent = None
+    else:
+        if agent is None or not agent.enabled:
+            raise HTTPException(403, "Current Agent is unavailable")
+        if expected_agent_id is not None and agent.id != expected_agent_id:
+            raise HTTPException(409, "Selected Agent identity differs from name-based execution")
+        selected = binding(agent)
+        if selected is None:
+            if agent.skills:
+                raise HTTPException(409, "Confirm legacy Skill source choices before use")
+            selected = SkillBinding(mode="selected")
+        if selected.mode == "unresolved":
+            raise HTTPException(409, "Confirm unresolved Skill source choices before use")
     references = selected.resources
     root = (root or get_skills_root_path()).resolve()
     if selected.mode == "all":
@@ -236,7 +241,7 @@ async def current_skill_resources(session, agent_name, tenant, actor, skill_name
         try:
             # Dynamic all-current uses this actor's authorized resources, not
             # the shared creator's private selection.
-            item = await resolve_reference(session, tenant, actor, agent.user_id == "tenant-shared" and selected.mode == "selected", reference, use=True, root=root, include_snapshot=include_snapshot)
+            item = await resolve_reference(session, tenant, actor, agent is not None and agent.user_id == "tenant-shared" and selected.mode == "selected", reference, use=True, root=root, include_snapshot=include_snapshot)
             resolved.append(item)
         except (HTTPException, ValueError, OSError, yaml.YAMLError):
             if selected.mode == "selected" or skill_name or resource_id:
