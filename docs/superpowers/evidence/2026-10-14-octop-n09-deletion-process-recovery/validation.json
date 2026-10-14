@@ -1,0 +1,141 @@
+{
+  "status": "true_deletion_process_recovery_gate_added_not_complete_C2_N09",
+  "base_commit": "7430ffbc666a31b4007d3c6d75c840f78f4d5196",
+  "production_application_unchanged": true,
+  "new_hard_kill_and_mutation_cases": 20,
+  "signal": "SIGKILL",
+  "asserted_child_returncode": -9,
+  "kill_points": [
+    "prepared_receipt_durable",
+    "quarantine_rename_before_receipt",
+    "before_database_commit",
+    "after_real_commit_before_receipt",
+    "withdrawn_receipt",
+    "one_owned_unlink",
+    "root_reclaimed_before_final_receipt"
+  ],
+  "scopes": [
+    "personal",
+    "tenant_shared"
+  ],
+  "post_kill_mutations": [
+    "unknown_member_added",
+    "quarantine_root_replaced",
+    "same_name_new_instance_and_configuration"
+  ],
+  "neighbors": {
+    "passed": 46,
+    "warnings": 53,
+    "observed_exit_code": 0
+  },
+  "backend": {
+    "passed": 1843,
+    "skipped": 18,
+    "warnings": 259,
+    "cwd": "backend",
+    "observed_exit_code": 0
+  },
+  "postgres": {
+    "passed": 221,
+    "warnings": 164,
+    "owned_container_removed": true,
+    "observed_exit_code": 0
+  },
+  "octop_check": {
+    "current": {
+      "backend_passed": 573,
+      "frontend_passed": 162,
+      "observed_exit_code": 0
+    },
+    "independent": {
+      "backend_passed": 573,
+      "frontend_passed": 162,
+      "observed_pipeline_exit_code": 0
+    }
+  },
+  "gateway": {
+    "independent_fresh_real_auth_session_and_membership": true,
+    "observed_pipeline_exit_code": 0,
+    "migration_head": "n8h9i0j1k2l3",
+    "real_external_model_tool_or_ticket_calls": false
+  },
+  "production_build_and_frontend": {
+    "new_production_compiler_or_full_frontend_run": false,
+    "application_tracked_paths_unchanged": 1689,
+    "application_aggregate_sha256": "85a4e41cc6a59bcbb58041a821d108e69e5ce0f5c2912449c0a9bf008d83ad1d",
+    "current_and_independent_application_sources_match": true,
+    "historical_exact_application_evidence_reference": "docs/superpowers/evidence/2026-10-14-octop-n09-coherent-native-context/validation.json",
+    "historical_current_and_independent_build_exit_codes": 0,
+    "historical_full_frontend_passed": 249
+  },
+  "upgrade": {
+    "host_inputs": 54,
+    "host_changed": false,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 391,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "passed": 391,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 391,
+        "observed_exit_code": 0
+      }
+    ]
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "a32a331787beecb4c061a2b19d87526aa4e546b51cc74541c14a85fce76b56de",
+    "Makefile": "af3363e2377d62b89a50ba053162e3e57bb9bea878760f0ef3deaa602dd1939d",
+    "scripts/octop_skill_postgres.py": "4a6f3af862f4b09e7d24a37a68c273173ddcc89c34f4990c1e29050d7f10b4f8",
+    "scripts/octop_upgrade_probe.py": "d00315882fd28541d3f5ae5157132d869fe3d04d195de27575ddb77788f8331b",
+    "backend/tests/test_skill_deletion_process.py": "dcef0beb6d19eb63246c21597697655968b6179bb34a13685cf7cc3a5443fdf2"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifact_sha256s": {
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "pending": [
+    "All legacy-name/default/terminal and member file/tool authorization, in-flight revocation/actual cancellation/unknown.",
+    "Persistent exact chat/diagnosis thread continuation and full results/history ACL.",
+    "Complete deletion/C2 exit and complete member copy/share target authorization.",
+    "N04 real environment/model/tool/countable receiver and N07-B remote CI; M1 not exited and N08 persistence/delegation not started.",
+    "Full N01-N15/O01-O42/F01-F12, 33 non-Skill groups, 18 experts/subagents, independent Office, external runtime/MCP compatibility and original PrismOS scope."
+  ],
+  "evidence_sha256s": {
+    "README.md": "9de23708348b80ae67f33757f4b7b4ca575e1841ed477db2a8a2aa08b2a416f1",
+    "application-integrity.json": "f6e2d68e3ca8aa9f407a733a560e8c1d903fde7cc7ab45aa13b8bdc060ae3e62",
+    "independent-gateway.json": "90497252e6e695e8b97157a85c036cf25f128e718bd3732b33a91f9cf44e12f4",
+    "independent-inputs.json": "730b460968395131ab21f62a8ae643176ce991f081fe6d406b0218fa25797850",
+    "logs/backend-full.log": "88e1dbe4443441f4dd3ca8ca5af501727cce458090eecf9f013bc13676edd34f",
+    "logs/brand-final.log": "26673bca62e606ce8f1fd91e4eb60473ffe290ac9552ddd3c21a957af21abaef",
+    "logs/brand.log": "ac9d761e22984fd180c0962de8404d88080125fd7fecc9fd95ebc81bc1b04364",
+    "logs/ci-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/independent-dependencies.log": "da78073bd29a6b7d22fe87094af9c7f10ce2792501912c22d1ba042368ca9571",
+    "logs/independent-gateway.log": "0fb07f7fe78f1fa2aed3dbfc307f72c317cd150c1bdda7a98cc076529c842eef",
+    "logs/independent-octop-check.log": "5c5ed0421d1fdf9f1d895d457f7abea9a379f3cf8e8dfc6f756bea9a75c58448",
+    "logs/octop-check.log": "97f45f6e724c2926979b9983f59e315ccf38cb4d4271397ece2879c7efb3c2d8",
+    "logs/postgres-run.log": "11dd234d1b6fb71a1fec57121bd6b36e06476fb7a6c2f8a12965e7656304e57e",
+    "logs/postgres.log": "20deccc4fafef45924c418cacca772d1bd4a197efd6e990a89d8117b13cae8ef",
+    "logs/process-initial.log": "aa407c09adfc032caef083cf96c2238efa425cd4ab355bf3b10cd6b260e67d80",
+    "logs/process-neighbors.log": "9d4a74df85bfa3703fc3a6b69f703cc34de6a9a09f90c05d3b27dc699c6b1c99",
+    "logs/source.log": "714452369f6aaca58cf458eaadc743b103d0ede8a825ba1faebb25741cb4a698",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "postgres.json": "b4ca51faeaef37fe79820dd4cfe0847472101cd027b8fbb374780553deb4be72",
+    "previous-source-receipt.json": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068",
+    "scope-audit.md": "179d72dae768496e7fa7dfd9b58028e172ff04663ac2f2f6b19d9f8751d23680",
+    "upgrade.json": "a1e5c6309f56bee1728792d76c3ffb61fcbeaeb7d51c5010f0bfc8781f8e52c1"
+  }
+}

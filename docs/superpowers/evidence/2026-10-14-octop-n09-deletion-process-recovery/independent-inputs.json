@@ -1,0 +1,23 @@
+{
+  "base_commit": "7430ffbc666a31b4007d3c6d75c840f78f4d5196",
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "a32a331787beecb4c061a2b19d87526aa4e546b51cc74541c14a85fce76b56de",
+    "Makefile": "af3363e2377d62b89a50ba053162e3e57bb9bea878760f0ef3deaa602dd1939d",
+    "scripts/octop_skill_postgres.py": "4a6f3af862f4b09e7d24a37a68c273173ddcc89c34f4990c1e29050d7f10b4f8",
+    "scripts/octop_upgrade_probe.py": "d00315882fd28541d3f5ae5157132d869fe3d04d195de27575ddb77788f8331b",
+    "backend/tests/test_skill_deletion_process.py": "dcef0beb6d19eb63246c21597697655968b6179bb34a13685cf7cc3a5443fdf2"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "link_sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3",
+      "reason": "absolute host tool metadata; target not read"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "link_sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db",
+      "reason": "absolute host tool metadata; target not read"
+    }
+  ],
+  "independent_directory": "/tmp/prismos-n09q-independent"
+}

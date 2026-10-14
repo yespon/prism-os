@@ -44,3 +44,9 @@ SQLite 与隔离 PostgreSQL 的原恢复/身份/编辑/启停/创建回归；真
 共享自动诊断现按原 source 管理员确认与当前成员资格传递受保护 Agent UUID，进入原 capability 单次消费、图配置/Skill/soul。最终 PostgreSQL 168 项、当前/独立统一门 483 后端/162 前端、独立完整前端/默认生产构建及固定 47 宿主输入升级/回退各 289 项通过，见[本批证据](../evidence/2026-10-14-octop-n09-shared-diagnosis-authority/README.md)。此前关于缺少自动可信身份/同名图一致性/最终 PostgreSQL和独立升级构建的待办，在本批明确共享自动边界内推进，不推导为全部入口或完整 C2/N09 退出。
 
 接下来先补齐异步消息配置/内容快照、人工与普通按名执行、旧名称/default/terminal 和成员文件工具的当前授权，再核对真实删除进程中断/恢复及完整成员复制/分享目标重授权。历史源确认体验、运行中撤权、N04/N07-B 和原全部能力与门继续保持，详见[后续队列](2026-10-14-octop-n09-shared-diagnosis-authority.md)。M1 未退出，N08 持久执行/委派不启动。
+
+## 真实删除死亡验收接续（2026-10-14）
+
+个人/共享20个SIGKILL/死亡后变更场景已加入原门，生产实现不变；新后端1843/18skip、PostgreSQL221、当前/独立统一门573后端/162前端、独立真实Gateway及固定54宿主升级回退各391通过，见[证据](../evidence/2026-10-14-octop-n09-deletion-process-recovery/README.md)。1689应用源码未变，基线构建/完整前端为明确历史适用证据。
+
+本地死亡门已补齐，完整删除/C2/N09仍须按[完整队列](2026-10-14-octop-n09-deletion-process-recovery.md)完成全部成员使用授权、旧/default/terminal、真实运行中撤权/取消/unknown、聊天续接/历史ACL及复制分享目标重授权；原全部能力和N04/N07/M1/N08门保持。
