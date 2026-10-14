@@ -54,7 +54,7 @@ def _public_directories(root):
             yield Path(current)
 
 
-def _read_main(directory):
+def _read_main(directory, *, include_snapshot=False):
     removal = OwnedRemoval(directory.parent)
     try:
         tree = removal.snapshot(directory.name)
@@ -80,12 +80,13 @@ def _read_main(directory):
         meta = yaml.safe_load(front.group(1)) if front else None
         if not isinstance(meta, dict) or not isinstance(meta.get("name"), str) or not isinstance(meta.get("description"), str):
             raise ValueError("Skill metadata unavailable")
-        return meta, content[front.end() :], expected["sha256"]
+        result = (meta, content[front.end() :], expected["sha256"])
+        return (*result, tree) if include_snapshot else result
     finally:
         removal.close()
 
 
-async def resolve_reference(session, tenant, actor, shared_agent, reference, *, use=False, root=None):
+async def resolve_reference(session, tenant, actor, shared_agent, reference, *, use=False, root=None, include_snapshot=False):
     root = (root or get_skills_root_path()).resolve()
     owner = f"__tenant_shared_skill__:{tenant}" if reference.scope == "tenant" else actor
     if reference.scope == "personal" and shared_agent:
@@ -96,24 +97,41 @@ async def resolve_reference(session, tenant, actor, shared_agent, reference, *, 
             raise HTTPException(409, "Selected public source is unavailable")
         directory = resource_directory(root, tenant, actor, {"scope": "global", "install_dir": str(directory)})
         override = (
-            (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == f"__tenant_shared_skill__:{tenant}", TenantSkill.name == reference.name, TenantSkill.category == "public"))).scalars().first()
+            (
+                await session.exec(
+                    select(TenantSkill)
+                    .where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == f"__tenant_shared_skill__:{tenant}", TenantSkill.name == reference.name, TenantSkill.category == "public")
+                    .execution_options(populate_existing=True)
+                )
+            )
+            .scalars()
+            .first()
         )
         enabled = override.enabled if override is not None else True
         relative = directory.relative_to(root / "public").as_posix()
         location = "public/" + relative
     else:
-        row = (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == owner, TenantSkill.name == reference.name).with_for_update())).scalars().first()
+        row = (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id == owner, TenantSkill.name == reference.name).with_for_update().execution_options(populate_existing=True))).scalars().first()
         if row is None or row.category == "public" or registered_resource_id(row) != reference.resource_id:
             raise HTTPException(409, "Selected registered instance is unavailable or changed")
         directory = resource_directory(root, tenant, actor, {"name": row.name, "scope": reference.scope, "install_dir": row.install_dir, "relative_path": row.relative_path})
         enabled = row.enabled
         location = "custom/" + directory.relative_to(root / "custom").as_posix()
-    meta, instructions, digest = _read_main(directory)
+    main = _read_main(directory, include_snapshot=include_snapshot)
+    meta, instructions, digest = main[:3]
     if meta["name"] != reference.name:
         raise HTTPException(409, "Selected instance metadata changed")
     if use and not enabled:
         raise HTTPException(403, "Selected Skill is disabled")
-    return {**reference.model_dump(), "description": meta["description"], "instructions": instructions, "file_sha256": digest, "location": location + "/SKILL.md", "enabled": enabled}
+    return {
+        **reference.model_dump(),
+        "description": meta["description"],
+        "instructions": instructions,
+        "file_sha256": digest,
+        "location": location + "/SKILL.md",
+        "enabled": enabled,
+        **({"member_snapshot": main[3]} if include_snapshot else {}),
+    }
 
 
 async def save_binding(session, agent, tenant, actor, mode, resources, *, explicit, names_changed=False, scope_changed=False):
@@ -161,11 +179,13 @@ def references_instance(agent, resource_id, name):
     return (selected.mode == "unresolved" and name in selected.legacy_names) or any(r.resource_id == resource_id for r in selected.resources)
 
 
-async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=None, resource_id=None, *, root=None, expected_agent_id=None, selected_agent_id=None):
+async def current_skill_resources(session, agent_name, tenant, actor, skill_name=None, resource_id=None, *, root=None, expected_agent_id=None, selected_agent_id=None, include_snapshot=False):
     rows = (
         (
             await session.exec(
-                select(CustomAgent).where(CustomAgent.tenant_id == tenant, CustomAgent.user_id.in_([actor, "tenant-shared"]), CustomAgent.name == agent_name, CustomAgent.id == selected_agent_id if selected_agent_id is not None else True)
+                select(CustomAgent)
+                .where(CustomAgent.tenant_id == tenant, CustomAgent.user_id.in_([actor, "tenant-shared"]), CustomAgent.name == agent_name, CustomAgent.id == selected_agent_id if selected_agent_id is not None else True)
+                .execution_options(populate_existing=True)
             )
         )
         .scalars()
@@ -196,7 +216,13 @@ async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=No
             except (ValueError, OSError, yaml.YAMLError):
                 continue
         native = (
-            (await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == tenant, TenantSkill.user_id.in_([actor, f"__tenant_shared_skill__:{tenant}"]), TenantSkill.category != "public", TenantSkill.enabled.is_(True))))
+            (
+                await session.exec(
+                    select(TenantSkill)
+                    .where(TenantSkill.tenant_id == tenant, TenantSkill.user_id.in_([actor, f"__tenant_shared_skill__:{tenant}"]), TenantSkill.category != "public", TenantSkill.enabled.is_(True))
+                    .execution_options(populate_existing=True)
+                )
+            )
             .scalars()
             .all()
         )
@@ -210,11 +236,18 @@ async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=No
         try:
             # Dynamic all-current uses this actor's authorized resources, not
             # the shared creator's private selection.
-            item = await resolve_reference(session, tenant, actor, agent.user_id == "tenant-shared" and selected.mode == "selected", reference, use=True, root=root)
+            item = await resolve_reference(session, tenant, actor, agent.user_id == "tenant-shared" and selected.mode == "selected", reference, use=True, root=root, include_snapshot=include_snapshot)
             resolved.append(item)
         except (HTTPException, ValueError, OSError, yaml.YAMLError):
             if selected.mode == "selected" or skill_name or resource_id:
                 raise
+    return resolved
+
+
+async def current_skill_prompt(session, agent_name, tenant, actor, skill_name=None, resource_id=None, **kwargs):
+    resolved = await current_skill_resources(session, agent_name, tenant, actor, skill_name, resource_id, **kwargs)
+    if resolved is None:
+        return None
     sections = []
     for item in resolved:
         sections.append(

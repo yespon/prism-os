@@ -103,6 +103,7 @@ def main():
                     "tests/test_skill_manual_creation.py",
                     "tests/test_skill_resource_deletion.py",
                     "tests/test_skill_deletion_process.py",
+                    "tests/test_skill_member_tools.py",
                     "tests/test_skill_reference_transactions.py",
                     "tests/test_agent_skill_references.py",
                     "tests/test_diagnosis_authorization.py",

@@ -1,0 +1,7 @@
+{
+  "paths": 1690,
+  "application_current_and_independent_equal": true,
+  "aggregate_sha256": "87422b4fdbb9da2a95e9ff2899afebb3b39dc63dfba0212c7692200ce867867b",
+  "frontend_unchanged_from_base": 499,
+  "base_commit": "490a0a92ab507b7cf8462ed4fb90b257d6b3d667"
+}

@@ -1,0 +1,885 @@
+FFFFFFFFFFFFFFFF                                                         [100%]
+=================================== FAILURES ===================================
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[None-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24eb912d0>, ....<lambda> at 0x7ff24d85e520>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24eb79b20>
+local = False, change = None
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+            assert content.startswith("Error:") and "MEMBER" not in content
+>       assert calls == []
+E       AssertionError: assert [('read', '/m.../member.txt')] == []
+E         
+E         Left contains one more item: ('read', '/mnt/skills/custom/tenant-a/user-a/collision/member.txt')
+E         Use -v to get more diff
+
+tests/test_skill_member_tools.py:100: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[None-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24ecee7d0>, ....<lambda> at 0x7ff24d71c860>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24e225d90>
+local = True, change = None
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+            assert content.startswith("Error:") and "MEMBER" not in content
+>       assert calls == []
+E       AssertionError: assert [('read', '/t.../member.txt')] == []
+E         
+E         Left contains one more item: ('read', '/tmp/pytest-of-root/pytest-88/test_native_member_read_rechec1/skills/custom/tenant-a/user-a/collision/member.txt')
+E         Use -v to get more diff
+
+tests/test_skill_member_tools.py:100: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[disabled-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d796f10>, ....<lambda> at 0x7ff24d800220>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24eb793a0>
+local = False, change = 'disabled'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24f6d0f80>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24f6d0f80> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[disabled-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d7744d0>, ....<lambda> at 0x7ff24d6ab2e0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24ecd1d30>
+local = True, change = 'disabled'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24edc2ce0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24edc2ce0> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[membership-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d629850>, ....<lambda> at 0x7ff24d596d40>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24eb79640>
+local = False, change = 'membership'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24f6d1390>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24f6d1390> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[membership-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d572c10>, ....<lambda> at 0x7ff24d46a5c0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24e255220>
+local = True, change = 'membership'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24f6d0080>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24f6d0080> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[generation-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d4ad3d0>, ....<lambda> at 0x7ff24d347880>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d5de420>
+local = False, change = 'generation'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24d4ea650>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24d4ea650> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[generation-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d31b7d0>, ....<lambda> at 0x7ff24d2334c0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d43ddc0>
+local = True, change = 'generation'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24f6d3aa0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24f6d3aa0> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[unselected-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d269dd0>, ....<lambda> at 0x7ff24d108a40>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d290ec0>
+local = False, change = 'unselected'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24e283a00>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24e283a00> = 'UNSELECTED PUBLIC MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[unselected-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d2f2a50>, ....<lambda> at 0x7ff24d1f9da0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d586b70>
+local = True, change = 'unselected'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24fa93230>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24fa93230> = 'UNSELECTED PUBLIC MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[alias-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d5b6e90>, ....<lambda> at 0x7ff24d0dccc0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d43da00>
+local = False, change = 'alias'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24d3371e0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24d3371e0> = 'UNSELECTED PUBLIC MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[alias-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d0fba50>, ....<lambda> at 0x7ff24cf991c0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24cf19c40>
+local = True, change = 'alias'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24cfa43f0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24cfa43f0> = 'UNSELECTED PUBLIC MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[agent-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24cf6cf10>, ....<lambda> at 0x7ff24d6ab1a0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24cf47aa0>
+local = False, change = 'agent'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24d4ea4c0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24d4ea4c0> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[agent-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24cf6ce50>, ....<lambda> at 0x7ff24d9a7a60>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d0bb350>
+local = True, change = 'agent'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24d1e78c0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24d1e78c0> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[tenant-False] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d3f8a90>, ....<lambda> at 0x7ff24d1a7e20>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24cf7c0b0>
+local = False, change = 'tenant'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24d9338c0>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24d9338c0> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+_ test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[tenant-True] _
+
+selected_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7ff24d4d5d10>, ....<lambda> at 0x7ff24d743560>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff24d0baed0>
+local = True, change = 'tenant'
+
+    @pytest.mark.parametrize("local", [False, True])
+    @pytest.mark.parametrize("change", [None, "disabled", "membership", "generation", "unselected", "alias", "agent", "tenant"])
+    def test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read(selected_runtime, monkeypatch, local, change):
+        factory, root, agent_id, calls, runtime = selected_runtime
+        monkeypatch.setattr(tools, "is_local_sandbox", lambda runtime: local)
+        requested = "/mnt/skills/custom/tenant-a/user-a/collision/member.txt"
+    
+        async def alter():
+            async with factory() as session:
+                if change in {"disabled", "generation"}:
+                    row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                    if change == "disabled":
+                        row.enabled = False
+                    else:
+                        from datetime import timedelta
+                        row.created_at += timedelta(seconds=1)
+                elif change == "membership":
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.status = "inactive"
+                elif change == "agent":
+                    row = await session.get(CustomAgent, agent_id)
+                    row.enabled = False
+                elif change == "tenant":
+                    row = await session.get(Tenant, "tenant-a")
+                    row.status = "inactive"
+                else:
+                    return
+                session.add(row)
+                await session.commit()
+        asyncio.run(alter())
+        if change == "unselected":
+            requested = "/mnt/skills/public/collision/member.txt"
+        if change == "alias":
+            member = root / "custom/tenant-a/user-a/collision/member.txt"
+            member.unlink()
+            member.symlink_to(root / "public/collision/member.txt")
+        content = tools.read_file_tool.func(runtime, "Read selected member", requested)
+        if change is None:
+            assert "AUTHORIZED PERSONAL MEMBER" in content
+        else:
+>           assert content.startswith("Error:") and "MEMBER" not in content
+E           AssertionError: assert (False)
+E            +  where False = <built-in method startswith of str object at 0x7ff24d3c9480>('Error:')
+E            +    where <built-in method startswith of str object at 0x7ff24d3c9480> = 'AUTHORIZED PERSONAL MEMBER'.startswith
+
+tests/test_skill_member_tools.py:99: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_member_tools.py: 16 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[None-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[None-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[disabled-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[disabled-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[membership-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[membership-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[generation-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[generation-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[unselected-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[unselected-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[alias-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[alias-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[agent-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[agent-True]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[tenant-False]
+FAILED tests/test_skill_member_tools.py::test_native_member_read_rechecks_current_scope_without_unchecked_sandbox_read[tenant-True]
+16 failed, 17 warnings in 16.15s

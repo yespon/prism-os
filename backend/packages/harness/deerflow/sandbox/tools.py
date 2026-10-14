@@ -1,3 +1,4 @@
+import posixpath
 import re
 from pathlib import Path
 
@@ -6,6 +7,7 @@ from langgraph.typing import ContextT
 
 from deerflow.agents.thread_state import ThreadDataState, ThreadState
 from deerflow.config.paths import VIRTUAL_PATH_PREFIX
+from deerflow.runtime import get_skill_file_provider, load_runtime_adapters
 from deerflow.sandbox.exceptions import (
     SandboxError,
     SandboxNotFoundError,
@@ -75,7 +77,8 @@ def _get_skills_host_path() -> str | None:
 def _is_skills_path(path: str) -> bool:
     """Check if a path is under the skills container path."""
     skills_prefix = _get_skills_container_path()
-    return path == skills_prefix or path.startswith(f"{skills_prefix}/")
+    canonical = posixpath.normpath("/" + path.lstrip("/")) if path.startswith("/") else path
+    return any(value == skills_prefix or value.startswith(f"{skills_prefix}/") for value in (path, canonical))
 
 
 def _resolve_skills_path(path: str) -> str:
@@ -789,6 +792,19 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
         return f"Error: Unexpected error executing command: {_sanitize_error(e, runtime)}"
 
 
+def _current_skill_file(runtime, operation, path):
+    if not _is_skills_path(path):
+        return None
+    load_runtime_adapters()
+    provider = get_skill_file_provider()
+    context = runtime.context or {}
+    if provider is None:
+        if context.get("agent_id"):
+            raise PermissionError("Current Skill access provider unavailable")
+        return None
+    return provider(context, operation, path, _get_skills_container_path())
+
+
 @tool("ls", parse_docstring=True)
 def ls_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, path: str) -> str:
     """List the contents of a directory up to 2 levels deep in tree format.
@@ -797,7 +813,14 @@ def ls_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, path:
         description: Explain why you are listing this directory in short words. ALWAYS PROVIDE THIS PARAMETER FIRST.
         path: The **absolute** path to the directory to list.
     """
+    requested_path = path
     try:
+        protected = _current_skill_file(runtime, "ls", path)
+        if protected is not None:
+            result = "\n".join(protected[:MAX_LS_ENTRIES]) if protected else "(empty)"
+            if len(protected) > MAX_LS_ENTRIES:
+                result += f"\n\n[System Warning: The directory has {len(protected)} entries in total. Only {MAX_LS_ENTRIES} entries are shown here. Use ls tool on subdirectories to explore further.]"
+            return result
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path
@@ -844,7 +867,11 @@ def read_file_tool(
         start_line: Optional starting line number (1-indexed, inclusive). Use with end_line to read a specific range.
         end_line: Optional ending line number (1-indexed, inclusive). Use with start_line to read a specific range.
     """
+    requested_path = path
     try:
+        protected = _current_skill_file(runtime, "read", path)
+        if protected is not None:
+            return _apply_line_limit(protected, start_line, end_line)
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path

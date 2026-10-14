@@ -1,0 +1,26 @@
+{
+  "base_commit": "490a0a92ab507b7cf8462ed4fb90b257d6b3d667",
+  "independent_root": "/tmp/prismos-n09r-independent",
+  "changed_inputs": {
+    ".github/workflows/octop-integration.yml": "af3b0168a413c117d1693252efa566f5f5c929759db155eeb19f130bae199faf",
+    "Makefile": "d091150a0a43e4db9427ed63c630835219f28c6d386e907ef8d0ababdebfce32",
+    "backend/app/integrations/agent_skill_references.py": "af3877dcf6708a24be8fc921f4327a4f66dc479f61513aac7e7cbf0b11456fd6",
+    "backend/app/runtime_adapters.py": "d6574bb853e062b4a346043364f74d666af4807e221691fea18655b807b50c52",
+    "backend/packages/harness/deerflow/runtime.py": "efa2f3a4da1ad42786f6f8ca1244197ecd42af6e0646bd5d65347fcd2e88ff96",
+    "backend/packages/harness/deerflow/sandbox/tools.py": "cae44b91bbabdbff63819ac624953d20cbae882a7eb06ddd17e2b6dabf294318",
+    "scripts/octop_skill_postgres.py": "d4df6bcd21de054eade46b1caa2f43949f13a22879c3ac9dc97601deb79d2753",
+    "scripts/octop_upgrade_probe.py": "aa5a5a5439e63edba607077e5fc710fe9b09354f916931e6b66a50195ae7265e",
+    "backend/app/integrations/agent_skill_members.py": "d7d5937aa424ca66ca8067587251b1ac55a5e3940bc43f3bd2b64fe3dce4bb9e",
+    "backend/tests/test_skill_member_tools.py": "169e85a94f9b9292fd13e27cd6340fdf652f5bddaacc47ae3cc61bb012ab6e06"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "link_sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "link_sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db"
+    }
+  ]
+}

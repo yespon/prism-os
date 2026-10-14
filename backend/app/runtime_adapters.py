@@ -25,6 +25,7 @@ from deerflow.runtime import (
     register_agent_persistence_provider,
     register_execution_validator,
     register_governed_action_provider,
+    register_skill_file_provider,
     register_skill_prompt_provider,
     register_terminal_agent_provider,
 )
@@ -165,6 +166,35 @@ def _current_skill_prompt(agent_name, tenant_id, user_id, skill_name=None, resou
         raise ExecutionTrustError("Current Agent Skill choice or use authorization is unavailable") from None
 
 
+def _current_skill_member(context, operation, path, container_prefix):
+    if not context.get("agent_id"):
+        return None  # Legacy/default/terminal access remains a separate migration.
+    from app.integrations.agent_skill_members import current_member
+    from app.integrations.skill_reference_transactions import begin_reference_transaction
+
+    async def load():
+        async with get_session_factory()() as session:
+            tenant, actor = context.get("tenant_id"), context.get("user_id")
+            await begin_reference_transaction(session, tenant)
+            await verify_native_selection(session, tenant, actor, context.get("agent_name"), context["agent_id"])
+            from app.integrations.agent_skill_references import current_skill_resources
+
+            record = await session.get(CustomAgent, context["agent_id"])
+            values = deepcopy(record.model_dump())
+            before = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
+            result = await current_member(session, context, operation, path, container_prefix)
+            await verify_native_selection(session, tenant, actor, context.get("agent_name"), context["agent_id"])
+            after = await current_skill_resources(session, context.get("agent_name"), tenant, actor, selected_agent_id=context["agent_id"], include_snapshot=True)
+            if before != after or record.model_dump() != values:
+                raise ExecutionTrustError("Current Skill selection changed during access")
+            return result
+
+    try:
+        return _run_async(load())
+    except Exception:
+        raise ExecutionTrustError("Current selected Skill member access unavailable") from None
+
+
 def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
@@ -179,6 +209,7 @@ def register_runtime_adapters() -> None:
     register_governed_action_provider(governed_ticket_tools)
     register_execution_validator(_consume_graph_capability)
     register_skill_prompt_provider(_current_skill_prompt)
+    register_skill_file_provider(_current_skill_member)
 
 
 register_runtime_adapters()

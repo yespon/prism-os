@@ -1,0 +1,185 @@
+{
+  "status": "native_read_file_ls_member_authority_added_complete_C2_N09_pending",
+  "base_commit": "490a0a92ab507b7cf8462ed4fb90b257d6b3d667",
+  "new_member_cases": 27,
+  "targeted": {
+    "passed": 79,
+    "skipped": 0,
+    "warnings": 48
+  },
+  "backend": {
+    "passed": 1870,
+    "skipped": 18,
+    "warnings": 286,
+    "observed_exit_code": 0
+  },
+  "postgres": {
+    "passed": 248,
+    "skipped": 0,
+    "warnings": 191,
+    "owned_container_removed": true,
+    "observed_exit_code": 0
+  },
+  "unified": {
+    "current": {
+      "passed": 600,
+      "skipped": 0,
+      "warnings": 273,
+      "frontend_passed": 162,
+      "observed_exit_code": 0
+    },
+    "independent": {
+      "passed": 600,
+      "skipped": 0,
+      "warnings": 273,
+      "frontend_passed": 162,
+      "observed_exit_code": 0
+    }
+  },
+  "production_build": {
+    "current_observed_exit_code": 0,
+    "independent_observed_exit_code": 0,
+    "one_production_compiler_at_a_time": true,
+    "trace": {
+      "current": {
+        "trace_files": 50,
+        "paths_outside_frontend": []
+      },
+      "independent": {
+        "trace_files": 50,
+        "paths_outside_frontend": []
+      }
+    }
+  },
+  "frontend": {
+    "current_full_not_rerun": true,
+    "unchanged_tracked_inputs": 499,
+    "new_independent_full_passed": 249
+  },
+  "upgrade": {
+    "host_inputs": 57,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 418,
+        "skipped": 0,
+        "warnings": 257,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "passed": 418,
+        "skipped": 0,
+        "warnings": 257,
+        "observed_exit_code": 0
+      },
+      {
+        "release": "0.3.0b5",
+        "revision": "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+        "passed": 418,
+        "skipped": 0,
+        "warnings": 257,
+        "observed_exit_code": 0
+      }
+    ],
+    "host_changed": false,
+    "observed_exit_code": 0
+  },
+  "gateway": {
+    "current_fresh_real_auth_session": true,
+    "independent": {
+      "passed": true,
+      "gateway": "real uvicorn process",
+      "auth": "real Better Auth session and tenant membership",
+      "migration_head": "n8h9i0j1k2l3",
+      "catalog": {
+        "release": "b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "templates": 290,
+        "personas": 16,
+        "integrity_verified": true,
+        "mode": "prompt_templates",
+        "automatic_resource_installation": false
+      },
+      "agent_created_and_reloaded": true,
+      "presentation_edited_and_reopened": true,
+      "duplicate_persona_prevented": true,
+      "questionnaire_readonly": true,
+      "resource_preflight_all_experts_readonly": true,
+      "scoped_installation_checks_without_config_creation": true,
+      "fixed_upstream_skill_archive_authenticated": true,
+      "upstream_license_in_skill_archive": true,
+      "declared_resource_members": 297,
+      "avatars_authenticated_and_hash_verified": true,
+      "temporary_databases": true,
+      "temporary_skill_root": true,
+      "explicit_source_install_and_recovery": true,
+      "scoped_receipt_pagination_and_retention": true,
+      "concrete_skill_identity_and_detail": true,
+      "owned_skill_patch_and_stale_content_rejection": true,
+      "installation_does_not_bind_agent_or_grant_execution": true,
+      "concrete_enablement_and_current_membership": true,
+      "manual_creation_owned_publication_configuration_and_explicit_enablement": true,
+      "conditional_owned_delete_with_current_membership_and_original_receipt_withdrawal": true,
+      "public_override_removal_preserves_source": true,
+      "old_receipt_cannot_restore_or_rebind_same_name_replacement": true,
+      "concrete_agent_choice_revision_and_current_authorized_snapshot": true,
+      "source_admin_confirmation_native_capability_and_role_withdrawal": true,
+      "diagnosis_incident_current_condition_recheck_without_action_authority": true,
+      "manual_diagnosis_real_session_native_selection_and_member_usage": true,
+      "native_agent_context_combines_record_and_skill_after_capability": true
+    },
+    "external_model_tool_ticket_count_verified": false
+  },
+  "static": {
+    "ci_ruff_paths": 60,
+    "changed_ruff_paths": 8,
+    "observed_exit_code": 0,
+    "brand_allowlist_matches": 526
+  },
+  "source_imported_members": 902,
+  "external_packages": 4,
+  "external_artifacts": 7,
+  "external_runtime_integrated": false,
+  "initial_validation_failures": {
+    "original_tool_baseline_failed": 16,
+    "including_positive_controls_using_unchecked_sandbox": 2,
+    "first_targeted_failed_due_to_fixture_host_root": 2,
+    "first_unified_exit_code": 2,
+    "cause": "temporary index override rejected by --locked; original lock retained; original index retry passed"
+  },
+  "locks_and_distribution_sha256": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "M1_complete": false,
+  "N08_persistent_execution_started": false,
+  "real_N04_environment_config_still_missing": true,
+  "raw_log_sha256": {
+    "logs/backend.log": "5733e152f97dbb9ea41616c150496f2b460693f9a499689396694a6982494f7e",
+    "logs/brand.log": "b1584c8d20e090658d4af05868d2aa0abef04e95dfb6c8b8ededb52bcb624776",
+    "logs/changed-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/current-build-retry.log": "94773b19f0a8c27b60f05e02f5a038decbd2c480b6be67c6522a93b3d4cdc377",
+    "logs/current-build.log": "657802550eb71702a7d43075d54494b7b10b1397393cb413d7cc0e329d19b515",
+    "logs/external.log": "78abc64b52e8d5fb1dccf50fbc93848fb26c0afabf49f8b24ff294cf55e2ded4",
+    "logs/independent-check.log": "0c1fab662f29803bec462beb21f7829843e972cecbea338de8c32a4ef8240580",
+    "logs/independent-frontend.log": "2354877860e57a1040038df058dcbc2bad130395a3997b71406991ea2e5b4b6e",
+    "logs/independent-gateway.log": "0fb07f7fe78f1fa2aed3dbfc307f72c317cd150c1bdda7a98cc076529c842eef",
+    "logs/independent-production.log": "07605ae232d65cd68211260a415891990434f25db274ca4af56a4601235e7ac9",
+    "logs/independent-sync.log": "221d589abbaa51ef04d8e3287af7f3f69f1ec2d9ba826f5574c06d4fb619b186",
+    "logs/independent-wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/independent-wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "logs/members-baseline.log": "e4723c7b3da59f6c0831c85fa661a43d1c3c6dea97873ca759e9b9716b099777",
+    "logs/members-target.log": "2cd22a1b5ff93a9836d45c484045c87393c90cf2f2c57f34253ce52b3489dacf",
+    "logs/members-target5.log": "48072e542452de6b70411bf4530d0382f9ac31eb31102d736d2a0e75b3bd46f2",
+    "logs/postgres-pytest.log": "05e44076d93d73bf67c291f92da2c573312138d2d907111663f7d45d59da021f",
+    "logs/postgres-run.log": "c50e0a6cf435de1a7f0dc3f6e89af3771cc292f50a1b83c3cb71e9edcde8279d",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/source.log": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03",
+    "logs/upgrade-run.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  }
+}
