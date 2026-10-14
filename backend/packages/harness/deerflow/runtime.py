@@ -73,7 +73,7 @@ def get_agent_persistence_provider() -> AgentPersister | None:
 
 
 def register_terminal_agent_provider(
-    *, get_tools: Callable[[], list[Any]], set_context: Callable[[dict[str, Any]], None], system_prompt: str
+    *, get_tools: Callable[[], list[Any]], set_context: Callable[[dict[str, Any]], None], system_prompt: str, authorize: Callable[[dict[str, Any]], None] | None = None
 ) -> None:
     """Register host-owned terminal tools and prompt."""
     global _terminal_provider
@@ -81,6 +81,7 @@ def register_terminal_agent_provider(
         "get_tools": get_tools,
         "set_context": set_context,
         "system_prompt": system_prompt,
+        **({"authorize": authorize} if authorize is not None else {}),
     }
 
 

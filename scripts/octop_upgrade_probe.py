@@ -49,6 +49,10 @@ def main():
         "tests/test_legacy_default_scope.py",
         "tests/test_diagnosis_authorization.py",
         "tests/test_runtime_adapters.py",
+        "tests/test_terminal_access_boundaries.py",
+        "tests/test_terminal_multihost.py",
+        "tests/test_terminal_security.py",
+        "tests/test_terminal_trimming.py",
         "tests/test_incident_diagnosis.py",
         "tests/test_governed_ticket.py",
         "tests/test_langgraph_proxy.py",
@@ -74,6 +78,17 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/Dockerfile",
+        "backend/app/services/terminal/access.py",
+        "backend/app/services/terminal/session.py",
+        "backend/app/agent/terminal_tools.py",
+        "backend/app/agent/terminal_graph.py",
+        "backend/app/gateway/routers/terminal.py",
+        "backend/tests/test_terminal_access_boundaries.py",
+        "backend/tests/test_terminal_multihost.py",
+        "backend/tests/test_terminal_security.py",
+        "backend/tests/test_terminal_trimming.py",
+        "backend/tests/test_lead_agent_model_resolution.py",
         "backend/app/alerting/diagnosis_delivery.py",
         "backend/tests/test_diagnosis_delivery.py",
         "backend/tests/test_incident_diagnosis.py",

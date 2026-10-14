@@ -7,12 +7,15 @@ They share the same TerminalSessionManager singleton for SSH PTY connections.
 
 import asyncio
 import logging
+from contextvars import ContextVar
+from copy import deepcopy
+from functools import wraps
 
+from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from langgraph.types import interrupt
 from sqlalchemy import select as sa_select
 
-from app.models.assets import Keychain, LocalAsset
 from app.services.terminal.session import session_manager
 from deerflow.database.session import get_session_factory
 
@@ -21,7 +24,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Tool Context — set by make_lead_agent before agent starts
 # ---------------------------------------------------------------------------
-_terminal_context: dict = {}
+_terminal_context: ContextVar[dict] = ContextVar("prismos_terminal_context", default={})
 
 
 def _build_write_file_command(path: str, content: str) -> str:
@@ -35,12 +38,11 @@ def _build_web_fetch_command(url: str) -> str:
 
 def set_terminal_context(context: dict):
     """Called by make_lead_agent to set the terminal session context."""
-    global _terminal_context
-    _terminal_context = context
+    _terminal_context.set(deepcopy(context))
 
 
 def get_terminal_context() -> dict:
-    return _terminal_context
+    return deepcopy(_terminal_context.get())
 
 
 # ---------------------------------------------------------------------------
@@ -48,15 +50,15 @@ def get_terminal_context() -> dict:
 # ---------------------------------------------------------------------------
 
 def _get_session_id() -> str:
-    return _terminal_context.get("terminal_session_id", "default")
+    return get_terminal_context().get("terminal_session_id", "default")
 
 
 def _get_assets() -> list:
-    return _terminal_context.get("selected_assets", [])
+    return get_terminal_context().get("selected_assets", [])
 
 
 def _get_mode() -> str:
-    return _terminal_context.get("mode", "cmd")
+    return get_terminal_context().get("mode", "cmd")
 
 
 def _is_agent_mode() -> bool:
@@ -73,33 +75,40 @@ async def _ensure_session(asset_id: str = "") -> tuple:
     if not asset_id:
         return None
 
-    session = session_manager.get_or_create_session(session_id, asset_id)
+    from app.services.terminal.access import asset_fingerprint, verify_terminal_access
 
+    context = get_terminal_context()
+    selected = context.get("selected_assets", [])
+    if selected and asset_id not in {target.get("id") for target in selected if isinstance(target, dict)}:
+        raise PermissionError("Terminal target is outside the current selection")
+    if not selected and context.get("asset_id") and asset_id != context["asset_id"]:
+        raise PermissionError("Terminal target is outside the current selection")
+    asset, keychain = await verify_terminal_access(context, asset_id)
+    fingerprint = (context.get("thread_id"), context.get("chat_session_id"), asset_fingerprint(asset, keychain))
+    session = session_manager.get_or_create_session(session_id, asset_id, tenant_id=context.get("tenant_id"), user_id=context.get("user_id"))
+    if session.authority_fingerprint is not None and session.authority_fingerprint != fingerprint:
+        await session._record_unknown("Terminal lease configuration replaced")
+        session_manager.close_session(session_id, asset_id, tenant_id=context.get("tenant_id"), user_id=context.get("user_id"))
+        session = session_manager.get_or_create_session(session_id, asset_id, tenant_id=context.get("tenant_id"), user_id=context.get("user_id"))
+    async def validate():
+        current = await verify_terminal_access(context, asset_id)
+        if (context.get("thread_id"), context.get("chat_session_id"), asset_fingerprint(*current)) != fingerprint:
+            raise PermissionError("Current terminal asset or credential changed; external effects unknown")
+    from app.services.terminal.access import record_terminal_unknown
+
+    async def write_unknown(command, audit_id, reason):
+        await record_terminal_unknown(context, asset_id, command, audit_id, reason)
+    session.unknown_writer = write_unknown
+    session.authority_fingerprint = fingerprint
+    session.authority_validator = validate
+    await validate()
     if session.pty.fd is None:
-        logger.info(f"[terminal_tool] Starting PTY session {session_id} for asset {asset_id}")
-        try:
-            from app.gateway.routers.terminal import build_ssh_command
-            session_factory = get_session_factory()
-            async with session_factory() as db:
-                asset = (
-                    await db.execute(
-                        sa_select(LocalAsset).where(LocalAsset.id == asset_id)
-                    )
-                ).scalars().first()
-                if asset:
-                    keychain = None
-                    if asset.keychain_id:
-                        keychain = (
-                            await db.execute(
-                                sa_select(Keychain).where(Keychain.id == asset.keychain_id)
-                            )
-                        ).scalars().first()
-                    cmd_arr, env_updates, temp_files = build_ssh_command(asset, keychain)
-                    session.start(cmd=cmd_arr, env_updates=env_updates, temp_files=temp_files)
-                    await asyncio.sleep(1.0)
-        except Exception as e:
-            logger.error(f"[terminal_tool] Failed to start PTY session: {e}")
-            return None
+        from app.gateway.routers.terminal import build_ssh_command
+
+        cmd_arr, env_updates, temp_files = build_ssh_command(asset, keychain)
+        session.start(cmd=cmd_arr, env_updates=env_updates, temp_files=temp_files)
+        await asyncio.sleep(1.0)
+        await validate()
 
     return session
 
@@ -138,7 +147,7 @@ async def _run_on_targets(op, host_index: int) -> str:
         return f"Error: host_index {host_index} out of range (connected to {len(assets)} host(s))"
 
     if not targets:
-        context_asset_id = _terminal_context.get("asset_id", "")
+        context_asset_id = get_terminal_context().get("asset_id", "")
         if context_asset_id:
             targets = [{"id": context_asset_id, "name": context_asset_id}]
         else:
@@ -240,12 +249,16 @@ async def execute_command(command: str, host_index: int = -1) -> str:
         host_index: Index of the host (0-based) from the connected assets list. Default -1 (targets ALL connected hosts).
     """
     assets = _get_assets()
-    tenant_id = _terminal_context.get("tenant_id", "default")
-    user_id = _terminal_context.get("user_id", "unknown")
+    tenant_id = get_terminal_context().get("tenant_id", "default")
+    user_id = get_terminal_context().get("user_id", "unknown")
     mode = _get_mode()
 
     from app.models.terminal import TerminalSecuritySettings
-    from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG, security_service
+    from app.services.terminal.security import (
+        DEFAULT_AUTO_APPROVAL,
+        DEFAULT_SECURITY_CONFIG,
+        security_service,
+    )
 
     security_config = DEFAULT_SECURITY_CONFIG
     auto_approval = DEFAULT_AUTO_APPROVAL
@@ -409,4 +422,30 @@ terminal_tools_list = TERMINAL_TOOLS
 
 def get_terminal_tools() -> list:
     """Return the list of terminal tools."""
-    return TERMINAL_TOOLS
+    context = get_terminal_context()
+    tools = []
+    for original in TERMINAL_TOOLS:
+        def bind(coroutine):
+            @wraps(coroutine)
+            async def invoke(*args, config=None, **kwargs):
+                configurable = (config or {}).get("configurable", {})
+                for key in ("tenant_id", "user_id"):
+                    if key in configurable and configurable[key] != context.get(key):
+                        raise PermissionError("Terminal tool execution identity differs from its owner")
+                expected_thread = context.get("thread_id") or context.get("chat_session_id")
+                if expected_thread and configurable.get("thread_id", expected_thread) != expected_thread:
+                    raise PermissionError("Terminal tool execution thread differs from its owner")
+                from app.services.terminal.access import verify_terminal_access
+
+                await verify_terminal_access(context)
+                token = _terminal_context.set(deepcopy(context))
+                try:
+                    return await coroutine(*args, **kwargs)
+                finally:
+                    _terminal_context.reset(token)
+            # StructuredTool injects the actual RunnableConfig by this type,
+            # preserving the original visible tool schema and argument names.
+            invoke.__annotations__ = {**invoke.__annotations__, "config": RunnableConfig}
+            return invoke
+        tools.append(original.model_copy(update={"coroutine": bind(original.coroutine)}))
+    return tools

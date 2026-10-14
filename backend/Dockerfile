@@ -4,7 +4,7 @@ FROM node:${NODE_MAJOR}-bookworm-slim AS node-runtime
 FROM python:3.12-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl build-essential libpq-dev ca-certificates bubblewrap \
+    curl build-essential libpq-dev ca-certificates bubblewrap openssh-client \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
 COPY --from=node-runtime /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm

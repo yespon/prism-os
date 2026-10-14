@@ -35,3 +35,5 @@
 2026-10-14：继续完成事件详细结果、检查点/缓存补发与直播当前访问权限，[证据](../evidence/2026-10-14-octop-n09-diagnosis-delivery/README.md)包含1947完整后端、67 PostgreSQL/镜像、三阶段94项升级回退。M1仍待旧/default/terminal、远端全工具、复制分享/目标重授权、Secret目的及真实环境/CI，原范围完整保留。
 
 2026-10-14：继续完成默认与旧具名Agent的当前资源/成员/提示词/隔离命令接缝，[证据](../evidence/2026-10-14-octop-n09-default-legacy-access/README.md)包含1960完整后端、71 PostgreSQL、最终镜像65权限与原AIO实际默认命令，以及82输入三阶段71项升级回退。标准Docker内嵌套Local namespace条件明确未覆盖，未降低隔离门。下一功能块连续实施Terminal上下文/资产/Keychain/会话与审批、结果当前授权；已复现越界并准备临时代码，尚不计完成，M1/N04/N07保持待验。
+
+2026-10-14：继续完成Terminal上下文/实际SDK身份、原线程与资产/Keychain用途、会话/HTTP批准/结果与历史、PTY撤权及unknown原审计，[证据](../evidence/2026-10-14-octop-n09-terminal-access/README.md)包含1990完整后端、53 PostgreSQL/默认权限镜像、固定宿主三阶段升级回退和96原CI静态门。原admin/owner角色、key/ssh_key与安全/审批接口保留，镜像补OpenSSH，真实远端/模型不据此验收。下一块连续推进复制分享目标重授权；私有发现与陈旧管理员授权已实际复现，临时代码和用户路径准备，尚不计完成。完整M1与全部原范围/退出条件不变。

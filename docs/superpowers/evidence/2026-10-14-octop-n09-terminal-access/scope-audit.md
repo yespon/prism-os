@@ -1,0 +1,15 @@
+# 范围与原设计
+
+工具上下文改为ContextVar并在工具工厂冻结，每次SDK调用对比实际RunnableConfig tenant/actor/thread，读取安全配置/提出审批前验证当前原成员与线程。宿主模型准入回调可选，原独立Harness注册字典兼容；实际宿主安装当前权限校验，原租户模型列表继续约束Terminal模型。
+
+原LocalAsset/Keychain同tenant/actor、当前ChatSession/PlatformThreadBinding及原TerminalSession存在时的拥有者/active用于授权。管理角色使用原normalize_tenant_role的admin/owner/tenant_admin，陈旧请求state不授予跨成员审计读。session manager使用结构化tenant/actor/session/asset键，原无tenant独立调用保留且不能发现或关闭宿主作用域。
+
+每次SSH输出/输入、无输出watcher及命令返回当前授权；配置/凭据变化关闭旧对象并建立新有权租约，不能覆盖旧执行身份。原CommandAuditLog记录撤权/timeout/interruption unknown且无stdout/return_code，不声称远端撤销；实际本地PTY证明关闭传输及审计写入。仍需真实远端环境核对远端副作用和取消，不能用本地bash替代。
+
+HTTP execute/invoke/approve、全部HTTP成员门及诊断结果每chunk当前校验，旧checkpoint身份不匹配拒绝，不将既有内存checkpoint变为N08持久事实。审计ordinary成员只见自己，当前原管理员保留tenant读取。原命令安全配置、interrupt/审批与审计路径保留。
+
+实际ssh -G验证仅选中credential身份，禁用后台账户config/ssh-agent/default keys，兼容key/ssh_key，拒绝其他用途及控制字符/选项/错目标；最终生产镜像补原缺失openssh-client。没有实际连接外部SSH/模型/工单，保留真实环境门。
+
+原裁剪单测精确数字依赖下载codec，Docker无网络落入原fallback；明确控制codec的分组单测与实际offline不孤立ToolMessage用例分别通过。初始HTTP观测点/提供者字典/ssh无效登录与镜像codec失败均保留；发生相关变化后完整门重跑，旧1976/1980结果只在对应日志范围，不作当前1990结论。
+
+499未变化前端、锁/迁移/源分发保持历史覆盖；当前backend/image/PG/升级及96原CI静态路径为新结果。原902/4包7制品/目录/526品牌门只读验证。M1全部退出、N04/N07与N01–N15/O01–O42/F01–F12均保持，N08不启动，没有推送/部署。

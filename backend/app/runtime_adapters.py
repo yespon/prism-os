@@ -322,6 +322,18 @@ def _current_file_access(context, state, operation, path):
     return _run_async(runtime_file_access(context, state, operation, path, get_session_factory()))
 
 
+def _authorize_terminal_context(context):
+    from app.services.terminal.access import verify_terminal_access
+
+    async def verify():
+        await verify_terminal_access(context)
+        for target in context.get("selected_assets", []):
+            if not isinstance(target, dict) or not target.get("id"):
+                raise ExecutionTrustError("Current terminal target unavailable")
+            await verify_terminal_access(context, target["id"])
+    _run_async(verify())
+
+
 def register_runtime_adapters() -> None:
     """Install host providers, including after an explicit runtime reset."""
     register_agent_config_provider(_load_agent, _list_agents)
@@ -332,6 +344,7 @@ def register_runtime_adapters() -> None:
         get_tools=get_terminal_tools,
         set_context=set_terminal_context,
         system_prompt=TERMINAL_AGENT_SYSTEM_PROMPT,
+        authorize=_authorize_terminal_context,
     )
     register_governed_action_provider(governed_ticket_tools)
     register_execution_validator(_consume_graph_capability)

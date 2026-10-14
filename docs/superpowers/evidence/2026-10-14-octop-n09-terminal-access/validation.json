@@ -1,0 +1,103 @@
+{
+  "base_commit": "dbf7472",
+  "status": "terminal_current_member_thread_asset_credential_history_and_unknown_audit_accepted_first_milestone_pending",
+  "related": {
+    "passed": 64,
+    "observed_exit_code": 0
+  },
+  "backend": {
+    "passed": 1990,
+    "skipped": 18,
+    "warnings": 402,
+    "observed_exit_code": 0
+  },
+  "postgres": {
+    "passed": 53,
+    "observed_exit_code": 0,
+    "owned_container_removed": true
+  },
+  "image": {
+    "image_id": "sha256:64da943d0fac3ff05db9926a7b14852b08748d20d6f52ce57135e7f38a45c28f",
+    "matching_inputs": 11,
+    "passed": 53,
+    "observed_exit_code": 0,
+    "build_observed_exit_code": 0,
+    "extra_container_privileges": false,
+    "network": "none",
+    "owned_containers_removed": true,
+    "open_ssh_client_installed": true
+  },
+  "upgrade": {
+    "inputs": 93,
+    "complete": true,
+    "host_changed": false,
+    "observed_exit_code": 0,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "53 passed, 48 warnings in 45.61s"
+      },
+      {
+        "release": "b6",
+        "returncode": 0,
+        "pytest": "53 passed, 48 warnings in 38.08s"
+      },
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "53 passed, 48 warnings in 32.55s"
+      }
+    ]
+  },
+  "static": {
+    "ci_ruff_paths": 96,
+    "git_diff_check": true
+  },
+  "real_model_remote_ssh_external_tool_ticket_acceptance": false,
+  "local_real_pty_and_open_ssh_effective_configuration": true,
+  "historical_reuse": {
+    "frontend_tracked_inputs_unchanged": 499,
+    "frontend_full_tests_and_production_build": "retained previous scope; no new frontend build",
+    "imported_source_members": 902,
+    "external_distribution_packages": 4,
+    "external_distribution_artifacts": 7,
+    "runtime_module_lock_migrations": "unchanged historical coverage; changed backend/image/PG/upgrade independently rerun"
+  },
+  "pending": [
+    "N04 target model/external tool/countable ticket references",
+    "N07 actual remote CI",
+    "remote provisioner full-tool scope and Apple Container runtime",
+    "copy/share/source-version target reauthorization and complete C1/C2",
+    "general purpose-limited Secrets",
+    "complete first milestone exit; N08 not started"
+  ],
+  "raw_log_sha256": {
+    "logs/backend-before-runtime-config.log": "dc1fd1689ff6c0c4425684d979a947d53763c5dcd76f9a55b1c2866880c95e36",
+    "logs/backend-before-ssh-purpose.log": "98b99f2bf1e2415ad5c730d700c0da05cff9b3eff9bf65f50fbbe0ecef4f5382",
+    "logs/backend-full.log": "ed01eb028e9118229880598aca95ab003b5e5b1e51b94f68c9600de9ace8bde8",
+    "logs/block-accepted.log": "fb5e8bfb673b6d33e800e7745db2389fbfc079cb041520712122c15056893c54",
+    "logs/block-initial.log": "4a7bbed24f4e80f1c7ecdd96cc5eb48923053bb2654d0fb0b988c706f18af214",
+    "logs/brand.log": "e47c74c1539aea48be06d9fadf18eb684fbecf0e94bda9e0af4d9bda9a94eea0",
+    "logs/external.log": "78abc64b52e8d5fb1dccf50fbc93848fb26c0afabf49f8b24ff294cf55e2ded4",
+    "logs/foreign-ssh-baseline.log": "19990babb6aaa4e2b7e980e3ff60757524d70980e8a9f212b7fa0546b1791abb",
+    "logs/http-fixed.log": "60726bd593b0d99d0678aeaecc99ab2a17360aacf938cb415eb25bbf3cdeea1e",
+    "logs/http-observation-error.log": "8bd2b343b962f4099910fc3257452d9774eafb01de0ef6abafd666c6cd1f178c",
+    "logs/image-build.log": "e481c2249a96742c2e10032871277317c621bc5a3c693f3b4de6471acfd7f122",
+    "logs/image-runtime.log": "aed8358a758841be9cc98c327cde0788aa961e5f9eb5ec8c4bc39a4eda498ad3",
+    "logs/image-trim-codec-failure.log": "7796dbbe82b18002f08bd8871958cdde536e33b2a459c23a317c57538f708257",
+    "logs/inventory.log": "528b0949e856809fa6a7d57313fa0b24c280be4dac8cc1240d26fe32952a64f8",
+    "logs/lease-isolation.log": "d60758f1de6bf047e2d3c67ab1674c96bb3aa76fc54e4de9a7d1537ddddeaa60",
+    "logs/postgres-before-ssh-purpose.log": "96a05e85ecd8ae4c0f7c070effce575710e9935736d58f2efe081a01e1d9d48c",
+    "logs/postgres.log": "a2a5b1a009930ce3c500c8eca228a3c9ffc1e257fdf8ab838eb1561cf08b883f",
+    "logs/provider-contract-error.log": "116c85299894be65623cc056c1c3c27e572b29ad206b3410e5e137dac84e0dbb",
+    "logs/provider-fixed.log": "504c14f457d56bee65778d3ba57ac7c2bd77f835290374215260176601e22dc2",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/runtime-config.log": "86f46d7ec7fec5f8823990ebb8138d66b63336a7fb1d8b0d901e3e824e04f7b1",
+    "logs/source.log": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03",
+    "logs/ssh-invalid-test.log": "ee9b046dcc339cb83a961cb4b95defc3bab5ec45ad75909a9d0ba24d6f3e4e74",
+    "logs/ssh-role-fixed.log": "373c916e5a8128ec83cc40fa0abb5ac0da536c4e6fe1c565c7a004e35db96227",
+    "logs/unknown-audit.log": "357bfdb561644cdfa30a29a00c207208406d702788e613de6af782aeccc909a2",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  }
+}

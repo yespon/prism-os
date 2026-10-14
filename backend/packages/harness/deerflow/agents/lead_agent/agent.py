@@ -6,14 +6,22 @@ import os
 from langchain.agents import create_agent
 
 from deerflow.agents.lead_agent.prompt import apply_prompt_template
-from deerflow.agents.middlewares.summarization_middleware import DeerflowSummarizationMiddleware
+from deerflow.agents.middlewares.summarization_middleware import (
+    DeerflowSummarizationMiddleware,
+)
 from deerflow.agents.middlewares.title_middleware import TitleMiddleware
 from deerflow.agents.middlewares.todo_middleware import TodoMiddleware
-from deerflow.agents.middlewares.tool_error_handling_middleware import build_lead_runtime_middlewares
+from deerflow.agents.middlewares.tool_error_handling_middleware import (
+    build_lead_runtime_middlewares,
+)
 from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
 from deerflow.agents.thread_state import ThreadState
 from deerflow.config import get_app_config
-from deerflow.config.agents_config import _db_agent_to_config, _run_async, load_agent_config
+from deerflow.config.agents_config import (
+    _db_agent_to_config,
+    _run_async,
+    load_agent_config,
+)
 from deerflow.config.summarization_config import get_summarization_config
 from deerflow.config.tenant_context import tenant_context
 from deerflow.config.title_config import get_title_config
@@ -302,15 +310,20 @@ def _make_terminal_agent(config: dict):
         "mode": runtime_context.get("mode", "agent"),
         "selected_assets": runtime_context.get("selected_assets", []),
         "terminal_session_id": runtime_context.get("terminal_session_id", ""),
+        "thread_id": runtime_context.get("thread_id") or cfg.get("thread_id"),
         "tenant_id": runtime_context.get("tenant_id", "default"),
         "user_id": runtime_context.get("user_id", "unknown"),
     }
     logger.info(f"[_make_terminal_agent] selected_assets: {len(terminal_context['selected_assets'])}, mode: {terminal_context['mode']}")
+    if provider.get("authorize") is not None:
+        provider["authorize"](terminal_context)
     provider["set_context"](terminal_context)
 
     # Resolve model
     requested_model_name = cfg.get("model_name") or cfg.get("model") or runtime_context.get("model_name") or runtime_context.get("model")
-    model_name = _resolve_model_name(requested_model_name or None)
+    current_tenant = runtime_context.get("tenant_id")
+    allowed_models = set(load_enabled_tenant_model_names(current_tenant)) if isinstance(current_tenant, str) and current_tenant else None
+    model_name = _resolve_model_name(requested_model_name or None, allowed_model_names=allowed_models)
 
     # Build the agent
     from deerflow.tools.builtins import setup_agent
