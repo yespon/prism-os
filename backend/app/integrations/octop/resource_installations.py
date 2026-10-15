@@ -12,6 +12,7 @@ from app.integrations.octop.resources import resource_preflight
 from app.integrations.octop.skill_packages import SkillPackageUnavailable, prepare_skill_package
 from deerflow.database.models import TenantSkill
 from deerflow.database.session import get_session_factory
+from deerflow.sandbox.file_access import read_owned_file
 from deerflow.skills.loader import get_skills_root_path
 from deerflow.skills.parser import parse_skill_file
 
@@ -26,7 +27,10 @@ def _contents_match(folder: Path, expected: dict[str, str]) -> str:
         if path.is_symlink() or path.resolve() != path.absolute():
             return "location_unverified"
         if path.is_file() and path.suffix != ".pyc":
-            actual[path.relative_to(folder).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+            try:
+                actual[path.relative_to(folder).as_posix()] = hashlib.sha256(read_owned_file(path)).hexdigest()
+            except OSError:
+                return "location_unverified"
     return "source_match" if actual == expected else "modified"
 
 
@@ -50,9 +54,6 @@ async def scoped_resource_preflight(template_id: str, locale: str, tenant_id: st
                 override = next((row for row in rows if row.user_id == shared_id and row.name == parsed.name), None)
                 public.append({"name": parsed.name, "enabled": override.enabled if override else True, "folder": file.parent})
     for resource in declaration["resources"]:
-        if resource["kind"] != "skill_bundle":
-            resource["installation"] = {"status": "binding_required", "candidates": []}
-            continue
         try:
             package = prepare_skill_package(declaration, resource)
         except SkillPackageUnavailable as error:

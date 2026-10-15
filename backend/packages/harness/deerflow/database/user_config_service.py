@@ -1714,7 +1714,7 @@ async def get_available_skills(
     """Return platform-builtin and tenant-shared skills for the active tenant."""
     await ensure_user_config(user_id, tenant_id=tenant_id)
 
-    global_skills = _load_public_skills(get_skills_root_path())
+    global_skills = _load_public_skills(get_skills_root_path(), secure=True)
 
     tenant_skill_settings = await get_tenant_shared_skill_settings(tenant_id)
     personal_skill_settings = await get_tenant_personal_skill_settings(tenant_id, user_id)
@@ -1793,7 +1793,7 @@ async def get_available_skills(
         try:
             directory = resource_directory(get_skills_root_path(), tenant_id, user_id, descriptor)
             if (directory / "SKILL.md").is_file():
-                resolved = parse_skill_file(directory / "SKILL.md", category=row.category, relative_path=directory.relative_to(get_skills_root_path().resolve() / "custom"))
+                resolved = parse_skill_file(directory / "SKILL.md", category=row.category, relative_path=directory.relative_to(get_skills_root_path().resolve() / "custom"), secure=True)
                 if resolved is None or resolved.name != row.name:
                     resolved = None
                     files_status = "metadata_unverified"

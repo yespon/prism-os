@@ -22,7 +22,7 @@ from app.integrations.skill_reference_transactions import begin_reference_transa
 from app.models.agents import CustomAgent
 from deerflow.config.paths import get_paths
 from deerflow.database.session import get_session
-from deerflow.skills import load_skills
+from deerflow.skills import load_skills  # noqa: F401 - compatibility export; HTTP uses current native facts
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["agents"])
@@ -164,6 +164,7 @@ async def _current_agent_admin(request, session):
     ).with_for_update().execution_options(populate_existing=True))).scalars().first()
     if member is None:
         raise HTTPException(403, "Current Agent membership unavailable")
+    request.state.tenant_role = member.role
     return tenant_role_has_admin_capability(member.role)
 
 
@@ -602,18 +603,13 @@ async def list_skills(
     _get_user_id(request)
 
     await _current_agent_admin(request, session)
-    skills = load_skills(enabled_only=True)
+    from app.gateway.routers.skills import list_available_skills
+
+    available = await list_available_skills(request)
     await _current_agent_admin(request, session)
     return SkillsListResponse(
-        skills=[
-            SkillResponse(
-                name=s.name,
-                description=s.description,
-                category=s.category,
-                enabled=s.enabled,
-            )
-            for s in skills
-        ]
+        skills=[SkillResponse(name=item.name, description=item.description, category=item.category, enabled=item.enabled)
+            for item in available.skills if item.enabled]
     )
 
 

@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+from test_skills_scope_router import _create_app as _create_resource_context_app
+from test_skills_scope_router import current_identity_database as resource_identity_database  # noqa: F401
 
 import app.gateway.routers.mcp as mcp_router
 import app.gateway.routers.models as models_router
@@ -61,9 +63,12 @@ def test_mcp_router_requires_tenant_context(monkeypatch):
 
 
 def test_skills_router_requires_tenant_context(monkeypatch):
-    app = _create_app()
+    app = _create_resource_context_app()
 
-    monkeypatch.setattr(skills_router, "load_skills", lambda enabled_only=False: [])
+    async def empty_resources(user_id, tenant_id, **kwargs):
+        return []
+
+    monkeypatch.setattr(skills_router, "get_available_skills", empty_resources)
 
     with TestClient(app) as client:
         missing = client.get("/api/skills")

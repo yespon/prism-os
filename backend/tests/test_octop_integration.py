@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import os
+from unittest.mock import patch
 
 import pytest
 from fastapi import FastAPI, Request
@@ -31,6 +32,8 @@ def catalog_client():
 
     asyncio.run(initialize())
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    from deerflow.database import user_config_service
+
     app = FastAPI()
 
     @app.middleware("http")
@@ -62,8 +65,9 @@ def catalog_client():
     app.dependency_overrides[get_session] = session
     app.include_router(agent_catalog.router)
     app.include_router(agents.router)
-    with TestClient(app) as client:
-        yield client, factory
+    with patch.object(user_config_service, "get_session_factory", lambda: factory):
+        with TestClient(app) as client:
+            yield client, factory
     asyncio.run(engine.dispose())
 
 

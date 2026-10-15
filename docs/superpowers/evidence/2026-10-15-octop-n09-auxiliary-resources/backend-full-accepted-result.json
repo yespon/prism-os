@@ -1,0 +1,16 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_SCOPED_TEST_IMAGE=sha256:44260bb65a20c39bb63582f7c0a207b2fc8155e55dc96022da3f6ca3a7b9cc78",
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T05:16:07.649577+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T05:28:22.089291+00:00"
+}

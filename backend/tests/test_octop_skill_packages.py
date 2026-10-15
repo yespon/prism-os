@@ -61,8 +61,10 @@ def test_known_format_adapters_keep_body_and_source_fields():
             assert after["metadata"]["octop_source"]["display_name"] == before["display_name"]
     declaration = resource_preflight("expert:office-automation")
     reference = next(r for r in declaration["resources"] if r["kind"] != "skill_bundle")
+    package = prepare_skill_package(declaration, reference)
+    assert package["adapted"] and "SKILL.md" in package["files"]
     with pytest.raises(SkillPackageUnavailable):
-        prepare_skill_package(declaration, reference)
+        prepare_skill_package(declaration, {**reference, "kind": "unknown"})
 
 
 @pytest.mark.parametrize("case", ["missing", "tampered", "symlink"])
@@ -79,3 +81,47 @@ def test_pinned_upstream_license_required_without_aliases(tmp_path, monkeypatch,
     monkeypatch.setattr(catalog, "ROOT", root)
     with pytest.raises(ValueError, match="Upstream license integrity"):
         _upstream_license_bytes()
+
+AUXILIARY = [(t["id"], r["id"]) for t in catalog.list_templates("zh", "expert") for r in resource_preflight(t["id"])["resources"] if r["kind"] != "skill_bundle"]
+
+
+@pytest.mark.parametrize("template_id,resource_id", AUXILIARY)
+def test_all_auxiliary_packages_preserve_source_and_install_without_execution_grants(tmp_path, template_id, resource_id):
+    declaration = resource_preflight(template_id)
+    resource = next(r for r in declaration["resources"] if r["id"] == resource_id)
+    package = prepare_skill_package(declaration, resource)
+    assert skill_archive(package) == skill_archive(prepare_skill_package(declaration, resource))
+    archive = tmp_path / "source.zip"
+    archive.write_bytes(skill_archive(package))
+    result = install_skill_from_archive(archive, skills_root=tmp_path / "skills", target_relative_path="tenant-a/user-a")
+    from pathlib import Path
+
+    folder = Path(result["install_dir"])
+    assert _validate_skill_frontmatter(folder)[0]
+    origin = json.loads((folder / ORIGIN_FILE).read_text())
+    assert origin["resource_kind"] == resource["kind"] and origin["revision"] == declaration["revision"]
+    assert origin["permission_grants"] is False and origin["delegation_ready"] is False
+    assert origin["runtime_dependencies_checked"] is False
+    for member in resource["members"]:
+        assert hashlib.sha256((folder / member["path"]).read_bytes()).hexdigest() == member["sha256"]
+    for member in origin["files"]:
+        assert hashlib.sha256((folder / member["path"]).read_bytes()).hexdigest() == member["host_sha256"]
+    assert (folder / UPSTREAM_LICENSE_FILE).read_bytes() == (catalog.ROOT / "LICENSE").read_bytes()
+    with pytest.raises(SkillAlreadyExistsError):
+        install_skill_from_archive(archive, skills_root=tmp_path / "skills", target_relative_path="tenant-a/user-a")
+
+
+def test_auxiliary_catalog_is_complete_and_never_relabels_definition_as_delegation():
+    assert len(AUXILIARY) == 33
+    counts = {}
+    names = set()
+    for template_id, resource_id in AUXILIARY:
+        declaration = resource_preflight(template_id)
+        resource = next(r for r in declaration["resources"] if r["id"] == resource_id)
+        package = prepare_skill_package(declaration, resource)
+        assert package["name"] not in names
+        names.add(package["name"])
+        counts[resource["kind"]] = counts.get(resource["kind"], 0) + 1
+        if resource["kind"] == "subagent_definition":
+            assert b"does not create a delegated run" in package["files"]["SKILL.md"]
+    assert counts == {"reference_asset": 27, "script": 4, "subagent_definition": 2}

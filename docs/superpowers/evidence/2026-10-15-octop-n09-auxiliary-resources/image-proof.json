@@ -1,0 +1,113 @@
+{
+  "image_id": "sha256:509cfe2e88e78cfdb49676355ff3ca5689535ede5e2befee05e39eb4be608495",
+  "files": {
+    "app/gateway/resource_authorization.py": {
+      "host_sha256": "96b7b20e6b63e76a7f75d2fbc45ffb06ecd12007a23b93a0cf8deaa09ce2c9b2",
+      "image_sha256": "96b7b20e6b63e76a7f75d2fbc45ffb06ecd12007a23b93a0cf8deaa09ce2c9b2",
+      "matches": true
+    },
+    "app/gateway/routers/agents.py": {
+      "host_sha256": "75ca31236ee0aee6f6d391dbd68f0d4f09fedf4fe89d51e61bf53b56ad242c0d",
+      "image_sha256": "75ca31236ee0aee6f6d391dbd68f0d4f09fedf4fe89d51e61bf53b56ad242c0d",
+      "matches": true
+    },
+    "app/gateway/routers/skills.py": {
+      "host_sha256": "910deb4d9a5423b86a879d6c729b3438348126a71c1d6153287071b9a27061fc",
+      "image_sha256": "910deb4d9a5423b86a879d6c729b3438348126a71c1d6153287071b9a27061fc",
+      "matches": true
+    },
+    "app/gateway/routers/agent_catalog.py": {
+      "host_sha256": "a49cd2197cfc512133246372b2f14efd360fe12631408b1190626365ab0915a7",
+      "image_sha256": "a49cd2197cfc512133246372b2f14efd360fe12631408b1190626365ab0915a7",
+      "matches": true
+    },
+    "app/integrations/skill_imports.py": {
+      "host_sha256": "b53d26d5c6255a7ba331ed8a91a52f4392954ab62b78d5593839c9dd827d2272",
+      "image_sha256": "b53d26d5c6255a7ba331ed8a91a52f4392954ab62b78d5593839c9dd827d2272",
+      "matches": true
+    },
+    "app/integrations/octop/auxiliary_packages.py": {
+      "host_sha256": "38703c3fa765b70181df9285010c0c36f96e8c7d5598a9f49fb086c2e43a0ebd",
+      "image_sha256": "38703c3fa765b70181df9285010c0c36f96e8c7d5598a9f49fb086c2e43a0ebd",
+      "matches": true
+    },
+    "app/integrations/octop/resource_installations.py": {
+      "host_sha256": "75c2a964754a9b711b8036995f37a52fd4e4fc8ffa5ff9e3b49e5423316865ed",
+      "image_sha256": "75c2a964754a9b711b8036995f37a52fd4e4fc8ffa5ff9e3b49e5423316865ed",
+      "matches": true
+    },
+    "app/integrations/octop/skill_packages.py": {
+      "host_sha256": "6b24cac958736ff0eabbe5fcd51a37b2da4d83d4c962d8cd4d809a970304e2a2",
+      "image_sha256": "6b24cac958736ff0eabbe5fcd51a37b2da4d83d4c962d8cd4d809a970304e2a2",
+      "matches": true
+    },
+    "packages/harness/deerflow/skills/parser.py": {
+      "host_sha256": "a282e71555a215275446b96db99bff64f828197fcb0c3e8fcbc4c3035498b23d",
+      "image_sha256": "a282e71555a215275446b96db99bff64f828197fcb0c3e8fcbc4c3035498b23d",
+      "matches": true
+    },
+    "packages/harness/deerflow/skills/loader.py": {
+      "host_sha256": "8cfc839e0a61ea9c875437d0d3410ef5ee6173ee3884ee1c1d656a72750ac3eb",
+      "image_sha256": "8cfc839e0a61ea9c875437d0d3410ef5ee6173ee3884ee1c1d656a72750ac3eb",
+      "matches": true
+    },
+    "packages/harness/deerflow/database/user_config_service.py": {
+      "host_sha256": "cbd009d2eb613aaaea34155fa85640a08159ca7dc60f238e4903c1b828a200d7",
+      "image_sha256": "cbd009d2eb613aaaea34155fa85640a08159ca7dc60f238e4903c1b828a200d7",
+      "matches": true
+    },
+    "tests/test_resource_catalog_access.py": {
+      "host_sha256": "eb765cc7086e49cd0d52f79b10bac089d4dbe4c8a6257c1f7c39628f804ecbf9",
+      "image_sha256": "eb765cc7086e49cd0d52f79b10bac089d4dbe4c8a6257c1f7c39628f804ecbf9",
+      "matches": true
+    },
+    "tests/test_auxiliary_resource_runtime.py": {
+      "host_sha256": "11eb8b5b05a668db3a71a69f4ec6d6dbf334472a91930b7d117e570d27b8d379",
+      "image_sha256": "11eb8b5b05a668db3a71a69f4ec6d6dbf334472a91930b7d117e570d27b8d379",
+      "matches": true
+    },
+    "tests/test_octop_skill_packages.py": {
+      "host_sha256": "828a8b8fe6961080ecb63f1f8160d10b136bf329b235407661376c78923ba21d",
+      "image_sha256": "828a8b8fe6961080ecb63f1f8160d10b136bf329b235407661376c78923ba21d",
+      "matches": true
+    },
+    "tests/resource_test_identity.py": {
+      "host_sha256": "20747ff2348a827c323b6645ecc68210f02207ca6065472e15612c7f9c7b70f6",
+      "image_sha256": "20747ff2348a827c323b6645ecc68210f02207ca6065472e15612c7f9c7b70f6",
+      "matches": true
+    },
+    "tests/test_octop_resource_installations.py": {
+      "host_sha256": "a00a0f6276c232f4ee053d128c89d4e6b166a177a6fb0df2b4f5f62039b73c9d",
+      "image_sha256": "a00a0f6276c232f4ee053d128c89d4e6b166a177a6fb0df2b4f5f62039b73c9d",
+      "matches": true
+    },
+    "tests/test_custom_agent.py": {
+      "host_sha256": "df636a2df498a3945e504be6416d345a8441fd81a00696b9eb47883f11a69259",
+      "image_sha256": "df636a2df498a3945e504be6416d345a8441fd81a00696b9eb47883f11a69259",
+      "matches": true
+    },
+    "tests/test_skill_import_recovery.py": {
+      "host_sha256": "7c1a221e02e814b6506504cf0c3092bb1bb60fcd963b52911c862ec670947afe",
+      "image_sha256": "7c1a221e02e814b6506504cf0c3092bb1bb60fcd963b52911c862ec670947afe",
+      "matches": true
+    },
+    "tests/test_octop_integration.py": {
+      "host_sha256": "4dabc8a4ab02faac025e782f34e3e2bddce3150880aae9f29e6838486b1be035",
+      "image_sha256": "4dabc8a4ab02faac025e782f34e3e2bddce3150880aae9f29e6838486b1be035",
+      "matches": true
+    },
+    "tests/test_skills_scope_router.py": {
+      "host_sha256": "ad3974e47241ff2d4bfd47787298d8f3cef3e5b8a4651c839c9b53500ac60bae",
+      "image_sha256": "ad3974e47241ff2d4bfd47787298d8f3cef3e5b8a4651c839c9b53500ac60bae",
+      "matches": true
+    },
+    "Dockerfile": {
+      "host_sha256": "a453fc956e78296854ce9ce535e392a45dc8e7a5493b0fb6146b0d8ad81c0d77",
+      "image_sha256": "a453fc956e78296854ce9ce535e392a45dc8e7a5493b0fb6146b0d8ad81c0d77",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "test_container_removed": true
+}

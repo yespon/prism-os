@@ -1,0 +1,1582 @@
+......FFFFFFFFFF.F....F...F.FFFF.FFFFFFFFFFFFFFFFFFFFFFFFF..FFFFFFFFFF.F [ 72%]
+FF.................FFFFFFF.F                                             [100%]
+=================================== FAILURES ===================================
+_____ test_current_source_match_does_not_create_user_config_or_cross_owner _____
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1cc8f110>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_current_source_match_does0/skills'))
+
+    def test_current_source_match_does_not_create_user_config_or_cross_owner(client):
+        http, factory, root = client
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        write_package(folder, pkg)
+        add(factory, pkg["name"], folder)
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1cc8f110>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+_ test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[modified-modified] _
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c1b8920>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_record_name_never_blesses0/skills'))
+case = 'modified', expected = 'modified'
+
+    @pytest.mark.parametrize("case,expected", [("modified", "modified"), ("missing", "files_missing"), ("disabled", "disabled"), ("foreign_path", "location_unverified"), ("symlink", "location_unverified")])
+    def test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files(client, case, expected):
+        http, factory, root = client
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        if case != "missing":
+            write_package(folder, pkg)
+        recorded = folder
+        if case == "modified":
+            (folder / "SKILL.md").write_text("changed")
+        elif case == "foreign_path":
+            recorded = root / "custom/tenant-b/user-z" / pkg["name"]
+        elif case == "symlink":
+            file = folder / "SKILL.md"
+            data = file.read_bytes()
+            file.unlink()
+            external = root.parent / "external-source"
+            external.write_bytes(data)
+            file.symlink_to(external)
+        add(factory, pkg["name"], recorded, enabled=case != "disabled")
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1c1b8920>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+_ test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[missing-files_missing] _
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c19cda0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_record_name_never_blesses1/skills'))
+case = 'missing', expected = 'files_missing'
+
+    @pytest.mark.parametrize("case,expected", [("modified", "modified"), ("missing", "files_missing"), ("disabled", "disabled"), ("foreign_path", "location_unverified"), ("symlink", "location_unverified")])
+    def test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files(client, case, expected):
+        http, factory, root = client
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        if case != "missing":
+            write_package(folder, pkg)
+        recorded = folder
+        if case == "modified":
+            (folder / "SKILL.md").write_text("changed")
+        elif case == "foreign_path":
+            recorded = root / "custom/tenant-b/user-z" / pkg["name"]
+        elif case == "symlink":
+            file = folder / "SKILL.md"
+            data = file.read_bytes()
+            file.unlink()
+            external = root.parent / "external-source"
+            external.write_bytes(data)
+            file.symlink_to(external)
+        add(factory, pkg["name"], recorded, enabled=case != "disabled")
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1c19cda0>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+_ test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[disabled-disabled] _
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c1bb170>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_record_name_never_blesses2/skills'))
+case = 'disabled', expected = 'disabled'
+
+    @pytest.mark.parametrize("case,expected", [("modified", "modified"), ("missing", "files_missing"), ("disabled", "disabled"), ("foreign_path", "location_unverified"), ("symlink", "location_unverified")])
+    def test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files(client, case, expected):
+        http, factory, root = client
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        if case != "missing":
+            write_package(folder, pkg)
+        recorded = folder
+        if case == "modified":
+            (folder / "SKILL.md").write_text("changed")
+        elif case == "foreign_path":
+            recorded = root / "custom/tenant-b/user-z" / pkg["name"]
+        elif case == "symlink":
+            file = folder / "SKILL.md"
+            data = file.read_bytes()
+            file.unlink()
+            external = root.parent / "external-source"
+            external.write_bytes(data)
+            file.symlink_to(external)
+        add(factory, pkg["name"], recorded, enabled=case != "disabled")
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1c1bb170>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+_ test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[foreign_path-location_unverified] _
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c2bf8f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_record_name_never_blesses3/skills'))
+case = 'foreign_path', expected = 'location_unverified'
+
+    @pytest.mark.parametrize("case,expected", [("modified", "modified"), ("missing", "files_missing"), ("disabled", "disabled"), ("foreign_path", "location_unverified"), ("symlink", "location_unverified")])
+    def test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files(client, case, expected):
+        http, factory, root = client
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        if case != "missing":
+            write_package(folder, pkg)
+        recorded = folder
+        if case == "modified":
+            (folder / "SKILL.md").write_text("changed")
+        elif case == "foreign_path":
+            recorded = root / "custom/tenant-b/user-z" / pkg["name"]
+        elif case == "symlink":
+            file = folder / "SKILL.md"
+            data = file.read_bytes()
+            file.unlink()
+            external = root.parent / "external-source"
+            external.write_bytes(data)
+            file.symlink_to(external)
+        add(factory, pkg["name"], recorded, enabled=case != "disabled")
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1c2bf8f0>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+_ test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[symlink-location_unverified] _
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c3969f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_record_name_never_blesses4/skills'))
+case = 'symlink', expected = 'location_unverified'
+
+    @pytest.mark.parametrize("case,expected", [("modified", "modified"), ("missing", "files_missing"), ("disabled", "disabled"), ("foreign_path", "location_unverified"), ("symlink", "location_unverified")])
+    def test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files(client, case, expected):
+        http, factory, root = client
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        if case != "missing":
+            write_package(folder, pkg)
+        recorded = folder
+        if case == "modified":
+            (folder / "SKILL.md").write_text("changed")
+        elif case == "foreign_path":
+            recorded = root / "custom/tenant-b/user-z" / pkg["name"]
+        elif case == "symlink":
+            file = folder / "SKILL.md"
+            data = file.read_bytes()
+            file.unlink()
+            external = root.parent / "external-source"
+            external.write_bytes(data)
+            file.symlink_to(external)
+        add(factory, pkg["name"], recorded, enabled=case != "disabled")
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1c3969f0>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+________ test_multiple_visible_personal_and_tenant_scopes_are_explicit _________
+
+client = (<starlette.testclient.TestClient object at 0x7bdb17763e60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_multiple_visible_personal0/skills'))
+
+    def test_multiple_visible_personal_and_tenant_scopes_are_explicit(client):
+        http, factory, root = client
+        _, _, pkg = package()
+        personal = root / "custom/tenant-a/user-a" / pkg["name"]
+        shared = root / "custom/tenant-a" / pkg["name"]
+        write_package(personal, pkg)
+        write_package(shared, pkg)
+        add(factory, pkg["name"], personal)
+        add(factory, pkg["name"], shared, user="__tenant_shared_skill__:tenant-a")
+>       state = check(http)
+                ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb17763e60>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+_ test_real_personal_import_accepts_native_signature_and_preserves_scoped_path _
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c1bb8f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_real_personal_import_acce0/skills'))
+
+    def test_real_personal_import_accepts_native_signature_and_preserves_scoped_path(client):
+        http, factory, root = client
+        _, _, pkg = package()
+        archive = skill_archive(pkg)
+        response = http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive, "application/zip")})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Current resource membership unavailable"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:153: AssertionError
+___ test_archive_endpoint_is_only_pinned_global_source_and_requires_identity ___
+
+client = (<starlette.testclient.TestClient object at 0x7bdb177dea80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_archive_endpoint_is_only_0/skills'))
+
+    def test_archive_endpoint_is_only_pinned_global_source_and_requires_identity(client):
+        http, _, _ = client
+        d, r, pkg = package()
+        url = f"/api/agent-catalog/templates/{d['template_id']}/resources/{r['id']}/archive"
+        assert http.get(url, headers={"x-user-id": ""}).status_code == 401
+        assert http.get(url, headers={"x-tenant-id": ""}).status_code == 400
+        response = http.get(url)
+>       assert response.status_code == 200 and response.content == skill_archive(pkg)
+E       assert (403 == 200)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:168: AssertionError
+__ test_public_raw_source_match_respects_only_current_tenant_disable_override __
+
+client = (<starlette.testclient.TestClient object at 0x7bdb1c2bd910>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_public_raw_source_match_r0/skills'))
+
+    def test_public_raw_source_match_respects_only_current_tenant_disable_override(client):
+        http, factory, root = client
+        _, _, pkg = package()
+        assert not pkg["adapted"]
+        folder = root / "public" / pkg["name"]
+        write_package(folder, pkg)
+        (folder / "PRISMOS_ORIGIN.json").unlink()
+        (folder / "LICENSE.octop").unlink()
+>       assert check(http)["candidates"] == [{"scope": "global", "enabled": True, "content_status": "source_match"}]
+               ^^^^^^^^^^^
+
+tests/test_octop_resource_installations.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x7bdb1c2bd910>
+headers = None
+
+    def check(client, headers=None):
+        response = client.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true", headers=headers)
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_octop_resource_installations.py:83: AssertionError
+________________ test_template_paths_are_identifiers_not_files _________________
+
+catalog_client = (<starlette.testclient.TestClient object at 0x7bdb1762df40>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7bdb1c2c37d0>, autoflush=True, expire_on_commit=False))
+
+    def test_template_paths_are_identifiers_not_files(catalog_client):
+        client, _ = catalog_client
+>       assert client.get("/api/agent-catalog/templates/expert:missing").status_code == 404
+E       AssertionError: assert 503 == 404
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+E        +    where <Response [503 Service Unavailable]> = get('/api/agent-catalog/templates/expert:missing')
+E        +      where get = <starlette.testclient.TestClient object at 0x7bdb1762df40>.get
+
+tests/test_octop_integration.py:88: AssertionError
+________________ test_status_describes_actual_integrated_scope _________________
+
+catalog_client = (<starlette.testclient.TestClient object at 0x7bdb175164b0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7bdb176b4090>, autoflush=True, expire_on_commit=False))
+
+    def test_status_describes_actual_integrated_scope(catalog_client):
+        client, _ = catalog_client
+        response = client.get("/api/agent-catalog/status")
+>       assert response.status_code == 200
+E       assert 503 == 200
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_octop_integration.py:142: AssertionError
+______ test_personal_patch_rejects_foreign_path_before_db_or_file_changes ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb175196a0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_personal_patch_rejects_fo0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb175b53d0>
+
+    def test_personal_patch_rejects_foreign_path_before_db_or_file_changes(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        foreign = root / "custom/tenant-a/user-b/collision"
+        foreign.mkdir(parents=True)
+        target = foreign / "SKILL.md"
+        target.write_text("---\nname: collision\ndescription: OTHER USER\n---\nPRIVATE BODY\n")
+    
+        async def point_at_foreign():
+            async with factory() as session:
+                row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id == "user-a"))).scalars().one()
+                row.install_dir = str(foreign)
+                session.add(row)
+                await session.commit()
+    
+        asyncio.run(point_at_foreign())
+        before = target.read_bytes()
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "description": "changed", "instructions": "overwritten"})
+>       assert response.status_code == 409
+E       assert 403 == 409
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:50: AssertionError
+____________ test_stale_instance_patch_cannot_update_same_name_row _____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb177633e0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_stale_instance_patch_cann0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb176846b0>
+
+    def test_stale_instance_patch_cannot_update_same_name_row(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        before = (root / "custom/tenant-a/user-a/collision/SKILL.md").read_bytes()
+        response = http.patch("/api/skills/personal/collision", json={"expected_resource_id": "skill:withdrawn", "enabled": False})
+>       assert response.status_code == 409
+E       assert 403 == 409
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:80: AssertionError
+_ test_personal_edit_preserves_instance_updates_owned_file_and_original_state __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb177b0320>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_personal_edit_preserves_i0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1779c0b0>
+
+    def test_personal_edit_preserves_instance_updates_owned_file_and_original_state(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       detail = personal_detail(http)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_mutation_boundaries.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb177b0320>
+
+    def personal_detail(http):
+        response = http.get("/api/skills/collision/detail", params={"scope": "personal"})
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:87: AssertionError
+__ test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb17763fe0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_shared_admin_edit_reads_f0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c2cc500>
+
+    def test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        detail = http.get("/api/skills/collision/detail", params={"scope": "tenant"}, headers={"x-tenant-role": "tenant_admin"}).json()
+        unchanged = {p: p.read_bytes() for p in [root / "public/collision/SKILL.md", root / "custom/tenant-a/user-a/collision/SKILL.md"]}
+        response = http.patch(
+            "/api/tenants/skills/collision",
+            headers={"x-tenant-role": "tenant_admin"},
+>           json={"expected_resource_id": detail["resource_id"], "expected_file_sha256": detail["file_sha256"], "description": "New shared description", "instructions": "NEW SHARED BODY"},
+                                          ^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: 'resource_id'
+
+tests/test_skill_mutation_boundaries.py:118: KeyError
+___________ test_stale_content_digest_cannot_overwrite_a_later_edit ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb17761880>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_stale_content_digest_cann0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c1bb770>
+
+    def test_stale_content_digest_cannot_overwrite_a_later_edit(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       detail = personal_detail(http)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_mutation_boundaries.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb17761880>
+
+    def personal_detail(http):
+        response = http.get("/api/skills/collision/detail", params={"scope": "personal"})
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:87: AssertionError
+_____ test_main_file_alias_is_rejected_without_reading_or_changing_target ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb177b1610>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_main_file_alias_is_reject0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1ccb00b0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-13/test_main_file_alias_is_reject0')
+
+    def test_main_file_alias_is_rejected_without_reading_or_changing_target(scoped_client, monkeypatch, tmp_path):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        target = tmp_path / "private.md"
+        target.write_text("PRIVATE TARGET")
+        file = root / "custom/tenant-a/user-a/collision/SKILL.md"
+        file.unlink()
+        file.symlink_to(target)
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "instructions": "replace target"})
+>       assert response.status_code == 409 and target.read_text() == "PRIVATE TARGET" and file.is_symlink()
+E       assert (403 == 409)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:154: AssertionError
+__________ test_replaced_directory_is_not_edited_or_cleaned_as_owned ___________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb174665d0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_replaced_directory_is_not0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c1607d0>
+
+    def test_replaced_directory_is_not_edited_or_cleaned_as_owned(scoped_client, monkeypatch):
+        import shutil
+    
+        from app.integrations import skill_mutations
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        directory = root / "custom/tenant-a/user-a/collision"
+        old = directory.with_name("original-owned-directory")
+        prepare = skill_mutations.OwnedMarkdown.prepare
+    
+        def replaced(self, content):
+            prepare(self, content)
+            directory.rename(old)
+            shutil.copytree(old, directory)
+            (directory / "SKILL.md").write_text("NEW DIRECTORY FILE")
+    
+        monkeypatch.setattr(skill_mutations.OwnedMarkdown, "prepare", replaced)
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "instructions": "unexpected update"})
+>       assert response.status_code == 409
+E       assert 403 == 409
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:176: AssertionError
+______ test_file_change_between_prepare_and_publish_preserves_later_file _______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1758f800>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_file_change_between_prepa0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb177b3620>
+
+    def test_file_change_between_prepare_and_publish_preserves_later_file(scoped_client, monkeypatch):
+        from app.integrations import skill_mutations
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        file = root / "custom/tenant-a/user-a/collision/SKILL.md"
+        prepare = skill_mutations.OwnedMarkdown.prepare
+    
+        def changed(self, content):
+            prepare(self, content)
+            file.write_text("LATER EXTERNAL EDIT")
+    
+        monkeypatch.setattr(skill_mutations.OwnedMarkdown, "prepare", changed)
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "instructions": "old update"})
+>       assert response.status_code == 409 and file.read_text() == "LATER EXTERNAL EDIT"
+E       assert (403 == 409)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:196: AssertionError
+___ test_failure_after_file_replace_is_unknown_and_never_restores_old_bytes ____
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1c2ccda0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_failure_after_file_replac0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1758d7f0>
+
+    def test_failure_after_file_replace_is_unknown_and_never_restores_old_bytes(scoped_client, monkeypatch):
+        from app.integrations import skill_mutations
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       detail = personal_detail(http)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_mutation_boundaries.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb1c2ccda0>
+
+    def personal_detail(http):
+        response = http.get("/api/skills/collision/detail", params={"scope": "personal"})
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:87: AssertionError
+__ test_actual_commit_followed_by_transport_failure_preserves_committed_facts __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16b1bbf0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_actual_commit_followed_by0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c2cc4a0>
+
+    def test_actual_commit_followed_by_transport_failure_preserves_committed_facts(scoped_client, monkeypatch):
+        from sqlalchemy import event
+        from sqlmodel.ext.asyncio.session import AsyncSession
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       detail = personal_detail(http)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_mutation_boundaries.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb16b1bbf0>
+
+    def personal_detail(http):
+        response = http.get("/api/skills/collision/detail", params={"scope": "personal"})
+>       assert response.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:87: AssertionError
+___ test_settings_failure_is_unknown_and_preserves_the_completed_native_edit ___
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16b46f90>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_settings_failure_is_unkno0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c13f890>
+
+    def test_settings_failure_is_unknown_and_preserves_the_completed_native_edit(scoped_client, monkeypatch):
+        from deerflow.database import user_config_service
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+    
+        async def fail_settings(*args, **kwargs):
+            raise RuntimeError("injected settings commit unknown")
+    
+        monkeypatch.setattr(user_config_service, "update_tenant_personal_skill_settings", fail_settings)
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "instructions": "KEPT BODY", "strategy": "new"})
+>       assert response.status_code == 503 and response.json()["detail"]["inspection_required"]
+E       assert (403 == 503)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:252: AssertionError
+__________ test_invalid_description_has_no_native_or_file_side_effect __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16b45e50>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_invalid_description_has_n0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb174c7140>
+
+    def test_invalid_description_has_no_native_or_file_side_effect(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        file = root / "custom/tenant-a/user-a/collision/SKILL.md"
+        before = file.read_bytes()
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False, "description": "   "})
+>       assert response.status_code == 400 and file.read_bytes() == before
+E       assert (403 == 400)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:262: AssertionError
+______________ test_legacy_name_edit_remains_current_owner_scoped ______________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16b47260>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_legacy_name_edit_remains_0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c2cc4a0>
+
+    def test_legacy_name_edit_remains_current_owner_scoped(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        file = root / "custom/tenant-a/user-a/collision/SKILL.md"
+        before = file.read_bytes()
+        response = http.patch("/api/skills/personal/collision", json={"enabled": False})
+>       assert response.status_code == 200 and not response.json()["enabled"]
+E       assert (403 == 200)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_mutation_boundaries.py:271: AssertionError
+____________ test_stale_instance_toggle_cannot_update_same_name_row ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16a0aab0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_stale_instance_toggle_can0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1cc8e210>
+
+    def test_stale_instance_toggle_cannot_update_same_name_row(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False, "expected_resource_id": "skill:withdrawn"})
+>       assert response.status_code == 409
+E       assert 403 == 409
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_enablement_boundaries.py:23: AssertionError
+_____ test_selected_public_toggle_cannot_modify_same_name_shared_resource ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16a7e5d0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_selected_public_toggle_ca0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb174c4ce0>
+
+    def test_selected_public_toggle_cannot_modify_same_name_shared_resource(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        before = {p: p.read_bytes() for p in root.rglob("SKILL.md")}
+>       response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False, "expected_resource_id": resources(http)["global"]["resource_id"]})
+                                                                                                                            ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb16a7e5d0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+________ test_unknown_name_toggle_cannot_create_an_unowned_registration ________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16a7e7e0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_unknown_name_toggle_canno0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16b1a5a0>
+
+    def test_unknown_name_toggle_cannot_create_an_unowned_registration(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.put("/api/tenants/skills/absent", headers=ADMIN, json={"enabled": False})
+>       assert response.status_code == 404
+E       assert 403 == 404
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_enablement_boundaries.py:39: AssertionError
+___________ test_foreign_location_toggle_cannot_change_native_state ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16a7ef60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_foreign_location_toggle_c0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16ad04d0>
+
+    def test_foreign_location_toggle_cannot_change_native_state(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+    
+        async def replace():
+            async with factory() as session:
+                row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id != "user-a"))).scalars().one()
+                row.install_dir = str(root / "custom/tenant-b/collision")
+                session.add(row)
+                await session.commit()
+    
+        asyncio.run(replace())
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False})
+>       assert response.status_code == 409
+E       assert 403 == 409
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_enablement_boundaries.py:56: AssertionError
+__________ test_concrete_shared_toggle_only_changes_its_native_state ___________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16a081d0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_concrete_shared_toggle_on0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16b44170>
+
+    def test_concrete_shared_toggle_only_changes_its_native_state(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       shared = resources(http)["tenant"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb16a081d0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+_______ test_concrete_public_toggle_creates_only_native_tenant_override ________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16bd9a60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_concrete_public_toggle_cr0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16abfb30>
+
+    def test_concrete_public_toggle_creates_only_native_tenant_override(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        remove_shared(factory)
+>       public = resources(http)["global"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb16bd9a60>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+____________ test_legacy_name_selects_existing_shared_before_public ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16abd910>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_legacy_name_selects_exist0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16a0be00>
+
+    def test_legacy_name_selects_existing_shared_before_public(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False})
+>       assert response.status_code == 200 and response.json()["scope"] == "tenant"
+E       assert (403 == 200)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_enablement_boundaries.py:103: AssertionError
+_____ test_legacy_public_name_remains_compatible_without_shared_collision ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16a7f590>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_legacy_public_name_remain0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1695dc40>
+
+    def test_legacy_public_name_remains_compatible_without_shared_collision(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        remove_shared(factory)
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False})
+>       assert response.status_code == 200 and response.json()["scope"] == "global"
+E       assert (403 == 200)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_enablement_boundaries.py:111: AssertionError
+_________ test_member_and_cross_actor_instance_rejected_before_changes _________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb169f0aa0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_member_and_cross_actor_in0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16ad2180>
+
+    def test_member_and_cross_actor_instance_rejected_before_changes(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       own = resources(http)["personal"]
+              ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb169f0aa0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+_______________ test_old_shared_id_cannot_toggle_a_recreated_row _______________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16abd1f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_old_shared_id_cannot_togg0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16b447a0>
+
+    def test_old_shared_id_cannot_toggle_a_recreated_row(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       old = resources(http)["tenant"]["resource_id"]
+              ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb16abd1f0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+___________ test_missing_owned_file_can_be_disabled_but_not_enabled ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1683e4e0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_missing_owned_file_can_be0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb169f1580>
+
+    def test_missing_owned_file_can_be_disabled_but_not_enabled(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       shared = resources(http)["tenant"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb1683e4e0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+_______________ test_removed_public_does_not_fall_back_to_shared _______________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1695fec0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_removed_public_does_not_f0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb168177a0>
+
+    def test_removed_public_does_not_fall_back_to_shared(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       public = resources(http)["global"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb1695fec0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+__________ test_actual_toggle_commit_then_timeout_requires_inspection __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb168cd190>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_actual_toggle_commit_then0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb168b3200>
+
+    def test_actual_toggle_commit_then_timeout_requires_inspection(scoped_client, monkeypatch):
+        from sqlalchemy import event
+        from sqlmodel.ext.asyncio.session import AsyncSession
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       shared = resources(http)["tenant"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb168cd190>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+_______________ test_response_failure_preserves_committed_toggle _______________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb168e9760>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_response_failure_preserve0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb168ce930>
+
+    def test_response_failure_preserves_committed_toggle(scoped_client, monkeypatch):
+        from app.gateway.routers import skills
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       shared = resources(http)["tenant"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb168e9760>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+_____ test_public_override_is_tenant_scoped_and_public_bytes_remain_shared _____
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1683da60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_public_override_is_tenant0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb168cce60>
+
+    def test_public_override_is_tenant_scoped_and_public_bytes_remain_shared(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        remove_shared(factory)
+>       public = resources(http)["global"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb1683da60>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+_____________ test_filesystem_alias_cannot_be_enabled_or_disabled ______________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1683c6e0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_filesystem_alias_cannot_b0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16883e00>
+
+    def test_filesystem_alias_cannot_be_enabled_or_disabled(scoped_client, monkeypatch):
+        import shutil
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+>       shared = resources(http)["tenant"]
+                 ^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+http = <starlette.testclient.TestClient object at 0x7bdb1683c6e0>
+
+    def resources(http):
+>       return {item["scope"]: item for item in http.get("/api/skills/available", headers=ADMIN).json()["skills"]}
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'skills'
+
+tests/test_skill_enablement_boundaries.py:17: KeyError
+________ test_manual_creation_cannot_overwrite_native_published_unknown ________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16abc380>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_manual_creation_cannot_ov0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1683d370>
+
+    def test_manual_creation_cannot_overwrite_native_published_unknown(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        result = published_unknown(root)
+        file = root / "custom/tenant-a/user-a/manual-created/SKILL.md"
+        before = file.read_bytes()
+        response = http.post("/api/skills/personal", json={"name": "manual-created", "description": "New description", "instructions": "OVERWRITE"})
+>       assert response.status_code == 409
+E       assert 403 == 409
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:31: AssertionError
+______ test_new_personal_creation_does_not_inherit_old_same_name_settings ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16abc0b0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_new_personal_creation_doe0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb169e1d90>
+
+    def test_new_personal_creation_does_not_inherit_old_same_name_settings(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        asyncio.run(service.update_tenant_personal_skill_settings("tenant-a", "user-a", "manual-created", bound_tools=["old-binding"], prompt_template="OLD TEMPLATE", strategy="old-strategy"))
+        response = http.post("/api/skills/personal", json={"name": "manual-created", "description": "Own description", "instructions": "OWN BODY"})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Current resource membership unavailable"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:57: AssertionError
+__ test_manual_success_preserves_requested_disabled_state_and_metadata[False] __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb168cfef0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_manual_success_preserves_0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16bd98e0>
+shared = False
+
+    @pytest.mark.parametrize("shared", [False, True])
+    def test_manual_success_preserves_requested_disabled_state_and_metadata(scoped_client, monkeypatch, shared):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = create(http, shared, enabled=False, bound_tools=["reviewed-tool"], prompt_template="Reviewed template", strategy="guided", changelog="Initial: reviewed")
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Current resource membership unavailable"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:79: AssertionError
+__ test_manual_success_preserves_requested_disabled_state_and_metadata[True] ___
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16b44050>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_manual_success_preserves_1/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb168cf200>
+shared = True
+
+    @pytest.mark.parametrize("shared", [False, True])
+    def test_manual_success_preserves_requested_disabled_state_and_metadata(scoped_client, monkeypatch, shared):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = create(http, shared, enabled=False, bound_tools=["reviewed-tool"], prompt_template="Reviewed template", strategy="guided", changelog="Initial: reviewed")
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Current resource membership unavailable"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:79: AssertionError
+_ test_registration_failure_preserves_manual_intent_and_recovery_stays_disabled[False] _
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16abed80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_registration_failure_pres0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16a0a6f0>
+requested = False
+
+    @pytest.mark.parametrize("requested", [False, True])
+    def test_registration_failure_preserves_manual_intent_and_recovery_stays_disabled(scoped_client, monkeypatch, requested):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+    
+        async def unavailable(*args, **kwargs):
+            raise RuntimeError("injected manual registration failure")
+    
+        with monkeypatch.context() as patch:
+            patch.setattr(service, "create_tenant_personal_skill", unavailable)
+            response = create(http, enabled=requested, bound_tools=["explicit-new-tool"])
+>       assert response.status_code == 503 and response.json()["detail"]["inspection_required"]
+E       assert (403 == 503)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:105: AssertionError
+_ test_registration_failure_preserves_manual_intent_and_recovery_stays_disabled[True] _
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb16b45010>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_registration_failure_pres1/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb174c4440>
+requested = True
+
+    @pytest.mark.parametrize("requested", [False, True])
+    def test_registration_failure_preserves_manual_intent_and_recovery_stays_disabled(scoped_client, monkeypatch, requested):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+    
+        async def unavailable(*args, **kwargs):
+            raise RuntimeError("injected manual registration failure")
+    
+        with monkeypatch.context() as patch:
+            patch.setattr(service, "create_tenant_personal_skill", unavailable)
+            response = create(http, enabled=requested, bound_tools=["explicit-new-tool"])
+>       assert response.status_code == 503 and response.json()["detail"]["inspection_required"]
+E       assert (403 == 503)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:105: AssertionError
+_ test_configuration_transaction_failure_keeps_registered_disabled_and_old_slot _
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1c19e120>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_configuration_transaction0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16b448c0>
+
+    def test_configuration_transaction_failure_keeps_registered_disabled_and_old_slot(scoped_client, monkeypatch):
+        from sqlalchemy import event
+        from sqlmodel.ext.asyncio.session import AsyncSession
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        asyncio.run(service.update_tenant_personal_skill_settings("tenant-a", "user-a", "manual-created", bound_tools=["old-binding"]))
+    
+        def fail(session):
+            if any(getattr(row, "name", None) == "manual-created" and getattr(row, "enabled", False) for row in session.identity_map.values()):
+                raise RuntimeError("injected configuration transaction failure")
+    
+        event.listen(AsyncSession.sync_session_class, "before_commit", fail)
+        try:
+            response = create(http, bound_tools=["new-binding"])
+        finally:
+            event.remove(AsyncSession.sync_session_class, "before_commit", fail)
+>       assert response.status_code == 503
+E       assert 403 == 503
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:136: AssertionError
+_ test_actual_configuration_commit_then_timeout_preserves_enabled_and_settings _
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1c19e480>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_actual_configuration_comm0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c2be780>
+
+    def test_actual_configuration_commit_then_timeout_preserves_enabled_and_settings(scoped_client, monkeypatch):
+        from sqlalchemy import event
+        from sqlmodel.ext.asyncio.session import AsyncSession
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+    
+        def fail(session):
+            if any(getattr(row, "name", None) == "manual-created" and getattr(row, "enabled", False) for row in session.identity_map.values()):
+                raise TimeoutError("injected delivery after actual configuration commit")
+    
+        event.listen(AsyncSession.sync_session_class, "after_commit", fail)
+        try:
+            response = create(http, bound_tools=["new-binding"], strategy="reviewed")
+        finally:
+            event.remove(AsyncSession.sync_session_class, "after_commit", fail)
+>       assert response.status_code == 503 and response.json()["detail"]["inspection_required"]
+E       assert (403 == 503)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:159: AssertionError
+_ test_changed_native_instance_cannot_receive_old_configuration_initialization _
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb175591c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_changed_native_instance_c0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16abee10>
+
+    def test_changed_native_instance_cannot_receive_old_configuration_initialization(scoped_client, monkeypatch):
+        from sqlalchemy import select
+    
+        from app.gateway.routers import skills
+        from deerflow.database.models import TenantSkill
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        initialize = skills.initialize_owned_skill_configuration
+    
+        async def replace(tenant, user, name, **kwargs):
+            async with factory() as session:
+                row = (await session.exec(select(TenantSkill).where(TenantSkill.name == name))).scalars().one()
+                values = {key: getattr(row, key) for key in ["id", "tenant_id", "user_id", "name", "category", "enabled", "relative_path", "install_dir"]}
+                await session.delete(row)
+                await session.commit()
+                session.add(TenantSkill(**values))
+                await session.commit()
+            return await initialize(tenant, user, name, **kwargs)
+    
+        monkeypatch.setattr(skills, "initialize_owned_skill_configuration", replace)
+        response = create(http, bound_tools=["stale-binding"])
+>       assert response.status_code == 503
+E       assert 403 == 503
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:188: AssertionError
+__ test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents ___
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb177d1f10>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_bad_manual_intent_is_isol0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16b8bc20>
+
+    def test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents(scoped_client, monkeypatch):
+        import json
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = create(http)
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Current resource membership unavailable"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:200: AssertionError
+_____________ test_late_empty_target_is_not_overwritten_or_deleted _____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1744bf20>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_late_empty_target_is_not_0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1c19c530>
+
+    def test_late_empty_target_is_not_overwritten_or_deleted(scoped_client, monkeypatch):
+        from app.integrations import skill_imports
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        read = skill_imports.current_row
+        target = root / "custom/tenant-a/user-a/manual-created"
+        identities = []
+    
+        async def late(tenant, owner, name):
+            result = await read(tenant, owner, name)
+            target.mkdir()
+            identities.append(target.stat().st_ino)
+            return result
+    
+        monkeypatch.setattr(skill_imports, "current_row", late)
+        response = create(http)
+>       assert response.status_code == 409 and target.stat().st_ino == identities[0] and not list(target.iterdir())
+E       assert (403 == 409)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:226: AssertionError
+___________ test_existing_registry_without_files_remains_a_conflict ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb1744a690>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_existing_registry_without0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb177b24b0>
+
+    def test_existing_registry_without_files_remains_a_conflict(scoped_client, monkeypatch):
+        import shutil
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        target = root / "custom/tenant-a/user-a/collision"
+        shutil.rmtree(target)
+        response = create(http, name="collision")
+>       assert response.status_code == 409 and len(native_rows(factory)) == 2 and not target.exists()
+E       assert (403 == 409)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:244: AssertionError
+_______ test_shared_manual_same_name_public_has_distinct_custom_category _______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb174482c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_shared_manual_same_name_p0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb169aa780>
+
+    def test_shared_manual_same_name_public_has_distinct_custom_category(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        public = root / "public/manual-created"
+        public.mkdir()
+        file = public / "SKILL.md"
+        file.write_text("---\nname: manual-created\ndescription: Public source\n---\nPUBLIC\n")
+        before = file.read_bytes()
+        response = create(http, True)
+>       assert response.status_code == 201 and response.json()["category"] == "custom" and response.json()["scope"] == "tenant"
+E       assert (403 == 201)
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_skill_manual_creation.py:255: AssertionError
+___ test_real_process_exit_after_manual_publication_recovers_disabled_intent ___
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7bdb175e35f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-13/test_real_process_exit_after_m0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb16b47170>
+
+    def test_real_process_exit_after_manual_publication_recovers_disabled_intent(scoped_client, monkeypatch):
+        import subprocess
+        import sys
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        archive = root.parent / "interrupted.zip"
+        archive.write_bytes(archive_bytes("manual-created"))
+        code = """
+    import asyncio,os,sys
+    from pathlib import Path
+    from app.integrations import skill_imports
+    async def none(*args): return None
+    async def crash(*args): os._exit(81)
+    skill_imports.current_row=none
+    skill_imports.register=crash
+    asyncio.run(skill_imports.import_archive(Path(sys.argv[1]),'tenant-a','user-a',False,root=Path(sys.argv[2]),manual_creation={'enabled':True,'category':'personal','configuration_phase':'pending'}))
+    """
+        child = subprocess.run([sys.executable, "-c", code, str(archive), str(root)], timeout=30)
+        assert child.returncode == 81
+>       operation = http.get("/api/skills/personal/imports").json()["operations"][0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'operations'
+
+tests/test_skill_manual_creation.py:278: KeyError
+_________________ test_available_skills_returns_merged_scopes __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb157b5d00>
+
+    def test_available_skills_returns_merged_scopes(monkeypatch) -> None:
+        app = _create_app()
+    
+        async def _fake_get_available_skills(
+            user_id: str,
+            tenant_id: str,
+            *,
+            is_tenant_admin: bool,
+            is_platform_admin: bool,
+        ):
+            assert user_id == "u-1"
+            assert tenant_id == "tenant-a"
+            assert is_tenant_admin is True
+            assert is_platform_admin is False
+            return [
+                {
+                    "name": "global-skill",
+                    "description": "g",
+                    "license": None,
+                    "category": "public",
+                    "enabled": True,
+                    "scope": "global",
+                    "source": "platform_builtin",
+                    "managed_by_current_user": False,
+                    "effective_permissions": ["read", "use"],
+                },
+                {
+                    "name": "tenant-skill",
+                    "description": "t",
+                    "license": None,
+                    "category": "custom",
+                    "enabled": True,
+                    "scope": "tenant",
+                    "source": "tenant_shared",
+                    "managed_by_current_user": True,
+                    "effective_permissions": ["read", "use", "manage"],
+                },
+            ]
+    
+        monkeypatch.setattr(skills, "get_available_skills", _fake_get_available_skills)
+    
+        with TestClient(app) as client:
+            response = client.get(
+                "/api/skills/available",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_admin"},
+            )
+    
+>       assert response.status_code == 200
+E       assert 503 == 200
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:86: AssertionError
+______________ test_tenant_shared_skills_reject_non_tenant_admin _______________
+
+    def test_tenant_shared_skills_reject_non_tenant_admin() -> None:
+        app = _create_app()
+    
+        with TestClient(app) as client:
+            response = client.get(
+                "/api/tenants/skills",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_member"},
+            )
+    
+>       assert response.status_code == 403
+E       assert 503 == 403
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:100: AssertionError
+______ test_tenant_shared_skills_reject_platform_admin_without_membership ______
+
+    def test_tenant_shared_skills_reject_platform_admin_without_membership() -> None:
+        app = _create_app()
+    
+        with TestClient(app) as client:
+            response = client.get(
+                "/api/tenants/skills",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_member", "x-user-role": "admin"},
+            )
+    
+>       assert response.status_code == 403
+E       assert 503 == 403
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:112: AssertionError
+__________ test_tenant_shared_skill_update_succeeds_for_tenant_admin ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1577a210>
+
+    def test_tenant_shared_skill_update_succeeds_for_tenant_admin(monkeypatch) -> None:
+        app = _create_app()
+    
+        async def toggle(root, tenant_id, actor, name, enabled, expected_resource_id):
+            assert tenant_id == "tenant-a" and actor == "u-1"
+            assert name == "tenant-skill" and enabled is False
+            assert expected_resource_id is None
+            return "tenant", "skill:fixture"
+    
+        async def detail(name, request, *, scope, resource_id):
+            assert scope == "tenant" and resource_id == "skill:fixture"
+            return skills.SkillDetailResponse(name=name, description="tenant skill", category="custom", enabled=False, scope=scope, resource_id=resource_id, managed_by_current_user=True)
+    
+        monkeypatch.setattr(skills.skill_mutations, "set_shared_enablement", toggle)
+        monkeypatch.setattr(skills, "get_skill_detail", detail)
+    
+        with TestClient(app) as client:
+            response = client.put(
+                "/api/tenants/skills/tenant-skill",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_admin"},
+                json={"enabled": False},
+            )
+    
+>       assert response.status_code == 200
+E       assert 503 == 200
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:138: AssertionError
+_______________ test_available_skills_passes_platform_admin_flag _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb15662240>
+
+    def test_available_skills_passes_platform_admin_flag(monkeypatch) -> None:
+        app = _create_app()
+    
+        async def _fake_get_available_skills(
+            user_id: str,
+            tenant_id: str,
+            *,
+            is_tenant_admin: bool,
+            is_platform_admin: bool,
+        ):
+            assert user_id == "u-1"
+            assert tenant_id == "tenant-a"
+            assert is_tenant_admin is False
+            assert is_platform_admin is True
+            return []
+    
+        monkeypatch.setattr(skills, "get_available_skills", _fake_get_available_skills)
+    
+        with TestClient(app) as client:
+            response = client.get(
+                "/api/skills/available",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_member", "x-user-role": "admin"},
+            )
+    
+>       assert response.status_code == 200
+E       assert 503 == 200
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:167: AssertionError
+___________ test_tenant_shared_skill_delete_rejects_non_tenant_admin ___________
+
+    def test_tenant_shared_skill_delete_rejects_non_tenant_admin() -> None:
+        app = _create_app()
+    
+        with TestClient(app) as client:
+            response = client.delete(
+                "/api/tenants/skills/tenant-skill",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_member"},
+            )
+    
+>       assert response.status_code == 403
+E       assert 503 == 403
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:180: AssertionError
+___________ test_tenant_shared_skill_delete_returns_404_when_missing ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb15646c30>
+
+    def test_tenant_shared_skill_delete_returns_404_when_missing(monkeypatch) -> None:
+        app = _create_app()
+    
+        async def missing(root, tenant_id, actor, shared, name, **kwargs):
+            assert tenant_id == "tenant-a" and actor == "u-1" and shared
+            assert name == "missing-skill"
+            raise skills.skill_mutations.SkillMutationRejected(404, "Current registered resource not found")
+    
+        monkeypatch.setattr(skills.skill_deletions, "delete_owned", missing)
+    
+        with TestClient(app) as client:
+            response = client.delete(
+                "/api/tenants/skills/missing-skill",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_admin"},
+            )
+    
+>       assert response.status_code == 404
+E       assert 503 == 404
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:199: AssertionError
+_______________ test_install_skill_registers_tenant_scoped_path ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bdb1562be90>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-13/test_install_skill_registers_t0')
+
+    def test_install_skill_registers_tenant_scoped_path(monkeypatch, tmp_path) -> None:
+        import zipfile
+        from types import SimpleNamespace
+    
+        from app.integrations import skill_imports
+        from deerflow.database import user_config_service
+    
+        app = _create_app()
+        calls: dict[str, object] = {}
+        archive = tmp_path / "source.skill"
+        root = tmp_path / "skills"
+        with zipfile.ZipFile(archive, "w") as file:
+            file.writestr("tenant-skill/SKILL.md", "---\nname: tenant-skill\ndescription: Scope fixture\n---\n# Skill")
+        monkeypatch.setattr(skills, "get_skills_root_path", lambda: root)
+        monkeypatch.setattr(skills, "resolve_thread_virtual_path", lambda *args, **kwargs: archive)
+    
+        async def no_row(*args, **kwargs):
+            return None
+    
+        async def create(tenant_id, **kwargs):
+            calls["tenant_id"] = tenant_id
+            calls["payload"] = kwargs
+            return SimpleNamespace(id=1)
+    
+        monkeypatch.setattr(skill_imports, "current_row", no_row)
+        monkeypatch.setattr(user_config_service, "create_tenant_shared_skill", create)
+        with TestClient(app) as client:
+            response = client.post(
+                "/api/skills/install",
+                headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_admin"},
+                json={"thread_id": "t-1", "path": "artifacts/demo.skill"},
+            )
+>       assert response.status_code == 200
+E       assert 503 == 200
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_skills_scope_router.py:247: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_agent_skill_references.py: 18 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_agent_skill_references.py::test_host_provider_rechecks_disabled_instance_and_masks_failure
+tests/test_agent_skill_references.py::test_graph_checks_actual_current_source_before_model_creation
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:105: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_octop_resource_installations.py::test_current_source_match_does_not_create_user_config_or_cross_owner
+FAILED tests/test_octop_resource_installations.py::test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[modified-modified]
+FAILED tests/test_octop_resource_installations.py::test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[missing-files_missing]
+FAILED tests/test_octop_resource_installations.py::test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[disabled-disabled]
+FAILED tests/test_octop_resource_installations.py::test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[foreign_path-location_unverified]
+FAILED tests/test_octop_resource_installations.py::test_record_name_never_blesses_wrong_missing_disabled_or_foreign_files[symlink-location_unverified]
+FAILED tests/test_octop_resource_installations.py::test_multiple_visible_personal_and_tenant_scopes_are_explicit
+FAILED tests/test_octop_resource_installations.py::test_real_personal_import_accepts_native_signature_and_preserves_scoped_path
+FAILED tests/test_octop_resource_installations.py::test_archive_endpoint_is_only_pinned_global_source_and_requires_identity
+FAILED tests/test_octop_resource_installations.py::test_public_raw_source_match_respects_only_current_tenant_disable_override
+FAILED tests/test_octop_integration.py::test_template_paths_are_identifiers_not_files
+FAILED tests/test_octop_integration.py::test_status_describes_actual_integrated_scope
+FAILED tests/test_skill_mutation_boundaries.py::test_personal_patch_rejects_foreign_path_before_db_or_file_changes
+FAILED tests/test_skill_mutation_boundaries.py::test_stale_instance_patch_cannot_update_same_name_row
+FAILED tests/test_skill_mutation_boundaries.py::test_personal_edit_preserves_instance_updates_owned_file_and_original_state
+FAILED tests/test_skill_mutation_boundaries.py::test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public
+FAILED tests/test_skill_mutation_boundaries.py::test_stale_content_digest_cannot_overwrite_a_later_edit
+FAILED tests/test_skill_mutation_boundaries.py::test_main_file_alias_is_rejected_without_reading_or_changing_target
+FAILED tests/test_skill_mutation_boundaries.py::test_replaced_directory_is_not_edited_or_cleaned_as_owned
+FAILED tests/test_skill_mutation_boundaries.py::test_file_change_between_prepare_and_publish_preserves_later_file
+FAILED tests/test_skill_mutation_boundaries.py::test_failure_after_file_replace_is_unknown_and_never_restores_old_bytes
+FAILED tests/test_skill_mutation_boundaries.py::test_actual_commit_followed_by_transport_failure_preserves_committed_facts
+FAILED tests/test_skill_mutation_boundaries.py::test_settings_failure_is_unknown_and_preserves_the_completed_native_edit
+FAILED tests/test_skill_mutation_boundaries.py::test_invalid_description_has_no_native_or_file_side_effect
+FAILED tests/test_skill_mutation_boundaries.py::test_legacy_name_edit_remains_current_owner_scoped
+FAILED tests/test_skill_enablement_boundaries.py::test_stale_instance_toggle_cannot_update_same_name_row
+FAILED tests/test_skill_enablement_boundaries.py::test_selected_public_toggle_cannot_modify_same_name_shared_resource
+FAILED tests/test_skill_enablement_boundaries.py::test_unknown_name_toggle_cannot_create_an_unowned_registration
+FAILED tests/test_skill_enablement_boundaries.py::test_foreign_location_toggle_cannot_change_native_state
+FAILED tests/test_skill_enablement_boundaries.py::test_concrete_shared_toggle_only_changes_its_native_state
+FAILED tests/test_skill_enablement_boundaries.py::test_concrete_public_toggle_creates_only_native_tenant_override
+FAILED tests/test_skill_enablement_boundaries.py::test_legacy_name_selects_existing_shared_before_public
+FAILED tests/test_skill_enablement_boundaries.py::test_legacy_public_name_remains_compatible_without_shared_collision
+FAILED tests/test_skill_enablement_boundaries.py::test_member_and_cross_actor_instance_rejected_before_changes
+FAILED tests/test_skill_enablement_boundaries.py::test_old_shared_id_cannot_toggle_a_recreated_row
+FAILED tests/test_skill_enablement_boundaries.py::test_missing_owned_file_can_be_disabled_but_not_enabled
+FAILED tests/test_skill_enablement_boundaries.py::test_removed_public_does_not_fall_back_to_shared
+FAILED tests/test_skill_enablement_boundaries.py::test_actual_toggle_commit_then_timeout_requires_inspection
+FAILED tests/test_skill_enablement_boundaries.py::test_response_failure_preserves_committed_toggle
+FAILED tests/test_skill_enablement_boundaries.py::test_public_override_is_tenant_scoped_and_public_bytes_remain_shared
+FAILED tests/test_skill_enablement_boundaries.py::test_filesystem_alias_cannot_be_enabled_or_disabled
+FAILED tests/test_skill_manual_creation.py::test_manual_creation_cannot_overwrite_native_published_unknown
+FAILED tests/test_skill_manual_creation.py::test_new_personal_creation_does_not_inherit_old_same_name_settings
+FAILED tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[False]
+FAILED tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[True]
+FAILED tests/test_skill_manual_creation.py::test_registration_failure_preserves_manual_intent_and_recovery_stays_disabled[False]
+FAILED tests/test_skill_manual_creation.py::test_registration_failure_preserves_manual_intent_and_recovery_stays_disabled[True]
+FAILED tests/test_skill_manual_creation.py::test_configuration_transaction_failure_keeps_registered_disabled_and_old_slot
+FAILED tests/test_skill_manual_creation.py::test_actual_configuration_commit_then_timeout_preserves_enabled_and_settings
+FAILED tests/test_skill_manual_creation.py::test_changed_native_instance_cannot_receive_old_configuration_initialization
+FAILED tests/test_skill_manual_creation.py::test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents
+FAILED tests/test_skill_manual_creation.py::test_late_empty_target_is_not_overwritten_or_deleted
+FAILED tests/test_skill_manual_creation.py::test_existing_registry_without_files_remains_a_conflict
+FAILED tests/test_skill_manual_creation.py::test_shared_manual_same_name_public_has_distinct_custom_category
+FAILED tests/test_skill_manual_creation.py::test_real_process_exit_after_manual_publication_recovers_disabled_intent
+FAILED tests/test_skills_scope_router.py::test_available_skills_returns_merged_scopes
+FAILED tests/test_skills_scope_router.py::test_tenant_shared_skills_reject_non_tenant_admin
+FAILED tests/test_skills_scope_router.py::test_tenant_shared_skills_reject_platform_admin_without_membership
+FAILED tests/test_skills_scope_router.py::test_tenant_shared_skill_update_succeeds_for_tenant_admin
+FAILED tests/test_skills_scope_router.py::test_available_skills_passes_platform_admin_flag
+FAILED tests/test_skills_scope_router.py::test_tenant_shared_skill_delete_rejects_non_tenant_admin
+FAILED tests/test_skills_scope_router.py::test_tenant_shared_skill_delete_returns_404_when_missing
+FAILED tests/test_skills_scope_router.py::test_install_skill_registers_tenant_scoped_path
+63 failed, 37 passed, 21 warnings in 36.80s

@@ -35,7 +35,9 @@ async def register(tenant_id: str, user_id: str, shared: bool, result: dict) -> 
     return await service.create_tenant_personal_skill(tenant_id, user_id, **payload)
 
 
-async def import_archive(archive: Path, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None, manual_creation: dict | None = None) -> tuple[dict, TenantSkill]:
+async def import_archive(archive: Path, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None, manual_creation: dict | None = None, authorize=None) -> tuple[dict, TenantSkill]:
+    if authorize is not None:
+        await authorize("prepare")
     owner, scope = owner_and_scope(tenant_id, user_id, shared)
     root = root or get_skills_root_path()
     result = None
@@ -52,10 +54,16 @@ async def import_archive(archive: Path, tenant_id: str, user_id: str, shared: bo
             prepared.result.update(enabled=False, category=manual_creation["category"])
         try:
             try:
+                if authorize is not None:
+                    await authorize("publish")
                 result = prepared.publish()
             except FileExistsError:
                 raise SkillAlreadyExistsError(f"Skill '{prepared.record['skill_name']}' already exists") from None
+            if authorize is not None:
+                await authorize("register")
             row = await register(tenant_id, user_id, shared, result)
+            if authorize is not None:
+                await authorize("confirm")
             mark_registration(result, "registered", row_id=row.id)
             return result, row
         except Exception as error:
@@ -119,7 +127,9 @@ async def observe_operation(operation_id: str, tenant_id: str, user_id: str, sha
     return summary
 
 
-async def recover_operation(operation_id: str, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None) -> dict:
+async def recover_operation(operation_id: str, tenant_id: str, user_id: str, shared: bool, *, root: Path | None = None, authorize=None) -> dict:
+    if authorize is not None:
+        await authorize("prepare")
     owner, scope = owner_and_scope(tenant_id, user_id, shared)
     root = root or get_skills_root_path()
     record = read_receipt(root, scope, operation_id)
@@ -134,6 +144,8 @@ async def recover_operation(operation_id: str, tenant_id: str, user_id: str, sha
     except ValueError:
         if row is not None:
             raise SkillAlreadyExistsError("Current Skill registration conflicts with staged publication")
+        if authorize is not None:
+            await authorize("publish")
         resume_publication(root, scope, operation_id)
         record, target = verified_publication(root, scope, operation_id)
     if row is not None:
@@ -150,8 +162,12 @@ async def recover_operation(operation_id: str, tenant_id: str, user_id: str, sha
         result = {"skill_name": name, "category": "custom", "relative_path": (relative / name).as_posix(), "install_dir": str(target)}
         if "manual_creation" in record:
             result.update(enabled=False, category=record["manual_creation"]["category"])
+        if authorize is not None:
+            await authorize("register")
         row = await register(tenant_id, user_id, shared, result)
         state = "registered"
+    if authorize is not None:
+        await authorize("confirm")
     # Reading a matching existing row does not claim this operation created it.
     record.update(state=state, row_id=row.id)
     parent, _ = scoped_parent(root, scope)

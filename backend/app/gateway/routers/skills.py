@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.gateway.path_utils import resolve_thread_virtual_path
+from app.gateway.resource_authorization import CurrentResourceRoute, resource_operation_guard
 from app.integrations import skill_deletions, skill_imports, skill_mutations
 from deerflow.database.user_config_service import (
     get_available_skills,
@@ -19,13 +20,18 @@ from deerflow.database.user_config_service import (
     initialize_owned_skill_configuration,
     list_tenant_shared_skills,
 )
-from deerflow.skills import Skill, get_skills_root_path, load_skills
+from deerflow.sandbox.file_access import read_owned_file
+from deerflow.skills import (
+    Skill,
+    get_skills_root_path,
+    load_skills,  # noqa: F401 - compatibility export; HTTP paths use current native facts
+)
 from deerflow.skills.installer import SkillAlreadyExistsError
 from deerflow.skills.resource_identity import registered_resource_id, resource_directory
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api", tags=["skills"])
+router = APIRouter(prefix="/api", tags=["skills"], route_class=CurrentResourceRoute)
 _SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9-]+$")
 
 
@@ -255,11 +261,18 @@ def _split_skill_markdown(content: str) -> tuple[dict[str, object], str]:
     return frontmatter, match.group(2).strip()
 
 
+def _read_skill_bytes(path):
+    try:
+        return read_owned_file(path)
+    except OSError:
+        raise HTTPException(409, "Skill member file cannot be verified; contents were preserved") from None
+
+
 def _read_skill_file_payload(skill_dir: Path) -> tuple[str | None, str | None]:
     skill_file = skill_dir / "SKILL.md"
     if not skill_file.exists():
         return None, None
-    frontmatter, instructions = _split_skill_markdown(skill_file.read_text(encoding="utf-8"))
+    frontmatter, instructions = _split_skill_markdown(_read_skill_bytes(skill_file).decode("utf-8"))
     description = frontmatter.get("description")
     if description is not None:
         description_text = str(description).strip()
@@ -350,12 +363,11 @@ def _build_skill_response(
     install_dir: str | None = None,
     relative_path: str | None = None,
 ) -> SkillResponse:
-    resolved = next((s for s in load_skills(enabled_only=False) if s.name == row_name), None)
     skill_dir = _resolve_skill_runtime_dir(tenant_id, row_name, install_dir, relative_path)
     skill_file = skill_dir / "SKILL.md"
     file_description: str | None = None
     if skill_file.exists():
-        raw = skill_file.read_text(encoding="utf-8")
+        raw = _read_skill_bytes(skill_file).decode("utf-8")
         fm, instructions = _split_skill_markdown(raw)
         description_value = fm.get("description")
         file_description = str(description_value).strip() if description_value is not None else None
@@ -367,8 +379,8 @@ def _build_skill_response(
 
     return SkillResponse(
         name=row_name,
-        description=(resolved.description if resolved is not None else file_description) or "",
-        license=resolved.license if resolved is not None else None,
+        description=file_description or "",
+        license=fm.get("license"),
         category=category,
         enabled=enabled,
         bound_tools=settings.get("bound_tools") or [],
@@ -392,8 +404,8 @@ def _build_skill_response(
 async def list_skills(request: Request) -> SkillsListResponse:
     require_tenant_context(request)
     try:
-        skills = load_skills(enabled_only=False)
-        return SkillsListResponse(skills=[_skill_to_response(skill) for skill in skills])
+        available = await list_available_skills(request)
+        return SkillsListResponse(skills=[SkillResponse.model_validate(item.model_dump()) for item in available.skills])
     except Exception as e:
         logger.error(f"Failed to load skills: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to load skills: {str(e)}")
@@ -418,7 +430,7 @@ async def list_available_skills(request: Request) -> AvailableSkillsListResponse
         for row in rows:
             if row.get("scope") in {"tenant", "personal"} and row.get("files_status") == "verified":
                 directory = resource_directory(get_skills_root_path(), tenant_id, request.state.user_id, row)
-                raw_bytes = (directory / "SKILL.md").read_bytes()
+                raw_bytes = _read_skill_bytes(directory / "SKILL.md")
                 frontmatter, instructions = _split_skill_markdown(raw_bytes.decode("utf-8"))
                 description = frontmatter.get("description")
                 if description is not None and str(description).strip():
@@ -427,6 +439,8 @@ async def list_available_skills(request: Request) -> AvailableSkillsListResponse
                 row["file_sha256"] = hashlib.sha256(raw_bytes).hexdigest()
             enriched_rows.append(row)
         return AvailableSkillsListResponse(skills=[AvailableSkillResponse.model_validate(row) for row in enriched_rows])
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to load available skills: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to load available skills: {str(e)}")
@@ -476,7 +490,11 @@ async def _create_owned_skill(request: Request, body: TenantSkillCreateRequest, 
             archive = Path(directory) / "manual.zip"
             with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as package:
                 package.writestr(name + "/SKILL.md", markdown)
-            result, row = await skill_imports.import_archive(archive, tenant, actor, shared, root=root, manual_creation={"enabled": body.enabled, "category": category, "configuration_phase": "pending"})
+            result, row = await skill_imports.import_archive(
+                archive, tenant, actor, shared, root=root,
+                manual_creation={"enabled": body.enabled, "category": category, "configuration_phase": "pending"},
+                authorize=resource_operation_guard(request, shared),
+            )
         resource_id = registered_resource_id(row)
         await initialize_owned_skill_configuration(tenant, actor, name, shared=shared, expected_resource_id=resource_id, enabled=body.enabled, bound_tools=body.bound_tools, prompt_template=body.prompt_template, strategy=body.strategy)
         await skill_imports.mark_manual_configuration(result, tenant, actor, shared, "confirmed", root=root)
@@ -670,7 +688,8 @@ async def _import_operation(request: Request, operation_id: str, shared: bool, r
     tenant, user = _import_identity(request)
     try:
         callback = skill_imports.abort_operation if abort else skill_imports.recover_operation if recover else skill_imports.observe_operation
-        return await callback(operation_id, tenant, user, shared, root=get_skills_root_path())
+        options = {"authorize": resource_operation_guard(request, shared)} if recover else {}
+        return await callback(operation_id, tenant, user, shared, root=get_skills_root_path(), **options)
     except FileNotFoundError:
         raise HTTPException(404, "Skill import operation not found") from None
     except (ValueError, RuntimeError):
@@ -744,7 +763,7 @@ async def import_personal_skill(request: Request, archive: UploadFile = File(...
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        result, row = await skill_imports.import_archive(temp_path, tenant_id, user_id, False, root=get_skills_root_path())
+        result, row = await skill_imports.import_archive(temp_path, tenant_id, user_id, False, root=get_skills_root_path(), authorize=resource_operation_guard(request))
         return _build_skill_response(
             tenant_id=tenant_id,
             row_name=row.name,
@@ -793,7 +812,7 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        result, row = await skill_imports.import_archive(temp_path, tenant_id, getattr(request.state, "user_id", ""), True, root=get_skills_root_path())
+        result, row = await skill_imports.import_archive(temp_path, tenant_id, getattr(request.state, "user_id", ""), True, root=get_skills_root_path(), authorize=resource_operation_guard(request, True))
         settings = await get_tenant_shared_skill_settings(tenant_id)
         return _build_skill_response(
             tenant_id=tenant_id,
@@ -830,13 +849,8 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
 async def get_skill(skill_name: str, request: Request) -> SkillResponse:
     require_tenant_context(request)
     try:
-        skills = load_skills(enabled_only=False)
-        skill = next((s for s in skills if s.name == skill_name), None)
-
-        if skill is None:
-            raise HTTPException(status_code=404, detail=f"Skill '{skill_name}' not found")
-
-        return _skill_to_response(skill)
+        detail = await get_skill_detail(skill_name, request, scope=None, resource_id=None)
+        return SkillResponse.model_validate(detail.model_dump())
     except HTTPException:
         raise
     except Exception as e:
@@ -861,7 +875,7 @@ async def install_skill(request: SkillInstallRequest, api_request: Request) -> S
             request.path,
             tenant_id=getattr(api_request.state, "tenant_id", None),
         )
-        result, _ = await skill_imports.import_archive(skill_file_path, tenant_id, api_request.state.user_id, True, root=get_skills_root_path())
+        result, _ = await skill_imports.import_archive(skill_file_path, tenant_id, api_request.state.user_id, True, root=get_skills_root_path(), authorize=resource_operation_guard(api_request, True))
         return SkillInstallResponse(**result)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=_import_error_detail(e, result))
@@ -907,7 +921,7 @@ async def get_skill_detail(skill_name: str, request: Request, scope: Literal["gl
     file_description: str | None = None
     file_sha256 = None
     if skill_file.exists():
-        raw_bytes = skill_file.read_bytes()
+        raw_bytes = _read_skill_bytes(skill_file)
         file_sha256 = hashlib.sha256(raw_bytes).hexdigest()
         raw = raw_bytes.decode("utf-8")
         fm, instructions = _split_skill_markdown(raw)

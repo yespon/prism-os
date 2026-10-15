@@ -128,6 +128,9 @@ def scoped_client(tmp_path, monkeypatch):
         request.state.tenant_id = request.headers.get("x-tenant-id", "tenant-a")
         request.state.tenant_role = request.headers.get("x-tenant-role", "tenant_member")
         request.state.user_role = request.headers.get("x-user-role", "user")
+        from resource_test_identity import persist_fixture_identity
+
+        await persist_fixture_identity(request, factory)
         return await call_next(request)
 
     app.include_router(skills.router)

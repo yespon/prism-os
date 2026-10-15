@@ -44,7 +44,11 @@ def _upstream_license_bytes() -> bytes:
 
 def prepare_skill_package(declaration: dict, resource: dict) -> dict:
     if resource["kind"] != "skill_bundle":
-        raise SkillPackageUnavailable("Only retained Skill bundles can be exported")
+        from app.integrations.octop.auxiliary_packages import KINDS, prepare_auxiliary_package
+
+        if resource["kind"] not in KINDS:
+            raise SkillPackageUnavailable("Unsupported retained resource kind")
+        return prepare_auxiliary_package(declaration, resource, _upstream_license_bytes())
     folder = (catalog.ROOT / declaration["template_source"]["target"]).parent
     root = resource["root"]
     files = {}

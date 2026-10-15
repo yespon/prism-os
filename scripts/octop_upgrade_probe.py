@@ -47,6 +47,8 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_resource_catalog_access.py",
+        "tests/test_auxiliary_resource_runtime.py",
         "tests/test_legacy_default_scope.py",
         "tests/test_diagnosis_authorization.py",
         "tests/test_runtime_adapters.py",
@@ -79,6 +81,16 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/tests/test_tenant_context_on_config_routers.py",
+        "backend/app/gateway/resource_authorization.py",
+        "backend/app/integrations/octop/auxiliary_packages.py",
+        "backend/app/integrations/octop/resource_installations.py",
+        "backend/app/integrations/octop/skill_packages.py",
+        "backend/tests/test_resource_catalog_access.py",
+        "backend/tests/test_auxiliary_resource_runtime.py",
+        "backend/tests/resource_test_identity.py",
+        "backend/tests/test_skills_scope_router.py",
+        "backend/packages/harness/deerflow/skills/parser.py",
         "frontend/src/core/agents/api.ts",
         "frontend/src/core/agents/types.ts",
         "frontend/src/components/workspace/agents/copy-agent-dialog.tsx",

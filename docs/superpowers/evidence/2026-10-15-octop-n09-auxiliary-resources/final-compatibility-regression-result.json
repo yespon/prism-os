@@ -1,0 +1,17 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_octop_presentation.py",
+    "tests/test_octop_resources.py",
+    "tests/test_tenant_context_on_config_routers.py",
+    "tests/test_terminal_access_boundaries.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T05:10:48.500591+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T05:11:24.585389+00:00"
+}

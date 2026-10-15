@@ -43,14 +43,17 @@ async def _drop_tables(engine: AsyncEngine) -> None:
 
 
 @pytest.fixture()
-def test_session_factory():
+def test_session_factory(monkeypatch):
     """Fixture providing an async session factory connected to in-memory SQLite."""
+    from deerflow.database import user_config_service
+
     engine = _make_test_engine()
     asyncio.run(_create_tables(engine))
 
     from sqlalchemy.ext.asyncio import async_sessionmaker
 
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
 
     yield factory
 

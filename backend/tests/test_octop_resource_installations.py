@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import asyncio
 import io
+import os
 import zipfile
 
 import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.pool import NullPool
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -27,11 +30,16 @@ from deerflow.skills import installer
 def client(tmp_path, monkeypatch):
     root = tmp_path / "skills"
     root.mkdir()
-    engine = create_async_engine("sqlite+aiosqlite://")
+    url = os.environ.get("PRISMOS_SKILL_TEST_DB_URL", "sqlite+aiosqlite://")
+    parsed = make_url(url)
+    if parsed.get_backend_name() == "postgresql":
+        assert parsed.host == "127.0.0.1" and parsed.database == "prismos_skill_probe", "Only the isolated probe database is supported"
+    engine = create_async_engine(url, **({"poolclass": NullPool} if parsed.get_backend_name() == "postgresql" else {}))
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async def setup():
         async with engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.drop_all)
             await conn.run_sync(SQLModel.metadata.create_all)
 
     asyncio.run(setup())
@@ -47,6 +55,9 @@ def client(tmp_path, monkeypatch):
         request.state.tenant_id = request.headers.get("x-tenant-id", "tenant-a") or None
         request.state.tenant_role = "tenant_member"
         request.state.user_role = "user"
+        from resource_test_identity import persist_fixture_identity
+
+        await persist_fixture_identity(request, factory)
         return await call_next(request)
 
     app.include_router(agent_catalog.router)

@@ -12,13 +12,14 @@ from prismos_octop.presentation import avatar, list_avatars, questionnaire, scor
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
+from app.gateway.resource_authorization import CurrentResourceRoute, resource_operation_guard
 from app.integrations import skill_imports
 from app.integrations.octop.resource_installations import scoped_resource_preflight
 from app.integrations.octop.resources import resource_preflight
 from app.integrations.octop.skill_packages import SkillPackageUnavailable, prepare_skill_package, skill_archive
 from deerflow.skills.installer import SkillAlreadyExistsError
 
-router = APIRouter(prefix="/api/agent-catalog", tags=["agents"])
+router = APIRouter(prefix="/api/agent-catalog", tags=["agents"], route_class=CurrentResourceRoute)
 
 
 def _authorize(request: Request) -> None:
@@ -168,7 +169,7 @@ async def install_source_resource(template_id: str, resource_id: str, body: Reso
         archive = Path(directory) / "source.zip"
         archive.write_bytes(skill_archive(package))
         try:
-            result, row = await skill_imports.import_archive(archive, require_tenant_context(request), request.state.user_id, shared)
+            result, row = await skill_imports.import_archive(archive, require_tenant_context(request), request.state.user_id, shared, authorize=resource_operation_guard(request, shared))
         except SkillAlreadyExistsError:
             raise HTTPException(409, "Skill already exists; installed contents were preserved") from None
         except Exception as error:

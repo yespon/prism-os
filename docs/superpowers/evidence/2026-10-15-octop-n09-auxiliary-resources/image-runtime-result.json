@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-auxiliary-04cb882a21f0",
+    "sha256:509cfe2e88e78cfdb49676355ff3ca5689535ede5e2befee05e39eb4be608495",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_resource_catalog_access.py tests/test_octop_skill_packages.py tests/test_octop_resource_installations.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T04:45:22.625525+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T04:46:32.717725+00:00"
+}

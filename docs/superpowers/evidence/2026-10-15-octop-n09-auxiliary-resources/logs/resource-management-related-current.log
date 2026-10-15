@@ -1,0 +1,309 @@
+.........................................F...............F.............. [ 69%]
+................................                                         [100%]
+=================================== FAILURES ===================================
+__ test_actual_commit_followed_by_transport_failure_preserves_committed_facts __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x73600b6279b0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-14/test_actual_commit_followed_by0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73600b5a4dd0>
+
+    def test_actual_commit_followed_by_transport_failure_preserves_committed_facts(scoped_client, monkeypatch):
+        from sqlalchemy import event
+        from sqlmodel.ext.asyncio.session import AsyncSession
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        detail = personal_detail(http)
+    
+        def failed_delivery(session):
+            raise TimeoutError("injected response after native commit")
+    
+        event.listen(AsyncSession.sync_session_class, "after_commit", failed_delivery)
+        try:
+>           response = http.patch("/api/skills/personal/collision", json={"expected_resource_id": detail["resource_id"], "enabled": False, "instructions": "COMMITTED BODY"})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_mutation_boundaries.py:233: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/starlette/testclient.py:618: in patch
+    return super().patch(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1218: in patch
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:455: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:914: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx/_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx/_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:354: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:351: in handle_request
+    portal.call(self.app, scope, receive, send)
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:334: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:259: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_skill_import_recovery.py:133: in identity
+    await persist_fixture_identity(request, factory)
+tests/resource_test_identity.py:24: in persist_fixture_identity
+    await db.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py:1000: in commit
+    await greenlet_spawn(self.sync_session.commit)
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2030: in commit
+    trans.commit(_to_root=True)
+<string>:2: in commit
+    ???
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1321: in commit
+    self.session.dispatch.after_commit(self.session)
+.venv/lib/python3.12/site-packages/sqlalchemy/event/attr.py:387: in __call__
+    fn(*args, **kw)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.orm.session.Session object at 0x73600f205d90>
+
+    def failed_delivery(session):
+>       raise TimeoutError("injected response after native commit")
+E       TimeoutError: injected response after native commit
+
+tests/test_skill_mutation_boundaries.py:229: TimeoutError
+__________ test_actual_toggle_commit_then_timeout_requires_inspection __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7360095562d0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-14/test_actual_toggle_commit_then0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73600b572150>
+
+    def test_actual_toggle_commit_then_timeout_requires_inspection(scoped_client, monkeypatch):
+        from sqlalchemy import event
+        from sqlmodel.ext.asyncio.session import AsyncSession
+    
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        shared = resources(http)["tenant"]
+        before = {p: p.read_bytes() for p in root.rglob("SKILL.md")}
+    
+        def interrupt(session):
+            raise TimeoutError("injected enablement commit delivery failure")
+    
+        event.listen(AsyncSession.sync_session_class, "after_commit", interrupt)
+        try:
+>           response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False, "expected_resource_id": shared["resource_id"]})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_skill_enablement_boundaries.py:176: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/starlette/testclient.py:587: in put
+    return super().put(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1181: in put
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:455: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:914: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx/_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx/_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:354: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:351: in handle_request
+    portal.call(self.app, scope, receive, send)
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:334: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:259: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_skill_import_recovery.py:133: in identity
+    await persist_fixture_identity(request, factory)
+tests/resource_test_identity.py:24: in persist_fixture_identity
+    await db.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py:1000: in commit
+    await greenlet_spawn(self.sync_session.commit)
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2030: in commit
+    trans.commit(_to_root=True)
+<string>:2: in commit
+    ???
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1321: in commit
+    self.session.dispatch.after_commit(self.session)
+.venv/lib/python3.12/site-packages/sqlalchemy/event/attr.py:387: in __call__
+    fn(*args, **kw)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.orm.session.Session object at 0x736008be92b0>
+
+    def interrupt(session):
+>       raise TimeoutError("injected enablement commit delivery failure")
+E       TimeoutError: injected enablement commit delivery failure
+
+tests/test_skill_enablement_boundaries.py:172: TimeoutError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_mutation_boundaries.py: 13 warnings
+tests/test_agent_skill_references.py: 2 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:105: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_mutation_boundaries.py: 9 warnings
+tests/test_skill_enablement_boundaries.py: 25 warnings
+tests/test_skill_manual_creation.py: 5 warnings
+tests/test_agent_skill_references.py: 18 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_skill_enablement_boundaries.py: 17 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:188: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_manual_creation.py::test_new_personal_creation_does_not_inherit_old_same_name_settings
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[False]
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[True]
+tests/test_skill_manual_creation.py::test_configuration_transaction_failure_keeps_registered_disabled_and_old_slot
+tests/test_skill_manual_creation.py::test_actual_configuration_commit_then_timeout_preserves_enabled_and_settings
+tests/test_skill_manual_creation.py::test_changed_native_instance_cannot_receive_old_configuration_initialization
+tests/test_skill_manual_creation.py::test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents
+tests/test_skill_manual_creation.py::test_shared_manual_same_name_public_has_distinct_custom_category
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1572: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_mutation_boundaries.py::test_actual_commit_followed_by_transport_failure_preserves_committed_facts
+FAILED tests/test_skill_enablement_boundaries.py::test_actual_toggle_commit_then_timeout_requires_inspection
+2 failed, 102 passed, 98 warnings in 49.80s

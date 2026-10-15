@@ -1,0 +1,34 @@
+{
+  "reason": "new source-catalog reproduction fixture initially missed the imported path provider; only five captured operations and their two independently verified owned public-source directories were moved, after lossless archival",
+  "archive_sha256": "58da8d692a11f2ef5e248612f4d92d5c9ba06d55d2e55508d9b9c4f99d12e33a",
+  "operations": [
+    {
+      "scope": "tenant-a",
+      "operation_id": "01be7ca12f774a29b11811649cbce67b",
+      "state": "aborted"
+    },
+    {
+      "scope": "tenant-a",
+      "operation_id": "6ac1ede69bbd425d80e833fc90b385dc",
+      "state": "aborted"
+    },
+    {
+      "scope": "tenant-a",
+      "operation_id": "90ad59ff89784e3ea30f478af21ffa05",
+      "state": "registered"
+    },
+    {
+      "scope": "tenant-a",
+      "operation_id": "9a6c81c91a2b4d63b60a9deac3a1a53f",
+      "state": "aborted"
+    },
+    {
+      "scope": "tenant-a/user-a",
+      "operation_id": "20241fca9c6542d0bdb0d74d89ae756a",
+      "state": "registered"
+    }
+  ],
+  "archived_before_move": true,
+  "unrelated_files_untouched": true,
+  "local_reversible_quarantine": "/tmp/prismos-fixture-quarantine/91db5054b432453d8adb0ff4c8ad0139"
+}

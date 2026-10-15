@@ -1,7 +1,30 @@
+import asyncio
+
+import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+from resource_test_identity import persist_fixture_identity
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.routers import skills
+from deerflow.database import user_config_service
+
+
+@pytest.fixture(autouse=True)
+def current_identity_database(tmp_path, monkeypatch):
+    engine = create_async_engine("sqlite+aiosqlite:///" + str(tmp_path / "identity.db"))
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+    async def initialize():
+        async with engine.begin() as connection:
+            await connection.run_sync(SQLModel.metadata.create_all)
+
+    asyncio.run(initialize())
+    monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
+    yield
+    asyncio.run(engine.dispose())
 
 
 def _create_app() -> FastAPI:
@@ -20,6 +43,7 @@ def _create_app() -> FastAPI:
         tenant_id = request.headers.get("x-tenant-id")
         if tenant_id is not None:
             request.state.tenant_id = tenant_id
+        await persist_fixture_identity(request, user_config_service.get_session_factory())
         return await call_next(request)
 
     app.include_router(skills.router)

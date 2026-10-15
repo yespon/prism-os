@@ -1,0 +1,112 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+___________ test_withdrawn_member_cannot_observe_owned_installation ____________
+
+source_client = (<starlette.testclient.TestClient object at 0x7bba87dcb440>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-10/test_withdrawn_member_cannot_o0/skills'))
+
+    def test_withdrawn_member_cannot_observe_owned_installation(source_client):
+        http, factory, root = source_client
+        membership(factory, status="inactive")
+        _, _, pkg = package()
+        folder = root / "custom/tenant-a/user-a" / pkg["name"]
+        write_package(folder, pkg)
+        add(factory, pkg["name"], folder)
+        response = http.get("/api/agent-catalog/templates/expert:ai-coding-coach/resources?check_installation=true")
+>       assert response.status_code == 403
+E       assert 200 == 403
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_resource_catalog_access.py:50: AssertionError
+____________ test_withdrawn_member_cannot_publish_a_source_package _____________
+
+source_client = (<starlette.testclient.TestClient object at 0x7bba86236de0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-10/test_withdrawn_member_cannot_p0/skills'))
+
+    def test_withdrawn_member_cannot_publish_a_source_package(source_client):
+        http, factory, root = source_client
+        membership(factory, status="inactive")
+        declaration, resource, pkg = package()
+        response = http.post(f"/api/agent-catalog/templates/{declaration['template_id']}/resources/{resource['id']}/install", json={"scope":"personal","bundle_sha256":resource["bundle_sha256"]})
+>       assert response.status_code == 403
+E       assert 201 == 403
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_resource_catalog_access.py:59: AssertionError
+___________ test_cached_admin_role_cannot_publish_a_tenant_resource ____________
+
+source_client = (<starlette.testclient.TestClient object at 0x7bba87d5afc0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-10/test_cached_admin_role_cannot_0/skills'))
+
+    def test_cached_admin_role_cannot_publish_a_tenant_resource(source_client):
+        http, factory, root = source_client
+        membership(factory, role="member")
+        declaration, resource, pkg = package()
+        response = http.post(f"/api/agent-catalog/templates/{declaration['template_id']}/resources/{resource['id']}/install", headers={"x-tenant-role":"tenant_admin"}, json={"scope":"tenant","bundle_sha256":resource["bundle_sha256"]})
+>       assert response.status_code == 403
+E       assert 201 == 403
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_resource_catalog_access.py:68: AssertionError
+____ test_current_original_admin_roles_override_stale_member_headers[admin] ____
+
+source_client = (<starlette.testclient.TestClient object at 0x7bba862e5280>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-10/test_current_original_admin_ro0/skills'))
+role = 'admin'
+
+    @pytest.mark.parametrize("role", ["admin", "owner", "tenant_admin"])
+    def test_current_original_admin_roles_override_stale_member_headers(source_client, role):
+        http, factory, _ = source_client
+        membership(factory, role=role)
+        declaration, resource, _ = package()
+        response = http.post(f"/api/agent-catalog/templates/{declaration['template_id']}/resources/{resource['id']}/install", json={"scope":"tenant","bundle_sha256":resource["bundle_sha256"]})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Tenant admin access required"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_resource_catalog_access.py:78: AssertionError
+____ test_current_original_admin_roles_override_stale_member_headers[owner] ____
+
+source_client = (<starlette.testclient.TestClient object at 0x7bba8b7502c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-10/test_current_original_admin_ro1/skills'))
+role = 'owner'
+
+    @pytest.mark.parametrize("role", ["admin", "owner", "tenant_admin"])
+    def test_current_original_admin_roles_override_stale_member_headers(source_client, role):
+        http, factory, _ = source_client
+        membership(factory, role=role)
+        declaration, resource, _ = package()
+        response = http.post(f"/api/agent-catalog/templates/{declaration['template_id']}/resources/{resource['id']}/install", json={"scope":"tenant","bundle_sha256":resource["bundle_sha256"]})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Tenant admin access required"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_resource_catalog_access.py:78: AssertionError
+_ test_current_original_admin_roles_override_stale_member_headers[tenant_admin] _
+
+source_client = (<starlette.testclient.TestClient object at 0x7bba861486b0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...flush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-10/test_current_original_admin_ro2/skills'))
+role = 'tenant_admin'
+
+    @pytest.mark.parametrize("role", ["admin", "owner", "tenant_admin"])
+    def test_current_original_admin_roles_override_stale_member_headers(source_client, role):
+        http, factory, _ = source_client
+        membership(factory, role=role)
+        declaration, resource, _ = package()
+        response = http.post(f"/api/agent-catalog/templates/{declaration['template_id']}/resources/{resource['id']}/install", json={"scope":"tenant","bundle_sha256":resource["bundle_sha256"]})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"detail":"Tenant admin access required"}
+E       assert 403 == 201
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_resource_catalog_access.py:78: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_resource_catalog_access.py::test_withdrawn_member_cannot_observe_owned_installation
+FAILED tests/test_resource_catalog_access.py::test_withdrawn_member_cannot_publish_a_source_package
+FAILED tests/test_resource_catalog_access.py::test_cached_admin_role_cannot_publish_a_tenant_resource
+FAILED tests/test_resource_catalog_access.py::test_current_original_admin_roles_override_stale_member_headers[admin]
+FAILED tests/test_resource_catalog_access.py::test_current_original_admin_roles_override_stale_member_headers[owner]
+FAILED tests/test_resource_catalog_access.py::test_current_original_admin_roles_override_stale_member_headers[tenant_admin]
+6 failed, 1 warning in 2.99s

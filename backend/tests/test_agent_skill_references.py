@@ -17,6 +17,14 @@ scoped_client = scoped_fixture
 @pytest.fixture
 def configured(scoped_client, monkeypatch):
     http, factory, root = prepare(scoped_client, monkeypatch)
+    # This fixture owns real membership facts, including later withdrawal.
+    # Synthetic request headers must never recreate or rewrite those facts.
+    import resource_test_identity
+
+    async def preserve_fixed_membership(request, factory):
+        return None
+
+    monkeypatch.setattr(resource_test_identity, "persist_fixture_identity", preserve_fixed_membership)
     monkeypatch.setattr(refs, "get_skills_root_path", lambda: root)
 
     async def members():
