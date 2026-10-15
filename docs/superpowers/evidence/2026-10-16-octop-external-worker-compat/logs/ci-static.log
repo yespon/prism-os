@@ -1,0 +1,55 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> /root/.codex/worktrees/octop-integration/prism-os/scripts/octop_worker_compat.py:3:1
+   |
+ 1 |   """Prepare an owned compatibility worker without changing the host lock/runtime."""
+ 2 |
+ 3 | / import argparse
+ 4 | | import hashlib
+ 5 | | import json
+ 6 | | import re
+ 7 | | import tomllib
+ 8 | | from pathlib import Path, PurePosixPath
+ 9 | |
+10 | | from packaging.requirements import Requirement
+11 | |
+12 | | import octop_external
+13 | | from octop_sync import archive_files
+   | |____________________________________^
+14 |
+15 |   ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Organize imports
+
+E501 Line too long (426 > 240)
+   --> /root/.codex/worktrees/octop-integration/prism-os/scripts/octop_worker_compat.py:104:241
+    |
+102 | …
+103 | …
+104 | …arness")["artifacts"][0]["excluded_members"]), "harness_retained_source_sha256": retained, "native_execution_enabled": False, "host_lock_sha256": sha((ROOT / "backend/uv.lock").read_bytes())}
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+105 | …
+106 | …
+    |
+
+E501 Line too long (339 > 240)
+   --> /root/.codex/worktrees/octop-integration/prism-os/scripts/octop_worker_compat.py:117:241
+    |
+115 | …
+116 | …
+117 | …name, values in versions.items() if len(values) != 1}, "host_lock_not_modified": True}, indent=2) + "\n").encode())
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+118 | …
+119 | …
+    |
+
+E501 Line too long (300 > 240)
+   --> /root/.codex/worktrees/octop-integration/prism-os/scripts/octop_worker_compat.py:121:241
+    |
+119 | …
+120 | …
+121 | …_lock_unchanged": receipt["host_lock_sha256"] == sha((ROOT / "backend/uv.lock").read_bytes())}))
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+
+Found 4 errors.
+[*] 1 fixable with the `--fix` option.

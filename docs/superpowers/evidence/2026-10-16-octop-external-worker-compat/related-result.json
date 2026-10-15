@@ -1,0 +1,16 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_octop_worker_compat.py",
+    "tests/test_octop_source_curation.py",
+    "tests/test_octop_inventory.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T22:45:13.860496+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T22:46:06.916563+00:00"
+}

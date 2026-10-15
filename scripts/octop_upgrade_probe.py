@@ -91,6 +91,12 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "scripts/octop_worker_compat.py",
+        "scripts/octop_worker_probe.py",
+        "docker/octop-worker-compat/Dockerfile",
+        "docker/octop-worker-compat/worker_rpc.py",
+        "docker/octop-worker-compat/requirements.lock",
+        "backend/tests/test_octop_worker_compat.py",
         'backend/packages/harness/deerflow/tools/builtins/office_common.py',
         'backend/packages/harness/deerflow/tools/builtins/office_xlsx.py',
         'backend/packages/harness/deerflow/tools/builtins/office_pptx.py',

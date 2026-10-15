@@ -1,0 +1,8 @@
+  × No solution found when resolving dependencies:
+  ╰─▶ Because aiohttp==3.14.1 needs to be downloaded from a registry and you
+      require aiohttp==3.14.1, we can conclude that your requirements are
+      unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled. When
+      the network is disabled, registry packages may only be read from the
+      cache.

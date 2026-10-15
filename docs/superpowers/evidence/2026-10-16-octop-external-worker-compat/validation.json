@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "upgrade_inputs": 158,
+  "historical_unchanged_inputs": 2027,
+  "actual_remote_ci": false,
+  "M1_exited": false,
+  "raw_log_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/brand-staged.log": "accbd3cdcdbe92fe5a4ad3dcf04f204146ea1688648330664fdffbce71dae325",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/build-worker.log": "820bd42c8bf687b2a4fb7fd9ccf56540eb2c644d54ea2861313cd3d3c46306ca",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/ci-static-corrected.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/ci-static-final.log": "1cf28e3b07a541ab201f1f386633beb0f1df8ecaa6902b19ea4c9bf88b816483",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/ci-static.log": "05af68e370cc4d423ddf52e11a3115cef1661d56365d23f6ea93438eaa8b30be",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/image-dependencies.log": "36ddee8d84b98db0c0466e2c9670684a02465466310c5b4285621e607e6cabef",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/mcp-compat.log": "14a35559dccd1ab501c8132d3a1c7a28f35914bd26e8c3782e8abc3a7b5bec24",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/prepare-final.log": "4d6965a889d268a84d4fceea4ca59c6982acd955ec57a1b0cdac1dad675edd76",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/prepare-pinned.log": "4d6965a889d268a84d4fceea4ca59c6982acd955ec57a1b0cdac1dad675edd76",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/prepare.log": "4d6965a889d268a84d4fceea4ca59c6982acd955ec57a1b0cdac1dad675edd76",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/related-final.log": "203102edb1160643b1e7a83f9ca1b2e0096ea9f7b82303859352e54a0f38b5b4",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/related.log": "bcc5eed7812a894c41f9665e5b05f9c5490338fbaf0254061c29073239431e85",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/resolve-offline.log": "5d79fce306633e0adcf04447337fd731240feed63f6997e7282b78a6101d40a2",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/resolve-public-index.log": "f852b914d57f9af3d8190c648a1b8b486c306cd63b481f2a18f0d69380607344",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/static-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/upgrade-final.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  },
+  "worker_input_sha256": {
+    "docker/octop-worker-compat/Dockerfile": "7ed1cc6d249d98761c7b5fd18257e3e641353afa402f0ed8bbf25bc97d643296",
+    "docker/octop-worker-compat/README.md": "19cc8cef322b9286e3504d7f0ef67472789caaabff627130d646c2574a879fa7",
+    "docker/octop-worker-compat/requirements.lock": "03569e7b5c2b376e72c5ff6b433c0476d38d06423c963206343c5037b460ad85",
+    "docker/octop-worker-compat/worker_rpc.py": "d320454736fc9334184e3befa28f60a9d65f50ef1562691a42027185eb97f9df"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "scripts/octop_worker_compat.py",
+    "scripts/octop_worker_probe.py",
+    "docker/octop-worker-compat/worker_rpc.py",
+    "backend/tests/test_octop_worker_compat.py",
+    "scripts/octop_upgrade_probe.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T22:46:37.921829+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T22:46:37.931288+00:00"
+}

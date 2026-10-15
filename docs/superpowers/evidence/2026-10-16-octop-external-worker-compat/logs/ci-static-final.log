@@ -1,0 +1,24 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> /root/.codex/worktrees/octop-integration/prism-os/scripts/octop_worker_compat.py:3:1
+   |
+ 1 |   """Prepare an owned compatibility worker without changing the host lock/runtime."""
+ 2 |
+ 3 | / import argparse
+ 4 | | import hashlib
+ 5 | | import json
+ 6 | | import re
+ 7 | | import tomllib
+ 8 | | from pathlib import Path, PurePosixPath
+ 9 | |
+10 | | from packaging.requirements import Requirement
+11 | |
+12 | | import octop_external
+13 | | from octop_sync import archive_files
+   | |____________________________________^
+14 |
+15 |   ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

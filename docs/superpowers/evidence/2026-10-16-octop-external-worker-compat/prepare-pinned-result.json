@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_worker_compat.py",
+    "--output-dir",
+    "backend/tmp/octop-external-worker-20261016/context"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T16:33:09.825569+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T16:33:11.972367+00:00"
+}
