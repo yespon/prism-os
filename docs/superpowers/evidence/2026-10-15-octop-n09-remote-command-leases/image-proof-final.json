@@ -1,0 +1,41 @@
+{
+  "backend_image": "sha256:f8a4a61c80eaec775732cb2412e0a3993082cd087f7af35cbfe0f14fbb417860",
+  "provisioner_image": "sha256:001238399e4b026ea5cde5c4b73add460136bc76461b192c9b7ddeedbeb6201a",
+  "files": {
+    "backend/packages/harness/deerflow/community/aio_sandbox/remote_command.py": {
+      "sha256": "5348368585b079e9502595e6dea482d60aa27b425dd34331bd10c3bcda84a2e1",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py": {
+      "sha256": "f90e8fa203b9d703ba0bbac646451bbd0d7cecf32247df7d3a9cf930644720b9",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/config/sandbox_config.py": {
+      "sha256": "38c911c698bb54c839d424aec9f37dc841d1687d8bb51f2e7113f53f779f2f04",
+      "matches": true
+    },
+    "backend/tests/test_remote_scoped_commands.py": {
+      "sha256": "144e07101c2597120b54b8ead02b8acbe261978321d10a1c97cd9da4d194d7eb",
+      "matches": true
+    },
+    "backend/tests/test_provisioner_kubeconfig.py": {
+      "sha256": "d79148fb4cd692fc7b6cd465053fdf33d0c7a52a7ea163e462a3e98401131ff5",
+      "matches": true
+    },
+    "docker/provisioner/requirements.lock": {
+      "sha256": "f5a1ead303778795e0d28ca63b28858aaa1f15322e46bd5ad1597b9ca459cee3",
+      "matches": true
+    },
+    "docker/provisioner/app.py": {
+      "sha256": "f18fec5de107c76bfcdc876d25710e30b33375402b3e7c04da5306a7e0ee7801",
+      "matches": true
+    },
+    "docker/provisioner/scoped_commands.py": {
+      "sha256": "bd3012b66af0fca07042672c95be8e59c375d1c11b175113f99e3d4dde6fbd43",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true
+}

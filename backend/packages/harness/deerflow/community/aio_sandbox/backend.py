@@ -51,7 +51,7 @@ class SandboxBackend(ABC):
             thread_id: Thread ID for which the sandbox is being created. Useful for backends that want to organize sandboxes by thread.
             sandbox_id: Deterministic sandbox identifier.
             extra_mounts: Additional volume mounts as (host_path, container_path, read_only) tuples.
-                Ignored by backends that don't manage containers (e.g., remote).
+                Backends must enforce these mounts or reject the request.
 
         Returns:
             SandboxInfo with connection details.

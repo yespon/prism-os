@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
+from unittest.mock import patch
 
 
 def _load_provisioner_module():
@@ -14,7 +16,8 @@ def _load_provisioner_module():
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    with patch.object(sys, "path", [str(module_path.parent), *sys.path]):
+        spec.loader.exec_module(module)
     return module
 
 
@@ -117,3 +120,23 @@ def test_init_k8s_client_falls_back_to_incluster_when_missing(tmp_path, monkeypa
 
     assert calls["incluster"] == 1
     assert result == "core-v1"
+
+
+def test_api_server_override_preserves_certificate_verification(tmp_path, monkeypatch):
+    module = _load_provisioner_module()
+    config = tmp_path / "kubeconfig"
+    config.write_text("apiVersion: v1\n")
+    module.KUBECONFIG_PATH = str(config)
+    monkeypatch.setenv("K8S_API_SERVER", "https://cluster.example:6443")
+    monkeypatch.setattr(module.k8s_config, "load_kube_config", lambda **kwargs: None)
+    original = module.k8s_client.Configuration()
+    original.verify_ssl = True
+    original.ssl_ca_cert = "/owned/cluster-ca.crt"
+    monkeypatch.setattr(module.k8s_client.Configuration, "get_default_copy", lambda: original)
+    captured = {}
+    monkeypatch.setattr(module.k8s_client, "ApiClient", lambda configuration: captured.setdefault("configuration", configuration))
+    monkeypatch.setattr(module.k8s_client, "CoreV1Api", lambda api_client: api_client)
+    module._init_k8s_client()
+    assert captured["configuration"].host == "https://cluster.example:6443"
+    assert captured["configuration"].verify_ssl is True
+    assert captured["configuration"].ssl_ca_cert == "/owned/cluster-ca.crt"

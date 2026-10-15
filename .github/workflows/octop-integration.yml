@@ -13,6 +13,7 @@ on:
       - '.dockerignore'
       - 'docker/docker-compose.yaml'
       - 'docker/nginx/**'
+      - 'docker/provisioner/**'
       - '.github/workflows/octop-integration.yml'
   workflow_dispatch:
 permissions:
@@ -54,7 +55,7 @@ jobs:
       - name: Check host adapters
         run: >-
           cd backend && uv run --locked ruff check
-          app/integrations/octop app/gateway/resource_authorization.py tests/test_resource_catalog_access.py tests/test_auxiliary_resource_runtime.py tests/resource_test_identity.py tests/test_tenant_context_on_config_routers.py packages/harness/deerflow/skills/parser.py app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py app/services/terminal/access.py app/services/terminal/session.py app/agent/terminal_tools.py app/agent/terminal_graph.py app/gateway/routers/terminal.py tests/test_terminal_access_boundaries.py tests/test_terminal_multihost.py tests/test_terminal_security.py tests/test_terminal_trimming.py tests/test_lead_agent_model_resolution.py
+          ../scripts/octop_remote_smoke.py ../docker/provisioner/app.py ../docker/provisioner/scoped_commands.py tests/test_remote_scoped_commands.py tests/test_provisioner_kubeconfig.py packages/harness/deerflow/community/aio_sandbox/remote_command.py packages/harness/deerflow/community/aio_sandbox/remote_backend.py packages/harness/deerflow/community/aio_sandbox/backend.py packages/harness/deerflow/config/sandbox_config.py app/integrations/octop app/gateway/resource_authorization.py tests/test_resource_catalog_access.py tests/test_auxiliary_resource_runtime.py tests/resource_test_identity.py tests/test_tenant_context_on_config_routers.py packages/harness/deerflow/skills/parser.py app/runtime_adapters.py packages/harness/deerflow/runtime.py packages/harness/deerflow/agents/lead_agent/agent.py tests/test_runtime_adapters.py app/gateway/routers/agent_catalog.py app/services/terminal/access.py app/services/terminal/session.py app/agent/terminal_tools.py app/agent/terminal_graph.py app/gateway/routers/terminal.py tests/test_terminal_access_boundaries.py tests/test_terminal_multihost.py tests/test_terminal_security.py tests/test_terminal_trimming.py tests/test_lead_agent_model_resolution.py
           tests/test_octop_integration.py tests/test_octop_catalog_integrity.py packages/octop-capabilities/src/prismos_octop/catalog.py
           ../scripts/octop_sync.py ../scripts/octop_external.py ../scripts/octop_inventory.py ../scripts/octop_upgrade_probe.py ../scripts/octop_gateway_smoke.py ../scripts/octop_wheel_verify.py
           packages/octop-capabilities/src/prismos_octop/source_policy.py tests/test_octop_inventory.py tests/test_octop_source_curation.py

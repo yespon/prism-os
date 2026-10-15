@@ -138,6 +138,8 @@ class AioSandboxProvider(SandboxProvider):
             "environment": self._resolve_env_vars(sandbox_config.environment or {}),
             # provisioner URL for dynamic pod management (e.g. http://provisioner:8002)
             "provisioner_url": getattr(sandbox_config, "provisioner_url", None) or "",
+            "provisioner_token_env": getattr(sandbox_config, "provisioner_token_env", None),
+            "provisioner_shared_root": getattr(sandbox_config, "provisioner_shared_root", None),
         }
 
     @staticmethod
@@ -570,8 +572,17 @@ class AioSandboxProvider(SandboxProvider):
 
         from deerflow.community.aio_sandbox.scoped_command import execute_container_command
 
+        if isinstance(self._backend, RemoteSandboxBackend):
+            from deerflow.community.aio_sandbox.remote_command import execute_remote_command
+
+            return execute_remote_command(
+                self._backend.provisioner_url,
+                self._config.get("provisioner_token_env"),
+                self._config.get("provisioner_shared_root") or "",
+                command, skills_view, thread_data, env=env, validate=validate,
+            )
         if not isinstance(self._backend, LocalContainerBackend):
-            raise PermissionError("Remote provisioner scoped mounts and cancellation are not verified")
+            raise PermissionError("This backend has no verified scoped command protocol")
         paths = get_paths()
         sources = [skills_view, *thread_data.values()]
         host_paths = {str(source): str(paths.host_base_dir / Path(source).relative_to(paths.base_dir)) for source in sources}

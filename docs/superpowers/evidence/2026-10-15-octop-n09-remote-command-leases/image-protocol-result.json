@@ -1,0 +1,28 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-remote-protocol-a28ae7577d20",
+    "--mount",
+    "type=bind,source=/root/.codex/worktrees/octop-integration/prism-os/docker/provisioner,target=/app/docker/provisioner,readonly",
+    "sha256:d9836fd1351319bf8b9a8dcaf82e60e6b5e6c88a468590630356157ecdcacbee",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_remote_scoped_commands.py tests/test_provisioner_kubeconfig.py tests/test_aio_sandbox_isolation.py tests/test_runtime_adapters.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T07:19:40.298858+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T07:20:03.801304+00:00"
+}

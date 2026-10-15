@@ -1,0 +1,320 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 452B done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/5] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#4 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 34.38kB done
+#5 DONE 0.0s
+
+#6 [2/5] RUN apt-get update && apt-get install -y --no-install-recommends     curl     && rm -rf /var/lib/apt/lists/*
+#6 6.525 Hit:1 http://deb.debian.org/debian trixie InRelease
+#6 6.722 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+#6 7.257 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#6 7.805 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9678 kB]
+#6 16.06 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [4412 B]
+#6 16.38 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [267 kB]
+#6 17.26 Fetched 10.0 MB in 17s (597 kB/s)
+#6 17.26 Reading package lists...
+#6 18.41 Reading package lists...
+#6 19.43 Building dependency tree...
+#6 19.74 Reading state information...
+#6 20.21 The following additional packages will be installed:
+#6 20.21   libbrotli1 libcom-err2 libcurl4t64 libgnutls30t64 libgssapi-krb5-2 libidn2-0
+#6 20.21   libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap2 libnghttp2-14
+#6 20.21   libnghttp3-9 libp11-kit0 libpsl5t64 librtmp1 libsasl2-2 libsasl2-modules-db
+#6 20.21   libssh2-1t64 libtasn1-6 libunistring5
+#6 20.22 Suggested packages:
+#6 20.22   gnutls-bin krb5-doc krb5-user
+#6 20.22 Recommended packages:
+#6 20.22   bash-completion krb5-locales libldap-common publicsuffix libsasl2-modules
+#6 20.48 The following NEW packages will be installed:
+#6 20.48   curl libbrotli1 libcom-err2 libcurl4t64 libgnutls30t64 libgssapi-krb5-2
+#6 20.49   libidn2-0 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap2
+#6 20.49   libnghttp2-14 libnghttp3-9 libp11-kit0 libpsl5t64 librtmp1 libsasl2-2
+#6 20.49   libsasl2-modules-db libssh2-1t64 libtasn1-6 libunistring5
+#6 26.19 0 upgraded, 22 newly installed, 0 to remove and 1 not upgraded.
+#6 26.19 Need to get 4888 kB of archives.
+#6 26.19 After this operation, 14.7 MB of additional disk space will be used.
+#6 26.19 Get:1 http://deb.debian.org/debian trixie/main amd64 libbrotli1 amd64 1.1.0-2+b7 [307 kB]
+#6 27.25 Get:2 http://deb.debian.org/debian trixie/main amd64 libkrb5support0 amd64 1.21.3-5+deb13u1 [33.1 kB]
+#6 27.29 Get:3 http://deb.debian.org/debian trixie/main amd64 libcom-err2 amd64 1.47.2-3+b12 [25.0 kB]
+#6 27.30 Get:4 http://deb.debian.org/debian trixie/main amd64 libk5crypto3 amd64 1.21.3-5+deb13u1 [81.2 kB]
+#6 27.45 Get:5 http://deb.debian.org/debian trixie/main amd64 libkeyutils1 amd64 1.6.3-6 [9456 B]
+#6 27.46 Get:6 http://deb.debian.org/debian trixie/main amd64 libkrb5-3 amd64 1.21.3-5+deb13u1 [326 kB]
+#6 27.84 Get:7 http://deb.debian.org/debian trixie/main amd64 libgssapi-krb5-2 amd64 1.21.3-5+deb13u1 [138 kB]
+#6 27.85 Get:8 http://deb.debian.org/debian trixie/main amd64 libunistring5 amd64 1.3-2 [477 kB]
+#6 27.97 Get:9 http://deb.debian.org/debian trixie/main amd64 libidn2-0 amd64 2.3.8-2 [109 kB]
+#6 28.00 Get:10 http://deb.debian.org/debian trixie/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg1-9 [19.8 kB]
+#6 28.01 Get:11 http://deb.debian.org/debian trixie/main amd64 libsasl2-2 amd64 2.1.28+dfsg1-9 [57.5 kB]
+#6 28.02 Get:12 http://deb.debian.org/debian trixie/main amd64 libldap2 amd64 2.6.10+dfsg-1 [194 kB]
+#6 28.07 Get:13 http://deb.debian.org/debian trixie/main amd64 libnghttp2-14 amd64 1.64.0-1.1+deb13u1 [76.2 kB]
+#6 28.11 Get:14 http://deb.debian.org/debian trixie/main amd64 libnghttp3-9 amd64 1.8.0-1 [67.7 kB]
+#6 28.12 Get:15 http://deb.debian.org/debian trixie/main amd64 libpsl5t64 amd64 0.21.2-1.1+b1 [57.2 kB]
+#6 28.13 Get:16 http://deb.debian.org/debian trixie/main amd64 libp11-kit0 amd64 0.25.5-3 [425 kB]
+#6 29.22 Get:17 http://deb.debian.org/debian trixie/main amd64 libtasn1-6 amd64 4.20.0-2+deb13u1 [50.1 kB]
+#6 29.39 Get:18 http://deb.debian.org/debian trixie/main amd64 libgnutls30t64 amd64 3.8.9-3+deb13u4 [1469 kB]
+#6 30.33 Get:19 http://deb.debian.org/debian trixie/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b5 [58.8 kB]
+#6 30.33 Get:20 http://deb.debian.org/debian trixie/main amd64 libssh2-1t64 amd64 1.11.1-1+deb13u2 [245 kB]
+#6 30.39 Get:21 http://deb.debian.org/debian-security trixie-security/main amd64 libcurl4t64 amd64 8.14.1-2+deb13u7 [392 kB]
+#6 31.05 Get:22 http://deb.debian.org/debian-security trixie-security/main amd64 curl amd64 8.14.1-2+deb13u7 [270 kB]
+#6 32.11 debconf: unable to initialize frontend: Dialog
+#6 32.11 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 32.11 debconf: falling back to frontend: Readline
+#6 32.11 debconf: unable to initialize frontend: Readline
+#6 32.11 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/x86_64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8, <STDIN> line 22.)
+#6 32.11 debconf: falling back to frontend: Teletype
+#6 32.12 debconf: unable to initialize frontend: Teletype
+#6 32.12 debconf: (This frontend requires a controlling tty.)
+#6 32.12 debconf: falling back to frontend: Noninteractive
+#6 33.80 Fetched 4888 kB in 11s (437 kB/s)
+#6 33.89 Selecting previously unselected package libbrotli1:amd64.
+#6 33.89 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5660 files and directories currently installed.)
+#6 33.92 Preparing to unpack .../00-libbrotli1_1.1.0-2+b7_amd64.deb ...
+#6 33.93 Unpacking libbrotli1:amd64 (1.1.0-2+b7) ...
+#6 34.00 Selecting previously unselected package libkrb5support0:amd64.
+#6 34.01 Preparing to unpack .../01-libkrb5support0_1.21.3-5+deb13u1_amd64.deb ...
+#6 34.01 Unpacking libkrb5support0:amd64 (1.21.3-5+deb13u1) ...
+#6 34.07 Selecting previously unselected package libcom-err2:amd64.
+#6 34.08 Preparing to unpack .../02-libcom-err2_1.47.2-3+b12_amd64.deb ...
+#6 34.08 Unpacking libcom-err2:amd64 (1.47.2-3+b12) ...
+#6 34.12 Selecting previously unselected package libk5crypto3:amd64.
+#6 34.12 Preparing to unpack .../03-libk5crypto3_1.21.3-5+deb13u1_amd64.deb ...
+#6 34.13 Unpacking libk5crypto3:amd64 (1.21.3-5+deb13u1) ...
+#6 34.21 Selecting previously unselected package libkeyutils1:amd64.
+#6 34.21 Preparing to unpack .../04-libkeyutils1_1.6.3-6_amd64.deb ...
+#6 34.22 Unpacking libkeyutils1:amd64 (1.6.3-6) ...
+#6 34.28 Selecting previously unselected package libkrb5-3:amd64.
+#6 34.28 Preparing to unpack .../05-libkrb5-3_1.21.3-5+deb13u1_amd64.deb ...
+#6 34.29 Unpacking libkrb5-3:amd64 (1.21.3-5+deb13u1) ...
+#6 34.38 Selecting previously unselected package libgssapi-krb5-2:amd64.
+#6 34.39 Preparing to unpack .../06-libgssapi-krb5-2_1.21.3-5+deb13u1_amd64.deb ...
+#6 34.39 Unpacking libgssapi-krb5-2:amd64 (1.21.3-5+deb13u1) ...
+#6 34.43 Selecting previously unselected package libunistring5:amd64.
+#6 34.43 Preparing to unpack .../07-libunistring5_1.3-2_amd64.deb ...
+#6 34.43 Unpacking libunistring5:amd64 (1.3-2) ...
+#6 34.55 Selecting previously unselected package libidn2-0:amd64.
+#6 34.56 Preparing to unpack .../08-libidn2-0_2.3.8-2_amd64.deb ...
+#6 34.57 Unpacking libidn2-0:amd64 (2.3.8-2) ...
+#6 34.65 Selecting previously unselected package libsasl2-modules-db:amd64.
+#6 34.65 Preparing to unpack .../09-libsasl2-modules-db_2.1.28+dfsg1-9_amd64.deb ...
+#6 34.66 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#6 34.74 Selecting previously unselected package libsasl2-2:amd64.
+#6 34.74 Preparing to unpack .../10-libsasl2-2_2.1.28+dfsg1-9_amd64.deb ...
+#6 34.75 Unpacking libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#6 34.84 Selecting previously unselected package libldap2:amd64.
+#6 34.84 Preparing to unpack .../11-libldap2_2.6.10+dfsg-1_amd64.deb ...
+#6 34.85 Unpacking libldap2:amd64 (2.6.10+dfsg-1) ...
+#6 34.94 Selecting previously unselected package libnghttp2-14:amd64.
+#6 34.94 Preparing to unpack .../12-libnghttp2-14_1.64.0-1.1+deb13u1_amd64.deb ...
+#6 34.95 Unpacking libnghttp2-14:amd64 (1.64.0-1.1+deb13u1) ...
+#6 35.03 Selecting previously unselected package libnghttp3-9:amd64.
+#6 35.03 Preparing to unpack .../13-libnghttp3-9_1.8.0-1_amd64.deb ...
+#6 35.03 Unpacking libnghttp3-9:amd64 (1.8.0-1) ...
+#6 35.14 Selecting previously unselected package libpsl5t64:amd64.
+#6 35.14 Preparing to unpack .../14-libpsl5t64_0.21.2-1.1+b1_amd64.deb ...
+#6 35.15 Unpacking libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#6 35.21 Selecting previously unselected package libp11-kit0:amd64.
+#6 35.22 Preparing to unpack .../15-libp11-kit0_0.25.5-3_amd64.deb ...
+#6 35.22 Unpacking libp11-kit0:amd64 (0.25.5-3) ...
+#6 35.32 Selecting previously unselected package libtasn1-6:amd64.
+#6 35.32 Preparing to unpack .../16-libtasn1-6_4.20.0-2+deb13u1_amd64.deb ...
+#6 35.33 Unpacking libtasn1-6:amd64 (4.20.0-2+deb13u1) ...
+#6 35.43 Selecting previously unselected package libgnutls30t64:amd64.
+#6 35.43 Preparing to unpack .../17-libgnutls30t64_3.8.9-3+deb13u4_amd64.deb ...
+#6 35.44 Unpacking libgnutls30t64:amd64 (3.8.9-3+deb13u4) ...
+#6 35.69 Selecting previously unselected package librtmp1:amd64.
+#6 35.69 Preparing to unpack .../18-librtmp1_2.4+20151223.gitfa8646d.1-2+b5_amd64.deb ...
+#6 35.70 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#6 35.81 Selecting previously unselected package libssh2-1t64:amd64.
+#6 35.81 Preparing to unpack .../19-libssh2-1t64_1.11.1-1+deb13u2_amd64.deb ...
+#6 35.81 Unpacking libssh2-1t64:amd64 (1.11.1-1+deb13u2) ...
+#6 35.87 Selecting previously unselected package libcurl4t64:amd64.
+#6 35.87 Preparing to unpack .../20-libcurl4t64_8.14.1-2+deb13u7_amd64.deb ...
+#6 35.88 Unpacking libcurl4t64:amd64 (8.14.1-2+deb13u7) ...
+#6 35.92 Selecting previously unselected package curl.
+#6 35.92 Preparing to unpack .../21-curl_8.14.1-2+deb13u7_amd64.deb ...
+#6 35.92 Unpacking curl (8.14.1-2+deb13u7) ...
+#6 35.98 Setting up libkeyutils1:amd64 (1.6.3-6) ...
+#6 36.00 Setting up libbrotli1:amd64 (1.1.0-2+b7) ...
+#6 36.02 Setting up libnghttp2-14:amd64 (1.64.0-1.1+deb13u1) ...
+#6 36.04 Setting up libcom-err2:amd64 (1.47.2-3+b12) ...
+#6 36.05 Setting up libkrb5support0:amd64 (1.21.3-5+deb13u1) ...
+#6 36.06 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#6 36.07 Setting up libp11-kit0:amd64 (0.25.5-3) ...
+#6 36.08 Setting up libunistring5:amd64 (1.3-2) ...
+#6 36.09 Setting up libk5crypto3:amd64 (1.21.3-5+deb13u1) ...
+#6 36.10 Setting up libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#6 36.10 Setting up libnghttp3-9:amd64 (1.8.0-1) ...
+#6 36.12 Setting up libtasn1-6:amd64 (4.20.0-2+deb13u1) ...
+#6 36.13 Setting up libkrb5-3:amd64 (1.21.3-5+deb13u1) ...
+#6 36.14 Setting up libssh2-1t64:amd64 (1.11.1-1+deb13u2) ...
+#6 36.15 Setting up libldap2:amd64 (2.6.10+dfsg-1) ...
+#6 36.15 Setting up libidn2-0:amd64 (2.3.8-2) ...
+#6 36.16 Setting up libgssapi-krb5-2:amd64 (1.21.3-5+deb13u1) ...
+#6 36.17 Setting up libgnutls30t64:amd64 (3.8.9-3+deb13u4) ...
+#6 36.18 Setting up libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#6 36.19 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#6 36.20 Setting up libcurl4t64:amd64 (8.14.1-2+deb13u7) ...
+#6 36.21 Setting up curl (8.14.1-2+deb13u7) ...
+#6 36.22 Processing triggers for libc-bin (2.41-12+deb13u4) ...
+#6 DONE 36.4s
+
+#7 [3/5] RUN pip install --no-cache-dir     fastapi     "uvicorn[standard]"     kubernetes
+#7 6.163 Collecting fastapi
+#7 11.86   Downloading fastapi-0.143.1-py3-none-any.whl.metadata (26 kB)
+#7 12.31 Collecting kubernetes
+#7 12.48   Downloading kubernetes-37.0.1-py2.py3-none-any.whl.metadata (1.9 kB)
+#7 12.78 Collecting uvicorn[standard]
+#7 12.95   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#7 13.50 Collecting starlette>=0.46.0 (from fastapi)
+#7 13.67   Downloading starlette-1.8.0-py3-none-any.whl.metadata (6.6 kB)
+#7 14.79 Collecting pydantic>=2.9.0 (from fastapi)
+#7 14.96   Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+#7 15.50 Collecting typing-extensions>=4.8.0 (from fastapi)
+#7 15.69   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#7 15.95 Collecting typing-inspection>=0.4.2 (from fastapi)
+#7 16.15   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#7 16.95 Collecting annotated-doc>=0.0.2 (from fastapi)
+#7 17.12   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#7 17.39 Collecting opentelemetry-api>=1.44.0 (from fastapi)
+#7 17.56   Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+#7 17.84 Collecting click>=7.0 (from uvicorn[standard])
+#7 18.00   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#7 18.23 Collecting h11>=0.8 (from uvicorn[standard])
+#7 18.39   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#7 18.76 Collecting httptools>=0.8.0 (from uvicorn[standard])
+#7 19.01   Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#7 19.26 Collecting python-dotenv>=0.13 (from uvicorn[standard])
+#7 19.42   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#7 19.85 Collecting pyyaml>=5.1 (from uvicorn[standard])
+#7 20.02   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#7 20.40 Collecting uvloop>=0.15.1 (from uvicorn[standard])
+#7 20.56   Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#7 21.23 Collecting watchfiles>=0.20 (from uvicorn[standard])
+#7 21.41   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#7 22.37 Collecting websockets>=13.0 (from uvicorn[standard])
+#7 22.54   Downloading websockets-17.2-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#7 23.08 Collecting certifi>=2026.7.22 (from kubernetes)
+#7 23.25   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+#7 23.48 Collecting python-dateutil>=2.8.2 (from kubernetes)
+#7 23.64   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+#7 23.96 Collecting websocket-client!=0.40.0,!=0.41.*,!=0.42.*,>=0.32.0 (from kubernetes)
+#7 24.12   Downloading websocket_client-1.9.2-py3-none-any.whl.metadata (8.3 kB)
+#7 24.50 Collecting requests (from kubernetes)
+#7 24.66   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+#7 24.89 Collecting requests-oauthlib (from kubernetes)
+#7 25.06   Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl.metadata (11 kB)
+#7 25.39 Collecting urllib3<3.0.0,>=2.8.0 (from kubernetes)
+#7 25.56   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+#7 26.39 Collecting durationpy>=0.11 (from kubernetes)
+#7 26.56   Downloading durationpy-0.11-py3-none-any.whl.metadata (474 bytes)
+#7 29.63 Collecting aiohttp<4.0.0,>=3.14.3 (from kubernetes)
+#7 29.81   Downloading aiohttp-3.14.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+#7 30.06 Collecting aiohttp-retry>=2.9.1 (from kubernetes)
+#7 30.25   Downloading aiohttp_retry-2.9.1-py3-none-any.whl.metadata (8.8 kB)
+#7 30.51 Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 30.68   Downloading aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+#7 30.90 Collecting aiosignal>=1.4.0 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 31.06   Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+#7 31.32 Collecting attrs>=17.3.0 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 31.49   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+#7 32.06 Collecting frozenlist>=1.1.1 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 32.23   Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+#7 33.54 Collecting multidict<8.0,>=4.5 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 33.71   Downloading multidict-7.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.2 kB)
+#7 34.22 Collecting propcache>=0.2.0 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 34.39   Downloading propcache-0.5.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (25 kB)
+#7 35.73 Collecting yarl<2.0,>=1.25.1 (from aiohttp<4.0.0,>=3.14.3->kubernetes)
+#7 35.90   Downloading yarl-1.25.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (111 kB)
+#7 36.89 Collecting annotated-types>=0.6.0 (from pydantic>=2.9.0->fastapi)
+#7 37.06   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#7 40.20 Collecting pydantic-core==2.50.1 (from pydantic>=2.9.0->fastapi)
+#7 40.36   Downloading pydantic_core-2.50.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
+#7 40.59 Collecting six>=1.5 (from python-dateutil>=2.8.2->kubernetes)
+#7 40.78   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#7 41.03 Collecting anyio<5,>=4.0.0 (from starlette>=0.46.0->fastapi)
+#7 41.20   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#7 41.99 Collecting charset_normalizer<4,>=2 (from requests->kubernetes)
+#7 42.16   Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+#7 43.46 Collecting idna<4,>=2.5 (from requests->kubernetes)
+#7 43.63   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#7 43.95 Collecting oauthlib>=3.0.0 (from requests-oauthlib->kubernetes)
+#7 44.12   Downloading oauthlib-4.0.0-py3-none-any.whl.metadata (8.6 kB)
+#7 44.41 Downloading fastapi-0.143.1-py3-none-any.whl (144 kB)
+#7 44.85 Downloading kubernetes-37.0.1-py2.py3-none-any.whl (7.5 MB)
+#7 50.87    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.5/7.5 MB 1.3 MB/s eta 0:00:00
+#7 51.07 Downloading aiohttp-3.14.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+#7 52.50    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 1.7 MB/s eta 0:00:00
+#7 52.88 Downloading aiohttp_retry-2.9.1-py3-none-any.whl (10.0 kB)
+#7 53.05 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#7 53.21 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+#7 53.85 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#7 54.55 Downloading durationpy-0.11-py3-none-any.whl (4.1 kB)
+#7 54.71 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#7 54.88 Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+#7 55.68    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 1.0 MB/s eta 0:00:00
+#7 55.85 Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+#7 56.09 Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+#7 56.51 Downloading pydantic_core-2.50.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#7 58.03    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 1.9 MB/s eta 0:00:00
+#7 58.20 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#7 58.65 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#7 58.82 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#7 59.38    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 11.4 MB/s eta 0:00:00
+#7 59.57 Downloading starlette-1.8.0-py3-none-any.whl (79 kB)
+#7 60.17 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#7 60.37 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#7 60.54 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+#7 61.18 Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+#7 64.66    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 1.3 MB/s eta 0:00:00
+#7 64.82 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#7 65.61 Downloading websocket_client-1.9.2-py3-none-any.whl (95 kB)
+#7 65.97 Downloading websockets-17.2-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (225 kB)
+#7 66.59 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+#7 67.00 Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+#7 67.19 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#7 67.44 Downloading aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+#7 67.63 Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+#7 67.81 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#7 67.99 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#7 68.27 Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+#7 68.50 Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (257 kB)
+#7 69.09 Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (242 kB)
+#7 69.45 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#7 69.71 Downloading multidict-7.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (483 kB)
+#7 70.32 Downloading oauthlib-4.0.0-py3-none-any.whl (159 kB)
+#7 70.73 Downloading propcache-0.5.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (250 kB)
+#7 71.05 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#7 71.24 Downloading yarl-1.25.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (117 kB)
+#7 71.81 Installing collected packages: durationpy, websockets, websocket-client, uvloop, urllib3, typing-extensions, six, pyyaml, python-dotenv, propcache, oauthlib, multidict, idna, httptools, h11, frozenlist, click, charset_normalizer, certifi, attrs, annotated-types, annotated-doc, aiohappyeyeballs, yarl, uvicorn, typing-inspection, requests, python-dateutil, pydantic-core, opentelemetry-api, anyio, aiosignal, watchfiles, starlette, requests-oauthlib, pydantic, aiohttp, fastapi, aiohttp-retry, kubernetes
+#7 88.87 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#7 88.87 Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiohttp-retry-2.9.1 aiosignal-1.4.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 attrs-26.1.0 certifi-2026.7.22 charset_normalizer-3.5.2 click-8.5.0 durationpy-0.11 fastapi-0.143.1 frozenlist-1.8.0 h11-0.16.0 httptools-0.9.0 idna-3.20 kubernetes-37.0.1 multidict-7.1.0 oauthlib-4.0.0 opentelemetry-api-1.45.1 propcache-0.5.4 pydantic-2.14.1 pydantic-core-2.50.1 python-dateutil-2.9.0.post0 python-dotenv-1.2.4 pyyaml-6.0.3 requests-2.34.2 requests-oauthlib-2.0.0 six-1.17.0 starlette-1.8.0 typing-extensions-4.16.0 typing-inspection-0.4.4 urllib3-2.8.0 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websocket-client-1.9.2 websockets-17.2 yarl-1.25.1
+#7 90.06 
+#7 90.06 [notice] A new release of pip is available: 25.0.1 -> 26.2.1
+#7 90.06 [notice] To update, run: pip install --upgrade pip
+#7 DONE 90.4s
+
+#8 [4/5] WORKDIR /app
+#8 DONE 0.0s
+
+#9 [5/5] COPY app.py scoped_commands.py ./
+#9 DONE 0.0s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 1.8s done
+#10 writing image sha256:5ed1507c9168ed6d25b69ef2a7a3178cc1c122902a6fb47c88c5b4bbdea879cd done
+#10 naming to docker.io/library/prismos-command-provisioner:test done
+#10 DONE 1.8s

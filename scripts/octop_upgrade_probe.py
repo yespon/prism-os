@@ -47,6 +47,8 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_remote_scoped_commands.py",
+        "tests/test_provisioner_kubeconfig.py",
         "tests/test_resource_catalog_access.py",
         "tests/test_auxiliary_resource_runtime.py",
         "tests/test_legacy_default_scope.py",
@@ -81,6 +83,17 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "docker/provisioner/requirements.lock",
+        "scripts/octop_remote_smoke.py",
+        "backend/packages/harness/deerflow/community/aio_sandbox/remote_backend.py",
+        "backend/packages/harness/deerflow/community/aio_sandbox/backend.py",
+        "docker/provisioner/app.py",
+        "docker/provisioner/scoped_commands.py",
+        "docker/provisioner/Dockerfile",
+        "backend/tests/test_remote_scoped_commands.py",
+        "backend/tests/test_provisioner_kubeconfig.py",
+        "backend/packages/harness/deerflow/community/aio_sandbox/remote_command.py",
+        "backend/packages/harness/deerflow/config/sandbox_config.py",
         "backend/tests/test_tenant_context_on_config_routers.py",
         "backend/app/gateway/resource_authorization.py",
         "backend/app/integrations/octop/auxiliary_packages.py",

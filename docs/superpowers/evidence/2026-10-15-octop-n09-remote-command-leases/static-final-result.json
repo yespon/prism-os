@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-remote-command-leases/check_static.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T07:23:58.467619+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T07:23:58.568381+00:00"
+}

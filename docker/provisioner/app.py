@@ -34,15 +34,17 @@ import os
 import time
 from contextlib import asynccontextmanager
 
-import urllib3
 from fastapi import FastAPI, HTTPException
 from kubernetes import client as k8s_client
 from kubernetes import config as k8s_config
 from kubernetes.client.rest import ApiException
 from pydantic import BaseModel
 
-# Suppress only the InsecureRequestWarning from urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+try:
+    from .scoped_commands import create_router
+except ImportError:
+    from scoped_commands import create_router
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -111,8 +113,7 @@ def _init_k8s_client() -> k8s_client.CoreV1Api:
     if k8s_api_server:
         configuration = k8s_client.Configuration.get_default_copy()
         configuration.host = k8s_api_server
-        # Self-signed certs are common for local clusters
-        configuration.verify_ssl = False
+        # Preserve the kubeconfig CA and certificate verification when changing hosts.
         api_client = k8s_client.ApiClient(configuration)
         return k8s_client.CoreV1Api(api_client)
 
@@ -179,6 +180,21 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="DeerFlow Sandbox Provisioner", lifespan=lifespan)
+
+# Docker copies this sibling module beside app.py; tests load it as a namespace.
+
+app.include_router(create_router(lambda: core_v1, K8S_NAMESPACE))
+
+
+@app.middleware("http")
+async def protect_legacy_provisioning(request, call_next):
+    # Legacy Pods mount global Skills and do not implement scoped ownership.
+    # Keep the route definitions for migration inspection, but never expose them.
+    if request.url.path.startswith("/api/") and not request.url.path.startswith("/api/scoped-commands"):
+        from starlette.responses import JSONResponse
+
+        return JSONResponse({"detail": "Legacy sandbox provisioning is unverified; use scoped command leases"}, status_code=503)
+    return await call_next(request)
 
 
 # ── Request / Response models ───────────────────────────────────────────
