@@ -1,0 +1,9 @@
+{
+  "complete": true,
+  "pid": 479937,
+  "scope": "backend/runtime only; frontend separately frozen and accepted",
+  "returncode": 0,
+  "backend_image": "sha256:3aab8ec073dba150addc1807e152b24685d2ca9798c7a63a19a4d4e983e98aa5",
+  "provisioner_image": "sha256:906a3160c276f564306bdf709fa07c4c24bd9c218227556184e439b528f7e37c",
+  "backend_inputs_unchanged": true
+}

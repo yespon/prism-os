@@ -1,0 +1,9 @@
+{
+  "synthetic_identity_scope": "authenticated identity with withdrawn database membership",
+  "keychain_status": 200,
+  "asset_status": 200,
+  "real_ssh_or_external_call": false,
+  "plaintext_stored": true,
+  "foreign_credential_reference_accepted": true,
+  "foreign_group_reference_accepted": true
+}

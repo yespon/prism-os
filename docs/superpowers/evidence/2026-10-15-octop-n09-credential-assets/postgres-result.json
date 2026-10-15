@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_skill_postgres.py",
+    "--output-dir",
+    "/tmp/prismos-credential-assets-postgres-20261015",
+    "--test-file",
+    "tests/test_credential_asset_access.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:07:05.650278+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:07:26.756409+00:00"
+}

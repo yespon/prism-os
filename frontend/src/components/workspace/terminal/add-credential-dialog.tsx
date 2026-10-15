@@ -1,5 +1,6 @@
 import { Eye, EyeOff } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { AssetOperationError } from '@/core/terminal-agent/assets-api';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -11,7 +12,7 @@ import type { TerminalCredential } from '@/core/terminal-agent/message-types';
 export interface AddCredentialDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddCredential?: (credential: Omit<TerminalCredential, 'id'> & { value: string }) => void;
+  onAddCredential?: (credential: Omit<TerminalCredential, 'id'> & { value: string }) => void | Promise<void>;
 }
 
 export function AddCredentialDialog({ open, onOpenChange, onAddCredential }: AddCredentialDialogProps) {
@@ -23,11 +24,28 @@ export function AddCredentialDialog({ open, onOpenChange, onAddCredential }: Add
   
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = () => {
-    if (onAddCredential) {
-      onAddCredential(formData);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [unknown, setUnknown] = useState(false);
+  const submitting = useRef(false);
+
+  const handleSubmit = async () => {
+    if (!onAddCredential || submitting.current || unknown) return;
+    submitting.current = true;
+    setSaving(true);
+    setSaveError('');
+    try {
+      await onAddCredential(formData);
+      setFormData({ name: '', type: 'password', value: '' });
+      onOpenChange(false);
+    } catch (error) {
+      setUnknown(error instanceof AssetOperationError && error.inspectionRequired);
+      setSaveError(error instanceof AssetOperationError ? error.message : '保存结果未确认，请先刷新列表核对。');
+      if (!(error instanceof AssetOperationError)) setUnknown(true);
+    } finally {
+      submitting.current = false;
+      setSaving(false);
     }
-    onOpenChange(false);
   };
 
   return (
@@ -92,9 +110,10 @@ export function AddCredentialDialog({ open, onOpenChange, onAddCredential }: Add
             )}
           </div>
         </div>
+        {saveError && <p role="alert" className="text-sm text-red-600">{saveError}</p>}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>取消</Button>
-          <Button onClick={handleSubmit} disabled={!formData.name || !formData.value}>确定</Button>
+          <Button onClick={() => void handleSubmit()} disabled={!formData.name || !formData.value || saving || unknown || !onAddCredential}>{saving ? '保存中…' : '确定'}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

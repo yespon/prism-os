@@ -441,3 +441,12 @@ def test_replacement_with_matching_labels_still_cannot_be_cancelled(protocol):
     api.pod.metadata.uid = "foreign-replacement"
     assert client.delete(endpoint, headers=headers).status_code == 409
     assert not api.deleted
+
+
+def test_legacy_rejection_survives_asgi_root_path(protocol):
+    _, api, _, _, _, _, _, module = protocol
+    client = TestClient(module.app, root_path="/nested")
+    for method, suffix in [("get", ""), ("get", "/other"), ("delete", "/other"), ("post", "")]:
+        response = getattr(client, method)("/nested/api/sandboxes" + suffix)
+        assert response.status_code == 503
+    assert not api.created

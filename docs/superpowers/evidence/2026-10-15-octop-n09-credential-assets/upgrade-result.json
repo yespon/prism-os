@@ -1,0 +1,31 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_SCOPED_TEST_IMAGE=sha256:3aab8ec073dba150addc1807e152b24685d2ca9798c7a63a19a4d4e983e98aa5",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-credential-assets/upgrade.json",
+    "--test-file",
+    "tests/test_credential_asset_access.py",
+    "--test-file",
+    "tests/test_terminal_access_boundaries.py",
+    "--test-file",
+    "tests/test_remote_scoped_commands.py",
+    "--test-file",
+    "tests/test_secrets_crypto.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:34:52.872459+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:40:27.528133+00:00"
+}

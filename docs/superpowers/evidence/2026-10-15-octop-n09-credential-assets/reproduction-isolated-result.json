@@ -1,0 +1,11 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "../docs/superpowers/evidence/2026-10-15-octop-n09-credential-assets/reproduce.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T07:31:35.066039+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T07:31:40.215527+00:00"
+}

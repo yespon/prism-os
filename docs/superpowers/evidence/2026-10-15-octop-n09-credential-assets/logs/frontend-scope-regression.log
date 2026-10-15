@@ -1,0 +1,33 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run src/core/terminal-agent/assets-api.test.ts src/components/workspace/terminal/asset-dialogs.test.tsx --maxWorkers=1
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/root/.codex/worktrees/octop-integration/prism-os/frontend[39m
+
+[90mstderr[2m | src/components/workspace/terminal/asset-dialogs.test.tsx[2m > [22m[2mkeeps the credential dialog open until persistence is confirmed and dispatches once
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+[90mstderr[2m | src/components/workspace/terminal/asset-dialogs.test.tsx[2m > [22m[2mkeeps rejected credential input and never closes as if saved
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+[90mstderr[2m | src/components/workspace/terminal/asset-dialogs.test.tsx[2m > [22m[2mblocks replay of unknown credential outcomes across closing and reopening
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+[90mstderr[2m | src/components/workspace/terminal/asset-dialogs.test.tsx[2m > [22m[2mblocks replay of unknown credential outcomes across closing and reopening
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+[90mstderr[2m | src/components/workspace/terminal/asset-dialogs.test.tsx[2m > [22m[2mallows an existing owned credential without an inline password and reports unknown connection
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ [32m✓[39m src/components/workspace/terminal/asset-dialogs.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 2443[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the credential dialog open until persistence is confirmed and dispatches once [33m 1195[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps rejected credential input and never closes as if saved [33m 476[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks replay of unknown credential outcomes across closing and reopening [33m 568[2mms[22m[39m
+ [32m✓[39m src/core/terminal-agent/assets-api.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m19 passed[39m[22m[90m (19)[39m
+[2m   Start at [22m 16:28:43
+[2m   Duration [22m 7.11s[2m (transform 540ms, setup 230ms, import 1.45s, tests 2.47s, environment 2.33s)[22m
+

@@ -34,7 +34,7 @@ import os
 import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from kubernetes import client as k8s_client
 from kubernetes import config as k8s_config
 from kubernetes.client.rest import ApiException
@@ -84,27 +84,18 @@ def _init_k8s_client() -> k8s_client.CoreV1Api:
     """
     if os.path.exists(KUBECONFIG_PATH):
         if os.path.isdir(KUBECONFIG_PATH):
-            raise RuntimeError(
-                f"KUBECONFIG_PATH points to a directory, expected a file: {KUBECONFIG_PATH}"
-            )
+            raise RuntimeError(f"KUBECONFIG_PATH points to a directory, expected a file: {KUBECONFIG_PATH}")
         try:
             k8s_config.load_kube_config(config_file=KUBECONFIG_PATH)
             logger.info(f"Loaded kubeconfig from {KUBECONFIG_PATH}")
         except Exception as exc:
-            raise RuntimeError(
-                f"Failed to load kubeconfig from {KUBECONFIG_PATH}: {exc}"
-            ) from exc
+            raise RuntimeError(f"Failed to load kubeconfig from {KUBECONFIG_PATH}: {exc}") from exc
     else:
-        logger.warning(
-            f"Kubeconfig not found at {KUBECONFIG_PATH}; trying in-cluster config"
-        )
+        logger.warning(f"Kubeconfig not found at {KUBECONFIG_PATH}; trying in-cluster config")
         try:
             k8s_config.load_incluster_config()
         except Exception as exc:
-            raise RuntimeError(
-                "Failed to initialize Kubernetes client. "
-                f"No kubeconfig at {KUBECONFIG_PATH}, and in-cluster config is unavailable: {exc}"
-            ) from exc
+            raise RuntimeError(f"Failed to initialize Kubernetes client. No kubeconfig at {KUBECONFIG_PATH}, and in-cluster config is unavailable: {exc}") from exc
 
     # When connecting from inside Docker to the host's K8s API, the
     # kubeconfig may reference ``localhost`` or ``127.0.0.1``.  We
@@ -129,19 +120,11 @@ def _wait_for_kubeconfig(timeout: int = 30) -> None:
                 logger.info(f"Found kubeconfig file at {KUBECONFIG_PATH}")
                 return
             if os.path.isdir(KUBECONFIG_PATH):
-                raise RuntimeError(
-                    "Kubeconfig path is a directory. "
-                    f"Please mount a kubeconfig file at {KUBECONFIG_PATH}."
-                )
-            raise RuntimeError(
-                f"Kubeconfig path exists but is not a regular file: {KUBECONFIG_PATH}"
-            )
+                raise RuntimeError(f"Kubeconfig path is a directory. Please mount a kubeconfig file at {KUBECONFIG_PATH}.")
+            raise RuntimeError(f"Kubeconfig path exists but is not a regular file: {KUBECONFIG_PATH}")
         logger.info(f"Waiting for kubeconfig at {KUBECONFIG_PATH} …")
         time.sleep(2)
-    logger.warning(
-        f"Kubeconfig not found at {KUBECONFIG_PATH} after {timeout}s; "
-        "will attempt in-cluster Kubernetes config"
-    )
+    logger.warning(f"Kubeconfig not found at {KUBECONFIG_PATH} after {timeout}s; will attempt in-cluster Kubernetes config")
 
 
 def _ensure_namespace() -> None:
@@ -385,7 +368,11 @@ async def health():
     return {"status": "ok"}
 
 
-@app.post("/api/sandboxes", response_model=SandboxResponse)
+def reject_legacy_provisioning():
+    raise HTTPException(503, "Legacy sandbox provisioning is unverified; use scoped command leases")
+
+
+@app.post("/api/sandboxes", response_model=SandboxResponse, dependencies=[Depends(reject_legacy_provisioning)])
 async def create_sandbox(req: CreateSandboxRequest):
     """Create a sandbox Pod + NodePort Service for *sandbox_id*.
 
@@ -395,9 +382,7 @@ async def create_sandbox(req: CreateSandboxRequest):
     sandbox_id = req.sandbox_id
     thread_id = req.thread_id
 
-    logger.info(
-        f"Received request to create sandbox '{sandbox_id}' for thread '{thread_id}'"
-    )
+    logger.info(f"Received request to create sandbox '{sandbox_id}' for thread '{thread_id}'")
 
     # ── Fast path: sandbox already exists ────────────────────────────
     existing_port = _get_node_port(sandbox_id)
@@ -414,9 +399,7 @@ async def create_sandbox(req: CreateSandboxRequest):
         logger.info(f"Created Pod {_pod_name(sandbox_id)}")
     except ApiException as exc:
         if exc.status != 409:  # 409 = AlreadyExists
-            raise HTTPException(
-                status_code=500, detail=f"Pod creation failed: {exc.reason}"
-            )
+            raise HTTPException(status_code=500, detail=f"Pod creation failed: {exc.reason}")
 
     # ── Create Service ───────────────────────────────────────────────
     try:
@@ -429,9 +412,7 @@ async def create_sandbox(req: CreateSandboxRequest):
                 core_v1.delete_namespaced_pod(_pod_name(sandbox_id), K8S_NAMESPACE)
             except ApiException:
                 pass
-            raise HTTPException(
-                status_code=500, detail=f"Service creation failed: {exc.reason}"
-            )
+            raise HTTPException(status_code=500, detail=f"Service creation failed: {exc.reason}")
 
     # ── Read the auto-allocated NodePort ─────────────────────────────
     node_port: int | None = None
@@ -442,9 +423,7 @@ async def create_sandbox(req: CreateSandboxRequest):
         time.sleep(0.5)
 
     if not node_port:
-        raise HTTPException(
-            status_code=500, detail="NodePort was not allocated in time"
-        )
+        raise HTTPException(status_code=500, detail="NodePort was not allocated in time")
 
     return SandboxResponse(
         sandbox_id=sandbox_id,
@@ -453,7 +432,7 @@ async def create_sandbox(req: CreateSandboxRequest):
     )
 
 
-@app.delete("/api/sandboxes/{sandbox_id}")
+@app.delete("/api/sandboxes/{sandbox_id}", dependencies=[Depends(reject_legacy_provisioning)])
 async def destroy_sandbox(sandbox_id: str):
     """Destroy a sandbox Pod + Service."""
     errors: list[str] = []
@@ -475,14 +454,12 @@ async def destroy_sandbox(sandbox_id: str):
             errors.append(f"pod: {exc.reason}")
 
     if errors:
-        raise HTTPException(
-            status_code=500, detail=f"Partial cleanup: {', '.join(errors)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Partial cleanup: {', '.join(errors)}")
 
     return {"ok": True, "sandbox_id": sandbox_id}
 
 
-@app.get("/api/sandboxes/{sandbox_id}", response_model=SandboxResponse)
+@app.get("/api/sandboxes/{sandbox_id}", response_model=SandboxResponse, dependencies=[Depends(reject_legacy_provisioning)])
 async def get_sandbox(sandbox_id: str):
     """Return current status and URL for a sandbox."""
     node_port = _get_node_port(sandbox_id)
@@ -496,7 +473,7 @@ async def get_sandbox(sandbox_id: str):
     )
 
 
-@app.get("/api/sandboxes")
+@app.get("/api/sandboxes", dependencies=[Depends(reject_legacy_provisioning)])
 async def list_sandboxes():
     """List every sandbox currently managed in the namespace."""
     try:
@@ -505,9 +482,7 @@ async def list_sandboxes():
             label_selector="app=deer-flow-sandbox",
         )
     except ApiException as exc:
-        raise HTTPException(
-            status_code=500, detail=f"Failed to list services: {exc.reason}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to list services: {exc.reason}")
 
     sandboxes: list[SandboxResponse] = []
     for svc in services.items:

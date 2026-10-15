@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-15-octop-n09-credential-assets/check_static.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:07:38.034290+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:07:38.106391+00:00"
+}

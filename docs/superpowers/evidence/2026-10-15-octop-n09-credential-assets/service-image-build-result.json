@@ -1,0 +1,14 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "-t",
+    "prismos-credential-provisioner:test",
+    "/root/.codex/worktrees/octop-integration/prism-os/docker/provisioner"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:25:34.830228+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:25:35.415586+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "typescript": "5.9.3",
+  "identical_javascript": true,
+  "javascript_sha256": "e6752529daff29adeec3e2b6b37f3c998150cc8b10aeab7c03ef5432b0751698",
+  "path": "frontend/src/components/workspace/terminal/persistent-terminal.tsx",
+  "before_sha256": "0cb7391504fa61e8ad9b2b0da276f547a0b3636b8f0718d771b776adfe16f3cb",
+  "after_sha256": "6b61e6650bf7194f6863988e2383aa2e276734ff4a7fe44a0aac2f719b832b62",
+  "change": "one trailing ASCII space before newline; no other bytes changed",
+  "original_full_tests": 277,
+  "original_strict_build_preserved": true,
+  "upgrade_completed_before_cleanup": true
+}

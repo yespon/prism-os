@@ -47,6 +47,7 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_credential_asset_access.py",
         "tests/test_remote_scoped_commands.py",
         "tests/test_provisioner_kubeconfig.py",
         "tests/test_resource_catalog_access.py",
@@ -83,6 +84,17 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "frontend/src/core/terminal-agent/assets-api.ts",
+        "frontend/src/core/terminal-agent/assets-api.test.ts",
+        "frontend/src/components/workspace/terminal/asset-sidebar.tsx",
+        "frontend/src/components/workspace/terminal/add-host-dialog.tsx",
+        "frontend/src/components/workspace/terminal/add-credential-dialog.tsx",
+        "frontend/src/components/workspace/terminal/asset-dialogs.test.tsx",
+        "frontend/src/components/workspace/terminal/persistent-terminal.tsx",
+        "backend/app/gateway/routers/assets.py",
+        "backend/app/services/terminal/credential_access.py",
+        "backend/scripts/rotate_encrypted_secrets.py",
+        "backend/tests/test_credential_asset_access.py",
         "docker/provisioner/requirements.lock",
         "scripts/octop_remote_smoke.py",
         "backend/packages/harness/deerflow/community/aio_sandbox/remote_backend.py",

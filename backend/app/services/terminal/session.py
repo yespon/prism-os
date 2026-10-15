@@ -14,6 +14,7 @@ from collections.abc import Awaitable, Callable
 from fastapi import WebSocket
 
 from app.models.assets import Keychain, LocalAsset
+from app.services.terminal.credential_access import ssh_credential_value
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +25,10 @@ def _new_command_marker() -> str:
 
 def _strip_command_markers(data: str) -> str:
     """Remove complete output lines containing PrismOS command markers."""
-    return "".join(
-        line for line in data.splitlines(keepends=True) if "__PRISMOS_MARKER_" not in line
-    )
+    return "".join(line for line in data.splitlines(keepends=True) if "__PRISMOS_MARKER_" not in line)
 
-def build_ssh_command(asset: LocalAsset, keychain: Keychain | None = None) -> tuple[list[str], dict, list[str]]:
+
+def build_ssh_command(asset: LocalAsset, keychain: Keychain | None = None, *, plaintext_value: str | None = None) -> tuple[list[str], dict, list[str]]:
     if not asset.username or asset.username.startswith("-") or any(ord(c) < 32 for c in asset.username):
         raise PermissionError("SSH login identity unavailable")
     if not asset.ip or asset.ip.startswith("-") or any(c.isspace() or c in "@/\\" or ord(c) < 32 for c in asset.ip):
@@ -36,26 +36,49 @@ def build_ssh_command(asset: LocalAsset, keychain: Keychain | None = None) -> tu
     # Credentials and configuration belong to the authorized asset lease;
     # never inherit the backend account's SSH agent, keys, or ~/.ssh/config.
     ssh_cmd = [
-        "ssh", "-F", "/dev/null", "-o", "IdentitiesOnly=yes", "-o", "IdentityAgent=none", "-o", "IdentityFile=/dev/null",
-        "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "ConnectTimeout=15", "-p", str(asset.port),
+        "ssh",
+        "-F",
+        "/dev/null",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-o",
+        "IdentityAgent=none",
+        "-o",
+        "IdentityFile=/dev/null",
+        "-o",
+        "StrictHostKeyChecking=no",
+        "-o",
+        "UserKnownHostsFile=/dev/null",
+        "-o",
+        "ConnectTimeout=15",
+        "-p",
+        str(asset.port),
     ]
     env_updates = {}
     temp_files = []
 
     if keychain:
+        if (keychain.tenant_id, keychain.user_id) != (asset.tenant_id, asset.user_id):
+            raise PermissionError("Selected credential does not belong to the current asset owner")
+        if plaintext_value is not None:
+            if keychain.id != "temp-inline" or keychain.type != "password":
+                raise PermissionError("Literal credential input is unavailable for a stored credential")
+            value = plaintext_value
+        else:
+            value = ssh_credential_value(keychain)
         if keychain.type not in {"ssh_key", "key", "password"}:
             raise PermissionError("Selected credential has no SSH purpose")
         if keychain.type in {"ssh_key", "key"}:
             fd, path = tempfile.mkstemp(text=True)
-            os.write(fd, keychain.value.encode('utf-8'))
+            os.write(fd, value.encode("utf-8"))
             os.close(fd)
             os.chmod(path, 0o600)
             temp_files.append(path)
             ssh_cmd.extend(["-i", path])
         elif keychain.type == "password":
             fd, path = tempfile.mkstemp(text=True)
-            script_content = f"#!/usr/bin/env python3\nimport sys\nsys.stdout.write({repr(keychain.value)} + '\\n')\n"
-            os.write(fd, script_content.encode('utf-8'))
+            script_content = f"#!/usr/bin/env python3\nimport sys\nsys.stdout.write({repr(value)} + '\\n')\n"
+            os.write(fd, script_content.encode("utf-8"))
             os.close(fd)
             os.chmod(path, 0o700)
             temp_files.append(path)
@@ -63,9 +86,10 @@ def build_ssh_command(asset: LocalAsset, keychain: Keychain | None = None) -> tu
             env_updates["SSH_ASKPASS_REQUIRE"] = "force"
             env_updates["DISPLAY"] = "dummy:0"
             ssh_cmd.extend(["-o", "BatchMode=no"])
-            
+
     ssh_cmd.extend(["-l", asset.username, "--", asset.ip])
     return ssh_cmd, env_updates, temp_files
+
 
 class LocalPTY:
     def __init__(self):
@@ -145,7 +169,7 @@ class TerminalSession:
         self.read_task: asyncio.Task | None = None
         self.authority_task: asyncio.Task | None = None
         self.temp_files: list[str] = []
-        
+
         # State for marker-based command execution
         self.is_executing_command = False
         self.command_output_buffer = ""
@@ -187,7 +211,7 @@ class TerminalSession:
 
         # Broadcast to UI websockets only if current mode allows it
         # Agent mode (broadcast=False): do NOT send to UI, keep terminal clean
-        if not getattr(self, '_current_broadcast', True):
+        if not getattr(self, "_current_broadcast", True):
             return
 
         # Filter out marker strings to keep the terminal clean
@@ -200,7 +224,7 @@ class TerminalSession:
                     await ws.send_text(clean_data)
                 except Exception:
                     dead_ws.add(ws)
-            
+
             for ws in dead_ws:
                 self.websockets.remove(ws)
 
@@ -209,7 +233,7 @@ class TerminalSession:
             while self.pty.fd is not None:
                 if self.authority_validator is not None:
                     await self.authority_validator()
-                await asyncio.sleep(.25)
+                await asyncio.sleep(0.25)
         except asyncio.CancelledError:
             raise
         except Exception:
@@ -232,7 +256,7 @@ class TerminalSession:
 
     async def execute_command(self, command: str, timeout_seconds: int = 30, broadcast: bool = True) -> dict:
         """Execute a command via the PTY using markers and capture the output.
-        
+
         Args:
             command: The shell command to execute.
             timeout_seconds: Max time to wait for completion.
@@ -243,7 +267,7 @@ class TerminalSession:
             await self.authority_validator()
         if self.is_executing_command:
             raise Exception("A command is already executing in this session")
-            
+
         self.is_executing_command = True
         self._unknown_recorded = False
         self._current_command = command
@@ -251,10 +275,10 @@ class TerminalSession:
         self._current_broadcast = broadcast
         self.command_output_buffer = ""
         self.command_future = asyncio.get_event_loop().create_future()
-        
+
         marker = _new_command_marker()
         self.end_marker = f"{marker}_END"
-        
+
         # Write the command exactly as it is so it looks native to the user.
         # Use a clean marker format that won't leave residuals after stripping
         full_command = f"{command}\necho {self.end_marker}$?\n"
@@ -270,7 +294,7 @@ class TerminalSession:
                     if remaining <= 0:
                         raise TimeoutError
                     try:
-                        output = await asyncio.wait_for(asyncio.shield(self.command_future), timeout=min(.25, remaining))
+                        output = await asyncio.wait_for(asyncio.shield(self.command_future), timeout=min(0.25, remaining))
                         await self.authority_validator()
                         break
                     except TimeoutError:
@@ -279,18 +303,19 @@ class TerminalSession:
                     except Exception:
                         self.close()
                         raise
-            
+
             # Parse output between markers
             start_idx = output.find(f"{marker}_START")
             if start_idx != -1:
                 start_line_end = output.find("\n", start_idx)
                 if start_line_end != -1:
-                    output = output[start_line_end+1:]
-            
+                    output = output[start_line_end + 1 :]
+
             end_idx = output.find(self.end_marker)
             exit_code = 0
             if end_idx != -1:
                 import re
+
                 end_str = output[end_idx:]
                 # Match: MARKER_END<NUMBER> (space between marker and exit code)
                 match = re.search(f"{re.escape(self.end_marker)}(\\d+)", end_str)
@@ -302,13 +327,13 @@ class TerminalSession:
             output = _strip_command_markers(output).strip()
 
             # Strip ANSI escape sequences (color codes, cursor movements, etc.)
-            ansi_escape = re.compile(r'\x1b\[[0-9;]*[a-zA-Z]|\x1b\][0-9;]*[a-zA-Z]|\x1b[()][0-9AB]|\x1b\[[?][0-9;]*[hl]')
-            output = ansi_escape.sub('', output)
+            ansi_escape = re.compile(r"\x1b\[[0-9;]*[a-zA-Z]|\x1b\][0-9;]*[a-zA-Z]|\x1b[()][0-9AB]|\x1b\[[?][0-9;]*[hl]")
+            output = ansi_escape.sub("", output)
 
             return {
                 "stdout": output,
-                "stderr": "", # PTY merges stdout and stderr
-                "return_code": exit_code
+                "stderr": "",  # PTY merges stdout and stderr
+                "return_code": exit_code,
             }
         except PermissionError:
             await self._record_unknown("Current terminal authority withdrawn")
@@ -324,11 +349,7 @@ class TerminalSession:
             await self._record_unknown("Terminal command timed out")
             # Need to send Ctrl+C to cancel command
             self.pty.write("\x03")
-            return {
-                "stdout": self.command_output_buffer,
-                "stderr": f"Command timed out after {timeout_seconds} seconds; external effects unknown",
-                "return_code": -1
-            }
+            return {"stdout": self.command_output_buffer, "stderr": f"Command timed out after {timeout_seconds} seconds; external effects unknown", "return_code": -1}
         finally:
             self.is_executing_command = False
             self.command_future = None
@@ -390,5 +411,6 @@ class TerminalSessionManager:
                     del self.sessions[key]
             if asset_id:
                 break
+
 
 session_manager = TerminalSessionManager()

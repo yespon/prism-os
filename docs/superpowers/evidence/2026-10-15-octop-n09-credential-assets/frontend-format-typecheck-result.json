@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-credential-assets/frontend_command.py",
+    "typecheck"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:43:14.458554+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:43:30.090862+00:00"
+}

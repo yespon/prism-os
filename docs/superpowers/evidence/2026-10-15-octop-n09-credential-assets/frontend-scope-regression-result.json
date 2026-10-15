@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-15-octop-n09-credential-assets/frontend_command.py",
+    "test:unit",
+    "src/core/terminal-agent/assets-api.test.ts",
+    "src/components/workspace/terminal/asset-dialogs.test.tsx",
+    "--maxWorkers=1"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:28:41.230355+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:28:50.413023+00:00"
+}

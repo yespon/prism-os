@@ -1,9 +1,11 @@
 import argparse
 import asyncio
+import os
 
 from sqlmodel import select
 
 from app.alerting.ticket_secrets import TicketSecretRepository
+from app.services.terminal.credential_access import rotate_keychain_storage
 from deerflow.database.models import TenantMcpServer, TenantModelConfig, UserConfig
 from deerflow.database.secrets_crypto import (
     decrypt_app_payload_with_key,
@@ -71,6 +73,7 @@ async def _rotate(old_key: str, new_key: str, dry_run: bool) -> None:
                     row.oauth = new_oauth
                     session.add(row)
 
+        changed_keychains = await rotate_keychain_storage(session, old_key, new_key, dry_run=dry_run)
         changed_ticket_secrets = await TicketSecretRepository().rotate_storage_key(
             session, old_key, new_key, dry_run=dry_run,
         )
@@ -83,13 +86,22 @@ async def _rotate(old_key: str, new_key: str, dry_run: bool) -> None:
     print(f"tenant_model_configs_changed={changed_models}")
     print(f"tenant_mcp_servers_changed={changed_mcp}")
     print(f"ticket_secrets_changed={changed_ticket_secrets}")
+    print(f"keychains_changed={changed_keychains}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Rotate encrypted secret fields from old key to new key")
-    parser.add_argument("--old-key", required=True, help="Current encryption key used by existing ciphertext")
-    parser.add_argument("--new-key", required=True, help="Target encryption key for re-encryption")
+    old_group = parser.add_mutually_exclusive_group(required=True)
+    old_group.add_argument("--old-key", help="Current encryption key; prefer --old-key-env")
+    old_group.add_argument("--old-key-env", help="Environment variable containing the current encryption key")
+    new_group = parser.add_mutually_exclusive_group(required=True)
+    new_group.add_argument("--new-key", help="Target encryption key; prefer --new-key-env")
+    new_group.add_argument("--new-key-env", help="Environment variable containing the target encryption key")
     parser.add_argument("--dry-run", action="store_true", help="Show counts without writing changes")
     args = parser.parse_args()
 
-    asyncio.run(_rotate(old_key=args.old_key, new_key=args.new_key, dry_run=args.dry_run))
+    old_key = os.environ.get(args.old_key_env, "") if args.old_key_env else args.old_key
+    new_key = os.environ.get(args.new_key_env, "") if args.new_key_env else args.new_key
+    if not old_key or not new_key:
+        parser.error("Both referenced encryption keys must be configured")
+    asyncio.run(_rotate(old_key=old_key, new_key=new_key, dry_run=args.dry_run))
