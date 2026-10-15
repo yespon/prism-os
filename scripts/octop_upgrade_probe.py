@@ -47,6 +47,7 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_office_docx.py",
         "tests/test_terminal_socket_sessions.py",
         "tests/test_auth_session_delivery.py",
         "tests/test_auth_middleware_status.py",
@@ -88,6 +89,11 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        'backend/packages/harness/deerflow/tools/builtins/office_docx.py',
+        'backend/tests/test_office_docx.py',
+        'backend/packages/harness/deerflow/sandbox/file_access.py',
+        'backend/packages/harness/deerflow/tools/tools.py',
+        'backend/app/integrations/file_access.py',
         'backend/app/services/terminal/socket_access.py',
         'backend/tests/test_terminal_socket_sessions.py',
         'backend/app/gateway/auth.py',

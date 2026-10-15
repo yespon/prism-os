@@ -87,6 +87,8 @@ def mutate_owned_file(path, operation):
             chain.append((fd, part, child))
             opened.append(child)
             fd = child
+        if operation[0] == "create":
+            return _publish_owned_bytes(path, operation[1], fd, chain)
         flags = os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK
         if operation[0] == "write":
             flags |= os.O_CREAT
@@ -133,3 +135,53 @@ def mutate_owned_file(path, operation):
     finally:
         for fd in reversed(opened):
             os.close(fd)
+
+def _publish_owned_bytes(path, content, directory, chain):
+    """Publish a complete binary file exclusively through held original ancestors."""
+    import uuid
+
+    from deerflow.skills.install_receipts import publish_no_replace
+
+    if not isinstance(content, bytes):
+        raise TypeError("Binary output required")
+
+    def check_chain():
+        for parent, name, child in chain:
+            current, held = os.stat(name, dir_fd=parent, follow_symlinks=False), os.fstat(child)
+            if (current.st_dev, current.st_ino) != (held.st_dev, held.st_ino):
+                raise PermissionError("Output ancestor changed; inspect outputs")
+
+    check_chain()
+    stage = ".prismos-stage-output-" + uuid.uuid4().hex
+    member = os.open(stage, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=directory)
+    original = os.fstat(member)
+    published = False
+    try:
+        data = memoryview(content)
+        while data:
+            written = os.write(member, data)
+            if written <= 0:
+                raise OSError("Output write did not progress")
+            data = data[written:]
+        os.fsync(member)
+        current = os.stat(stage, dir_fd=directory, follow_symlinks=False)
+        if (current.st_dev, current.st_ino, current.st_nlink, current.st_size) != (original.st_dev, original.st_ino, 1, len(content)):
+            raise PermissionError("Staged output changed")
+        check_chain()
+        publish_no_replace(path.with_name(stage), path, parent_descriptor=directory)
+        published = True
+        current = os.stat(path.name, dir_fd=directory, follow_symlinks=False)
+        if (current.st_dev, current.st_ino, current.st_nlink, current.st_size) != (original.st_dev, original.st_ino, 1, len(content)):
+            raise PermissionError("Published output changed; inspect outputs")
+        check_chain()
+        return "OK"
+    finally:
+        os.close(member)
+        if not published:
+            try:
+                current = os.stat(stage, dir_fd=directory, follow_symlinks=False)
+                if (current.st_dev, current.st_ino) == (original.st_dev, original.st_ino):
+                    os.unlink(stage, dir_fd=directory)
+                    os.fsync(directory)
+            except FileNotFoundError:
+                pass

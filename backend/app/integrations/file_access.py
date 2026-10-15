@@ -80,7 +80,7 @@ async def runtime_file_access(context, state, operation, path, factory):
             actual, virtual = owned_path(path, roots)
             if operation == "present" and not virtual.startswith("/mnt/user-data/outputs/"):
                 raise ExecutionTrustError("Only owned outputs can be presented")
-            if action in {"write", "replace"}:
+            if action in {"write", "replace", "create"}:
                 from deerflow.sandbox.file_access import mutate_owned_file
 
                 result = mutate_owned_file(actual, operation)

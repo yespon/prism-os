@@ -1,0 +1,36 @@
+{
+  "backend_image": "sha256:6e4f43e145729dde35a51658db9d53f5fc3b29580fbee36aea9f22d43168cd4e",
+  "files": {
+    "backend/packages/harness/deerflow/tools/builtins/office_docx.py": {
+      "sha256": "3769c10033f48a9b7a6b9a91d05d0f443a1f5ee1527da946570c1421a4e3d6f1",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/sandbox/file_access.py": {
+      "sha256": "463c2f0e1d4210ec01d4d65d6a5105258b2f589a7e89b79cdabbfba5545c5680",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/tools.py": {
+      "sha256": "c49fa9257823c89bdb54db5faae255f1860d435dc8d4aa41eff1291b8c298ddc",
+      "matches": true
+    },
+    "backend/app/integrations/file_access.py": {
+      "sha256": "321573f3c723b24db09757465bb68112a9065757e0c900ca2e3c56960a52706c",
+      "matches": true
+    },
+    "backend/tests/test_office_docx.py": {
+      "sha256": "7c6f2813ab2209c84e54ec72695b60c80af8ab810f277468062a60d37341ccb1",
+      "matches": true
+    },
+    "backend/tests/test_file_access_boundaries.py": {
+      "sha256": "964a5a953ef7477f5fe71b64159a540b49ca175dc667bf7fec86ccf3af33084e",
+      "matches": true
+    },
+    "backend/tests/test_file_access_http.py": {
+      "sha256": "f1b75ee589ed98a07ae33ad1bdcf54514ca4b0fef9f8e2af9a92a7e7c21eb0d3",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true
+}

@@ -7,11 +7,13 @@ from deerflow.community.image_search.tools import image_search_tool
 from deerflow.config import get_app_config
 from deerflow.sandbox.tools import bash_tool, ls_tool, read_file_tool, str_replace_tool, write_file_tool
 from deerflow.tools.builtins import ask_clarification_tool, present_file_tool, task_tool, view_image_tool
+from deerflow.tools.builtins.office_docx import office_docx_tool
 from deerflow.tools.builtins.tool_search import reset_deferred_registry
 
 logger = logging.getLogger(__name__)
 
 BUILTIN_TOOLS = [
+    office_docx_tool,
     present_file_tool,
     ask_clarification_tool,
     ls_tool,
