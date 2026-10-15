@@ -47,6 +47,7 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_office_charts.py",
         "tests/test_office_xlsx.py",
         "tests/test_office_formats.py",
         "tests/test_office_docx.py",
@@ -91,6 +92,7 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/tests/test_office_charts.py",
         "scripts/octop_worker_compat.py",
         "scripts/octop_worker_probe.py",
         "docker/octop-worker-compat/Dockerfile",

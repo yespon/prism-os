@@ -2,13 +2,20 @@
 
 import io
 import json
+import math
+import zipfile
 
 from langchain.tools import ToolRuntime, tool
 from pptx import Presentation
+from pptx.chart.data import CategoryChartData
+from pptx.enum.chart import XL_CHART_TYPE
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Inches, Pt
 
 from .office_common import check_office_package, owned_office_operation
+from .office_xlsx import _budget as _workbook_budget
+from .office_xlsx import _load as _load_workbook
+from .office_xlsx import create_xlsx
 
 CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"
 
@@ -47,16 +54,75 @@ def _frames(slide):
 def _budget(presentation):
     if len(presentation.slides) > 100:
         raise ValueError("Presentation slide limit exceeded")
-    total = 0
+    total = charts = 0
     for slide in presentation.slides:
+        for shape in _shapes(slide.shapes):
+            if shape.has_chart:
+                charts += 1
+                chart = shape.chart
+                if charts > 32 or len(chart.series) > 8 or not chart.plots or any(len(plot.categories) > 200 for plot in chart.plots):
+                    raise ValueError("Presentation chart limit exceeded")
         for frame in _frames(slide):
             total += len(frame.text)
             if total > 2_000_000:
                 raise ValueError("Presentation text limit exceeded")
 
 
+def _embedded_workbooks(data):
+    total = count = 0
+    with zipfile.ZipFile(io.BytesIO(data)) as outer:
+        for name in outer.namelist():
+            if not name.startswith("ppt/embeddings/") or name.endswith("/"):
+                continue
+            count += 1
+            if not name.endswith(".xlsx") or count > 32:
+                raise ValueError("Presentation embedded content unavailable")
+            body = outer.read(name)
+            with zipfile.ZipFile(io.BytesIO(body)) as workbook:
+                total += sum(item.file_size for item in workbook.infolist())
+            if total > 8 * 1024 * 1024:
+                raise ValueError("Presentation embedded workbook limit exceeded")
+            _workbook_budget(_load_workbook(body), validate_formulas=True)
+
+
+def _chart(slide, spec):
+    if not isinstance(spec, dict) or set(spec) - {"kind", "title", "categories", "series"} or spec.get("kind") not in {"bar", "line", "pie"}:
+        raise ValueError("Presentation chart schema unavailable")
+    categories, series = spec.get("categories"), spec.get("series")
+    if not isinstance(categories, list) or not 1 <= len(categories) <= 200 or not isinstance(series, list) or not 1 <= len(series) <= 8:
+        raise ValueError("Presentation chart dimensions unavailable")
+    if any(not isinstance(value, str) or not value or len(value) > 1000 for value in categories):
+        raise ValueError("Presentation chart category unavailable")
+    if spec["kind"] == "pie" and len(series) != 1:
+        raise ValueError("Pie chart requires one series")
+    data = CategoryChartData()
+    data.categories = [_text(value) for value in categories]
+    for item in series:
+        if not isinstance(item, dict) or set(item) != {"name", "values"} or not isinstance(item["name"], str) or not item["name"] or len(item["name"]) > 1000:
+            raise ValueError("Presentation chart series unavailable")
+        values = item["values"]
+        if not isinstance(values, list) or len(values) != len(categories) or any(type(value) not in {int, float} or not math.isfinite(value) or (spec["kind"] == "pie" and value < 0) for value in values):
+            raise ValueError("Presentation chart requires finite matching numeric values")
+        data.add_series(_text(item["name"]), values)
+    title = spec.get("title", "")
+    if not isinstance(title, str) or len(title) > 1000:
+        raise ValueError("Presentation chart title unavailable")
+    chart = slide.shapes.add_chart({"bar": XL_CHART_TYPE.COLUMN_CLUSTERED, "line": XL_CHART_TYPE.LINE, "pie": XL_CHART_TYPE.PIE}[spec["kind"]], Inches(0.7), Inches(1.6), Inches(11.9), Inches(5.1), data).chart
+    # The chart engine normally interprets '=' and URL-like labels in its XLSX
+    # writer. Replace its data part with our literal-cell workbook before output.
+    rows = [["", *[item["name"] for item in series]]]
+    rows += [[category, *[item["values"][index] for item in series]] for index, category in enumerate(categories)]
+    chart.part.chart_workbook.update_from_xlsx_blob(create_xlsx({"sheets": [{"name": "Sheet1", "rows": rows}]}))
+    chart.chart_style = 10
+    chart.has_legend = len(series) > 1 or spec["kind"] == "pie"
+    if title:
+        chart.has_title = True
+        chart.chart_title.text_frame.text = _text(title)
+
+
 def _load(data):
     check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+    _embedded_workbooks(data)
     result = Presentation(io.BytesIO(data))
     _budget(result)
     return result
@@ -68,6 +134,7 @@ def _save(presentation):
     presentation.save(stream)
     data = stream.getvalue()
     check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+    _embedded_workbooks(data)
     return data
 
 
@@ -86,15 +153,21 @@ def create_pptx(document):
                 raise ValueError("Referenced printer configuration unavailable")
             presentation.part.drop_rel(rel.rId)
     presentation.slide_width, presentation.slide_height = Inches(13.333), Inches(7.5)
+    chart_count = 0
     for item in slides:
-        if not isinstance(item, dict) or set(item) - {"title", "paragraphs", "table", "notes"} or ("table" in item and "paragraphs" in item):
+        if not isinstance(item, dict) or set(item) - {"title", "paragraphs", "table", "notes", "chart"} or sum(key in item for key in ["table", "paragraphs", "chart"]) > 1:
             raise ValueError("Presentation slide schema unavailable")
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         title = slide.shapes.add_textbox(Inches(0.6), Inches(0.4), Inches(12.1), Inches(0.9)).text_frame
         title.text = _text(item.get("title", ""))
         title.paragraphs[0].font.size = Pt(32)
         title.paragraphs[0].font.bold = True
-        if "table" in item:
+        if "chart" in item:
+            chart_count += 1
+            if chart_count > 32:
+                raise ValueError("Presentation chart limit exceeded")
+            _chart(slide, item["chart"])
+        elif "table" in item:
             rows = item["table"]
             if not isinstance(rows, list) or not 1 <= len(rows) <= 50 or not isinstance(rows[0], list) or not 1 <= len(rows[0]) <= 20:
                 raise ValueError("Presentation table unavailable")
@@ -124,13 +197,16 @@ def inspect_pptx(data):
     presentation = _load(data)
     slides = []
     for slide in presentation.slides:
-        texts, tables = [], []
+        texts, tables, charts = [], [], []
         for shape in _shapes(slide.shapes):
             if shape.has_text_frame:
                 texts.append(shape.text_frame.text)
+            if shape.has_chart:
+                chart = shape.chart
+                charts.append({"kind": str(chart.chart_type), "series": [{"name": item.name, "values": list(item.values)} for item in chart.series], "categories": [item.label for item in chart.plots[0].categories]})
             if shape.has_table:
                 tables.append([[cell.text for cell in row.cells] for row in shape.table.rows])
-        slides.append({"texts": texts, "tables": tables, "notes": slide.notes_slide.notes_text_frame.text if slide.has_notes_slide and slide.notes_slide.notes_text_frame is not None else ""})
+        slides.append({"texts": texts, "tables": tables, "charts": charts, "notes": slide.notes_slide.notes_text_frame.text if slide.has_notes_slide and slide.notes_slide.notes_text_frame is not None else ""})
     return {"slides": slides, "size_emu": [presentation.slide_width, presentation.slide_height], "rendered": False}
 
 
@@ -177,7 +253,9 @@ def office_pptx_tool(runtime: ToolRuntime, action: str, source_path: str = "", o
         action: create, inspect or edit. Desktop rendering, animations and advanced layouts remain pending.
         source_path: Current authorized PPTX for inspect or edit.
         output_path: New /mnt/user-data/outputs/*.pptx, never overwrites; present with present_files.
-        document: Create schema: slides list of title, paragraphs (strings) OR table (rectangular strings), optional notes. Uses a simple wide layout.
+        document: Create schema: slides list of title, paragraphs (strings) OR table (rectangular strings) OR chart (kind bar/line/pie, optional title, categories strings, series
+            list of name and finite numeric values), optional notes. Charts embed editable XLSX data; max 200 categories and 8 series, pie one nonnegative series. Uses a simple
+            wide layout.
         replacements: Literal text replacements in slide text, tables and notes. Cross-run matches adopt the first run style; advanced roundtrip fidelity is not claimed.
     """
     return owned_office_operation(runtime, action, ".pptx", source_path, output_path, lambda: create_pptx(document), inspect_pptx, lambda data: edit_pptx(data, replacements))

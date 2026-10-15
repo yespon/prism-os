@@ -1,0 +1,25 @@
+{
+  "base_commit": "de2fbc0",
+  "source_imported": "No newly copied upstream or excluded Office source",
+  "functional_integration": "Original office_xlsx/office_pptx create, inspect and text/cell edits now support bounded real chart packages and editable data",
+  "actual_acceptance": {
+    "related-final": "117 passed, 64 warnings in 62.52s (0:01:02)",
+    "backend-full": "2348 passed, 18 skipped, 753 warnings in 904.68s (0:15:04)",
+    "image-runtime": "117 passed, 64 warnings in 125.54s (0:02:05)",
+    "postgres": "117 passed, 64 warnings in 121.30s (0:02:01)",
+    "upgrade": [
+      "117 passed, 64 warnings in 118.04s (0:01:58)",
+      "117 passed, 64 warnings in 106.24s (0:01:46)",
+      "117 passed, 64 warnings in 98.33s (0:01:38)"
+    ]
+  },
+  "remaining": [
+    "Desktop rendering",
+    "Advanced chart editing/formatting and full Office fidelity",
+    "Unicode/Chinese PDF, OCR/forms",
+    "All original expert/delegation/external runtime goals",
+    "M1/N04/N07 exits"
+  ],
+  "M1_exited": false,
+  "N08_started": false
+}

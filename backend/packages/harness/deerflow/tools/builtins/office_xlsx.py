@@ -7,8 +7,9 @@ import re
 
 from langchain.tools import ToolRuntime, tool
 from openpyxl import Workbook, load_workbook
+from openpyxl.chart import BarChart, LineChart, PieChart, Reference
 from openpyxl.styles import Font
-from openpyxl.utils.cell import coordinate_to_tuple
+from openpyxl.utils.cell import coordinate_to_tuple, range_boundaries
 
 from .office_common import check_office_package, owned_office_operation
 
@@ -73,6 +74,54 @@ def _save(workbook):
     return data
 
 
+def _chart(sheet, spec):
+    if not isinstance(spec, dict) or set(spec) - {"kind", "title", "categories", "values", "anchor"}:
+        raise ValueError("Spreadsheet chart schema unavailable")
+    kind = spec.get("kind")
+    if kind not in {"bar", "line", "pie"}:
+        raise ValueError("Spreadsheet chart kind unavailable")
+    bounds = []
+    for name in ["categories", "values"]:
+        expression = spec.get(name)
+        if not isinstance(expression, str) or not re.fullmatch(r"[A-Z]{1,3}[1-9][0-9]{0,4}:[A-Z]{1,3}[1-9][0-9]{0,4}", expression):
+            raise ValueError("Local rectangular chart range required")
+        c1, r1, c2, r2 = range_boundaries(expression)
+        if not (1 <= c1 <= c2 <= min(256, sheet.max_column) and 1 <= r1 <= r2 <= min(10_000, sheet.max_row)):
+            raise ValueError("Spreadsheet chart dimensions unavailable")
+        bounds.append((c1, r1, c2, r2))
+    cc1, cr1, cc2, cr2 = bounds[0]
+    vc1, vr1, vc2, vr2 = bounds[1]
+    if cc1 != cc2 or cr2 - cr1 >= 200 or vr1 != cr1 - 1 or vr2 != cr2 or vc2 - vc1 >= 8 or (kind == "pie" and vc1 != vc2):
+        raise ValueError("Chart requires bounded matching categories and headed series")
+    for row in sheet.iter_rows(min_row=cr1, max_row=cr2, min_col=cc1, max_col=cc1):
+        if not isinstance(row[0].value, str) or row[0].data_type == "f" or len(row[0].value) > 1000:
+            raise ValueError("Chart category text required")
+    for col in range(vc1, vc2 + 1):
+        header = sheet.cell(vr1, col)
+        if not isinstance(header.value, str) or header.data_type == "f" or len(header.value) > 1000:
+            raise ValueError("Chart series heading required")
+        for row in range(cr1, cr2 + 1):
+            value = sheet.cell(row, col).value
+            if type(value) not in {int, float} or not math.isfinite(value) or (kind == "pie" and value < 0):
+                raise ValueError("Chart requires actual finite numeric cells, not uncalculated formulas")
+    title = spec.get("title", "")
+    if not isinstance(title, str) or len(title) > 1000:
+        raise ValueError("Chart title unavailable")
+    anchor = spec.get("anchor", "E2")
+    if not isinstance(anchor, str) or not re.fullmatch(r"[A-Z]{1,3}[1-9][0-9]{0,4}", anchor):
+        raise ValueError("Chart anchor unavailable")
+    ar, ac = coordinate_to_tuple(anchor)
+    if ar > 10_000 or ac > 256:
+        raise ValueError("Chart anchor unavailable")
+    chart = {"bar": BarChart, "line": LineChart, "pie": PieChart}[kind]()
+    if kind == "bar":
+        chart.type = "col"
+    chart.title, chart.style = title, 10
+    chart.add_data(Reference(sheet, min_col=vc1, min_row=vr1, max_col=vc2, max_row=vr2), titles_from_data=True)
+    chart.set_categories(Reference(sheet, min_col=cc1, min_row=cr1, max_row=cr2))
+    sheet.add_chart(chart, anchor)
+
+
 def create_xlsx(document):
     if not isinstance(document, dict) or set(document) != {"sheets"} or len(json.dumps(document, ensure_ascii=False)) > 2_000_000:
         raise ValueError("Spreadsheet schema unavailable")
@@ -82,9 +131,9 @@ def create_xlsx(document):
     workbook = Workbook()
     workbook.remove(workbook.active)
     names = set()
-    cells = 0
+    cells = chart_count = 0
     for item in sheets:
-        if not isinstance(item, dict) or set(item) - {"name", "rows", "header", "filter"}:
+        if not isinstance(item, dict) or set(item) - {"name", "rows", "header", "filter", "charts"}:
             raise ValueError("Spreadsheet sheet schema unavailable")
         name, rows = item.get("name"), item.get("rows", [])
         if not isinstance(name, str) or not name or len(name) > 31 or name.casefold() in names or not isinstance(rows, list) or len(rows) > 10_000:
@@ -105,6 +154,14 @@ def create_xlsx(document):
             sheet.freeze_panes = "A2"
         if item.get("filter") and rows:
             sheet.auto_filter.ref = sheet.dimensions
+        charts = item.get("charts", [])
+        if not isinstance(charts, list) or len(charts) > 16:
+            raise ValueError("Spreadsheet chart limit exceeded")
+        chart_count += len(charts)
+        if chart_count > 32:
+            raise ValueError("Spreadsheet chart limit exceeded")
+        for chart in charts:
+            _chart(sheet, chart)
     return _save(workbook)
 
 
@@ -115,7 +172,7 @@ def inspect_xlsx(data):
         rows = []
         for row in sheet.iter_rows():
             rows.append([{"formula": cell.value, "calculated": False} if cell.data_type == "f" else cell.value.isoformat() if hasattr(cell.value, "isoformat") else cell.value for cell in row])
-        result.append({"name": sheet.title, "rows": rows, "merged_cells": [str(value) for value in sheet.merged_cells.ranges]})
+        result.append({"name": sheet.title, "rows": rows, "merged_cells": [str(value) for value in sheet.merged_cells.ranges], "charts": [{"kind": type(chart).__name__, "series_count": len(chart.series)} for chart in sheet._charts]})
     return {"sheets": result, "formulas_calculated": False}
 
 
@@ -141,10 +198,12 @@ def office_xlsx_tool(runtime: ToolRuntime, action: str, source_path: str = "", o
     """Create, inspect or edit owned XLSX without evaluating formulas or executing macros.
 
     Args:
-        action: create, inspect or edit. Advanced pivot/chart/calculate/render operations remain pending.
+        action: create, inspect or edit. Pivot, calculation and desktop rendering remain pending.
         source_path: Current authorized XLSX input for inspect or edit.
         output_path: New /mnt/user-data/outputs/*.xlsx, never overwrites. Present with present_files.
-        document: Create schema: sheets list of name, rows (cell values), optional header/filter booleans. Strings are literal; explicit {formula: '=SUM(A1:A3)'} supports a limited safe formula set, not calculated values.
+        document: Create schema: sheets list of name, rows (cell values), optional header/filter booleans and charts list: kind (bar/line/pie), title, categories single-column
+            local range, values local range with header row, optional anchor (E2). Charts use at most 200 categories and 8 actual numeric series; pie uses one nonnegative series.
+            Strings are literal; explicit {formula: '=SUM(A1:A3)'} supports a limited safe formula set, not calculated values.
         changes: Edit list of sheet, cell (A1 address) and value. Unchanged worksheets/styles/merges are retained by the workbook engine; full Office roundtrip fidelity is not claimed.
     """
     return owned_office_operation(runtime, action, ".xlsx", source_path, output_path, lambda: create_xlsx(document), inspect_xlsx, lambda data: edit_xlsx(data, changes))
