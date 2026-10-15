@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-office-formats/generate_demo.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T16:14:15.266951+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T16:14:17.213410+00:00"
+}

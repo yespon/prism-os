@@ -1,0 +1,72 @@
+{
+  "scope": "independent host Office baselines, not imported excluded resources or full equivalence",
+  "source_exclusion_preserved": {
+    "main_office_members": 186,
+    "external_restricted_members": 51
+  },
+  "expert": "expert:office-automation",
+  "implementations": {
+    "skills/docx": {
+      "tool": "office_docx",
+      "baseline_commit": "f7ca429",
+      "full_equivalence_completed": false,
+      "current_evidence": "corrected post-publication membership withdrawal fixture and all original DOCX regressions",
+      "status": "independent functional baseline accepted in owned local databases/container; full equivalence pending"
+    },
+    "skills/xlsx": {
+      "tool": "office_xlsx",
+      "status": "independent functional baseline accepted in owned local databases/container; full equivalence pending",
+      "full_equivalence_completed": false
+    },
+    "skills/pptx": {
+      "tool": "office_pptx",
+      "status": "independent functional baseline accepted in owned local databases/container; full equivalence pending",
+      "full_equivalence_completed": false
+    },
+    "skills/pdf": {
+      "tool": "office_pdf",
+      "status": "independent functional baseline accepted in owned local databases/container; full equivalence pending",
+      "full_equivalence_completed": false
+    }
+  },
+  "unchanged_goals": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "PrismOS M1-M7",
+    "Golden Scenarios",
+    "five original gates"
+  ],
+  "M1_exited": false,
+  "N08_started": false,
+  "acceptance": {
+    "backend": {
+      "summary": "2326 passed, 18 skipped, 750 warnings in 803.35s (0:13:23)",
+      "passed": 2326,
+      "skipped": 18
+    },
+    "related": {
+      "summary": "99 passed, 61 warnings in 57.62s",
+      "passed": 99,
+      "skipped": 0
+    },
+    "postgres": {
+      "summary": "99 passed, 61 warnings in 88.33s (0:01:28)",
+      "passed": 99,
+      "skipped": 0,
+      "actual_scope": "owned actual PostgreSQL original tenant/member/thread/Agent facts; Auth User rows in explicitly owned SQLite store; real Office binary formats and HTTP downloads, no real model/deployment",
+      "owned_container_removed": true
+    },
+    "image": "sha256:6b8cc19e343d8b3b9227a1b4b8fdb76588a665426bb7716d76c98af83e22c262",
+    "upgrade": {
+      "complete": true,
+      "host_changed": false,
+      "host_inputs": 152,
+      "stages": [
+        "99 passed, 61 warnings in 85.77s (0:01:25)",
+        "99 passed, 61 warnings in 80.93s (0:01:20)",
+        "99 passed, 61 warnings in 96.50s (0:01:36)"
+      ]
+    }
+  }
+}

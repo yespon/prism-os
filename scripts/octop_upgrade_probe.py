@@ -47,6 +47,8 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_office_xlsx.py",
+        "tests/test_office_formats.py",
         "tests/test_office_docx.py",
         "tests/test_terminal_socket_sessions.py",
         "tests/test_auth_session_delivery.py",
@@ -89,6 +91,14 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        'backend/packages/harness/deerflow/tools/builtins/office_common.py',
+        'backend/packages/harness/deerflow/tools/builtins/office_xlsx.py',
+        'backend/packages/harness/deerflow/tools/builtins/office_pptx.py',
+        'backend/packages/harness/deerflow/tools/builtins/office_pdf.py',
+        'backend/tests/test_office_xlsx.py',
+        'backend/tests/test_office_formats.py',
+        'backend/packages/harness/pyproject.toml',
+        'backend/uv.lock',
         'backend/packages/harness/deerflow/tools/builtins/office_docx.py',
         'backend/tests/test_office_docx.py',
         'backend/packages/harness/deerflow/sandbox/file_access.py',

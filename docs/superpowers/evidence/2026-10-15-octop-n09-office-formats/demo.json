@@ -1,0 +1,21 @@
+{
+  "scope": "pure independent format engines; original native authorization/download/revocation separately covered in tests; no real model or external call",
+  "files": {
+    "demo-budget.xlsx": {
+      "sha256": "20afde034b39f80bf6b73ff8e0f92768075867a04949eb2ade8a31eb8f70d917",
+      "bytes": 5090
+    },
+    "demo-slides.pptx": {
+      "sha256": "547583b4284e968c45c4db57e6e88729930e658b9120d735907a4861a8895268",
+      "bytes": 33422
+    },
+    "demo-report.pdf": {
+      "sha256": "8a48f9c049ce0d83bd92c333aec299aca1cd751d5dde5b8a4ae1ec47260b9548",
+      "bytes": 2325
+    },
+    "demo-page.png": {
+      "sha256": "0a976989f704826691c2d12569a67018f7c27af6b14eee0ab4acd7b6f74ff066",
+      "bytes": 12387
+    }
+  }
+}

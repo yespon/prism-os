@@ -1,6 +1,5 @@
 """Independent actual DOCX packages through original current file authority."""
 
-import asyncio
 import importlib
 import io
 import zipfile
@@ -128,7 +127,9 @@ def withdraw(factory):
             session.add(member)
             await session.commit()
 
-    asyncio.run(change())
+    from app.runtime_adapters import _run_async
+
+    _run_async(change())
 
 
 @pytest.mark.parametrize("action", ["create", "inspect", "replace"])
@@ -268,6 +269,14 @@ def test_failed_binary_publication_preserves_original_or_complete_unknown_output
     assert result == {"status": "unavailable", "inspection_required": True, "retry": False}
     assert not list(root.glob(".prismos-stage-output-*"))
     if failure == "post-publish":
+        async def current_member():
+            async with factory() as session:
+                row = (await session.exec(select(TenantMembership).where(TenantMembership.tenant_id == "tenant-a", TenantMembership.user_id == "user-a"))).scalars().one()
+                return row.status
+
+        from app.runtime_adapters import _run_async
+
+        assert _run_async(current_member()) == "inactive"
         assert inspect_docx((root / "report.docx").read_bytes())["tables"] == DOCUMENT["tables"]
     else:
         assert not (root / "report.docx").exists()

@@ -1,0 +1,303 @@
+FF.......FFFFF.......................................................... [ 75%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+___ test_actual_presentation_text_tables_notes_and_existing_style_roundtrip ____
+
+    def test_actual_presentation_text_tables_notes_and_existing_style_roundtrip():
+>       source = create_pptx(SLIDES)
+                 ^^^^^^^^^^^^^^^^^^^
+
+tests/test_office_formats.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/tools/builtins/office_pptx.py:113: in create_pptx
+    return _save(presentation)
+           ^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/tools/builtins/office_pptx.py:70: in _save
+    check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'PK\x03\x04\x14\x00\x00\x00\x08\x00j\xbdO]ym\x95\xb7\xe1\x01\x00\x00\xd3\x0e\x00\x00\x13\x00\x00\x00[Content_Types].x...00\x00\x80\x01+r\x00\x00docProps/thumbnail.jpegPK\x05\x06\x00\x00\x00\x00-\x00-\x00\xc4\r\x00\x00\x03x\x00\x00\x00\x00'
+main = 'ppt/presentation.xml'
+content_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'
+
+    def check_office_package(data, main, content_type):
+        if not isinstance(data, bytes) or len(data) > MAX_BYTES:
+            raise ValueError("Office package size unavailable")
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > 512 or len({x.filename for x in members}) != len(members) or sum(x.file_size for x in members) > 32 * 1024 * 1024:
+                raise ValueError("Office package size unavailable")
+            parts = set()
+            expected_type = False
+            for member in members:
+                name = member.filename
+                if name.startswith("/") or ".." in name.split("/") or ":" in name or "\\" in name or name.lower().endswith((".bin", ".vba", ".exe")):
+>                   raise ValueError("Office member unavailable")
+E                   ValueError: Office member unavailable
+
+packages/harness/deerflow/tools/builtins/office_common.py:25: ValueError
+____________ test_presentation_growth_and_shape_limits_are_explicit ____________
+
+    def test_presentation_growth_and_shape_limits_are_explicit():
+>       source = create_pptx({"slides": [{"paragraphs": ["a" * 100]}]})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_office_formats.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/tools/builtins/office_pptx.py:113: in create_pptx
+    return _save(presentation)
+           ^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/tools/builtins/office_pptx.py:70: in _save
+    check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'PK\x03\x04\x14\x00\x00\x00\x08\x00j\xbdO]\xc6\xaf\xc4g\xb4\x01\x00\x00\xba\x0c\x00\x00\x13\x00\x00\x00[Content_Types...\x00\x80\x013]\x00\x00docProps/thumbnail.jpegPK\x05\x06\x00\x00\x00\x00&\x00&\x00\xa3\x0b\x00\x00\x0bc\x00\x00\x00\x00'
+main = 'ppt/presentation.xml'
+content_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'
+
+    def check_office_package(data, main, content_type):
+        if not isinstance(data, bytes) or len(data) > MAX_BYTES:
+            raise ValueError("Office package size unavailable")
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > 512 or len({x.filename for x in members}) != len(members) or sum(x.file_size for x in members) > 32 * 1024 * 1024:
+                raise ValueError("Office package size unavailable")
+            parts = set()
+            expected_type = False
+            for member in members:
+                name = member.filename
+                if name.startswith("/") or ".." in name.split("/") or ":" in name or "\\" in name or name.lower().endswith((".bin", ".vba", ".exe")):
+>                   raise ValueError("Office member unavailable")
+E                   ValueError: Office member unavailable
+
+packages/harness/deerflow/tools/builtins/office_common.py:25: ValueError
+__ test_presentation_and_pdf_native_outputs_download_through_original_routes ___
+
+file_client = (<starlette.testclient.TestClient object at 0x7c472141ab70>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem....<lambda> at 0x7c4721594860>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+
+    def test_presentation_and_pdf_native_outputs_download_through_original_routes(file_client):
+        client, _, _, runtime = file_client
+        ppt = office_pptx_tool.func(runtime, "create", output_path="/mnt/user-data/outputs/slides.pptx", document=SLIDES)
+        pdf = office_pdf_tool.func(runtime, "create", output_path="/mnt/user-data/outputs/report.pdf", document=PDF)
+>       assert ppt["status"] == pdf["status"] == "ok"
+E       AssertionError: assert 'unavailable' == 'ok'
+E         
+E         - ok
+E         + unavailable
+
+tests/test_office_formats.py:91: AssertionError
+_ test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pptx] _
+
+owned_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7c4721465950>, ....<lambda> at 0x7c472135ba60>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+kind = 'pptx'
+
+    @pytest.mark.parametrize("kind", ["pptx", "pdf", "pdf-merge", "pdf-render"])
+    def test_current_member_withdrawal_blocks_each_format_and_multi_source_merge(owned_runtime, kind):
+        factory, _, _, _, runtime = owned_runtime
+        root = Path(runtime.state["thread_data"]["outputs_path"])
+        (root / "source.pdf").write_bytes(create_pdf(PDF))
+>       (root / "source.pptx").write_bytes(create_pptx(SLIDES))
+                                           ^^^^^^^^^^^^^^^^^^^
+
+tests/test_office_formats.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/tools/builtins/office_pptx.py:113: in create_pptx
+    return _save(presentation)
+           ^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/tools/builtins/office_pptx.py:70: in _save
+    check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'PK\x03\x04\x14\x00\x00\x00\x08\x00l\xbdO]ym\x95\xb7\xe1\x01\x00\x00\xd3\x0e\x00\x00\x13\x00\x00\x00[Content_Types].x...00\x00\x80\x01+r\x00\x00docProps/thumbnail.jpegPK\x05\x06\x00\x00\x00\x00-\x00-\x00\xc4\r\x00\x00\x03x\x00\x00\x00\x00'
+main = 'ppt/presentation.xml'
+content_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'
+
+    def check_office_package(data, main, content_type):
+        if not isinstance(data, bytes) or len(data) > MAX_BYTES:
+            raise ValueError("Office package size unavailable")
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > 512 or len({x.filename for x in members}) != len(members) or sum(x.file_size for x in members) > 32 * 1024 * 1024:
+                raise ValueError("Office package size unavailable")
+            parts = set()
+            expected_type = False
+            for member in members:
+                name = member.filename
+                if name.startswith("/") or ".." in name.split("/") or ":" in name or "\\" in name or name.lower().endswith((".bin", ".vba", ".exe")):
+>                   raise ValueError("Office member unavailable")
+E                   ValueError: Office member unavailable
+
+packages/harness/deerflow/tools/builtins/office_common.py:25: ValueError
+_ test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pdf] _
+
+owned_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7c4721481890>, ....<lambda> at 0x7c472134e700>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+kind = 'pdf'
+
+    @pytest.mark.parametrize("kind", ["pptx", "pdf", "pdf-merge", "pdf-render"])
+    def test_current_member_withdrawal_blocks_each_format_and_multi_source_merge(owned_runtime, kind):
+        factory, _, _, _, runtime = owned_runtime
+        root = Path(runtime.state["thread_data"]["outputs_path"])
+        (root / "source.pdf").write_bytes(create_pdf(PDF))
+>       (root / "source.pptx").write_bytes(create_pptx(SLIDES))
+                                           ^^^^^^^^^^^^^^^^^^^
+
+tests/test_office_formats.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/tools/builtins/office_pptx.py:113: in create_pptx
+    return _save(presentation)
+           ^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/tools/builtins/office_pptx.py:70: in _save
+    check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'PK\x03\x04\x14\x00\x00\x00\x08\x00l\xbdO]ym\x95\xb7\xe1\x01\x00\x00\xd3\x0e\x00\x00\x13\x00\x00\x00[Content_Types].x...00\x00\x80\x01+r\x00\x00docProps/thumbnail.jpegPK\x05\x06\x00\x00\x00\x00-\x00-\x00\xc4\r\x00\x00\x03x\x00\x00\x00\x00'
+main = 'ppt/presentation.xml'
+content_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'
+
+    def check_office_package(data, main, content_type):
+        if not isinstance(data, bytes) or len(data) > MAX_BYTES:
+            raise ValueError("Office package size unavailable")
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > 512 or len({x.filename for x in members}) != len(members) or sum(x.file_size for x in members) > 32 * 1024 * 1024:
+                raise ValueError("Office package size unavailable")
+            parts = set()
+            expected_type = False
+            for member in members:
+                name = member.filename
+                if name.startswith("/") or ".." in name.split("/") or ":" in name or "\\" in name or name.lower().endswith((".bin", ".vba", ".exe")):
+>                   raise ValueError("Office member unavailable")
+E                   ValueError: Office member unavailable
+
+packages/harness/deerflow/tools/builtins/office_common.py:25: ValueError
+_ test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pdf-merge] _
+
+owned_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7c471b723850>, ....<lambda> at 0x7c4720182480>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+kind = 'pdf-merge'
+
+    @pytest.mark.parametrize("kind", ["pptx", "pdf", "pdf-merge", "pdf-render"])
+    def test_current_member_withdrawal_blocks_each_format_and_multi_source_merge(owned_runtime, kind):
+        factory, _, _, _, runtime = owned_runtime
+        root = Path(runtime.state["thread_data"]["outputs_path"])
+        (root / "source.pdf").write_bytes(create_pdf(PDF))
+>       (root / "source.pptx").write_bytes(create_pptx(SLIDES))
+                                           ^^^^^^^^^^^^^^^^^^^
+
+tests/test_office_formats.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/tools/builtins/office_pptx.py:113: in create_pptx
+    return _save(presentation)
+           ^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/tools/builtins/office_pptx.py:70: in _save
+    check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'PK\x03\x04\x14\x00\x00\x00\x08\x00l\xbdO]ym\x95\xb7\xe1\x01\x00\x00\xd3\x0e\x00\x00\x13\x00\x00\x00[Content_Types].x...00\x00\x80\x01+r\x00\x00docProps/thumbnail.jpegPK\x05\x06\x00\x00\x00\x00-\x00-\x00\xc4\r\x00\x00\x03x\x00\x00\x00\x00'
+main = 'ppt/presentation.xml'
+content_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'
+
+    def check_office_package(data, main, content_type):
+        if not isinstance(data, bytes) or len(data) > MAX_BYTES:
+            raise ValueError("Office package size unavailable")
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > 512 or len({x.filename for x in members}) != len(members) or sum(x.file_size for x in members) > 32 * 1024 * 1024:
+                raise ValueError("Office package size unavailable")
+            parts = set()
+            expected_type = False
+            for member in members:
+                name = member.filename
+                if name.startswith("/") or ".." in name.split("/") or ":" in name or "\\" in name or name.lower().endswith((".bin", ".vba", ".exe")):
+>                   raise ValueError("Office member unavailable")
+E                   ValueError: Office member unavailable
+
+packages/harness/deerflow/tools/builtins/office_common.py:25: ValueError
+_ test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pdf-render] _
+
+owned_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7c471b697650>, ....<lambda> at 0x7c471b6cd4e0>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+kind = 'pdf-render'
+
+    @pytest.mark.parametrize("kind", ["pptx", "pdf", "pdf-merge", "pdf-render"])
+    def test_current_member_withdrawal_blocks_each_format_and_multi_source_merge(owned_runtime, kind):
+        factory, _, _, _, runtime = owned_runtime
+        root = Path(runtime.state["thread_data"]["outputs_path"])
+        (root / "source.pdf").write_bytes(create_pdf(PDF))
+>       (root / "source.pptx").write_bytes(create_pptx(SLIDES))
+                                           ^^^^^^^^^^^^^^^^^^^
+
+tests/test_office_formats.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/tools/builtins/office_pptx.py:113: in create_pptx
+    return _save(presentation)
+           ^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/tools/builtins/office_pptx.py:70: in _save
+    check_office_package(data, "ppt/presentation.xml", CONTENT_TYPE)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'PK\x03\x04\x14\x00\x00\x00\x08\x00m\xbdO]ym\x95\xb7\xe1\x01\x00\x00\xd3\x0e\x00\x00\x13\x00\x00\x00[Content_Types].x...00\x00\x80\x01+r\x00\x00docProps/thumbnail.jpegPK\x05\x06\x00\x00\x00\x00-\x00-\x00\xc4\r\x00\x00\x03x\x00\x00\x00\x00'
+main = 'ppt/presentation.xml'
+content_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'
+
+    def check_office_package(data, main, content_type):
+        if not isinstance(data, bytes) or len(data) > MAX_BYTES:
+            raise ValueError("Office package size unavailable")
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > 512 or len({x.filename for x in members}) != len(members) or sum(x.file_size for x in members) > 32 * 1024 * 1024:
+                raise ValueError("Office package size unavailable")
+            parts = set()
+            expected_type = False
+            for member in members:
+                name = member.filename
+                if name.startswith("/") or ".." in name.split("/") or ":" in name or "\\" in name or name.lower().endswith((".bin", ".vba", ".exe")):
+>                   raise ValueError("Office member unavailable")
+E                   ValueError: Office member unavailable
+
+packages/harness/deerflow/tools/builtins/office_common.py:25: ValueError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_office_formats.py: 6 warnings
+tests/test_office_xlsx.py: 8 warnings
+tests/test_office_docx.py: 19 warnings
+tests/test_file_access_http.py: 23 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_office_docx.py::test_failed_binary_publication_preserves_original_or_complete_unknown_output[post-publish]
+  /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: RuntimeWarning: coroutine 'withdraw.<locals>.change' was never awaited
+    return future.result()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_office_formats.py::test_actual_presentation_text_tables_notes_and_existing_style_roundtrip
+FAILED tests/test_office_formats.py::test_presentation_growth_and_shape_limits_are_explicit
+FAILED tests/test_office_formats.py::test_presentation_and_pdf_native_outputs_download_through_original_routes
+FAILED tests/test_office_formats.py::test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pptx]
+FAILED tests/test_office_formats.py::test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pdf]
+FAILED tests/test_office_formats.py::test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pdf-merge]
+FAILED tests/test_office_formats.py::test_current_member_withdrawal_blocks_each_format_and_multi_source_merge[pdf-render]
+7 failed, 88 passed, 58 warnings in 54.48s
