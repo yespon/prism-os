@@ -1,0 +1,19 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_langgraph_proxy.py",
+    "tests/test_langgraph_proxy_stream.py",
+    "tests/test_diagnosis_delivery.py",
+    "tests/test_diagnosis_run_control.py",
+    "-q",
+    "-o",
+    "faulthandler_timeout=90"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T09:32:45.994852+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T09:33:12.161286+00:00"
+}

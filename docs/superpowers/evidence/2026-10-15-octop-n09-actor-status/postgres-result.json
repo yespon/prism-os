@@ -1,0 +1,17 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_skill_postgres.py",
+    "--output-dir",
+    "/tmp/prismos-actor-status-postgres-20261015",
+    "--test-file",
+    "tests/test_runtime_actor_status.py",
+    "--test-file",
+    "tests/test_file_access_http.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T09:36:30.372298+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T09:38:01.110616+00:00"
+}

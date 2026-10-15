@@ -5,11 +5,13 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import os
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+from native_auth_test_identity import declare_actor, isolated_identity
 from prismos_octop.catalog import get_template, list_personas, list_templates, render_persona
 from prismos_octop.upstream.chunk import chunk_text
 from sqlalchemy import select
@@ -44,6 +46,7 @@ def catalog_client():
         # Catalog/template tests use a synthetic authenticator; materialize its
         # explicit principals so production current-member checks stay active.
         if request.state.user_id and request.state.tenant_id:
+            declare_actor(request.state.user_id)
             from deerflow.database.models import Tenant, TenantMembership
             async with factory() as db:
                 tenant = request.state.tenant_id
@@ -65,7 +68,7 @@ def catalog_client():
     app.dependency_overrides[get_session] = session
     app.include_router(agent_catalog.router)
     app.include_router(agents.router)
-    with patch.object(user_config_service, "get_session_factory", lambda: factory):
+    with TemporaryDirectory(prefix="prismos-catalog-auth-") as directory, isolated_identity(directory), patch.object(user_config_service, "get_session_factory", lambda: factory):
         with TestClient(app) as client:
             yield client, factory
     asyncio.run(engine.dispose())

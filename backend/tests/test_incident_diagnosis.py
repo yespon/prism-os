@@ -37,7 +37,8 @@ async def _drop_tables(engine: AsyncEngine) -> None:
         await conn.run_sync(SQLModel.metadata.drop_all)
 
 @pytest.fixture()
-def test_session_factory(tmp_path):
+def test_session_factory(tmp_path, native_identity):
+    native_identity("user-a")
     # Fresh delivery checks require independent transactions; a single
     # in-memory connection can roll back a concurrent background writer.
     engine = _make_test_engine(tmp_path / "diagnosis.db")

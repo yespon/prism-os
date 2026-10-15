@@ -13,7 +13,7 @@ from test_skill_reference_transactions import durable_sqlite  # noqa: F401
 from app.alerting import diagnosis_authorization as authorization
 from app.models.agents import CustomAgent
 from app.models.alerting import AlertSource
-from app.platform.execution.trust import ExecutionCapabilityRepository
+from app.platform.execution.trust import ExecutionCapabilityRepository, ThreadBindingRepository
 from deerflow.database.models import TenantMembership
 from deerflow.runtime import ExecutionTrustError
 
@@ -42,6 +42,9 @@ def delegated(configured):
             config = await authorization.configure(session, "tenant-a", "user-a", {"analysis_trigger": {"mode": "auto", "diagnosis_agent_id": "shared-id", authorization.KEY: {"actor_id": "forged"}}}, confirm=True)
             session.add(AlertSource(id="source-id", tenant_id="tenant-a", name="delegated-source", config_json=config, created_by="unrelated-creator"))
             await session.commit()
+        for thread in ("thread", "coherent-thread", "context-thread"):
+            await ThreadBindingRepository(factory).create(thread, "tenant-a", "user-a")
+            await ThreadBindingRepository(factory).bind_agent(thread, "tenant-a", "user-a", "collision-agent")
         return config
 
     return http, factory, asyncio.run(seed())

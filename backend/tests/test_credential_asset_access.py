@@ -20,11 +20,19 @@ from deerflow.database.session import get_session
 
 
 @pytest.fixture
-def asset_client(tmp_path, monkeypatch):
+def asset_client(tmp_path, monkeypatch, native_identity):
+    native_identity("user-a")
     database_url = os.environ.get("PRISMOS_SKILL_TEST_DB_URL")
     if database_url:
         parsed = make_url(database_url)
-        if parsed.host not in {"127.0.0.1", "localhost"} or parsed.database != "prismos_skill_probe" or parsed.drivername != "postgresql+asyncpg":
+        if parsed.drivername == "sqlite+aiosqlite":
+            from pathlib import Path
+
+            candidate = Path(parsed.database or "")
+            if not candidate.is_absolute() or not candidate.resolve().is_relative_to(tmp_path.resolve()):
+                raise RuntimeError("Shared SQLite fixture must remain inside this owned test directory")
+            database_url = None  # This fixture owns its separate assets.sqlite database.
+        elif parsed.host not in {"127.0.0.1", "localhost"} or parsed.database != "prismos_skill_probe" or parsed.drivername != "postgresql+asyncpg":
             raise RuntimeError("Asset tests require the owned loopback probe database")
     engine = create_async_engine(database_url or ("sqlite+aiosqlite:///" + str(tmp_path / "assets.sqlite")), poolclass=NullPool)
 

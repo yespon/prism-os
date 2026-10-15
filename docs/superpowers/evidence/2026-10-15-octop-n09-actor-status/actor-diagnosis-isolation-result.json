@@ -1,0 +1,17 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_diagnosis_authorization.py",
+    "-q",
+    "-x",
+    "-o",
+    "faulthandler_timeout=60"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T09:38:10.702833+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-15T09:38:55.508922+00:00"
+}

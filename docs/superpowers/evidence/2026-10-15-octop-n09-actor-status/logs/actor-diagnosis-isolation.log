@@ -1,0 +1,121 @@
+...................F
+=================================== FAILURES ===================================
+_ test_original_graph_uses_protected_shared_config_and_soul_not_personal_same_name _
+
+coro = <coroutine object _consume_graph_capability at 0x77e356086c30>
+
+    def _run_async(coro):
+        """Run an async coroutine from sync code.
+    
+        Handles both the common case (no running event loop) and the edge case
+        (called from within an already-running event loop, e.g. during tests).
+        """
+        try:
+>           asyncio.get_running_loop()
+E           RuntimeError: no running event loop
+
+packages/harness/deerflow/config/agents_config.py:29: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+delegated = (<starlette.testclient.TestClient object at 0x77e354437b00>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77e3541a5d90>
+
+    def test_original_graph_uses_protected_shared_config_and_soul_not_personal_same_name(delegated, monkeypatch):
+        from test_lead_agent_model_resolution import _make_app_config, _make_model
+    
+        import deerflow.tools as tools
+        from app import runtime_adapters
+        from deerflow.agents.lead_agent import agent as graph
+        from deerflow.agents.lead_agent import prompt as template
+    
+        http, factory, config = delegated
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+        monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+        monkeypatch.setattr(graph, "get_agent_context_provider", lambda: runtime_adapters._load_agent_context)
+        monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+        monkeypatch.setattr(graph, "load_agent_config", lambda *args, **kwargs: pytest.fail("Protected ID fell back to a name cache"))
+        monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("safe", supports_thinking=False)]))
+        monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["safe"])
+        monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+        monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: object())
+        monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+        monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: [])
+        monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+        monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Protected soul fell back to name"))
+        monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+        token = asyncio.run(_repository(factory).issue("tenant-a", "user-a", "thread", "collision-agent", agent_id="shared-id"))
+>       built = graph.make_lead_agent({"context": {"tenant_id": "tenant-a", "user_id": "user-a", "thread_id": "thread", "agent_name": "collision-agent", "agent_id": "shared-id", "model_name": "safe", "prismos_execution_capability": token}})
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_diagnosis_authorization.py:311: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/agents/lead_agent/agent.py:140: in make_lead_agent
+    trusted_execution = _validate_execution_context(config)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/agents/lead_agent/agent.py:128: in _validate_execution_context
+    result = _run_async(validator(token, tenant_id, user_id, thread_id, agent_name))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/config/agents_config.py:31: in _run_async
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/runtime_adapters.py:189: in _consume_graph_capability
+    binding = await verify_thread(session, tenant_id, user_id, thread_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.ext.asyncio.session.AsyncSession object at 0x77e34770e840>
+tenant = 'tenant-a', actor = 'user-a', thread = 'thread'
+
+    async def verify_thread(session, tenant, actor, thread):
+        await verify_member(session, tenant, actor)
+        binding = await session.get(PlatformThreadBindingRecord, thread, populate_existing=True)
+        if binding is None or (binding.tenant_id, binding.user_id) != (tenant, actor):
+>           raise ExecutionTrustError("Current thread unavailable")
+E           deerflow.runtime.ExecutionTrustError: Current thread unavailable
+
+app/integrations/file_access.py:41: ExecutionTrustError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_diagnosis_authorization.py: 20 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_diagnosis_authorization.py::test_original_graph_uses_protected_shared_config_and_soul_not_personal_same_name
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 19 passed, 21 warnings in 42.00s

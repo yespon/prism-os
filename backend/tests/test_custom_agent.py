@@ -43,7 +43,8 @@ async def _drop_tables(engine: AsyncEngine) -> None:
 
 
 @pytest.fixture()
-def test_session_factory(monkeypatch):
+def test_session_factory(monkeypatch, native_identity):
+    native_identity("user-a")
     """Fixture providing an async session factory connected to in-memory SQLite."""
     from deerflow.database import user_config_service
 
@@ -91,6 +92,9 @@ def _make_test_app(session_factory, default_user_id: str | None = "user-a"):
         # request. Persist those explicit fixture facts before exercising the
         # real current-member/role guard; revocation tests use a separate app.
         if request.state.user_id:
+            from native_auth_test_identity import declare_actor
+
+            declare_actor(request.state.user_id)
             from sqlalchemy import select
 
             from deerflow.database.models import Tenant, TenantMembership

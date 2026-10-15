@@ -15,7 +15,8 @@ scoped_client = scoped_fixture
 
 
 @pytest.fixture
-def configured(scoped_client, monkeypatch):
+def configured(scoped_client, monkeypatch, native_identity):
+    native_identity("user-a")
     http, factory, root = prepare(scoped_client, monkeypatch)
     # This fixture owns real membership facts, including later withdrawal.
     # Synthetic request headers must never recreate or rewrite those facts.

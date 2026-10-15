@@ -70,6 +70,9 @@ async def verify_native_selection(session, tenant_id, user_id, agent_name, agent
     tenant = await session.get(Tenant, tenant_id, populate_existing=True)
     if agent is None or agent.tenant_id != tenant_id or agent.name != agent_name or not agent.enabled or agent.user_id not in {user_id, "tenant-shared"} or member is None or tenant is None or tenant.status != "active":
         raise ExecutionTrustError("Native Agent selection unavailable")
+    from app.integrations.actor_authorization import verify_current_account
+
+    verify_current_account(user_id)
     severity = None
     if diagnosis_incident_id is not None:
         from app.models.alerting import Incident
@@ -180,6 +183,12 @@ def _persist_agent(*, agent_name: str, soul: str, description: str, user_id: str
 
 
 async def _consume_graph_capability(token, tenant_id, user_id, thread_id, agent_name):
+    from app.integrations.file_access import verify_thread
+
+    async with get_session_factory()() as session:
+        binding = await verify_thread(session, tenant_id, user_id, thread_id)
+        if binding.agent_name is not None and binding.agent_name != (agent_name or "__default__"):
+            raise ExecutionTrustError("Current thread Agent unavailable")
     return await ExecutionCapabilityRepository(get_session_factory(), native_selection_validator=verify_native_selection).consume(token, tenant_id, user_id, thread_id, agent_name, include_selection=True, include_context=True)
 
 

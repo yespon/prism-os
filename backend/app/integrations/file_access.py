@@ -29,6 +29,9 @@ async def verify_member(session, tenant, actor):
     )
     if current is None or current.status != "active" or member is None:
         raise ExecutionTrustError("Current member unavailable")
+    from app.integrations.actor_authorization import verify_current_account
+
+    verify_current_account(actor)
 
 
 async def verify_thread(session, tenant, actor, thread):

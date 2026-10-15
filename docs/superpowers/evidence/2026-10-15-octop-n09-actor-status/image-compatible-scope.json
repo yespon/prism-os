@@ -1,0 +1,8 @@
+{
+  "image": "sha256:5b59be8641e7778d48edfe0fa732b6ead846a79f3d4d707659998172f4732750",
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true,
+  "excluded": "Three actual Local namespace positive tests cannot start under default Docker namespace restrictions; not passed/skipped as success. Their actual process revoke checks passed on host and isolated PostgreSQL. Earlier unfiltered image attempts retained.",
+  "production_namespace_policy": "unchanged; unavailable namespace execution fails closed; no privileged container"
+}

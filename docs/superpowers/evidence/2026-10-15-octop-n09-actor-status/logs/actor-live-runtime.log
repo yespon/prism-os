@@ -1,0 +1,90 @@
+........E..................F..........                                   [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_account_suspension_stops_actual_connection_transport __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-53/test_account_suspension_stops_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7999457c4080>
+native_identity = <function declare_actor at 0x7999457d22a0>
+
+    @pytest.fixture
+    def asset_client(tmp_path, monkeypatch, native_identity):
+        native_identity("user-a")
+        database_url = os.environ.get("PRISMOS_SKILL_TEST_DB_URL")
+        if database_url:
+            parsed = make_url(database_url)
+            if parsed.host not in {"127.0.0.1", "localhost"} or parsed.database != "prismos_skill_probe" or parsed.drivername != "postgresql+asyncpg":
+>               raise RuntimeError("Asset tests require the owned loopback probe database")
+E               RuntimeError: Asset tests require the owned loopback probe database
+
+tests/test_credential_asset_access.py:29: RuntimeError
+=================================== FAILURES ===================================
+______ test_owned_output_download_archive_and_history_cross_actor_guards _______
+
+file_client = (<starlette.testclient.TestClient object at 0x7999376ec9b0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem....<lambda> at 0x79993755b880>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x799937fe3a10>
+
+    def test_owned_output_download_archive_and_history_cross_actor_guards(file_client, monkeypatch):
+        from starlette.responses import Response
+    
+        client, _, paths, runtime = file_client
+        output = Path(runtime.state["thread_data"]["outputs_path"])
+        (output / "report.txt").write_text("OWNED RESULT 中文")
+        with zipfile.ZipFile(output / "bundle.skill", "w") as archive:
+            archive.writestr("bundle/SKILL.md", "OWNED ARCHIVE")
+        history_calls = []
+    
+        async def forward(*args):
+            history_calls.append(args[:2])
+            return Response(b'{"result":"OWNED HISTORY"}', media_type="application/json")
+    
+        monkeypatch.setattr(langgraph_proxy, "_forward", forward)
+        url = "/api/threads/member-thread/artifacts/mnt/user-data/outputs/report.txt"
+        assert client.get(url).text == "OWNED RESULT 中文"
+        download = client.get(url + "?download=true")
+        assert download.text == "OWNED RESULT 中文" and download.headers["content-disposition"].startswith("attachment;")
+        assert download.headers["cache-control"] == "no-store"
+        assert client.get("/api/threads/member-thread/artifacts/mnt/user-data/outputs/bundle.skill/SKILL.md").text == "OWNED ARCHIVE"
+        assert client.get("/api/langgraph/threads/member-thread/history").status_code == 200
+        for headers in [{"x-user": "user-b"}, {"x-tenant": "tenant-b"}]:
+>           assert client.get(url, headers=headers).status_code == 404
+E           AssertionError: assert 403 == 404
+E            +  where 403 = <Response [403 Forbidden]>.status_code
+E            +    where <Response [403 Forbidden]> = get('/api/threads/member-thread/artifacts/mnt/user-data/outputs/report.txt', headers={'x-user': 'user-b'})
+E            +      where get = <starlette.testclient.TestClient object at 0x7999376ec9b0>.get
+
+tests/test_file_access_http.py:80: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_runtime_actor_status.py: 3 warnings
+tests/test_skill_scoped_commands.py: 17 warnings
+tests/test_file_access_http.py: 11 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_file_access_http.py::test_owned_output_download_archive_and_history_cross_actor_guards
+ERROR tests/test_runtime_actor_status.py::test_account_suspension_stops_actual_connection_transport
+1 failed, 36 passed, 32 warnings, 1 error in 89.21s (0:01:29)

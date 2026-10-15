@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-actor-status/probe_namespace_limit.py", line 7, in <module>
+    assert probe.returncode!=0 and 'Operation not permitted' in probe.stderr,probe
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CompletedProcess(args=['docker', 'run', '--rm', '--network', 'none', '--name', 'prismos-actor-namespace-47b220580b2e', 'sha256:5b59be8641e7778d48edfe0fa732b6ead846a79f3d4d707659998172f4732750', 'bwrap', '--unshare-user', '--unshare-pid', '--ro-bind', '/', '/', '--proc', '/proc', '--', '/bin/true'], returncode=1, stdout='', stderr='bwrap: No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces. See <https://deb.li/bubblewrap> or <file:///usr/share/doc/bubblewrap/README.Debian.gz>.\n')

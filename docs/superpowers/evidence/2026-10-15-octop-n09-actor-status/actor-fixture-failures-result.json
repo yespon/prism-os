@@ -1,0 +1,19 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_credential_asset_access.py",
+    "tests/test_diagnosis_authorization.py",
+    "tests/test_agent_copy_share_boundaries.py",
+    "tests/test_agent_mcp_scope.py",
+    "tests/test_agent_skill_references.py",
+    "-q",
+    "-x"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T09:38:45.633530+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-15T09:39:42.406214+00:00"
+}

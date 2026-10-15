@@ -1,0 +1,10 @@
+{
+  "changed_paths": [
+    "backend/tests/test_custom_agent.py"
+  ],
+  "before_sha256": "f3e0ea08867d8704827dc3363f4cefd242c858a03eb81ce93297efbc6d793228",
+  "after_sha256": "2991a01f6cae73644a783237a85adc0d7062304e676644fc23195079229e27d1",
+  "unchanged_other_inputs": 1512,
+  "test_module_import_consumers": [],
+  "scope": "Only the existing synthetic CRUD authenticator now declares its own isolated User rows; original assertions and production guards unchanged. Full module rerun after correction; all other full-suite inputs byte identical."
+}

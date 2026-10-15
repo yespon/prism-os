@@ -1,0 +1,5 @@
+{
+  "owned_pytest_pid": 542379,
+  "reason": "Suite stalled for more than 15 minutes at asynchronous start event after four authority-fixture failures. SIGINT did not complete shutdown; SIGTERM only the verified owned pytest. No pass claim.",
+  "followup": "Explicit isolated original Auth rows added to proxy_setup; rerun affected suite with traceback timer."
+}

@@ -22,7 +22,8 @@ owned_runtime = owned_fixture
 
 
 @pytest.fixture
-def file_client(owned_runtime, monkeypatch):
+def file_client(owned_runtime, monkeypatch, native_identity):
+    native_identity("user-b")
     factory, root, agent, calls, runtime = owned_runtime
     monkeypatch.setattr(file_authorization, "get_session_factory", lambda: factory)
     monkeypatch.setattr(langgraph_proxy, "get_session_factory", lambda: factory)
@@ -160,3 +161,35 @@ def test_authorized_download_preserves_range_contract(file_client, range_value):
     else:
         assert response.status_code == (416 if range_value.startswith("bytes=") else 400)
     assert response.headers["cache-control"] == "no-store"
+
+@pytest.mark.parametrize("endpoint", ["artifacts/mnt/user-data/outputs/report.txt?download=true", "history", "uploads/list", "delete"])
+@pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+def test_current_original_account_guards_http_downloads_and_history(file_client, endpoint, change, monkeypatch):
+    from sqlalchemy import text
+
+    from app.gateway import auth_db
+
+    client, _, _, runtime = file_client
+    output = Path(runtime.state["thread_data"]["outputs_path"]) / "report.txt"
+    output.write_text("REVOKED ACCOUNT SECRET")
+    with auth_db.get_auth_engine().begin() as connection:
+        if change == "deleted":
+            connection.execute(text('DELETE FROM "user" WHERE id=:id'), {"id": "user-a"})
+        elif change == "password-reset":
+            connection.execute(text('UPDATE "user" SET "mustChangePassword"=:value WHERE id=:id'), {"value": True, "id": "user-a"})
+        else:
+            connection.execute(text('UPDATE "user" SET status=:value WHERE id=:id'), {"value": "suspended", "id": "user-a"})
+
+    async def forbidden_history(*args):
+        pytest.fail("Revoked account forwarded to history")
+
+    monkeypatch.setattr(langgraph_proxy, "_forward", forbidden_history)
+    monkeypatch.setattr(threads, "_delete_thread_checkpoints", lambda *args: pytest.fail("Revoked checkpoint deletion"))
+    if endpoint == "history":
+        response = client.get("/api/langgraph/threads/member-thread/history")
+    elif endpoint == "delete":
+        response = client.delete("/api/threads/member-thread")
+    else:
+        response = client.get("/api/threads/member-thread/" + endpoint)
+    assert response.status_code == 403 and "REVOKED ACCOUNT SECRET" not in response.text
+    assert output.read_text() == "REVOKED ACCOUNT SECRET"

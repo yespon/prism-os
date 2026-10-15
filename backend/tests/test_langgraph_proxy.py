@@ -20,7 +20,9 @@ real_forward = langgraph_proxy._forward
 
 
 @pytest.fixture
-async def proxy_setup(tmp_path, monkeypatch):
+async def proxy_setup(tmp_path, monkeypatch, native_identity):
+    native_identity("user-1")
+    native_identity("user-2")
     engine = create_async_engine(f"sqlite+aiosqlite:///{tmp_path / 'graph-proxy.db'}")
     async with engine.begin() as connection:
         await connection.run_sync(SQLModel.metadata.create_all)

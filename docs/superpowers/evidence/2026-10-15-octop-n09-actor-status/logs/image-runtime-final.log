@@ -1,0 +1,70 @@
+.....FFF..............................................                   [100%]
+=================================== FAILURES ===================================
+________ test_account_withdrawal_stops_actual_scoped_command[suspended] ________
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7020ea304950>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x7020e98c3dd0>)
+change = 'suspended'
+
+>   ???
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/tmp/pytest-of-root/pytest-0/test_account_withdrawal_stops_0/owned-thread-data/tenants/tenant-a/users/user-a/threads/member-thread/user-data/workspace/account-started').exists
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_runtime_actor_status.py:125: AssertionError
+_________ test_account_withdrawal_stops_actual_scoped_command[deleted] _________
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7020e990e3d0>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x7020e8fdc2c0>)
+change = 'deleted'
+
+>   ???
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/tmp/pytest-of-root/pytest-0/test_account_withdrawal_stops_1/owned-thread-data/tenants/tenant-a/users/user-a/threads/member-thread/user-data/workspace/account-started').exists
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_runtime_actor_status.py:125: AssertionError
+_____ test_account_withdrawal_stops_actual_scoped_command[password-reset] ______
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7020e990d410>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x7020e9021e50>)
+change = 'password-reset'
+
+>   ???
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/tmp/pytest-of-root/pytest-0/test_account_withdrawal_stops_2/owned-thread-data/tenants/tenant-a/users/user-a/threads/member-thread/user-data/workspace/account-started').exists
+
+/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_runtime_actor_status.py:125: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /app/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_runtime_actor_status.py: 9 warnings
+tests/test_file_access_http.py: 23 warnings
+  /app/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_runtime_actor_status.py::test_account_withdrawal_stops_actual_scoped_command[suspended]
+FAILED tests/test_runtime_actor_status.py::test_account_withdrawal_stops_actual_scoped_command[deleted]
+FAILED tests/test_runtime_actor_status.py::test_account_withdrawal_stops_actual_scoped_command[password-reset]
+3 failed, 51 passed, 33 warnings in 147.20s (0:02:27)

@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_runtime_actor_status.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T09:31:56.456922+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T09:32:12.217152+00:00"
+}

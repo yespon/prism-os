@@ -13,7 +13,8 @@ from deerflow.database import user_config_service
 
 
 @pytest.fixture(autouse=True)
-def current_identity_database(tmp_path, monkeypatch):
+def current_identity_database(tmp_path, monkeypatch, native_identity):
+    native_identity("user-a")
     engine = create_async_engine("sqlite+aiosqlite:///" + str(tmp_path / "identity.db"))
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

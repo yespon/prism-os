@@ -86,6 +86,9 @@ async def current_authorization(session, source_id, tenant_id, agent_id, *, expe
         if not should_auto_analyze(source.config_json, severity):
             raise ExecutionTrustError("Incident no longer meets the automatic diagnosis condition")
     actor_id = grant["actor_id"]
+    from app.integrations.actor_authorization import verify_current_account
+
+    verify_current_account(actor_id)
     if (expected_actor is not None and actor_id != expected_actor) or (expected_revision is not None and revision(source.config_json) != expected_revision):
         raise ExecutionTrustError("Automatic diagnosis source authorization changed")
     member = (

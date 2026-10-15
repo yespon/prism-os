@@ -1,4 +1,5 @@
 """Facts for synthetic header authenticators; real revocation tests use fixed apps."""
+from native_auth_test_identity import declare_actor
 from sqlalchemy import select
 
 from deerflow.database.models import Tenant, TenantMembership
@@ -9,6 +10,7 @@ async def persist_fixture_identity(request, factory):
     tenant = getattr(request.state, "tenant_id", None)
     if not actor or not tenant:
         return
+    declare_actor(actor)
     async with factory() as db:
         if await db.get(Tenant, tenant) is None:
             db.add(Tenant(id=tenant, name=tenant, slug=tenant))

@@ -101,7 +101,8 @@ def test_response_failure_after_commit_preserves_registered_files(scoped_client,
 
 
 @pytest.fixture
-def scoped_client(tmp_path, monkeypatch):
+def scoped_client(tmp_path, monkeypatch, native_identity):
+    native_identity("user-a")
     root = tmp_path / "skills"
     root.mkdir()
     url = os.environ.get("PRISMOS_SKILL_TEST_DB_URL", "sqlite+aiosqlite://")

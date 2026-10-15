@@ -47,6 +47,7 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_runtime_actor_status.py",
         "tests/test_credential_asset_access.py",
         "tests/test_remote_scoped_commands.py",
         "tests/test_provisioner_kubeconfig.py",
@@ -84,6 +85,10 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        'backend/app/integrations/actor_authorization.py',
+        'backend/tests/native_auth_test_identity.py',
+        'backend/tests/test_runtime_actor_status.py',
+        'backend/tests/conftest.py',
         "frontend/src/core/terminal-agent/assets-api.ts",
         "frontend/src/core/terminal-agent/assets-api.test.ts",
         "frontend/src/components/workspace/terminal/asset-sidebar.tsx",

@@ -133,7 +133,8 @@ def test_source_condition_change_stops_actual_command_and_discards_unconfirmed_o
 
 
 @pytest.mark.anyio
-async def test_policy_allow_cannot_submit_ticket_after_source_authority_withdrawn(source_runtime):
+@pytest.mark.parametrize("withdrawal", ["member_role", "account"])
+async def test_policy_allow_cannot_submit_ticket_after_source_authority_withdrawn(source_runtime, withdrawal):
     from datetime import UTC, datetime
 
     from app.alerting.governed_ticket import TicketActionAdapter, TicketTarget
@@ -156,11 +157,19 @@ async def test_policy_allow_cannot_submit_ticket_after_source_authority_withdraw
     class RevokeAfterDecision:
         async def evaluate_and_record(self, *args, **kwargs):
             decision = await policy.evaluate_and_record(*args, **kwargs)
-            async with factory() as session:
-                row = (await session.exec(select(TenantMembership))).scalars().one()
-                row.role = "tenant_member"
-                session.add(row)
-                await session.commit()
+            if withdrawal == "account":
+                from sqlalchemy import text
+
+                from app.gateway.auth_db import get_auth_engine
+
+                with get_auth_engine().begin() as connection:
+                    connection.execute(text('UPDATE "user" SET status=:status WHERE id=:id'), {"status": "suspended", "id": "user-a"})
+            else:
+                async with factory() as session:
+                    row = (await session.exec(select(TenantMembership))).scalars().one()
+                    row.role = "tenant_member"
+                    session.add(row)
+                    await session.commit()
             return decision
 
     async def resolve(tenant, incident):
