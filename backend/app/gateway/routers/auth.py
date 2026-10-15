@@ -10,6 +10,7 @@ from sqlalchemy import text
 from app.gateway.auth_crypto import hash_password, verify_password
 from app.gateway.auth_db import _row_to_dict, auth_connection, column_exists
 from app.gateway.bootstrap_admin import bootstrap_admin
+from app.gateway.session_authorization import session_expiry
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -247,18 +248,15 @@ def get_session(request: Request) -> SessionResponse:
     if not token:
         return SessionResponse()
 
-    row = _resolve_session(token)
+    try:
+        row = _resolve_session(token)
+    except Exception:
+        raise HTTPException(503, "Auth session storage unavailable") from None
     if row is None:
         return SessionResponse()
-
-    expires_at = row.get("expiresAt")
-    if expires_at:
-        try:
-            exp = datetime.fromisoformat(str(expires_at).replace("Z", "+00:00"))
-            if exp <= datetime.now(UTC):
-                return SessionResponse()
-        except ValueError:
-            pass
+    expires = session_expiry(row.get("expiresAt"))
+    if expires is None or expires <= datetime.now(UTC):
+        return SessionResponse()
 
     return SessionResponse(
         session=SessionInfo(

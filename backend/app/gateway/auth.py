@@ -11,6 +11,7 @@ from app.gateway.auth_db import (
     auth_connection,
     column_exists,
 )
+from app.gateway.session_authorization import SessionAuthorityUnavailable, current_session_body, session_expiry
 from deerflow.config.tenant_context import reset_tenant_context, set_tenant_context
 from deerflow.database.tenant_service import ensure_default_tenant_for_user, get_membership, list_user_tenants, normalize_tenant_role
 from deerflow.database.user_config_service import get_current_tenant_id, set_current_tenant_id
@@ -18,45 +19,26 @@ from deerflow.database.user_config_service import get_current_tenant_id, set_cur
 logger = logging.getLogger(__name__)
 
 
-def _parse_iso_datetime(raw: str | None) -> datetime | None:
-    if not raw:
-        return None
-    try:
-        return datetime.fromisoformat(raw.replace("Z", "+00:00"))
-    except ValueError:
-        return None
+def _parse_iso_datetime(raw) -> datetime | None:
+    return session_expiry(raw)
 
 
 def _resolve_user_from_auth_db(token: str) -> tuple[str, str, bool] | None:
     """Fallback token validation by reading Better Auth tables directly."""
     try:
         with auth_connection() as conn:
-            try:
-                result = conn.execute(
-                    text(
-                        "SELECT u.id AS user_id, u.role AS user_role, s.\"expiresAt\" AS expires_at, u.\"mustChangePassword\" "
-                        "FROM session s "
-                        "JOIN \"user\" u ON u.id = s.\"userId\" "
-                        "WHERE s.token = :token "
-                        "LIMIT 1"
-                    ),
-                    {"token": token},
-                )
-                row = result.fetchone()
-            except Exception:
-                result = conn.execute(
-                    text(
-                        "SELECT u.id AS user_id, u.role AS user_role, s.\"expiresAt\" AS expires_at "
-                        "FROM session s "
-                        "JOIN \"user\" u ON u.id = s.\"userId\" "
-                        "WHERE s.token = :token "
-                        "LIMIT 1"
-                    ),
-                    {"token": token},
-                )
-                row = result.fetchone()
-    except Exception as exc:
-        logger.warning("Failed to resolve user from auth db: %s", exc)
+            password_field = ', u."mustChangePassword"' if column_exists(conn, "user", "mustChangePassword") else ""
+            result = conn.execute(
+                text(
+                    'SELECT u.id AS user_id, u.role AS user_role, s."expiresAt" AS expires_at'
+                    + password_field
+                    + ' FROM session s JOIN "user" u ON u.id = s."userId" WHERE s.token = :token LIMIT 1'
+                ),
+                {"token": token},
+            )
+            row = result.fetchone()
+    except Exception:
+        logger.warning("Auth session storage unavailable")
         return None
 
     if row is None:
@@ -64,7 +46,7 @@ def _resolve_user_from_auth_db(token: str) -> tuple[str, str, bool] | None:
 
     row_dict = _row_to_dict(row)
     expires_at = _parse_iso_datetime(row_dict.get("expires_at"))
-    if expires_at is not None and expires_at <= datetime.now(UTC):
+    if expires_at is None or expires_at <= datetime.now(UTC):
         return None
 
     must_change = False
@@ -298,7 +280,26 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return JSONResponse(status_code=500, content={"detail": "Internal server error during authentication"})
 
         try:
-            return await call_next(request)
+            response = await call_next(request)
+
+            def verify_session():
+                current = _resolve_user_from_auth_db(token)
+                if current is None or current[0] != user_id:
+                    raise SessionAuthorityUnavailable("Current session unavailable; response delivery stopped")
+
+            try:
+                verify_session()
+            except SessionAuthorityUnavailable:
+                await response.body_iterator.aclose()
+                if request.method not in {"GET", "HEAD", "OPTIONS"}:
+                    return JSONResponse(status_code=503, content={"detail": {
+                        "message": "Session ended after the request started; inspect current state before retrying",
+                        "inspection_required": True,
+                    }}, headers={"Cache-Control": "private, no-store"})
+                return JSONResponse(status_code=401, content={"detail": "Current session unavailable"}, headers={"Cache-Control": "private, no-store"})
+            response.body_iterator = current_session_body(response.body_iterator, verify_session)
+            response.headers["Cache-Control"] = "private, no-store"
+            return response
         finally:
             if tenant_token is not None:
                 reset_tenant_context(tenant_token)

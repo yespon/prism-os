@@ -1,0 +1,18 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_auth_session_delivery.py",
+    "tests/test_auth_middleware_status.py",
+    "tests/contracts/test_approval_router.py",
+    "-q",
+    "-o",
+    "faulthandler_timeout=30"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T13:23:36.521454+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T13:23:42.943213+00:00"
+}

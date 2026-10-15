@@ -1,0 +1,44 @@
+{
+  "backend_image": "sha256:389754ccf7fa55567ea05b37b8a56af6a0f98e41037cb12d4df4484871b0745b",
+  "files": {
+    "backend/app/gateway/auth.py": {
+      "sha256": "8db77957e88d3b51df3a4d4a76d6bbbb2f5ddf4278598f712af45ed49c98bddb",
+      "matches": true
+    },
+    "backend/app/gateway/routers/auth.py": {
+      "sha256": "f49d19dbe1bee7a0a91d9994fb33f7430df45556b3d565ec11ed379b19f27911",
+      "matches": true
+    },
+    "backend/app/gateway/session_authorization.py": {
+      "sha256": "a8650840098c42b2bd96a22e2609adafb052d0567dd7bc80692ce86d5e785785",
+      "matches": true
+    },
+    "backend/tests/test_auth_session_delivery.py": {
+      "sha256": "004c0c91aa2d576fbdce496c7f6b563bac03feeff0623a3a490846b8730ab6ce",
+      "matches": true
+    },
+    "backend/tests/test_auth_middleware_status.py": {
+      "sha256": "1714e04deb82b465f76fb8f790bb9706d133b2cbf223e80ead22ced579a0d3ea",
+      "matches": true
+    },
+    "backend/app/integrations/actor_authorization.py": {
+      "sha256": "25a77a8251a34878cb8d28a728a50f2c380ac3e565fa824f67b19292c7472a8d",
+      "matches": true
+    },
+    "backend/app/integrations/file_access.py": {
+      "sha256": "2e950927e9085757e43b0e63012440e17f203ef3b72193c70c5d05c2a645386f",
+      "matches": true
+    },
+    "backend/app/runtime_adapters.py": {
+      "sha256": "9574c0e5bffdeaa5dd14f390bf1a18af39671bdacb3af757190e1e183e7bc996",
+      "matches": true
+    },
+    "backend/tests/test_file_access_http.py": {
+      "sha256": "f1b75ee589ed98a07ae33ad1bdcf54514ca4b0fef9f8e2af9a92a7e7c21eb0d3",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true
+}

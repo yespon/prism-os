@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_skill_postgres.py",
+    "--output-dir",
+    "/tmp/prismos-session-native-postgres-20261015",
+    "--test-file",
+    "tests/test_auth_session_delivery.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T13:31:24.791844+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T13:31:40.657693+00:00"
+}

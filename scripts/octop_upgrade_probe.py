@@ -47,6 +47,8 @@ def main():
         "tests/test_skill_reference_transactions.py",
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
+        "tests/test_auth_session_delivery.py",
+        "tests/test_auth_middleware_status.py",
         "tests/test_runtime_actor_status.py",
         "tests/test_credential_asset_access.py",
         "tests/test_remote_scoped_commands.py",
@@ -85,6 +87,11 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        'backend/app/gateway/auth.py',
+        'backend/app/gateway/routers/auth.py',
+        'backend/app/gateway/session_authorization.py',
+        'backend/tests/test_auth_session_delivery.py',
+        'backend/tests/test_auth_middleware_status.py',
         'backend/app/integrations/actor_authorization.py',
         'backend/tests/native_auth_test_identity.py',
         'backend/tests/test_runtime_actor_status.py',
