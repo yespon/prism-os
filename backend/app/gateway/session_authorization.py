@@ -42,9 +42,19 @@ async def current_session_body(iterator, verify, *, interval=0.25):
             verify()
             yield value
     finally:
-        if pending is not None and not pending.done():
-            pending.cancel()
+        if pending is not None:
+            if not pending.done():
+                pending.cancel()
             await asyncio.gather(pending, return_exceptions=True)
         close = getattr(iterator, "aclose", None)
         if close is not None:
             await close()
+
+def session_token(request) -> str | None:
+    """Use the original HTTP token priority for HTTP and WebSocket consumers."""
+    header = request.headers.get("Authorization")
+    if header and header.startswith("Bearer "):
+        value = header.split(" ", 1)[1].strip()
+        if value:
+            return value
+    return request.query_params.get("token") or request.cookies.get("better-auth.session_token") or request.cookies.get("__Secure-better-auth.session_token")

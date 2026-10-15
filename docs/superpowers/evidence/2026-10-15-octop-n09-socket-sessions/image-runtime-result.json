@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-socket-runtime-e54884ce8892",
+    "sha256:19309ada80b9753adca73c4db2630c6932d0a1a621e696be82ef3be3e6445a91",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_terminal_socket_sessions.py tests/test_auth_session_delivery.py tests/test_terminal_access_boundaries.py tests/test_auth_middleware_status.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T14:23:53.285775+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T14:25:07.031115+00:00"
+}

@@ -1,0 +1,114 @@
+...F.........................................                            [100%]
+=================================== FAILURES ===================================
+____ test_withdrawn_socket_receives_no_output_and_does_not_close_legal_peer ____
+
+pyfuncitem = <Function test_withdrawn_socket_receives_no_output_and_does_not_close_legal_peer>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+                with get_runner(backend_name, backend_options) as runner:
+                    try:
+>                       runner.run_test(pyfuncitem.obj, testargs)
+
+.venv/lib/python3.12/site-packages/anyio/pytest_plugin.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2306: in run_test
+    self._raise_async_exceptions()
+.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2210: in _raise_async_exceptions
+    raise exceptions[0]
+.venv/lib/python3.12/site-packages/starlette/websockets.py:120: in receive_text
+    self._raise_on_disconnect(message)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.websockets.WebSocket object at 0x7042b0293530>
+message = {'type': 'websocket.disconnect', 'code': 1000}
+
+    def _raise_on_disconnect(self, message: Message) -> None:
+        if message["type"] == "websocket.disconnect":
+>           raise WebSocketDisconnect(message["code"], message.get("reason"))
+E           starlette.websockets.WebSocketDisconnect: (1000, None)
+
+.venv/lib/python3.12/site-packages/starlette/websockets.py:114: WebSocketDisconnect
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_terminal_socket_sessions.py::test_revoked_socket_session_cannot_write_resize_or_stay_idle[input]
+tests/test_terminal_socket_sessions.py::test_revoked_socket_session_cannot_write_resize_or_stay_idle[resize]
+tests/test_terminal_socket_sessions.py::test_revoked_socket_session_cannot_write_resize_or_stay_idle[idle]
+tests/test_terminal_socket_sessions.py::test_withdrawn_socket_receives_no_output_and_does_not_close_legal_peer
+tests/test_auth_session_delivery.py::test_original_native_file_and_history_routes_recheck_the_actual_session[False-artifact]
+tests/test_auth_session_delivery.py::test_original_native_file_and_history_routes_recheck_the_actual_session[False-history]
+tests/test_auth_session_delivery.py::test_original_native_file_and_history_routes_recheck_the_actual_session[True-artifact]
+tests/test_auth_session_delivery.py::test_original_native_file_and_history_routes_recheck_the_actual_session[True-history]
+tests/test_auth_session_delivery.py::test_actual_session_guard_preserves_original_authorized_range_download
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_terminal_socket_sessions.py: 8 warnings
+tests/test_auth_session_delivery.py: 57 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: DeprecationWarning: The default datetime adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    cursor.execute(statement, parameters)
+
+tests/test_terminal_socket_sessions.py::test_revoked_socket_session_cannot_write_resize_or_stay_idle[input]
+tests/test_terminal_socket_sessions.py::test_revoked_socket_session_cannot_write_resize_or_stay_idle[resize]
+tests/test_terminal_socket_sessions.py::test_revoked_socket_session_cannot_write_resize_or_stay_idle[idle]
+tests/test_terminal_socket_sessions.py::test_withdrawn_socket_receives_no_output_and_does_not_close_legal_peer
+  /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pty.py:95: DeprecationWarning: This process (pid=696888) is multi-threaded, use of forkpty() may lead to deadlocks in the child.
+    pid, fd = os.forkpty()
+
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1768: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return await self.request(
+
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1859: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return await self.request(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_terminal_socket_sessions.py::test_withdrawn_socket_receives_no_output_and_does_not_close_legal_peer
+1 failed, 44 passed, 84 warnings in 16.87s

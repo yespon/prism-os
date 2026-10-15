@@ -219,14 +219,14 @@ class TerminalSession:
 
         if clean_data:
             dead_ws = set()
-            for ws in self.websockets:
+            for ws in tuple(self.websockets):
                 try:
                     await ws.send_text(clean_data)
                 except Exception:
                     dead_ws.add(ws)
 
             for ws in dead_ws:
-                self.websockets.remove(ws)
+                self.websockets.discard(ws)
 
     async def _watch_authority(self):
         try:

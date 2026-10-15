@@ -1,0 +1,16 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_terminal_socket_sessions.py",
+    "-q",
+    "-o",
+    "faulthandler_timeout=30"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T13:56:18.839807+00:00",
+  "complete": true,
+  "returncode": 2,
+  "finished_at": "2026-10-15T13:56:21.793859+00:00"
+}

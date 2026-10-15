@@ -1,0 +1,134 @@
+........................................................................ [ 81%]
+................                                                         [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_terminal_socket_sessions.py: 17 warnings
+tests/test_auth_session_delivery.py: 5 warnings
+tests/test_terminal_access_boundaries.py: 21 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_terminal_socket_sessions.py: 37 warnings
+tests/test_auth_session_delivery.py: 57 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: DeprecationWarning: The default datetime adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    cursor.execute(statement, parameters)
+
+tests/test_terminal_socket_sessions.py: 15 warnings
+tests/test_terminal_access_boundaries.py: 2 warnings
+  /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pty.py:95: DeprecationWarning: This process (pid=701772) is multi-threaded, use of forkpty() may lead to deadlocks in the child.
+    pid, fd = os.forkpty()
+
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1768: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return await self.request(
+
+tests/test_auth_session_delivery.py::test_actual_original_logout_and_session_endpoints_preserve_other_sessions[cookie]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1859: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return await self.request(
+
+tests/test_terminal_access_boundaries.py: 12 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:46: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    role = (await db.execute(sa_select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == actor, TenantMembership.status == "active"))).scalars().first()
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[tenant_admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[tenant_admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[owner]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[owner]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:518: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[tenant_admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[tenant_admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[admin]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[owner]
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin[owner]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:529: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    count_result = await db.execute(count_query)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+88 passed, 184 warnings in 64.42s (0:01:04)

@@ -65,7 +65,7 @@ def _is_agent_mode() -> bool:
     return _get_mode() == "agent"
 
 
-async def _ensure_session(asset_id: str = "") -> tuple:
+async def _ensure_session(asset_id: str = "", *, acquisition_guard=None) -> tuple:
     """Ensure a PTY session exists. Returns session."""
     session_id = _get_session_id()
     if not asset_id:
@@ -84,6 +84,8 @@ async def _ensure_session(asset_id: str = "") -> tuple:
     if not selected and context.get("asset_id") and asset_id != context["asset_id"]:
         raise PermissionError("Terminal target is outside the current selection")
     asset, keychain = await verify_terminal_access(context, asset_id)
+    if acquisition_guard is not None:
+        acquisition_guard()
     fingerprint = (context.get("thread_id"), context.get("chat_session_id"), asset_fingerprint(asset, keychain))
     session = session_manager.get_or_create_session(session_id, asset_id, tenant_id=context.get("tenant_id"), user_id=context.get("user_id"))
     if session.authority_fingerprint is not None and session.authority_fingerprint != fingerprint:
@@ -105,6 +107,8 @@ async def _ensure_session(asset_id: str = "") -> tuple:
     if session.pty.fd is None:
         from app.gateway.routers.terminal import build_ssh_command
 
+        if acquisition_guard is not None:
+            acquisition_guard()
         cmd_arr, env_updates, temp_files = build_ssh_command(asset, keychain)
         session.start(cmd=cmd_arr, env_updates=env_updates, temp_files=temp_files)
         await asyncio.sleep(1.0)

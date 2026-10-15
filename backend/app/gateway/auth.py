@@ -11,7 +11,7 @@ from app.gateway.auth_db import (
     auth_connection,
     column_exists,
 )
-from app.gateway.session_authorization import SessionAuthorityUnavailable, current_session_body, session_expiry
+from app.gateway.session_authorization import SessionAuthorityUnavailable, current_session_body, session_expiry, session_token
 from deerflow.config.tenant_context import reset_tenant_context, set_tenant_context
 from deerflow.database.tenant_service import ensure_default_tenant_for_user, get_membership, list_user_tenants, normalize_tenant_role
 from deerflow.database.user_config_service import get_current_tenant_id, set_current_tenant_id
@@ -186,20 +186,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.method == "OPTIONS":
             return await call_next(request)
 
-        # Get token from header, cookie, or query param
-        token = None
-        auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
-            token = auth_header.split(" ")[1]
-
-        # Query param token takes priority over cookie (for new-tab artifact links)
-        if not token and "token" in request.query_params:
-            token = request.query_params.get("token")
-
-        if not token:
-            token = request.cookies.get(
-                "better-auth.session_token"
-            ) or request.cookies.get("__Secure-better-auth.session_token")
+        token = session_token(request)
 
         if not token:
             return JSONResponse(
@@ -282,10 +269,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
 
-            def verify_session():
-                current = _resolve_user_from_auth_db(token)
-                if current is None or current[0] != user_id:
-                    raise SessionAuthorityUnavailable("Current session unavailable; response delivery stopped")
+            verify_session = current_session_verifier(token, user_id)
 
             try:
                 verify_session()
@@ -303,3 +287,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
         finally:
             if tenant_token is not None:
                 reset_tenant_context(tenant_token)
+
+def current_session_verifier(token: str, user_id: str):
+    """Keep bearer material inside the live transport; never persist this closure."""
+    def verify():
+        current = _resolve_user_from_auth_db(token)
+        if current is None or current[0] != user_id:
+            raise SessionAuthorityUnavailable("Current session unavailable; transport delivery stopped")
+    return verify

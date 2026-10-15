@@ -10,7 +10,7 @@ from sqlalchemy import text
 from app.gateway.auth_crypto import hash_password, verify_password
 from app.gateway.auth_db import _row_to_dict, auth_connection, column_exists
 from app.gateway.bootstrap_admin import bootstrap_admin
-from app.gateway.session_authorization import session_expiry
+from app.gateway.session_authorization import session_expiry, session_token
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -67,16 +67,7 @@ def _resolve_session(token: str) -> dict | None:
 
 
 def _extract_token(request: Request) -> str | None:
-    """Extract session token from Authorization header, query param, or cookie."""
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        return auth_header.split(" ", 1)[1]
-    token = request.query_params.get("token")
-    if token:
-        return token
-    return request.cookies.get(SESSION_COOKIE) or request.cookies.get(
-        f"__Secure-{SESSION_COOKIE}"
-    )
+    return session_token(request)
 
 
 # ---------- request / response models ----------

@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import uuid
@@ -100,7 +101,7 @@ async def _terminal_stream(iterator, context, targets):
         return
 
 
-async def _authorized_terminal_session(context, asset_id):
+async def _authorized_terminal_session(context, asset_id, *, acquisition_guard=None):
     from app.agent.terminal_tools import (
         _ensure_session,
         get_terminal_context,
@@ -110,7 +111,9 @@ async def _authorized_terminal_session(context, asset_id):
     previous = get_terminal_context()
     try:
         set_terminal_context(context)
-        return await _ensure_session(asset_id)
+        if acquisition_guard is None:
+            return await _ensure_session(asset_id)
+        return await _ensure_session(asset_id, acquisition_guard=acquisition_guard)
     finally:
         set_terminal_context(previous)
 
@@ -128,10 +131,10 @@ async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, 
         await websocket.close(code=1008)
         return
         
-    token = websocket.cookies.get("better-auth.session_token") or websocket.cookies.get("__Secure-better-auth.session_token")
-    if not token:
-        token = websocket.query_params.get("token")
-        
+    from app.gateway.session_authorization import SessionAuthorityUnavailable, session_token
+
+    token = session_token(websocket)
+
     if not token:
         await websocket.send_text("Unauthorized: missing session token.\r\n")
         await websocket.close(code=1008)
@@ -158,21 +161,32 @@ async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, 
         await websocket.close(code=1008)
         return
 
+    from app.gateway.auth import current_session_verifier
+
+    verify_session = current_session_verifier(token, user_id)
     context = {"tenant_id": tenant_id, "user_id": user_id, "terminal_session_id": session_id}
     try:
-        session = await _authorized_terminal_session(context, asset_id)
-    except PermissionError:
+        verify_session()
+        session = await _authorized_terminal_session(context, asset_id, acquisition_guard=verify_session)
+    except (PermissionError, SessionAuthorityUnavailable):
         await websocket.send_text("Current terminal access unavailable.\r\n")
         await websocket.close(code=1008)
         return
-    session.attach_websocket(websocket)
+    from app.services.terminal.socket_access import CurrentTerminalSocket
+
+    connection = CurrentTerminalSocket(websocket, verify_session, session.authority_validator)
+    pending = None
     try:
+        await connection.authorize()
+        session.attach_websocket(connection)
         while True:
-            # Wait for user input from the frontend terminal
-            data = await websocket.receive_text()
-            await session.authority_validator()
-            
-            # Handle JSON payloads (e.g. window resize)
+            await connection.authorize()
+            pending = asyncio.create_task(websocket.receive_text())
+            while not pending.done():
+                await asyncio.wait({pending}, timeout=.25)
+                await connection.authorize()
+            data = pending.result()
+            await connection.authorize()
             if data.startswith("{") and data.endswith("}") and "type" in data:
                 try:
                     payload = json.loads(data)
@@ -181,15 +195,20 @@ async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, 
                         continue
                 except json.JSONDecodeError:
                     pass
-            
-            # Otherwise it's raw terminal input (keystrokes)
             session.pty.write(data)
     except WebSocketDisconnect:
         logger.info("Terminal WebSocket disconnected")
-    except Exception as e:
-        logger.error(f"Terminal WebSocket error: {e}")
+    except (PermissionError, SessionAuthorityUnavailable):
+        await connection.close()
+    except Exception:
+        logger.error("Terminal WebSocket transport unavailable; external effects unknown")
+        await connection.close()
     finally:
-        session.detach_websocket(websocket)
+        if pending is not None:
+            if not pending.done():
+                pending.cancel()
+            await asyncio.gather(pending, return_exceptions=True)
+        session.detach_websocket(connection)
 
 
 @router.post("/execute")
