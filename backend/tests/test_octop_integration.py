@@ -38,6 +38,21 @@ def catalog_client():
         request.state.user_id = request.headers.get("x-user-id", "user-a") or None
         request.state.tenant_id = request.headers.get("x-tenant-id", "tenant-a") or None
         request.state.tenant_role = request.headers.get("x-tenant-role", "tenant_member")
+        # Catalog/template tests use a synthetic authenticator; materialize its
+        # explicit principals so production current-member checks stay active.
+        if request.state.user_id and request.state.tenant_id:
+            from deerflow.database.models import Tenant, TenantMembership
+            async with factory() as db:
+                tenant = request.state.tenant_id
+                if await db.get(Tenant, tenant) is None:
+                    db.add(Tenant(id=tenant, name=tenant, slug=tenant))
+                    await db.flush()
+                member = (await db.exec(select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == request.state.user_id))).scalars().first()
+                if member is None:
+                    member = TenantMembership(tenant_id=tenant, user_id=request.state.user_id)
+                member.role = request.state.tenant_role
+                db.add(member)
+                await db.commit()
         return await call_next(request)
 
     async def session():

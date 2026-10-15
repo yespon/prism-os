@@ -1,0 +1,129 @@
+{
+  "compressed_log_archives": [
+    {
+      "original": "logs/brand-staged.log",
+      "archive": "logs/brand-staged.log.gz",
+      "raw_sha256": "8b9a9c4145f9fafff22a4cf8dccafe37477f17dc7ac9d7f5439d56465ca8501c",
+      "archive_sha256": "f62e370f23a903afc864b8b0267280320dfb7cf4684b9a6f2d19e58ea9bda37b",
+      "reason": "retain actual gate failure output verbatim as compressed historical evidence"
+    }
+  ],
+  "source_gates": {
+    "raw_imported_members": 902,
+    "external_packages": 4,
+    "external_artifacts": 7,
+    "current_capabilities": 42,
+    "future_capabilities": 12,
+    "brand_allowances": 526
+  },
+  "base_commit": "38073b1",
+  "branch": "codex/octop-integration",
+  "status": "copy_share_configuration_and_current_target_authority_accepted_milestone_one_pending",
+  "backend": {
+    "passed": 2005,
+    "skipped": 18,
+    "warnings": 417,
+    "evidence": "actual final pytest summary; initial Windows/WSL wrapper did not preserve pytest exit code"
+  },
+  "related_backend": {
+    "passed": 149,
+    "warnings": 109
+  },
+  "postgres": {
+    "passed": 92,
+    "returncode": 0,
+    "owned_container_removed": true
+  },
+  "image": {
+    "id": "sha256:8e6a118e06b7f6a12f93817c6ccef38c6899a24d955976f62c650016fbce55a2",
+    "matching_inputs": 9,
+    "passed": 92,
+    "returncode": 0,
+    "default_privileges": true,
+    "network": "none",
+    "owned_container_removed": true
+  },
+  "frontend": {
+    "passed": 258,
+    "files": 58,
+    "returncode": 0,
+    "production_returncode": 0,
+    "coverage": "full serial 258 passed; test-only required-field repair then 6 API tests rerun; 252 unchanged tests reused",
+    "trace_count": 50,
+    "failed_intermediate": "original UI timing failures retained; both affected files passed isolated, full single-worker run passed with original 5s timeout"
+  },
+  "upgrade": {
+    "retained_full_changed_block": "86 tests per b5/b6/b5 stage before final UI uncertainty patch",
+    "final_host_inputs": 100,
+    "final_stages": [
+      "11 passed, 12 warnings in 18.93s",
+      "11 passed, 12 warnings in 15.66s",
+      "11 passed, 12 warnings in 14.44s"
+    ],
+    "complete": true,
+    "host_changed": false,
+    "returncodes": [
+      0,
+      0,
+      0
+    ],
+    "frontend_runtime_scope": "source switch exercises backend copy contracts; final frontend behavior separately tested, fixed frontend bytes checked"
+  },
+  "input_files_checked_unchanged": 1997,
+  "boundaries": [
+    "M1 not exited",
+    "N04 real model/tool/ticket configuration absent",
+    "N07 remote CI pending; no push",
+    "remote/Apple all-tool integration and real SSH pending",
+    "remaining non-Skill/expert/Office/external runtime and original PrismOS gates remain",
+    "N08 execution/delegation not started",
+    "no push/deployment/release"
+  ],
+  "raw_log_sha256": {
+    "logs/backend-full.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/backend-full.log": "060efd778e0ec9bd67aaed90a3fd121346492ed4a7659620fca629fb1edb43c5",
+    "logs/backend-related-resumed.log": "a11b441e844bc216eaed0b0499a195c13e558120eea7676aeecdaf24c84edccc",
+    "logs/backend-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/backend-static-accepted.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/brand-staged-recheck.log": "f640af85a8841ea5a74259422032b97cea94aadad45ee507b9e23214b9da4666",
+    "logs/brand-staged.log.gz": "f62e370f23a903afc864b8b0267280320dfb7cf4684b9a6f2d19e58ea9bda37b",
+    "logs/brand-verify.log": "34e639ff05d566a93b9551cd389c2277c88ea41b67af65053fd0c796b8d1f74d",
+    "logs/copy-network-reproduction.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/copy-network-reproduction.log": "aebd5e99391393d165a774f404149b9dbfe0a0bc72486842c49667055c6c9da8",
+    "logs/copy-target-inspection-reproduction.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "logs/copy-target-inspection-reproduction.log": "4969ad2de658ad32c61a9674e4c453ce60b8792b0b604b6e5d5c69447567413a",
+    "logs/docker-build.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/docker-build.log": "cf56c3ee230b62328f2e5fd25c507198a045007b5a15d271dfb1b35b8eaecc58",
+    "logs/external-verify.log": "78abc64b52e8d5fb1dccf50fbc93848fb26c0afabf49f8b24ff294cf55e2ded4",
+    "logs/frontend-api-type-delta.log": "0fcd06a3e916d054af6bc2593f618d750debfb19cd3eb6ed4a7952ac93b4d052",
+    "logs/frontend-build-final.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/frontend-build-final.log": "b9f956ceed6985803a6284c716d0e11a4616aadd80deecf5c24034659bf96437",
+    "logs/frontend-build-resumed.log": "0887ea4f5c4764a6acf2ccef7ec7f99f2bad035f8c4625d88759018c20ade7b2",
+    "logs/frontend-copy-identity-delta.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/frontend-copy-identity-delta.log": "3d7620f28123f993115c837a5e7acbcf4f5396cabe34b1d66314805de0ff5164",
+    "logs/frontend-full-accepted.log": "dcb6a8cb44885f47c0182bd81289b509258123dac51d6479273b9fa7139a0f2f",
+    "logs/frontend-full-recheck.log": "4bd5e7c81d9c770a03f02abd2d753df499e4cd3dc43ead0872f4c6f3a27e7317",
+    "logs/frontend-full-resumed.log": "11c687f68d177dd859b8a6ded90372135b202555167aee15a97a43d2a27461e3",
+    "logs/frontend-full-serial.log": "23aab16bc4d0f2077b1462e9436180cd9d38fa0450866a8ebb650087d5184bda",
+    "logs/frontend-lint-accepted.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/frontend-lint.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/frontend-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/frontend-production-accepted.log": "41acb8653db88fd0f6534df2df56619fa1ba074cd9d19baf5e0af84c077b1261",
+    "logs/frontend-production-recheck.log": "aed340a07f31eb4c992a199e2854c868542d57b5dd8cd357658483e49b326080",
+    "logs/frontend-timeout-isolation.log": "bc2f1003e8379e128506b6ae2a523f40c3183298b356b57a9c7ed8380d36fbd2",
+    "logs/frontend-uncertainty-driver.log": "5bc19fa5dc4e31d6a155e76257fa4ccd5b598118d9ca895a2d27a30413a0fe85",
+    "logs/frontend-uncertainty-related.log": "2b52be2279d4700bfafcffc30301d30e54388200636bbaa6e24dd8953227977c",
+    "logs/image-runtime.log": "5088fdf2868ce32f0c376667e8e6568e83fa15ba2eed6cd232601b5ffa99f01b",
+    "logs/image-verification-driver.log": "18e748643b2202f09a19967ade175fbbd35d91a11978a738784a7aafeca6c049",
+    "logs/inventory-verify.log": "528b0949e856809fa6a7d57313fa0b24c280be4dac8cc1240d26fe32952a64f8",
+    "logs/postgres-driver.log": "b0bb3676f15b7f6382f2d9ebc4403bae919742938203b19898c5f5624ebec0f2",
+    "logs/postgres.log": "15dcb72ff9893c9b7981f9e6ac3a07c144f96572cd4eda15caf04e036015c8a1",
+    "logs/previous-source-fetch.log": "d2561d16ae2b492d879c087ec3602d342fa3edd75ccaf8e46a2894ed0437042c",
+    "logs/source-gates.invalid-exit.log": "2106c36011520fe73876d45bfb9ef8bf7b2e9f4362096a320376d8ee9b27ef12",
+    "logs/source-privacy-role-baseline.log": "cf79b3f078114fc1ef03f7f15d6299076445c92a2c9f2c3917b258d36007a4f3",
+    "logs/source-verify.log": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03",
+    "logs/upgrade-accepted.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/upgrade.invalid-exit.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  }
+}

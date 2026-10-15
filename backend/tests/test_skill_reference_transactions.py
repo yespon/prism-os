@@ -25,8 +25,16 @@ def durable_sqlite(tmp_path, monkeypatch):
         monkeypatch.setenv("PRISMOS_SKILL_TEST_DB_URL", "sqlite+aiosqlite:///" + str(tmp_path / "reference.db"))
 
 
-def prepare(scoped_client, monkeypatch):
+def prepare(scoped_client, monkeypatch, *, initialize_membership=False):
     http, factory, root = source_tree(scoped_client, monkeypatch)
+    if initialize_membership:
+        from deerflow.database.models import Tenant, TenantMembership
+        async def members():
+            async with factory() as db:
+                db.add(Tenant(id="tenant-a", name="A", slug="a"))
+                db.add(TenantMembership(tenant_id="tenant-a", user_id="user-a", role="tenant_admin"))
+                await db.commit()
+        asyncio.run(members())
 
     async def session():
         async with factory() as value:
@@ -40,7 +48,7 @@ def prepare(scoped_client, monkeypatch):
 @pytest.mark.parametrize("shared", [False, True])
 @pytest.mark.parametrize("action", ["create", "update"])
 def test_new_reference_writer_waits_for_withdrawal_transaction(scoped_client, monkeypatch, shared, action):
-    http, factory, root = prepare(scoped_client, monkeypatch)
+    http, factory, root = prepare(scoped_client, monkeypatch, initialize_membership=True)
     headers = ADMIN if shared else {}
     if action == "update":
         assert http.post("/api/agents", headers=headers, json={"name": "writer", "system_prompt": "writer", "is_shared": shared}).status_code == 201
@@ -92,7 +100,7 @@ def test_new_reference_writer_waits_for_withdrawal_transaction(scoped_client, mo
 
 @pytest.mark.parametrize("shared", [False, True])
 def test_committed_agent_reference_wins_before_deletion_and_preserves_files(scoped_client, monkeypatch, shared):
-    http, factory, root = prepare(scoped_client, monkeypatch)
+    http, factory, root = prepare(scoped_client, monkeypatch, initialize_membership=True)
     headers = ADMIN if shared else {}
     response = http.post("/api/agents", headers=headers, json={"name": "first-writer", "system_prompt": "writer", "skills": ["collision"], "is_shared": shared})
     assert response.status_code == 201, response.text

@@ -1,0 +1,160 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run src/components/workspace/agents/copy-agent-dialog.test.tsx --maxWorkers=2
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/root/.codex/worktrees/octop-integration/prism-os/frontend[39m
+
+ [31m❯[39m src/components/workspace/agents/copy-agent-dialog.test.tsx [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 2670[2mms[22m[39m
+   [33m[2m✓[22m[39m submits source identity/version and the explicitly visible target resource choice [33m 550[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks sharing inherited personal choices until the user explicitly clears them [33m 331[2mms[22m[39m
+   [32m✓[39m checks an existing target after an unknown save instead of submitting again[32m 298[2mms[22m[39m
+   [32m✓[39m discards a late successful response after the current draft identity changes[32m 131[2mms[22m[39m
+   [32m✓[39m does not read the source under a new identity after a late target 404[32m 173[2mms[22m[39m
+[31m   [31m×[31m inspects the dispatched target even if the editable name changes after an unknown result[39m[33m 1183[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/components/workspace/agents/copy-agent-dialog.test.tsx[2m > [22minspects the dispatched target even if the editable name changes after an unknown result
+[31m[1mAssertionError[22m[39m: expected "vi.fn()" to be called with arguments: [ 'source-copy' ][90m
+
+Received:
+
+[1m  1st vi.fn() call:
+
+[22m[2m  [[22m
+[32m-   "source-copy",[90m
+[31m+   "different-copy",[90m
+[2m  ][22m
+[39m[90m
+
+Number of calls: [1m1[22m
+[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body[39m
+    [33mdata-scroll-locked[39m=[32m"1"[39m
+    [33mstyle[39m=[32m"pointer-events: none;"[39m
+  [36m>[39m
+    [36m<span[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mdata-aria-hidden[39m=[32m"true"[39m
+      [33mdata-radix-focus-guard[39m=[32m""[39m
+      [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+      [33mtabindex[39m=[32m"0"[39m
+    [36m/>[39m
+    [36m<div[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mdata-aria-hidden[39m=[32m"true"[39m
+    [36m/>[39m
+    [36m<div[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50"[39m
+      [33mdata-aria-hidden[39m=[32m"true"[39m
+      [33mdata-slot[39m=[32m"dialog-overlay"[39m
+      [33mdata-state[39m=[32m"open"[39m
+      [33mstyle[39m=[32m"pointer-events: auto;"[39m
+    [36m/>[39m
+    [36m<div[39m
+      [33maria-describedby[39m=[32m"radix-_r_h_"[39m
+      [33maria-labelledby[39m=[32m"radix-_r_g_"[39m
+      [33mclass[39m=[32m"bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 outline-none sm:max-w-lg max-h-[85vh] overflow-y-auto"[39m
+      [33mdata-slot[39m=[32m"dialog-content"[39m
+      [33mdata-state[39m=[32m"open"[39m
+      [33mid[39m=[32m"radix-_r_f_"[39m
+      [33mrole[39m=[32m"dialog"[39m
+      [33mstyle[39m=[32m"pointer-events: auto;"[39m
+      [33mtabindex[39m=[32m"-1"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col gap-2 text-center sm:text-left"[39m
+        [33mdata-slot[39m=[32m"dialog-header"[39m
+      [36m>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"text-lg leading-none font-semibold"[39m
+          [33mdata-slot[39m=[32m"dialog-title"[39m
+          [33mid[39m=[32m"radix-_r_g_"[39m
+        [36m>[39m
+          [0m复制 Agent[0m
+        [36m</h2>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-muted-foreground text-sm"[39m
+          [33mdata-slot[39m=[32m"dialog-description"[39m
+          [33mid[39m=[32m"radix-_r_h_"[39m
+        [36m>[39m
+          [0m来源：[0m
+          [0msource[0m
+          [0m。请确认新 Agent 的名称、共享范围和可用技能。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<label>[39m
+        [0m新名称[0m
+        [36m<input[39m
+          [33mclass[39m=[32m"file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"[39m
+          [33mdata-slot[39m=[32m"input"[39m
+          [33mvalue[39m=[32m"different-copy"[39m
+        [36m/>[39m
+      [36m</label>[39m
+      [36m<label[39m
+        [33mclass[39m=[32m"flex items-center gap-2"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33maria-checked[39m=[32m"false"[39m
+          [33mclass[39m=[32m"peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"[39m
+          [33mdata-slot[39m=[32m"switch"[39m
+          [33mdata-state[39m=[32m"unchecked"[39m
+          [33mrole[39m=[32m"switch"[39m
+          [33mtype[39m=[32m"button"[39m
+          [33mvalue[39m=[32m"on"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0"[39m
+            [33mdata-slot[39m=[32m"switch-thumb"[39m
+            [33mdata-state[39m=[32m"unchecked"[39m
+          [36m/>[39m
+        [36m</button>[39m
+        [0m共享到当前租户[0m
+      [36m</label>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3"[39m
+        [33mdata-size[39m=[32m"default"[39m
+        [33mdata-slot[39m=[32m"button"[39m
+        [33mdata-variant[39m=[32m"outline"[39m
+      [36m>[39m
+        [0m清空并重新选择技能[0m
+      [36m</button>[39m
+      [36m<section[39m
+        [33maria-label[39m=[32m"具体 Skill 选择"[39m
+        [33mclass[39m=[32m"space-y-2 text-xs"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex gap-2"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5"[39m
+            [33mdata-size[39m=[32m"sm"[39m
+            [33mdata-slot[39m=[32m"button"[39m
+            [33mdata-variant[39m=[32m"outline"[39m
+           ...
+[36m [2m❯[22m src/components/workspace/agents/copy-agent-dialog.test.tsx:[2m94:41[22m[39m
+    [90m 92|[39m   fireEvent.change(screen.getByRole("textbox"), { target: { value: "di…
+    [90m 93|[39m   fireEvent[33m.[39m[34mclick[39m(screen[33m.[39m[34mgetByRole[39m([32m"button"[39m[33m,[39m { name[33m:[39m [32m"重新读取来源"[39m }))[33m;[39m
+    [90m 94|[39m   await waitFor(() => expect(state.get).toHaveBeenCalledWith("source-c…
+    [90m   |[39m                                         [31m^[39m
+    [90m 95|[39m   [34mexpect[39m(state[33m.[39mcopy)[33m.[39m[34mtoHaveBeenCalledTimes[39m([34m1[39m)[33m;[39m
+    [90m 96|[39m })[33m;[39m
+[90m [2m❯[22m runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:[2m47:12[22m[39m
+[90m [2m❯[22m checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:[2m124:77[22m[39m
+[90m [2m❯[22m Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:[2m118:16[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 10:25:04
+[2m   Duration [22m 5.66s[2m (transform 452ms, setup 115ms, import 1.24s, tests 2.67s, environment 1.29s)[22m
+
+ ELIFECYCLE  Command failed with exit code 1.

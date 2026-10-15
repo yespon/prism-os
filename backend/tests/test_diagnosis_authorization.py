@@ -970,3 +970,37 @@ def test_actual_incident_checkpoint_and_cached_replay_are_discarded_after_member
     assert "PRIVATE CACHED RESULT" not in response.text and "PRIVATE CHECKPOINT STEP" not in response.text
     assert "RUN_FINISHED" not in response.text
     assert "delivery-live" not in manager._queues
+
+
+@pytest.mark.parametrize("role", ["tenant_admin", "admin", "owner"])
+def test_original_admin_role_aliases_can_confirm_and_use_shared_source(delegated, role):
+    _,factory,config = delegated
+    async def verify():
+        async with factory() as db:
+            row = (await db.exec(select(TenantMembership))).scalars().one()
+            row.role = role
+            db.add(row)
+            await db.commit()
+        async with factory() as db:
+            confirmed = await authorization.configure(db,"tenant-a","user-a",config,config,confirm=True)
+            assert confirmed["analysis_trigger"][authorization.KEY]["actor_id"] == "user-a"
+            actor,agent = await authorization.current_authorization(db,"source-id","tenant-a","shared-id")
+            assert actor == "user-a" and agent.id == "shared-id"
+    asyncio.run(verify())
+
+
+def test_role_withdrawal_cannot_be_renewed_by_source_confirmation(delegated):
+    _,factory,config = delegated
+    async def verify():
+        async with factory() as db:
+            row = (await db.exec(select(TenantMembership))).scalars().one()
+            row.role = "member"
+            db.add(row)
+            await db.commit()
+        async with factory() as db:
+            with pytest.raises(authorization.HTTPException) as caught:
+                await authorization.configure(db,"tenant-a","user-a",config,config,confirm=True)
+            assert caught.value.status_code == 403
+            with pytest.raises(ExecutionTrustError):
+                await authorization.current_authorization(db,"source-id","tenant-a","shared-id")
+    asyncio.run(verify())

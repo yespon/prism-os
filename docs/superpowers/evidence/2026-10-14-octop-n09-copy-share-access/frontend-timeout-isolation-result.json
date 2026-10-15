@@ -1,0 +1,14 @@
+{
+  "command": [
+    "pnpm",
+    "test:unit",
+    "src/components/tenant-admin/tenant-admin-tools-page.test.tsx",
+    "src/components/workspace/skills/skill-creation-flows.test.tsx",
+    "--maxWorkers=1"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/frontend",
+  "started_at": "2026-10-15T03:30:33.324933+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T03:30:39.657990+00:00"
+}

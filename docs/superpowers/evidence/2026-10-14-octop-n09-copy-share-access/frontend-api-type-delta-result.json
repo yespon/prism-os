@@ -1,0 +1,13 @@
+{
+  "command": [
+    "pnpm",
+    "test:unit",
+    "src/core/agents/api.test.ts",
+    "--maxWorkers=1"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/frontend",
+  "started_at": "2026-10-15T03:35:09.260615+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T03:35:12.275475+00:00"
+}

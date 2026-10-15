@@ -1,0 +1,19 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run src/core/agents/api.test.ts src/components/workspace/agents/copy-agent-dialog.test.tsx --maxWorkers=2
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/root/.codex/worktrees/octop-integration/prism-os/frontend[39m
+
+ [32m✓[39m src/core/agents/api.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/components/workspace/agents/copy-agent-dialog.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 2473[2mms[22m[39m
+   [33m[2m✓[22m[39m submits source identity/version and the explicitly visible target resource choice [33m 741[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks sharing inherited personal choices until the user explicitly clears them [33m 332[2mms[22m[39m
+   [33m[2m✓[22m[39m does not read the source under a new identity after a late target 404 [33m 445[2mms[22m[39m
+   [33m[2m✓[22m[39m inspects the dispatched target even if the editable name changes after an unknown result [33m 552[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m12 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 10:33:04
+[2m   Duration [22m 5.81s[2m (transform 428ms, setup 378ms, import 1.14s, tests 2.50s, environment 3.55s)[22m
+

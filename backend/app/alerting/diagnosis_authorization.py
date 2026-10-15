@@ -44,6 +44,13 @@ async def configure(session, tenant_id, actor_id, proposed, previous=None, *, co
     if confirm or selected != old:
         if not actor_id or actor_id == "tenant-shared":
             raise HTTPException(401, "Current configuration administrator is required")
+        from app.integrations.file_access import verify_member
+        from deerflow.database.tenant_service import tenant_role_has_admin_capability
+
+        await verify_member(session, tenant_id, actor_id)
+        current_member = (await session.exec(select(TenantMembership).where(TenantMembership.tenant_id == tenant_id, TenantMembership.user_id == actor_id).execution_options(populate_existing=True))).scalars().first()
+        if current_member is None or not tenant_role_has_admin_capability(current_member.role):
+            raise HTTPException(403, "Current source administrator required")
         selected[KEY] = {"version": 1, "actor_id": actor_id, "agent_id": agent.id}
     elif isinstance(old_grant, dict):
         selected[KEY] = old_grant
@@ -85,7 +92,7 @@ async def current_authorization(session, source_id, tenant_id, agent_id, *, expe
         (
             await session.exec(
                 select(TenantMembership)
-                .where(TenantMembership.tenant_id == tenant_id, TenantMembership.user_id == actor_id, TenantMembership.status == "active", TenantMembership.role == "tenant_admin")
+                .where(TenantMembership.tenant_id == tenant_id, TenantMembership.user_id == actor_id, TenantMembership.status == "active")
                 .execution_options(populate_existing=True)
             )
         )
@@ -94,6 +101,8 @@ async def current_authorization(session, source_id, tenant_id, agent_id, *, expe
     )
     tenant = await session.get(Tenant, tenant_id, populate_existing=True)
     agent = await session.get(CustomAgent, agent_id, populate_existing=True)
-    if member is None or tenant is None or tenant.status != "active" or agent is None or agent.tenant_id != tenant_id or agent.user_id != "tenant-shared" or not agent.enabled:
+    from deerflow.database.tenant_service import tenant_role_has_admin_capability
+
+    if member is None or not tenant_role_has_admin_capability(member.role) or tenant is None or tenant.status != "active" or agent is None or agent.tenant_id != tenant_id or agent.user_id != "tenant-shared" or not agent.enabled:
         raise ExecutionTrustError("Automatic diagnosis authorization is no longer current")
     return actor_id, agent

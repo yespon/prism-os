@@ -1,0 +1,12 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-c",
+    "from pathlib import Path; import subprocess; s=Path(\"../.github/workflows/octop-integration.yml\").read_text(); args=s.split(\"uv run --locked ruff check\",1)[1].split(\"      - name:\",1)[0].split(); subprocess.run([\".venv/bin/ruff\",\"check\",*args],check=True)"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T02:34:21.243493+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T02:34:21.918227+00:00"
+}

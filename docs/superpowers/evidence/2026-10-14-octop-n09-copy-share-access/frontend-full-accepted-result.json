@@ -1,0 +1,12 @@
+{
+  "command": [
+    "pnpm",
+    "test:unit",
+    "--maxWorkers=2"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/frontend",
+  "started_at": "2026-10-15T02:33:48.011328+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-15T02:37:15.205055+00:00"
+}

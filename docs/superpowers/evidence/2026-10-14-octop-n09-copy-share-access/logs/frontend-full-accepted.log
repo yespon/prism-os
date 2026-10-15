@@ -1,0 +1,580 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run --maxWorkers=2
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/root/.codex/worktrees/octop-integration/prism-os/frontend[39m
+
+[90mstderr[2m | src/components/tenant-admin/tenant-admin-skills-page.test.tsx[2m > [22m[2mTenantAdminSkillsPage[2m > [22m[2mcreates a manual tenant skill with description and instructions
+[22m[39mAn update to TenantAdminSkillsPage inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mQuestionnaire draft flow[2m > [22m[2mrequires all 28 choices and only applies the confirmed result
+[22m[39mAn update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/tenant-admin/tenant-admin-skills-page.test.tsx[2m > [22m[2mTenantAdminSkillsPage[2m > [22m[2mimports a .zip skill archive from the dialog
+[22m[39mAn update to TenantAdminSkillsPage inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ [32m✓[39m src/components/tenant-admin/tenant-admin-skills-page.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 5298[2mms[22m[39m
+     [33m[2m✓[22m[39m passes the listed concrete instance with enablement [33m 864[2mms[22m[39m
+     [33m[2m✓[22m[39m unknown shared manual creation blocks repeats and offers current operation inspection [33m 1134[2mms[22m[39m
+     [33m[2m✓[22m[39m late shared creation success after identity change does not show success [33m 757[2mms[22m[39m
+     [33m[2m✓[22m[39m creates a manual tenant skill with description and instructions [33m 340[2mms[22m[39m
+     [33m[2m✓[22m[39m does not apply an old upload response after tenant changes [33m 430[2mms[22m[39m
+     [33m[2m✓[22m[39m does not apply an old upload response after close changes [33m 501[2mms[22m[39m
+     [33m[2m✓[22m[39m shared edit sends the listed instance and digest and blocks retry until inspection [33m 567[2mms[22m[39m
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2msaves edited template, persona, avatar, welcome and starters, then reopens without duplicating persona
+[22m[39mAn update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2msaves edited template, persona, avatar, welcome and starters, then reopens without duplicating persona
+[22m[39mAn update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2msaves edited template, persona, avatar, welcome and starters, then reopens without duplicating persona
+[22m[39mAn update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2msaves edited template, persona, avatar, welcome and starters, then reopens without duplicating persona
+[22m[39mAn update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2mclears the existing create draft on locale change
+[22m[39mAn update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2mclears the existing create draft on locale change
+[22m[39mAn update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ [32m✓[39m src/components/workspace/agents/copy-agent-dialog.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 1929[2mms[22m[39m
+   [33m[2m✓[22m[39m submits source identity/version and the explicitly visible target resource choice [33m 623[2mms[22m[39m
+   [33m[2m✓[22m[39m checks an existing target after an unknown save instead of submitting again [33m 370[2mms[22m[39m
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2mclears the existing create draft on tenant change
+[22m[39mAn update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2mCreate, edit and reopen[2m > [22m[2mclears the existing create draft on tenant change
+[22m[39mAn update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PresentationFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/components/workspace/agents/agent-presentation.test.tsx[2m > [22m[2msends a concrete personal choice from the actual create dialog
+[22m[39mAn update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CreateAgentDialogFields inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AgentTemplatePicker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ [32m✓[39m src/components/workspace/agents/agent-presentation.test.tsx [2m([22m[2m18 tests[22m[2m)[22m[33m 16691[2mms[22m[39m
+     [33m[2m✓[22m[39m clears old catalog contents on tenant change and retries failures [33m 754[2mms[22m[39m
+     [33m[2m✓[22m[39m requires all 28 choices and only applies the confirmed result [33m 1786[2mms[22m[39m
+     [33m[2m✓[22m[39m clears the questionnaire and discards the pending score after close [33m 1400[2mms[22m[39m
+     [33m[2m✓[22m[39m clears the questionnaire and discards the pending score after locale [33m 2219[2mms[22m[39m
+     [33m[2m✓[22m[39m clears the questionnaire and discards the pending score after tenant [33m 2600[2mms[22m[39m
+     [33m[2m✓[22m[39m saves edited template, persona, avatar, welcome and starters, then reopens without duplicating persona [33m 3061[2mms[22m[39m
+     [33m[2m✓[22m[39m does not apply a stale name check to a newer name [33m 1220[2mms[22m[39m
+     [33m[2m✓[22m[39m ignores a completed save callback after tenancy changes [33m 984[2mms[22m[39m
+   [33m[2m✓[22m[39m sends a concrete personal choice from the actual create dialog [33m 1493[2mms[22m[39m
+ [32m✓[39m src/components/workspace/settings/settings-dialog.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 1477[2mms[22m[39m
+     [33m[2m✓[22m[39m does not show tenant admin sections [33m 956[2mms[22m[39m
+     [33m[2m✓[22m[39m shows model, tools and skills in personal settings [33m 501[2mms[22m[39m
+ [32m✓[39m src/components/workspace/skills/skill-delete-control.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 8880[2mms[22m[39m
+   [33m[2m✓[22m[39m does not dispatch until the actual current instance and full tree are confirmed [33m 2748[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks physical reclamation for unresolved Agent references and gives a review path [33m 1384[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves an unknown result across closing and reopening without another dispatch [33m 1357[2mms[22m[39m
+   [33m[2m✓[22m[39m ignores late preflight after an identity change [33m 523[2mms[22m[39m
+   [33m[2m✓[22m[39m suppresses late deletion cache effects after the confirmation is closed [33m 1357[2mms[22m[39m
+   [33m[2m✓[22m[39m allows a fresh inspection after a definitive pre-mutation rejection [33m 1423[2mms[22m[39m
+ [32m✓[39m src/components/workspace/skills/skill-creation-flows.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 15871[2mms[22m[39m
+   [33m[2m✓[22m[39m incident unknown creation blocks repeats and offers original recovery inspection [33m 4471[2mms[22m[39m
+   [33m[2m✓[22m[39m terminal unknown creation blocks repeats and offers original recovery inspection [33m 2657[2mms[22m[39m
+   [33m[2m✓[22m[39m incident closing invalidates late creation success and navigation [33m 3634[2mms[22m[39m
+   [33m[2m✓[22m[39m terminal closing invalidates late creation success and navigation [33m 1747[2mms[22m[39m
+   [33m[2m✓[22m[39m incident identity change discards late refinement [33m 1916[2mms[22m[39m
+   [33m[2m✓[22m[39m terminal identity change discards late refinement [33m 1349[2mms[22m[39m
+ [32m✓[39m src/components/workspace/skills/skill-import-controls.test.tsx [2m([22m[2m25 tests[22m[2m)[22m[33m 10305[2mms[22m[39m
+   [33m[2m✓[22m[39m requires explicit confirmation and sends only confirmed digest and personal scope [33m 2376[2mms[22m[39m
+   [33m[2m✓[22m[39m allows current tenant admin to confirm shared installation [33m 381[2mms[22m[39m
+   [33m[2m✓[22m[39m does not retry a rejected or uncertain installation (409) [33m 1349[2mms[22m[39m
+   [33m[2m✓[22m[39m loads records on demand and requires separate confirmation before recovery [33m 330[2mms[22m[39m
+   [33m[2m✓[22m[39m offers abort for staged content and never for published or registered content [33m 499[2mms[22m[39m
+   [33m[2m✓[22m[39m unknown recovery keeps records and requires explicit inspection before another action [33m 421[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves inspected pages after a transient more-page read failure and can retry that cursor [33m 534[2mms[22m[39m
+   [33m[2m✓[22m[39m an invalid cursor clears actionable records and requires a fresh inspection [33m 784[2mms[22m[39m
+   [33m[2m✓[22m[39m ignores a late additional page after identity change [33m 316[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the recovered old receipt visible when it is outside the first refreshed page [33m 469[2mms[22m[39m
+   [33m[2m✓[22m[39m offers deletion recovery without registration or abort and requires explicit confirmation [33m 523[2mms[22m[39m
+ [32m✓[39m src/app/workspace/skills/[name]/page.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 7360[2mms[22m[39m
+   [33m[2m✓[22m[39m requests the concrete selected resource and scope [33m 399[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a late same-name response after source identity changes [33m 506[2mms[22m[39m
+   [33m[2m✓[22m[39m clears private fields and creates a different test-chat session after identity change [33m 863[2mms[22m[39m
+   [33m[2m✓[22m[39m a late save cannot navigate or toast into a different selected source [33m 3070[2mms[22m[39m
+   [33m[2m✓[22m[39m unknown save blocks repetition until the user reinspects the current specific resource [33m 1619[2mms[22m[39m
+   [33m[2m✓[22m[39m recovered disabled personal resource can be explicitly enabled using its current instance and content [33m 356[2mms[22m[39m
+   [33m[2m✓[22m[39m new creation unknown offers original operation inspection and never reloads an empty draft as proof of recovery [33m 540[2mms[22m[39m
+ [32m✓[39m src/components/workspace/agents/agent-resource-preflight.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 4940[2mms[22m[39m
+   [33m[2m✓[22m[39m checks full resources on demand and keeps installation different from execution rights [33m 2258[2mms[22m[39m
+   [33m[2m✓[22m[39m retries failed checks without changing the agent draft [33m 629[2mms[22m[39m
+   [33m[2m✓[22m[39m downloads only after a click and releases its temporary object URL [33m 403[2mms[22m[39m
+   [33m[2m✓[22m[39m never downloads a late response after leaving the template [33m 411[2mms[22m[39m
+   [33m[2m✓[22m[39m refreshes installation facts after confirmed registration while preserving the visible resource [33m 444[2mms[22m[39m
+[90mstderr[2m | src/components/tenant-admin/tenant-admin-tools-page.test.tsx[2m > [22m[2mTenantAdminToolsPage[2m > [22m[2msupports toggling, deleting and creating tenant MCP tools
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ [31m❯[39m src/components/tenant-admin/tenant-admin-tools-page.test.tsx [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 9304[2mms[22m[39m
+     [33m[2m✓[22m[39m shows built-in tools alongside tenant-owned tools [33m 3024[2mms[22m[39m
+[31m     [31m×[31m supports toggling, deleting and creating tenant MCP tools[39m[33m 6271[2mms[22m[39m
+ [32m✓[39m src/components/workspace/settings/skill-settings-page.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 1044[2mms[22m[39m
+   [33m[2m✓[22m[39m allows a tenant administrator to toggle the selected public source [33m 558[2mms[22m[39m
+ [32m✓[39m src/components/workspace/workspace-nav-menu.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 2039[2mms[22m[39m
+     [33m[2m✓[22m[39m shows personal settings entry for normal users [33m 983[2mms[22m[39m
+     [33m[2m✓[22m[39m opens settings dialog from personal settings entry [33m 497[2mms[22m[39m
+     [33m[2m✓[22m[39m shows tenant admin workspace entry for tenant admins [33m 446[2mms[22m[39m
+ [32m✓[39m src/components/workspace/settings/resource-settings-permission-ui.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 1176[2mms[22m[39m
+     [33m[2m✓[22m[39m hides model/tool/skill creation entry for tenant members [33m 1166[2mms[22m[39m
+ [32m✓[39m src/components/tenant-admin/tenant-admin-shell.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 994[2mms[22m[39m
+     [33m[2m✓[22m[39m renders tenant admin navigation and content [33m 980[2mms[22m[39m
+ [32m✓[39m src/app/workspace/overview/page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 1075[2mms[22m[39m
+     [33m[2m✓[22m[39m renders unified overview header and section empty states [33m 1051[2mms[22m[39m
+ [32m✓[39m src/components/workspace/messages/message-list-item.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 867[2mms[22m[39m
+     [33m[2m✓[22m[39m renders structured attachments from additional_kwargs.attachments [33m 658[2mms[22m[39m
+ [32m✓[39m src/components/workspace/workspace-container.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 952[2mms[22m[39m
+     [33m[2m✓[22m[39m shows tenant dropdown and switches tenant [33m 939[2mms[22m[39m
+ [32m✓[39m src/components/tenant-admin/tenant-admin-dashboard.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 567[2mms[22m[39m
+     [33m[2m✓[22m[39m renders unified dashboard structure [33m 547[2mms[22m[39m
+ [32m✓[39m src/components/workspace/agents/agent-skill-selection.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 2636[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps same-name personal and tenant choices separate and sends the selected generation [33m 2078[2mms[22m[39m
+ [32m✓[39m src/core/skills/hooks.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 801[2mms[22m[39m
+ [32m✓[39m src/components/workspace/skills/skill-creation-inspection.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 677[2mms[22m[39m
+   [33m[2m✓[22m[39m shows historical configuration phase and the current concrete recovered resource [33m 669[2mms[22m[39m
+ [32m✓[39m src/components/tenant-admin/tenant-admin-members-page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 606[2mms[22m[39m
+     [33m[2m✓[22m[39m renders dedicated tenant admin members page and searchable users [33m 596[2mms[22m[39m
+ [32m✓[39m src/app/admin/tenants/page.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 1333[2mms[22m[39m
+     [33m[2m✓[22m[39m does not show tenant member management action [33m 995[2mms[22m[39m
+     [33m[2m✓[22m[39m shows permanent delete action for inactive tenants [33m 333[2mms[22m[39m
+ [32m✓[39m src/components/workspace/workspace-nav-chat-list.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 948[2mms[22m[39m
+     [33m[2m✓[22m[39m points intelligent workspace entry to valid chats route [33m 888[2mms[22m[39m
+ [32m✓[39m src/no-legacy-admin-members-endpoint.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 124[2mms[22m[39m
+ [32m✓[39m src/app/admin/tenants/create-tenant-dialog.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 1137[2mms[22m[39m
+     [33m[2m✓[22m[39m does not expose tenant_member option and keeps initial role fixed [33m 1121[2mms[22m[39m
+ [32m✓[39m src/app/workspace/chats/[thread_id]/page.attachments.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1033[2mms[22m[39m
+     [33m[2m✓[22m[39m supports select and unselect attachment [33m 553[2mms[22m[39m
+ [32m✓[39m src/components/workspace/settings/tenant-governance-settings-page.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 3845[2mms[22m[39m
+     [33m[2m✓[22m[39m shows management table for tenant_admin [33m 3632[2mms[22m[39m
+ [32m✓[39m src/components/workspace/command-palette.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 1536[2mms[22m[39m
+     [33m[2m✓[22m[39m navigates to valid chats route when creating new chat [33m 1524[2mms[22m[39m
+ [32m✓[39m src/app/admin/page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 884[2mms[22m[39m
+     [33m[2m✓[22m[39m renders unified overview header, KPI blocks and empty audit state [33m 868[2mms[22m[39m
+ [32m✓[39m src/components/backoffice/backoffice-shell-layout.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 979[2mms[22m[39m
+     [33m[2m✓[22m[39m renders unified sidebar width and main container classes [33m 971[2mms[22m[39m
+ [32m✓[39m src/server/demo-files.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 175[2mms[22m[39m
+ [32m✓[39m src/components/workspace/agents/agent-avatar.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 126[2mms[22m[39m
+ [32m✓[39m src/core/skills/deletions.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m src/app/setup/page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 139[2mms[22m[39m
+ [32m✓[39m src/core/skills/mutations.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 90[2mms[22m[39m
+ [32m✓[39m src/core/skills/imports.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m src/core/memory/hooks.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+ [32m✓[39m src/core/threads/export.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 351[2mms[22m[39m
+     [33m[2m✓[22m[39m includes attachments section in markdown export [33m 330[2mms[22m[39m
+ [32m✓[39m src/components/tenant-admin/tenant-admin-guard.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 221[2mms[22m[39m
+ [32m✓[39m src/core/agents/catalog.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+ [32m✓[39m src/core/skills/import-context.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+ [32m✓[39m src/components/providers/query-provider.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/core/agents/api.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/components/workspace/messages/attachment-status.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+[90mstderr[2m | src/core/messages/utils.test.ts[2m > [22m[2mmessage utils[2m > [22m[2mignores truly orphan tool messages without creating a group
+[22m[39mUnexpected tool message outside a processing group {
+  id: [32m'tool_only'[39m,
+  type: [32m'tool'[39m,
+  name: [32m'task'[39m,
+  tool_call_id: [32m'tc_orphan'[39m,
+  content: [32m'Task failed.'[39m
+}
+
+ [32m✓[39m src/core/messages/utils.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/app/workspace/chats/[thread_id]/attachment-selection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/core/storage/brand-consumers.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/core/tenants/store.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 48[2mms[22m[39m
+[90mstderr[2m | src/core/storage/brand-migration.test.ts[2m > [22m[2mbrand storage migration[2m > [22m[2mpreserves malformed legacy data
+[22m[39m[PrismOS migration] Unable to migrate legacy browser storage
+
+ [32m✓[39m src/core/storage/brand-migration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m src/core/threads/hooks.attachments.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m src/core/permissions/scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstderr[2m | src/core/api/stream-mode.test.ts[2m > [22m[2msanitizeRunStreamOptions[2m > [22m[2mdrops unsupported stream modes from array payloads
+[22m[39m[PrismOS] Dropped unsupported LangGraph stream mode(s): tools
+
+ [32m✓[39m src/core/api/stream-mode.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/core/terminal-agent/terminal-preferences.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/core/first-run-guidance.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/core/brand/public-identity.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/core/permissions/roles.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/core/config/index.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 21[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/components/tenant-admin/tenant-admin-tools-page.test.tsx[2m > [22mTenantAdminToolsPage[2m > [22msupports toggling, deleting and creating tenant MCP tools
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/tenant-admin/tenant-admin-tools-page.test.tsx:[2m129:3[22m[39m
+    [90m127|[39m   })[33m;[39m
+    [90m128|[39m
+    [90m129|[39m   it("supports toggling, deleting and creating tenant MCP tools", asyn…
+    [90m   |[39m   [31m^[39m
+    [90m130|[39m     [35mconst[39m hooks [33m=[39m [34mmockPageHooks[39m([
+    [90m131|[39m       [34mmakeTool[39m({
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m57 passed[39m[22m[90m (58)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m257 passed[39m[22m[90m (258)[39m
+[2m   Start at [22m 10:33:49
+[2m   Duration [22m 205.40s[2m (transform 8.20s, setup 15.34s, import 63.97s, tests 109.11s, environment 181.48s)[22m
+
+ ELIFECYCLE  Command failed with exit code 1.

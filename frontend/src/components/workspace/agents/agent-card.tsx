@@ -11,9 +11,8 @@ import {
   CopyIcon,
   CheckIcon,
 } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AgentAvatar } from "./agent-avatar";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -44,12 +43,15 @@ import { useDeleteAgent, useToggleAgent, useSkills } from "@/core/agents";
 import type { Agent } from "@/core/agents";
 import { useI18n } from "@/core/i18n/hooks";
 
+import { AgentAvatar } from "./agent-avatar";
+
 interface AgentCardProps {
   agent: Agent;
   onEdit?: () => void;
+  onCopy?: () => void;
 }
 
-export function AgentCard({ agent, onEdit }: AgentCardProps) {
+export function AgentCard({ agent, onEdit, onCopy }: AgentCardProps) {
   const { t, locale } = useI18n();
   const router = useRouter();
   const deleteAgent = useDeleteAgent();
@@ -146,7 +148,7 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
             <Switch
               checked={agent.enabled}
               onCheckedChange={handleToggle}
-              disabled={toggleAgent.isPending}
+              disabled={toggleAgent.isPending || !agent.revision}
               className="scale-90 data-[state=checked]:bg-indigo-600 dark:data-[state=checked]:bg-indigo-500"
             />
           </div>
@@ -167,8 +169,10 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
             </p>
           </div>
 
+          {!agent.revision ? <p className="text-xs text-muted-foreground">可发现此 Agent；查看配置、复制或运行需要相应访问权限。</p> : null}
+
           {/* Symmetrical Capabilities Metrics Row - Merged & flat */}
-          <div className="flex flex-wrap gap-1 pt-0.5">
+          <div className={`flex flex-wrap gap-1 pt-0.5 ${agent.revision ? "" : "hidden"}`}>
             {agent.model ? (
               <TooltipProvider>
                 <Tooltip delayDuration={300}>
@@ -278,12 +282,14 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
 
         {/* Footer actions - Compact & sleek floating style */}
         <CardFooter className="px-4 pb-3.5 pt-1.5 flex items-center gap-2 mt-auto shrink-0 border-t-0">
-          <Button variant="outline" size="sm" disabled={!agent.enabled} onClick={() => router.push(`/workspace/chats/new?agent=${encodeURIComponent(agent.name)}`)}>{locale === "en-US" ? "Chat" : "对话"}</Button>
+          {onCopy ? <Button variant="outline" size="sm" onClick={onCopy} disabled={!agent.revision}>复制 Agent</Button> : null}
+          <Button variant="outline" size="sm" disabled={!agent.enabled || !agent.revision} onClick={() => router.push(`/workspace/chats/new?agent=${encodeURIComponent(agent.name)}`)}>{locale === "en-US" ? "Chat" : "对话"}</Button>
           <Button
             variant="outline"
             size="sm"
             className="flex-1 rounded-lg h-8 text-[11px] font-medium border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-zinc-100 flex items-center justify-center gap-1 transition-all shadow-xs"
             onClick={onEdit}
+            disabled={!agent.revision}
           >
             <PenLineIcon className="h-3 w-3" />
             {t.agents.editLabel}
@@ -293,6 +299,7 @@ export function AgentCard({ agent, onEdit }: AgentCardProps) {
             size="sm"
             className="rounded-lg h-8 w-8 border-zinc-200 text-zinc-400 hover:text-red-650 hover:bg-red-50/30 hover:border-red-150 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-red-400 dark:hover:bg-red-950/20 dark:hover:border-red-900/30 flex items-center justify-center transition-all p-0 shadow-xs shrink-0"
             onClick={() => setDeleteOpen(true)}
+            disabled={!agent.revision}
           >
             <Trash2Icon className="h-3 w-3" />
           </Button>

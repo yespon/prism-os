@@ -14,7 +14,7 @@ from sqlalchemy import select as sa_select
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.gateway.authorization import _is_tenant_admin, require_tenant_context
+from app.gateway.authorization import require_tenant_context
 from app.gateway.config import get_plugin_states
 from app.integrations.agent_skill_references import SkillResourceReference, binding, save_binding
 from app.integrations.octop.agents import AgentPresentation, AgentQuickPrompt, agent_content, update_agent_content
@@ -146,6 +146,38 @@ class SkillsListResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 
+async def _current_agent_admin(request, session):
+    from app.integrations.file_access import verify_member
+    from deerflow.database.models import Tenant, TenantMembership
+    from deerflow.database.tenant_service import tenant_role_has_admin_capability
+
+    tenant, actor = require_tenant_context(request), _get_user_id(request)
+    try:
+        await verify_member(session, tenant, actor)
+    except Exception:
+        raise HTTPException(403, "Current Agent membership unavailable") from None
+    current_tenant = (await session.exec(sa_select(Tenant).where(Tenant.id == tenant).with_for_update().execution_options(populate_existing=True))).scalars().first()
+    if current_tenant is None or current_tenant.status != "active":
+        raise HTTPException(403, "Current Agent tenant unavailable")
+    member = (await session.exec(sa_select(TenantMembership).where(
+        TenantMembership.tenant_id == tenant, TenantMembership.user_id == actor, TenantMembership.status == "active",
+    ).with_for_update().execution_options(populate_existing=True))).scalars().first()
+    if member is None:
+        raise HTTPException(403, "Current Agent membership unavailable")
+    return tenant_role_has_admin_capability(member.role)
+
+
+def _discovery_response(agent):
+    # Discovery retains labels; private configuration is not a read/copy grant.
+    return AgentResponse(
+        id=agent.id, name=agent.name, description=agent.description, tags=agent.tags or [],
+        enabled=agent.enabled, created_by=agent.created_by, is_shared=agent.user_id == "tenant-shared",
+        created_at=agent.created_at.isoformat() if agent.created_at else None,
+        updated_at=agent.updated_at.isoformat() if agent.updated_at else None,
+        system_prompt=None, soul=None, base_system_prompt="", presentation=AgentPresentation(),
+    )
+
+
 def _validate_agent_name(name: str) -> None:
     if not AGENT_NAME_PATTERN.match(name):
         raise HTTPException(
@@ -222,7 +254,7 @@ async def list_agents(
         CustomAgent.tenant_id == tenant_id,
     )
 
-    is_admin = _is_tenant_admin(request)
+    is_admin = await _current_agent_admin(request, session)
     if is_admin:
         if not show_all:
             query = query.where((CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared"))
@@ -242,7 +274,9 @@ async def list_agents(
     if skill:
         agents = [a for a in agents if skill in (a.skills or [])]
 
-    return AgentsListResponse(agents=[_agent_to_response(a) for a in agents])
+    if await _current_agent_admin(request, session) != is_admin:
+        raise HTTPException(403, "Current Agent read scope changed")
+    return AgentsListResponse(agents=[_agent_to_response(a) if is_admin or a.user_id == user_id else _discovery_response(a) for a in agents])
 
 
 @router.get(
@@ -260,7 +294,7 @@ async def check_agent_name(
     user_id = _get_user_id(request)
     normalized = _normalize_agent_name(name)
 
-    target_user_id = "tenant-shared" if (is_shared and _is_tenant_admin(request)) else user_id
+    target_user_id = "tenant-shared" if (is_shared and await _current_agent_admin(request, session)) else user_id
 
     result = await session.exec(
         sa_select(CustomAgent).where(
@@ -289,7 +323,8 @@ async def get_agent(
     user_id = _get_user_id(request)
 
     user_ids = [user_id]
-    if _is_tenant_admin(request):
+    is_admin = await _current_agent_admin(request, session)
+    if is_admin:
         user_ids.append("tenant-shared")
 
     result = await session.exec(
@@ -303,6 +338,8 @@ async def get_agent(
 
     if agent is None:
         raise HTTPException(status_code=404, detail=f"Agent '{name}' not found")
+    if await _current_agent_admin(request, session) != is_admin:
+        raise HTTPException(403, "Current Agent read scope changed")
     return _agent_to_response(agent)
 
 
@@ -322,7 +359,8 @@ async def create_agent_endpoint(
     user_id = _get_user_id(request)
     normalized_name = _normalize_agent_name(body.name)
 
-    is_admin = _is_tenant_admin(request)
+    await begin_reference_transaction(session, tenant_id)
+    is_admin = await _current_agent_admin(request, session)
     if body.is_shared and not is_admin:
         raise HTTPException(status_code=403, detail="Only tenant admins can create shared agents")
 
@@ -333,8 +371,6 @@ async def create_agent_endpoint(
     system_prompt, source_metadata = resolve_agent_prompt(body)
     if not system_prompt:
         raise HTTPException(status_code=422, detail="system_prompt is required and must not be empty")
-
-    await begin_reference_transaction(session, tenant_id)
 
     # Check uniqueness
     result = await session.exec(
@@ -364,6 +400,8 @@ async def create_agent_endpoint(
     )
 
     await save_binding(session, agent, tenant_id, user_id, body.skill_binding_mode, body.skill_resources, explicit=bool({"skill_resources", "skill_binding_mode"} & body.model_fields_set))
+    if await _current_agent_admin(request, session) != is_admin:
+        raise HTTPException(403, "Current Agent create scope changed")
     session.add(agent)
     try:
         await session.commit()
@@ -399,7 +437,7 @@ async def update_agent(
     await begin_reference_transaction(session, tenant_id)
 
     user_ids = [user_id]
-    is_admin = _is_tenant_admin(request)
+    is_admin = await _current_agent_admin(request, session)
     if is_admin:
         user_ids.append("tenant-shared")
 
@@ -466,6 +504,8 @@ async def update_agent(
 
     await save_binding(session, agent, tenant_id, user_id, body.skill_binding_mode, body.skill_resources,
         explicit=bool({"skill_resources", "skill_binding_mode"} & fields_set), names_changed="skills" in fields_set, scope_changed="is_shared" in fields_set)
+    if await _current_agent_admin(request, session) != is_admin:
+        raise HTTPException(403, "Current Agent write scope changed")
     session.add(agent)
     await session.commit()
     await session.refresh(agent)
@@ -496,7 +536,7 @@ async def delete_agent(
     await begin_reference_transaction(session, tenant_id)
 
     user_ids = [user_id]
-    is_admin = _is_tenant_admin(request)
+    is_admin = await _current_agent_admin(request, session)
     if is_admin:
         user_ids.append("tenant-shared")
 
@@ -532,6 +572,8 @@ async def delete_agent(
             source_names = ", ".join(s.name for s in ref_sources)
             raise HTTPException(status_code=409, detail=f"无法删除：告警源 ({source_names}) 正在使用此 Agent。请先在告警源中解除绑定后再删除。")
 
+    if await _current_agent_admin(request, session) != is_admin:
+        raise HTTPException(403, "Current Agent delete scope changed")
     await session.delete(agent)
     await session.commit()
 
@@ -554,11 +596,14 @@ async def delete_agent(
 )
 async def list_skills(
     request: Request,
+    session: AsyncSession = Depends(get_session),
 ) -> SkillsListResponse:
     require_tenant_context(request)
     _get_user_id(request)
 
+    await _current_agent_admin(request, session)
     skills = load_skills(enabled_only=True)
+    await _current_agent_admin(request, session)
     return SkillsListResponse(
         skills=[
             SkillResponse(
@@ -582,10 +627,11 @@ async def list_skills(
     response_model=UserProfileResponse,
     summary="Get User Profile",
 )
-async def get_user_profile(request: Request) -> UserProfileResponse:
+async def get_user_profile(request: Request, session: AsyncSession = Depends(get_session)) -> UserProfileResponse:
     try:
         user_id = _get_user_id(request)
-        tenant_id = getattr(request.state, "tenant_id", None)
+        tenant_id = require_tenant_context(request)
+        await _current_agent_admin(request, session)
         user_md_path = get_paths().user_md_file(user_id=user_id, tenant_id=tenant_id)
         if not user_md_path.exists():
             legacy_path = get_paths().user_md_file(user_id=user_id, tenant_id=None)
@@ -593,7 +639,10 @@ async def get_user_profile(request: Request) -> UserProfileResponse:
                 user_md_path = legacy_path
         if not user_md_path.exists():
             return UserProfileResponse(content=None)
-        raw = user_md_path.read_text(encoding="utf-8").strip()
+        from deerflow.sandbox.file_access import read_owned_file
+
+        raw = read_owned_file(user_md_path).decode("utf-8").strip()
+        await _current_agent_admin(request, session)
         return UserProfileResponse(content=raw or None)
     except HTTPException:
         raise
@@ -610,14 +659,18 @@ async def get_user_profile(request: Request) -> UserProfileResponse:
 async def update_user_profile(
     body: UserProfileUpdateRequest,
     request: Request,
+    session: AsyncSession = Depends(get_session),
 ) -> UserProfileResponse:
     try:
         user_id = _get_user_id(request)
-        tenant_id = getattr(request.state, "tenant_id", None)
+        tenant_id = require_tenant_context(request)
+        await _current_agent_admin(request, session)
         paths = get_paths()
         user_md_path = paths.user_md_file(user_id=user_id, tenant_id=tenant_id)
-        user_md_path.parent.mkdir(parents=True, exist_ok=True)
-        user_md_path.write_text(body.content, encoding="utf-8")
+        from deerflow.sandbox.file_access import mutate_owned_file
+
+        mutate_owned_file(user_md_path, ("write", body.content, False))
+        await _current_agent_admin(request, session)
         logger.info(f"Updated USER.md at {user_md_path}")
         return UserProfileResponse(content=body.content or None)
     except HTTPException:
@@ -625,3 +678,69 @@ async def update_user_profile(
     except Exception as e:
         logger.error(f"Failed to update user profile: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to update user profile: {str(e)}")
+
+
+class AgentCopyRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=64)
+    source_agent_id: str = Field(min_length=1, max_length=80)
+    source_revision: str = Field(pattern=r"^[0-9a-f]{64}$")
+    is_shared: bool = False
+    skill_binding_mode: Literal["all", "selected"] | None = None
+    skill_resources: list[SkillResourceReference] | None = Field(default=None, max_length=128)
+
+
+@router.post("/agents/{name}/copy", response_model=AgentResponse, status_code=201)
+async def copy_agent(name: str, body: AgentCopyRequest, request: Request, session: AsyncSession = Depends(get_session)):
+    from copy import deepcopy
+
+    _validate_agent_name(name)
+    _validate_agent_name(body.name)
+    tenant, actor = require_tenant_context(request), _get_user_id(request)
+    await begin_reference_transaction(session, tenant)
+    admin = await _current_agent_admin(request, session)
+    if body.is_shared and not admin:
+        raise HTTPException(403, "Only current tenant admins can copy to shared scope")
+    allowed_owners = [actor, "tenant-shared"] if admin else [actor]
+    source = (await session.exec(sa_select(CustomAgent).where(
+        CustomAgent.id == body.source_agent_id, CustomAgent.tenant_id == tenant,
+        CustomAgent.name == _normalize_agent_name(name), CustomAgent.user_id.in_(allowed_owners),
+    ).with_for_update().execution_options(populate_existing=True))).scalars().first()
+    if source is None:
+        raise HTTPException(404, "Current copy source unavailable")
+    if _agent_revision(source) != body.source_revision:
+        raise HTTPException(409, "Copy source changed; inspect current configuration")
+    source_values = deepcopy(source.model_dump())
+    try:
+        selected = binding(source)
+    except ValueError:
+        raise HTTPException(409, "Copy source resource configuration unavailable") from None
+    if selected is None and source.skills and body.skill_resources is None and body.skill_binding_mode is None:
+        raise HTTPException(409, "Choose concrete target resources for legacy source")
+    target = CustomAgent(
+        id=str(uuid.uuid4()), tenant_id=tenant, user_id="tenant-shared" if body.is_shared else actor,
+        name=_normalize_agent_name(body.name), description=source.description, model=source.model,
+        tool_groups=deepcopy(source.tool_groups), system_prompt=source.system_prompt, skills=deepcopy(source.skills),
+        tags=deepcopy(source.tags), enabled=source.enabled, created_by=actor, meta_info=deepcopy(source.meta_info or {}),
+    )
+    mode = body.skill_binding_mode if body.skill_binding_mode is not None else "selected" if body.skill_resources is not None else selected.mode if selected and selected.mode != "unresolved" else "selected"
+    resources = body.skill_resources if body.skill_resources is not None else selected.resources if selected and selected.mode == "selected" and mode == "selected" else []
+    if selected and selected.mode == "unresolved" and body.skill_resources is None and body.skill_binding_mode is None:
+        raise HTTPException(409, "Choose concrete target resources for unresolved source")
+    await save_binding(session, target, tenant, actor, mode, resources, explicit=True)
+    # Concrete target resolution is the authority. Provenance never grants access.
+    meta = dict(target.meta_info or {})
+    meta["prismos_copy_origin"] = {"version":1,"agent_id":source.id,"revision":body.source_revision,"tenant_id":tenant}
+    target.meta_info = meta
+    current_source = await session.get(CustomAgent, source.id, populate_existing=True)
+    if await _current_agent_admin(request, session) != admin or current_source is None or current_source.model_dump() != source_values:
+        raise HTTPException(409, "Copy source or current authority changed")
+    session.add(target)
+    try:
+        await session.commit()
+    except IntegrityError:
+        await session.rollback()
+        raise HTTPException(409, "Target Agent already exists") from None
+    await session.refresh(target)
+    from deerflow.config.agents_config import load_agent_config
+    load_agent_config.cache_clear()
+    return _agent_to_response(target)

@@ -1,0 +1,10 @@
+
+> prismos-frontend@0.2.0-alpha.1 build /root/.codex/worktrees/octop-integration/prism-os/frontend
+> node scripts/build.mjs
+
+Generating route types...
+✓ Types generated successfully
+Checking TypeScript and generated route contracts...
+src/core/agents/api.test.ts(91,36): error TS2345: Argument of type '{ name: string; source_agent_id: string; source_revision: string; }' is not assignable to parameter of type 'CopyAgentRequest'.
+  Type '{ name: string; source_agent_id: string; source_revision: string; }' is missing the following properties from type 'CopyAgentRequest': is_shared, skill_binding_mode, skill_resources
+ ELIFECYCLE  Command failed with exit code 2.

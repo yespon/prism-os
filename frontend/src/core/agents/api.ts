@@ -1,7 +1,7 @@
 import { fetchAuthApi, getAuthHeaders } from "@/core/api/auth-client";
 import { getBackendBaseURL } from "@/core/config";
 
-import type { Agent, CreateAgentRequest, UpdateAgentRequest, Skill } from "./types";
+import type { Agent, CreateAgentRequest, UpdateAgentRequest, CopyAgentRequest, Skill } from "./types";
 
 export async function listAgents(): Promise<Agent[]> {
   const res = await fetchAuthApi("/api/agents");
@@ -10,16 +10,20 @@ export async function listAgents(): Promise<Agent[]> {
   return data.agents;
 }
 
+export class AgentReadError extends Error {
+  constructor(public status: number) { super(`Agent read failed (${status})`); }
+}
+
 export async function getAgent(name: string): Promise<Agent> {
   const res = await fetchAuthApi(`/api/agents/${name}`);
-  if (!res.ok) throw new Error(`Agent '${name}' not found`);
+  if (!res.ok) throw new AgentReadError(res.status);
   return res.json() as Promise<Agent>;
 }
 
 export class AgentMutationError extends Error {
   constructor(public status: number, public inspectionRequired = false, message?: string) { super(message ?? `Agent save failed (${status})`); }
 }
-async function saveAgent(path: string, method: string, request: CreateAgentRequest | UpdateAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
+async function saveAgent(path: string, method: string, request: CreateAgentRequest | UpdateAgentRequest | CopyAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
   const current = () => !options.isCurrent || options.isCurrent();
   const headers = await getAuthHeaders({"Content-Type":"application/json"});
   if (!current()) throw new AgentMutationError(401, false, "Agent draft identity changed");
@@ -71,4 +75,13 @@ export async function listSkills(signal?: AbortSignal): Promise<Skill[]> {
   if (!res.ok) throw new Error(`Failed to load skills: ${res.statusText}`);
   const data = (await res.json()) as { skills: Skill[] };
   return data.skills;
+}
+
+export async function copyAgent(name: string, request: CopyAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
+  try {
+    return await saveAgent(`/api/agents/${encodeURIComponent(name)}/copy`, "POST", request, options);
+  } catch (error) {
+    if (error instanceof AgentMutationError) throw error;
+    throw new AgentMutationError(503, true, "复制结果未确认，请先检查目标 Agent");
+  }
 }

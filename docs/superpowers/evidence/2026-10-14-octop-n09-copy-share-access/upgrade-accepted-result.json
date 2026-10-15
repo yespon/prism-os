@@ -1,0 +1,23 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "docs/superpowers/evidence/2026-10-14-octop-n09-copy-share-access/upgrade-accepted.json",
+    "--test-file",
+    "tests/test_agent_copy_share_boundaries.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T03:36:31.488559+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T03:37:55.944553+00:00"
+}

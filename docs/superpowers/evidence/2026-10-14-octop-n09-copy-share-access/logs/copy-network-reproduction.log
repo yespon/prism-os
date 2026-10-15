@@ -1,0 +1,47 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run src/core/agents/api.test.ts --maxWorkers=2
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/root/.codex/worktrees/octop-integration/prism-os/frontend[39m
+
+ [31m❯[39m src/core/agents/api.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 63[2mms[22m[39m
+   [32m✓[39m stops before dispatch if auth loading changed the current draft identity[32m 18[2mms[22m[39m
+   [32m✓[39m sends explicit source selection and native revision conditions[32m 15[2mms[22m[39m
+   [32m✓[39m keeps commit/response uncertainty separate from definitive rejection[32m 3[2mms[22m[39m
+   [32m✓[39m copies one concrete source version with explicitly reauthorized target resources[32m 1[2mms[22m[39m
+   [32m✓[39m does not retry copying after an unknown response or a tenant identity switch[32m 2[2mms[22m[39m
+[31m   [31m×[31m requires inspection when a copy request loses its network response[39m[32m 13[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/core/agents/api.test.ts[2m > [22mrequires inspection when a copy request loses its network response
+[31m[1mAssertionError[22m: expected TypeError: connection lost after dispatch to match object { inspectionRequired: true, …(1) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- {[39m
+[32m-   "inspectionRequired": true,[39m
+[32m-   "status": 503,[39m
+[31m+ TypeError {[39m
+[31m+   "message": "connection lost after dispatch",[39m
+[2m  }[22m
+
+[36m [2m❯[22m src/core/agents/api.test.ts:[2m93:5[22m[39m
+    [90m 91|[39m   [35mawait[39m [34mexpect[39m([34mcopyAgent[39m([32m"source"[39m[33m,[39m {
+    [90m 92|[39m     name: "copy", source_agent_id: "source-id", source_revision: "a".r…
+    [90m 93|[39m   }))[33m.[39mrejects[33m.[39m[34mtoMatchObject[39m({ inspectionRequired[33m:[39m [35mtrue[39m[33m,[39m status[33m:[39m [34m503[39m })[33m;[39m
+    [90m   |[39m     [31m^[39m
+    [90m 94|[39m   [34mexpect[39m(fetchMock)[33m.[39m[34mtoHaveBeenCalledTimes[39m([34m1[39m)[33m;[39m
+    [90m 95|[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 10:21:26
+[2m   Duration [22m 4.43s[2m (transform 113ms, setup 397ms, import 96ms, tests 63ms, environment 2.75s)[22m
+
+ ELIFECYCLE  Command failed with exit code 1.

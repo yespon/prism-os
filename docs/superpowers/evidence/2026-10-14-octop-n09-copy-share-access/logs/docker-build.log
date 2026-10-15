@@ -1,0 +1,1316 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 1.41kB 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/docker:cli
+#4 ...
+
+#5 [internal] load metadata for ghcr.io/astral-sh/uv:0.9.26
+#5 DONE 14.1s
+
+#3 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#3 DONE 29.9s
+
+#4 [internal] load metadata for docker.io/library/docker:cli
+#4 ...
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 30.0s
+
+#4 [internal] load metadata for docker.io/library/docker:cli
+#4 DONE 30.2s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 1.18kB done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 DONE 0.0s
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 resolve docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 0.1s done
+#8 DONE 0.1s
+
+#9 FROM ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b
+#9 resolve ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b 0.1s done
+#9 DONE 0.1s
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 resolve docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00 0.1s done
+#10 DONE 0.1s
+
+#11 [stage-1  1/10] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#11 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.1s done
+#11 sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 10.37kB / 10.37kB done
+#11 sha256:2b4f19dae3a777dfc3b76730bda1e82e1f66ab2a2686fa93ca78edbfb4f04ffe 1.75kB / 1.75kB done
+#11 sha256:df18428df8a0f9189c84e7424d214b4c50092af1f9dca5842a00c41c39bda316 5.66kB / 5.66kB done
+#11 DONE 0.5s
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 5.22kB / 5.22kB done
+#8 sha256:efd0ab5780c2d9ab1f0f869571a00d5edb17793bff4cce4a2792e3eb0ffc7562 1.93kB / 1.93kB done
+#8 sha256:d0a16be756b6ec6658aecb8b7bcf87fa6c7d0d7fcc6ca53ad14bb49a4c90bdd7 6.77kB / 6.77kB done
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 0B / 49.84MB 0.4s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0B / 28.25MB 0.4s
+#8 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0B / 3.31kB 0.4s
+#8 ...
+
+#7 [internal] load build context
+#7 transferring context: 29.24MB 3.6s done
+#7 DONE 3.7s
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 0B / 49.84MB 5.5s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0B / 28.25MB 5.5s
+#8 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0B / 3.31kB 5.5s
+#8 ...
+
+#9 FROM ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b
+#9 sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b 2.19kB / 2.19kB done
+#9 sha256:08a7428e3daeb4ff634fe06d3d9aec278579e88f770b5d141e5a408cb998f40a 669B / 669B done
+#9 sha256:02338ef4d522b073c9469e1656cfa160407cb7160023300bb8622c9757778b13 1.30kB / 1.30kB done
+#9 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:2b05a2da0862c60c19ec93d6956e81a3764628d39eb0f9f6d5c951d7592e058c 8.38kB / 8.38kB done
+#10 sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00 5.15kB / 5.15kB done
+#10 sha256:4caa52207e95c68c3087006eefb3a5f6ca48ad1c0ba3aa3e6843549a0720b7bb 2.86kB / 2.86kB done
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 6.980 Hit:1 http://deb.debian.org/debian trixie InRelease
+#12 7.150 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+#12 7.758 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#12 8.138 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9678 kB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 0B / 49.84MB 10.6s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0B / 28.25MB 10.6s
+#8 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0B / 3.31kB 10.6s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 0B / 49.84MB 15.7s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 1.05MB / 28.25MB 15.7s
+#8 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0B / 3.31kB 15.7s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 3.15MB / 28.25MB 19.1s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 0B / 49.84MB 20.7s
+#8 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0B / 3.31kB 20.7s
+#8 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 3.31kB / 3.31kB 21.0s done
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0B / 1.71MB 21.2s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 5.24MB / 28.25MB 22.3s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 2.10MB / 49.84MB 25.9s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 7.34MB / 28.25MB 25.9s
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0B / 1.71MB 26.2s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 9.44MB / 28.25MB 28.5s
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 19.63 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [4412 B]
+#12 19.63 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [267 kB]
+#12 20.95 Fetched 10.0 MB in 20s (508 kB/s)
+#12 20.95 Reading package lists...
+#12 22.45 Reading package lists...
+#12 24.82 Building dependency tree...
+#12 25.32 Reading state information...
+#12 25.92 ca-certificates is already the newest version (20250419).
+#12 25.92 The following additional packages will be installed:
+#12 25.92   binutils binutils-common binutils-x86-64-linux-gnu bzip2 cpp cpp-14
+#12 25.92   cpp-14-x86-64-linux-gnu cpp-x86-64-linux-gnu dpkg-dev g++ g++-14
+#12 25.92   g++-14-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-14
+#12 25.92   gcc-14-x86-64-linux-gnu gcc-x86-64-linux-gnu libasan8 libatomic1 libbinutils
+#12 25.92   libbrotli1 libc-dev-bin libc6-dev libcbor0.10 libcc1-0 libcom-err2
+#12 25.92   libcrypt-dev libctf-nobfd0 libctf0 libcurl4t64 libdpkg-perl libedit2
+#12 25.92   libfido2-1 libgcc-14-dev libgdbm-compat4t64 libgnutls30t64 libgomp1
+#12 25.92   libgprofng0 libgssapi-krb5-2 libhwasan0 libidn2-0 libisl23 libitm1
+#12 25.92   libjansson4 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap2
+#12 25.92   liblsan0 liblzma5 libmpc3 libmpfr6 libnghttp2-14 libnghttp3-9 libp11-kit0
+#12 25.92   libperl5.40 libpq5 libpsl5t64 libquadmath0 librtmp1 libsasl2-2
+#12 25.92   libsasl2-modules-db libsframe1 libssh2-1t64 libssl-dev libstdc++-14-dev
+#12 25.92   libtasn1-6 libtsan2 libubsan1 libunistring5 linux-libc-dev make patch perl
+#12 25.92   perl-modules-5.40 rpcsvc-proto xz-utils
+#12 25.93 Suggested packages:
+#12 25.93   binutils-doc gprofng-gui binutils-gold bzip2-doc cpp-doc gcc-14-locales
+#12 25.93   cpp-14-doc debian-keyring debian-tag2upload-keyring g++-multilib
+#12 25.93   g++-14-multilib gcc-14-doc gcc-multilib manpages-dev autoconf automake
+#12 25.93   libtool flex bison gdb gcc-doc gcc-14-multilib gdb-x86-64-linux-gnu
+#12 25.93   libc-devtools glibc-doc sq | sqop | rsop | gosop | pgpainless-cli | gpg-sq
+#12 25.93   | gnupg sensible-utils git bzr gnutls-bin krb5-doc krb5-user
+#12 25.93   postgresql-doc-17 libssl-doc libstdc++-14-doc make-doc keychain libpam-ssh
+#12 25.93   monkeysphere ssh-askpass ed diffutils-doc perl-doc libterm-readline-gnu-perl
+#12 25.93   | libterm-readline-perl-perl libtap-harness-archive-perl
+#12 25.93 Recommended packages:
+#12 25.93   procps bash-completion fakeroot sq | sqop | rsop | gosop | pgpainless-cli
+#12 25.93   | gpg-sq | gnupg libalgorithm-merge-perl manpages manpages-dev
+#12 25.93   libfile-fcntllock-perl liblocale-gettext-perl krb5-locales libldap-common
+#12 25.93   publicsuffix libsasl2-modules xauth
+#12 26.67 The following NEW packages will be installed:
+#12 26.67   binutils binutils-common binutils-x86-64-linux-gnu bubblewrap
+#12 26.67   build-essential bzip2 cpp cpp-14 cpp-14-x86-64-linux-gnu
+#12 26.67   cpp-x86-64-linux-gnu curl dpkg-dev g++ g++-14 g++-14-x86-64-linux-gnu
+#12 26.67   g++-x86-64-linux-gnu gcc gcc-14 gcc-14-x86-64-linux-gnu gcc-x86-64-linux-gnu
+#12 26.68   libasan8 libatomic1 libbinutils libbrotli1 libc-dev-bin libc6-dev
+#12 26.68   libcbor0.10 libcc1-0 libcom-err2 libcrypt-dev libctf-nobfd0 libctf0
+#12 26.68   libcurl4t64 libdpkg-perl libedit2 libfido2-1 libgcc-14-dev
+#12 26.68   libgdbm-compat4t64 libgnutls30t64 libgomp1 libgprofng0 libgssapi-krb5-2
+#12 26.68   libhwasan0 libidn2-0 libisl23 libitm1 libjansson4 libk5crypto3 libkeyutils1
+#12 26.68   libkrb5-3 libkrb5support0 libldap2 liblsan0 libmpc3 libmpfr6 libnghttp2-14
+#12 26.68   libnghttp3-9 libp11-kit0 libperl5.40 libpq-dev libpq5 libpsl5t64
+#12 26.68   libquadmath0 librtmp1 libsasl2-2 libsasl2-modules-db libsframe1 libssh2-1t64
+#12 26.68   libssl-dev libstdc++-14-dev libtasn1-6 libtsan2 libubsan1 libunistring5
+#12 26.68   linux-libc-dev make openssh-client patch perl perl-modules-5.40 rpcsvc-proto
+#12 26.68   xz-utils
+#12 26.68 The following packages will be upgraded:
+#12 26.69   liblzma5
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 11.53MB / 28.25MB 30.6s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 4.19MB / 49.84MB 31.0s
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0B / 1.71MB 31.4s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 13.63MB / 28.25MB 33.0s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 6.29MB / 49.84MB 36.1s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 15.73MB / 28.25MB 36.4s
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0B / 1.71MB 36.4s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 17.83MB / 28.25MB 39.9s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 8.39MB / 49.84MB 41.2s
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0B / 1.71MB 41.4s
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 32.41 1 upgraded, 82 newly installed, 0 to remove and 0 not upgraded.
+#12 32.41 Need to get 92.4 MB of archives.
+#12 32.41 After this operation, 375 MB of additional disk space will be used.
+#12 32.41 Get:1 http://deb.debian.org/debian-security trixie-security/main amd64 liblzma5 amd64 5.8.1-1+deb13u2 [310 kB]
+#12 33.66 Get:2 http://deb.debian.org/debian trixie/main amd64 bzip2 amd64 1.0.8-6 [40.5 kB]
+#12 33.68 Get:3 http://deb.debian.org/debian trixie/main amd64 libedit2 amd64 3.1-20250104-1 [93.8 kB]
+#12 33.88 Get:4 http://deb.debian.org/debian trixie/main amd64 libcbor0.10 amd64 0.10.2-2 [28.3 kB]
+#12 34.21 Get:5 http://deb.debian.org/debian trixie/main amd64 libfido2-1 amd64 1.15.0-1+b1 [78.7 kB]
+#12 35.55 Get:6 http://deb.debian.org/debian trixie/main amd64 libkrb5support0 amd64 1.21.3-5+deb13u1 [33.1 kB]
+#12 35.55 Get:7 http://deb.debian.org/debian trixie/main amd64 libcom-err2 amd64 1.47.2-3+b12 [25.0 kB]
+#12 35.55 Get:8 http://deb.debian.org/debian trixie/main amd64 libk5crypto3 amd64 1.21.3-5+deb13u1 [81.2 kB]
+#12 35.56 Get:9 http://deb.debian.org/debian trixie/main amd64 libkeyutils1 amd64 1.6.3-6 [9456 B]
+#12 35.56 Get:10 http://deb.debian.org/debian trixie/main amd64 libkrb5-3 amd64 1.21.3-5+deb13u1 [326 kB]
+#12 35.78 Get:11 http://deb.debian.org/debian trixie/main amd64 libgssapi-krb5-2 amd64 1.21.3-5+deb13u1 [138 kB]
+#12 36.53 Get:12 http://deb.debian.org/debian trixie/main amd64 openssh-client amd64 1:10.0p1-7+deb13u4 [990 kB]
+#12 38.00 Get:13 http://deb.debian.org/debian trixie/main amd64 perl-modules-5.40 all 5.40.1-6+deb13u1 [3014 kB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 19.92MB / 28.25MB 44.1s
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 1.05MB / 1.71MB 44.3s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 9.44MB / 49.84MB 46.3s
+#8 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 1.71MB / 1.71MB 47.3s done
+#8 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 0B / 448B 47.4s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 22.02MB / 28.25MB 47.7s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 11.53MB / 49.84MB 51.5s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 24.12MB / 28.25MB 51.7s
+#8 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 0B / 448B 52.4s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 26.21MB / 28.25MB 55.7s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 12.58MB / 49.84MB 56.6s
+#8 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 0B / 448B 57.6s
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 47.27 Get:14 http://deb.debian.org/debian trixie/main amd64 libgdbm-compat4t64 amd64 1.24-2 [50.3 kB]
+#12 47.27 Get:15 http://deb.debian.org/debian trixie/main amd64 libperl5.40 amd64 5.40.1-6+deb13u1 [4326 kB]
+#12 56.20 Get:16 http://deb.debian.org/debian trixie/main amd64 perl amd64 5.40.1-6+deb13u1 [268 kB]
+#12 56.69 Get:17 http://deb.debian.org/debian-security trixie-security/main amd64 xz-utils amd64 5.8.1-1+deb13u2 [660 kB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 59.5s
+#8 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 59.5s done
+#8 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39
+#8 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 448B / 448B 61.3s done
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 14.68MB / 49.84MB 61.7s
+#8 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 5.5s
+#8 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 6.5s done
+#8 extracting sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf
+#8 extracting sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0.0s done
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 15.73MB / 49.84MB 66.8s
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 58.10 Get:18 http://deb.debian.org/debian trixie/main amd64 libsframe1 amd64 2.44-3 [78.4 kB]
+#12 58.13 Get:19 http://deb.debian.org/debian trixie/main amd64 binutils-common amd64 2.44-3 [2509 kB]
+#12 61.79 Get:20 http://deb.debian.org/debian trixie/main amd64 libbinutils amd64 2.44-3 [534 kB]
+#12 62.64 Get:21 http://deb.debian.org/debian trixie/main amd64 libgprofng0 amd64 2.44-3 [808 kB]
+#12 63.97 Get:22 http://deb.debian.org/debian trixie/main amd64 libctf-nobfd0 amd64 2.44-3 [156 kB]
+#12 64.24 Get:23 http://deb.debian.org/debian trixie/main amd64 libctf0 amd64 2.44-3 [88.6 kB]
+#12 64.38 Get:24 http://deb.debian.org/debian trixie/main amd64 libjansson4 amd64 2.14-2+b3 [39.8 kB]
+#12 64.46 Get:25 http://deb.debian.org/debian trixie/main amd64 binutils-x86-64-linux-gnu amd64 2.44-3 [1014 kB]
+#12 66.10 Get:26 http://deb.debian.org/debian trixie/main amd64 binutils amd64 2.44-3 [265 kB]
+#12 66.52 Get:27 http://deb.debian.org/debian trixie/main amd64 bubblewrap amd64 0.12.0-1~deb13u1 [56.9 kB]
+#12 66.61 Get:28 http://deb.debian.org/debian trixie/main amd64 libc-dev-bin amd64 2.41-12+deb13u4 [60.0 kB]
+#12 66.71 Get:29 http://deb.debian.org/debian-security trixie-security/main amd64 linux-libc-dev all 6.12.111-1 [2988 kB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 0B / 3.85MB 69.7s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 0B / 8.20MB 69.7s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 17.83MB / 49.84MB 72.0s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 19.92MB / 49.84MB 77.2s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 0B / 3.85MB 77.3s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 0B / 8.20MB 77.3s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 69.80 Get:30 http://deb.debian.org/debian trixie/main amd64 libcrypt-dev amd64 1:4.4.38-1 [119 kB]
+#12 69.89 Get:31 http://deb.debian.org/debian trixie/main amd64 rpcsvc-proto amd64 1.4.3-1 [63.3 kB]
+#12 69.93 Get:32 http://deb.debian.org/debian trixie/main amd64 libc6-dev amd64 2.41-12+deb13u4 [1995 kB]
+#12 71.98 Get:33 http://deb.debian.org/debian trixie/main amd64 libisl23 amd64 0.27-1 [659 kB]
+#12 73.12 Get:34 http://deb.debian.org/debian trixie/main amd64 libmpfr6 amd64 4.2.2-1 [729 kB]
+#12 73.49 Get:35 http://deb.debian.org/debian trixie/main amd64 libmpc3 amd64 1.3.1-1+b3 [52.2 kB]
+#12 73.66 Get:36 http://deb.debian.org/debian trixie/main amd64 cpp-14-x86-64-linux-gnu amd64 14.2.0-19 [11.0 MB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 22.02MB / 49.84MB 82.4s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 24.12MB / 49.84MB 87.4s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 0B / 3.85MB 87.5s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 0B / 8.20MB 87.5s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 26.21MB / 49.84MB 92.6s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 0B / 3.85MB 94.9s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 0B / 8.20MB 94.9s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 84.92 Get:37 http://deb.debian.org/debian trixie/main amd64 cpp-14 amd64 14.2.0-19 [1280 B]
+#12 84.93 Get:38 http://deb.debian.org/debian trixie/main amd64 cpp-x86-64-linux-gnu amd64 4:14.2.0-1 [4840 B]
+#12 84.93 Get:39 http://deb.debian.org/debian trixie/main amd64 cpp amd64 4:14.2.0-1 [1568 B]
+#12 84.94 Get:40 http://deb.debian.org/debian trixie/main amd64 libcc1-0 amd64 14.2.0-19 [42.8 kB]
+#12 84.98 Get:41 http://deb.debian.org/debian trixie/main amd64 libgomp1 amd64 14.2.0-19 [137 kB]
+#12 85.13 Get:42 http://deb.debian.org/debian trixie/main amd64 libitm1 amd64 14.2.0-19 [26.0 kB]
+#12 85.16 Get:43 http://deb.debian.org/debian trixie/main amd64 libatomic1 amd64 14.2.0-19 [9308 B]
+#12 85.16 Get:44 http://deb.debian.org/debian trixie/main amd64 libasan8 amd64 14.2.0-19 [2725 kB]
+#12 88.76 Get:45 http://deb.debian.org/debian trixie/main amd64 liblsan0 amd64 14.2.0-19 [1204 kB]
+#12 90.46 Get:46 http://deb.debian.org/debian trixie/main amd64 libtsan2 amd64 14.2.0-19 [2460 kB]
+#12 93.89 Get:47 http://deb.debian.org/debian trixie/main amd64 libubsan1 amd64 14.2.0-19 [1074 kB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 28.31MB / 49.84MB 97.7s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 29.36MB / 49.84MB 102.7s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 1.05MB / 3.85MB 102.8s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 2.10MB / 8.20MB 102.8s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 95.39 Get:48 http://deb.debian.org/debian trixie/main amd64 libhwasan0 amd64 14.2.0-19 [1488 kB]
+#12 97.17 Get:49 http://deb.debian.org/debian trixie/main amd64 libquadmath0 amd64 14.2.0-19 [145 kB]
+#12 97.17 Get:50 http://deb.debian.org/debian trixie/main amd64 libgcc-14-dev amd64 14.2.0-19 [2672 kB]
+#12 101.5 Get:51 http://deb.debian.org/debian trixie/main amd64 gcc-14-x86-64-linux-gnu amd64 14.2.0-19 [21.4 MB]
+#12 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 32.51MB / 49.84MB 107.9s
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 34.60MB / 49.84MB 113.0s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 2.10MB / 3.85MB 113.1s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 3.15MB / 8.20MB 113.1s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 36.70MB / 49.84MB 118.1s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 3.85MB / 3.85MB 120.7s done
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 5.24MB / 8.20MB 120.8s
+#10 extracting sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5
+#10 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0B / 32B 120.8s
+#10 extracting sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 0.5s done
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 6.29MB / 8.20MB 124.0s
+#10 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0B / 32B 125.8s
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 7.34MB / 8.20MB 128.9s
+#10 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0B / 32B 130.9s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 39.85MB / 49.84MB 131.1s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 8.20MB / 8.20MB 133.4s done
+#10 sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da 0B / 454B 133.5s
+#10 extracting sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 0.1s
+#10 extracting sha256:9d72d6d20fcba9b1604d305975bab0bb136dd22d6acf7416e2c0753890924405 0.5s done
+#10 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0B / 32B 136.0s
+#10 sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da 0B / 454B 138.7s
+#10 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0B / 32B 141.0s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 45.09MB / 49.84MB 141.4s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 132.4 Get:52 http://deb.debian.org/debian trixie/main amd64 gcc-14 amd64 14.2.0-19 [540 kB]
+#12 132.6 Get:53 http://deb.debian.org/debian trixie/main amd64 gcc-x86-64-linux-gnu amd64 4:14.2.0-1 [1436 B]
+#12 132.6 Get:54 http://deb.debian.org/debian trixie/main amd64 gcc amd64 4:14.2.0-1 [5136 B]
+#12 132.6 Get:55 http://deb.debian.org/debian trixie/main amd64 libstdc++-14-dev amd64 14.2.0-19 [2376 kB]
+#12 135.0 Get:56 http://deb.debian.org/debian trixie/main amd64 g++-14-x86-64-linux-gnu amd64 14.2.0-19 [12.1 MB]
+#12 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 142.9s done
+#10 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.0s done
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 0B / 20.29MB 143.0s
+#10 sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da 0B / 454B 143.8s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 0B / 23.81MB 147.7s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 0B / 20.29MB 148.1s
+#10 sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da 0B / 454B 148.9s
+#10 extracting sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da
+#10 sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da 454B / 454B 150.5s done
+#10 extracting sha256:9246a4a10b8d5d396734a8cad833cea58337a52e9bddba5046e4d402c3ab81da 0.0s done
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 0B / 11.30MB 150.6s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 49.84MB / 49.84MB 147.6s done
+#8 extracting sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 3.8s
+#8 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 0B / 23.81MB 152.8s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 0B / 20.29MB 153.2s
+#10 ...
+
+#8 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#8 extracting sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 5.4s done
+#8 extracting sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0.1s done
+#8 extracting sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 0.0s done
+#8 DONE 153.7s
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 0B / 11.30MB 155.8s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 0B / 23.81MB 157.8s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 0B / 20.29MB 158.2s
+#10 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 149.7 Get:57 http://deb.debian.org/debian trixie/main amd64 g++-14 amd64 14.2.0-19 [22.5 kB]
+#12 149.7 Get:58 http://deb.debian.org/debian trixie/main amd64 g++-x86-64-linux-gnu amd64 4:14.2.0-1 [1200 B]
+#12 149.7 Get:59 http://deb.debian.org/debian trixie/main amd64 g++ amd64 4:14.2.0-1 [1344 B]
+#12 149.7 Get:60 http://deb.debian.org/debian trixie/main amd64 make amd64 4.4.1-2 [463 kB]
+#12 149.9 Get:61 http://deb.debian.org/debian trixie/main amd64 libdpkg-perl all 1.22.22 [651 kB]
+#12 150.2 Get:62 http://deb.debian.org/debian trixie/main amd64 patch amd64 2.8-2 [134 kB]
+#12 150.3 Get:63 http://deb.debian.org/debian trixie/main amd64 dpkg-dev all 1.22.22 [1337 kB]
+#12 151.6 Get:64 http://deb.debian.org/debian trixie/main amd64 build-essential amd64 12.12 [4624 B]
+#12 151.6 Get:65 http://deb.debian.org/debian trixie/main amd64 libbrotli1 amd64 1.1.0-2+b7 [307 kB]
+#12 151.7 Get:66 http://deb.debian.org/debian trixie/main amd64 libunistring5 amd64 1.3-2 [477 kB]
+#12 151.9 Get:67 http://deb.debian.org/debian trixie/main amd64 libidn2-0 amd64 2.3.8-2 [109 kB]
+#12 152.0 Get:68 http://deb.debian.org/debian trixie/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg1-9 [19.8 kB]
+#12 152.0 Get:69 http://deb.debian.org/debian trixie/main amd64 libsasl2-2 amd64 2.1.28+dfsg1-9 [57.5 kB]
+#12 152.1 Get:70 http://deb.debian.org/debian trixie/main amd64 libldap2 amd64 2.6.10+dfsg-1 [194 kB]
+#12 152.2 Get:71 http://deb.debian.org/debian trixie/main amd64 libnghttp2-14 amd64 1.64.0-1.1+deb13u1 [76.2 kB]
+#12 152.2 Get:72 http://deb.debian.org/debian trixie/main amd64 libnghttp3-9 amd64 1.8.0-1 [67.7 kB]
+#12 152.2 Get:73 http://deb.debian.org/debian trixie/main amd64 libpsl5t64 amd64 0.21.2-1.1+b1 [57.2 kB]
+#12 152.3 Get:74 http://deb.debian.org/debian trixie/main amd64 libp11-kit0 amd64 0.25.5-3 [425 kB]
+#12 152.5 Get:75 http://deb.debian.org/debian trixie/main amd64 libtasn1-6 amd64 4.20.0-2+deb13u1 [50.1 kB]
+#12 152.5 Get:76 http://deb.debian.org/debian trixie/main amd64 libgnutls30t64 amd64 3.8.9-3+deb13u4 [1469 kB]
+#12 154.1 Get:77 http://deb.debian.org/debian trixie/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b5 [58.8 kB]
+#12 154.1 Get:78 http://deb.debian.org/debian trixie/main amd64 libssh2-1t64 amd64 1.11.1-1+deb13u2 [245 kB]
+#12 154.2 Get:79 http://deb.debian.org/debian-security trixie-security/main amd64 libcurl4t64 amd64 8.14.1-2+deb13u7 [392 kB]
+#12 154.6 Get:80 http://deb.debian.org/debian-security trixie-security/main amd64 curl amd64 8.14.1-2+deb13u7 [270 kB]
+#12 154.7 Get:81 http://deb.debian.org/debian trixie/main amd64 libpq5 amd64 17.11-0+deb13u1 [237 kB]
+#12 154.9 Get:82 http://deb.debian.org/debian-security trixie-security/main amd64 libssl-dev amd64 3.5.7-1~deb13u3 [2968 kB]
+#12 157.7 Get:83 http://deb.debian.org/debian trixie/main amd64 libpq-dev amd64 17.11-0+deb13u1 [159 kB]
+#12 158.7 debconf: unable to initialize frontend: Dialog
+#12 158.7 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#12 158.7 debconf: falling back to frontend: Readline
+#12 158.7 debconf: unable to initialize frontend: Readline
+#12 158.7 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/x86_64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8, <STDIN> line 83.)
+#12 158.7 debconf: falling back to frontend: Teletype
+#12 158.7 debconf: unable to initialize frontend: Teletype
+#12 158.7 debconf: (This frontend requires a controlling tty.)
+#12 158.7 debconf: falling back to frontend: Noninteractive
+#12 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 1.05MB / 20.29MB 160.3s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 0B / 11.30MB 160.8s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 2.10MB / 20.29MB 162.3s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 0B / 23.81MB 162.9s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 3.15MB / 20.29MB 164.4s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 4.19MB / 20.29MB 165.3s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 0B / 11.30MB 165.8s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 1.05MB / 23.81MB 167.9s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 5.24MB / 20.29MB 168.1s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 1.05MB / 11.30MB 168.1s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 6.29MB / 20.29MB 169.5s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 2.10MB / 11.30MB 169.6s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 3.15MB / 23.81MB 171.7s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 7.34MB / 20.29MB 171.9s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 3.15MB / 11.30MB 172.3s
+#10 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 163.1 Fetched 92.4 MB in 2min 11s (704 kB/s)
+#12 163.2 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5660 files and directories currently installed.)
+#12 163.2 Preparing to unpack .../liblzma5_5.8.1-1+deb13u2_amd64.deb ...
+#12 163.3 Unpacking liblzma5:amd64 (5.8.1-1+deb13u2) over (5.8.1-1+deb13u1) ...
+#12 163.4 Setting up liblzma5:amd64 (5.8.1-1+deb13u2) ...
+#12 163.5 Selecting previously unselected package bzip2.
+#12 163.5 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5660 files and directories currently installed.)
+#12 163.5 Preparing to unpack .../00-bzip2_1.0.8-6_amd64.deb ...
+#12 163.5 Unpacking bzip2 (1.0.8-6) ...
+#12 163.5 Selecting previously unselected package libedit2:amd64.
+#12 163.5 Preparing to unpack .../01-libedit2_3.1-20250104-1_amd64.deb ...
+#12 163.5 Unpacking libedit2:amd64 (3.1-20250104-1) ...
+#12 163.6 Selecting previously unselected package libcbor0.10:amd64.
+#12 163.6 Preparing to unpack .../02-libcbor0.10_0.10.2-2_amd64.deb ...
+#12 163.6 Unpacking libcbor0.10:amd64 (0.10.2-2) ...
+#12 163.7 Selecting previously unselected package libfido2-1:amd64.
+#12 163.7 Preparing to unpack .../03-libfido2-1_1.15.0-1+b1_amd64.deb ...
+#12 163.7 Unpacking libfido2-1:amd64 (1.15.0-1+b1) ...
+#12 163.8 Selecting previously unselected package libkrb5support0:amd64.
+#12 163.8 Preparing to unpack .../04-libkrb5support0_1.21.3-5+deb13u1_amd64.deb ...
+#12 163.8 Unpacking libkrb5support0:amd64 (1.21.3-5+deb13u1) ...
+#12 163.9 Selecting previously unselected package libcom-err2:amd64.
+#12 163.9 Preparing to unpack .../05-libcom-err2_1.47.2-3+b12_amd64.deb ...
+#12 163.9 Unpacking libcom-err2:amd64 (1.47.2-3+b12) ...
+#12 163.9 Selecting previously unselected package libk5crypto3:amd64.
+#12 163.9 Preparing to unpack .../06-libk5crypto3_1.21.3-5+deb13u1_amd64.deb ...
+#12 163.9 Unpacking libk5crypto3:amd64 (1.21.3-5+deb13u1) ...
+#12 164.0 Selecting previously unselected package libkeyutils1:amd64.
+#12 164.0 Preparing to unpack .../07-libkeyutils1_1.6.3-6_amd64.deb ...
+#12 164.0 Unpacking libkeyutils1:amd64 (1.6.3-6) ...
+#12 164.1 Selecting previously unselected package libkrb5-3:amd64.
+#12 164.1 Preparing to unpack .../08-libkrb5-3_1.21.3-5+deb13u1_amd64.deb ...
+#12 164.1 Unpacking libkrb5-3:amd64 (1.21.3-5+deb13u1) ...
+#12 164.2 Selecting previously unselected package libgssapi-krb5-2:amd64.
+#12 164.2 Preparing to unpack .../09-libgssapi-krb5-2_1.21.3-5+deb13u1_amd64.deb ...
+#12 164.2 Unpacking libgssapi-krb5-2:amd64 (1.21.3-5+deb13u1) ...
+#12 164.3 Selecting previously unselected package openssh-client.
+#12 164.3 Preparing to unpack .../10-openssh-client_1%3a10.0p1-7+deb13u4_amd64.deb ...
+#12 164.3 Unpacking openssh-client (1:10.0p1-7+deb13u4) ...
+#12 164.5 Selecting previously unselected package perl-modules-5.40.
+#12 164.5 Preparing to unpack .../11-perl-modules-5.40_5.40.1-6+deb13u1_all.deb ...
+#12 164.5 Unpacking perl-modules-5.40 (5.40.1-6+deb13u1) ...
+#12 165.0 Selecting previously unselected package libgdbm-compat4t64:amd64.
+#12 165.0 Preparing to unpack .../12-libgdbm-compat4t64_1.24-2_amd64.deb ...
+#12 165.0 Unpacking libgdbm-compat4t64:amd64 (1.24-2) ...
+#12 165.1 Selecting previously unselected package libperl5.40:amd64.
+#12 165.1 Preparing to unpack .../13-libperl5.40_5.40.1-6+deb13u1_amd64.deb ...
+#12 165.1 Unpacking libperl5.40:amd64 (5.40.1-6+deb13u1) ...
+#12 165.6 Selecting previously unselected package perl.
+#12 165.6 Preparing to unpack .../14-perl_5.40.1-6+deb13u1_amd64.deb ...
+#12 165.6 Unpacking perl (5.40.1-6+deb13u1) ...
+#12 165.7 Selecting previously unselected package xz-utils.
+#12 165.7 Preparing to unpack .../15-xz-utils_5.8.1-1+deb13u2_amd64.deb ...
+#12 165.7 Unpacking xz-utils (5.8.1-1+deb13u2) ...
+#12 165.8 Selecting previously unselected package libsframe1:amd64.
+#12 165.8 Preparing to unpack .../16-libsframe1_2.44-3_amd64.deb ...
+#12 165.9 Unpacking libsframe1:amd64 (2.44-3) ...
+#12 165.9 Selecting previously unselected package binutils-common:amd64.
+#12 165.9 Preparing to unpack .../17-binutils-common_2.44-3_amd64.deb ...
+#12 165.9 Unpacking binutils-common:amd64 (2.44-3) ...
+#12 166.2 Selecting previously unselected package libbinutils:amd64.
+#12 166.2 Preparing to unpack .../18-libbinutils_2.44-3_amd64.deb ...
+#12 166.2 Unpacking libbinutils:amd64 (2.44-3) ...
+#12 166.3 Selecting previously unselected package libgprofng0:amd64.
+#12 166.3 Preparing to unpack .../19-libgprofng0_2.44-3_amd64.deb ...
+#12 166.3 Unpacking libgprofng0:amd64 (2.44-3) ...
+#12 166.5 Selecting previously unselected package libctf-nobfd0:amd64.
+#12 166.5 Preparing to unpack .../20-libctf-nobfd0_2.44-3_amd64.deb ...
+#12 166.5 Unpacking libctf-nobfd0:amd64 (2.44-3) ...
+#12 166.7 Selecting previously unselected package libctf0:amd64.
+#12 166.7 Preparing to unpack .../21-libctf0_2.44-3_amd64.deb ...
+#12 166.7 Unpacking libctf0:amd64 (2.44-3) ...
+#12 167.1 Selecting previously unselected package libjansson4:amd64.
+#12 167.1 Preparing to unpack .../22-libjansson4_2.14-2+b3_amd64.deb ...
+#12 167.1 Unpacking libjansson4:amd64 (2.14-2+b3) ...
+#12 167.2 Selecting previously unselected package binutils-x86-64-linux-gnu.
+#12 167.2 Preparing to unpack .../23-binutils-x86-64-linux-gnu_2.44-3_amd64.deb ...
+#12 167.2 Unpacking binutils-x86-64-linux-gnu (2.44-3) ...
+#12 167.6 Selecting previously unselected package binutils.
+#12 167.6 Preparing to unpack .../24-binutils_2.44-3_amd64.deb ...
+#12 167.6 Unpacking binutils (2.44-3) ...
+#12 167.9 Selecting previously unselected package bubblewrap.
+#12 167.9 Preparing to unpack .../25-bubblewrap_0.12.0-1~deb13u1_amd64.deb ...
+#12 168.0 Unpacking bubblewrap (0.12.0-1~deb13u1) ...
+#12 168.2 Selecting previously unselected package libc-dev-bin.
+#12 168.2 Preparing to unpack .../26-libc-dev-bin_2.41-12+deb13u4_amd64.deb ...
+#12 168.2 Unpacking libc-dev-bin (2.41-12+deb13u4) ...
+#12 168.3 Selecting previously unselected package linux-libc-dev.
+#12 168.3 Preparing to unpack .../27-linux-libc-dev_6.12.111-1_all.deb ...
+#12 168.4 Unpacking linux-libc-dev (6.12.111-1) ...
+#12 169.2 Selecting previously unselected package libcrypt-dev:amd64.
+#12 169.2 Preparing to unpack .../28-libcrypt-dev_1%3a4.4.38-1_amd64.deb ...
+#12 169.2 Unpacking libcrypt-dev:amd64 (1:4.4.38-1) ...
+#12 169.3 Selecting previously unselected package rpcsvc-proto.
+#12 169.3 Preparing to unpack .../29-rpcsvc-proto_1.4.3-1_amd64.deb ...
+#12 169.3 Unpacking rpcsvc-proto (1.4.3-1) ...
+#12 169.4 Selecting previously unselected package libc6-dev:amd64.
+#12 169.4 Preparing to unpack .../30-libc6-dev_2.41-12+deb13u4_amd64.deb ...
+#12 169.4 Unpacking libc6-dev:amd64 (2.41-12+deb13u4) ...
+#12 169.7 Selecting previously unselected package libisl23:amd64.
+#12 169.7 Preparing to unpack .../31-libisl23_0.27-1_amd64.deb ...
+#12 169.7 Unpacking libisl23:amd64 (0.27-1) ...
+#12 169.9 Selecting previously unselected package libmpfr6:amd64.
+#12 169.9 Preparing to unpack .../32-libmpfr6_4.2.2-1_amd64.deb ...
+#12 169.9 Unpacking libmpfr6:amd64 (4.2.2-1) ...
+#12 170.8 Selecting previously unselected package libmpc3:amd64.
+#12 170.8 Preparing to unpack .../33-libmpc3_1.3.1-1+b3_amd64.deb ...
+#12 170.8 Unpacking libmpc3:amd64 (1.3.1-1+b3) ...
+#12 171.0 Selecting previously unselected package cpp-14-x86-64-linux-gnu.
+#12 171.0 Preparing to unpack .../34-cpp-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#12 171.0 Unpacking cpp-14-x86-64-linux-gnu (14.2.0-19) ...
+#12 171.9 Selecting previously unselected package cpp-14.
+#12 172.0 Preparing to unpack .../35-cpp-14_14.2.0-19_amd64.deb ...
+#12 172.0 Unpacking cpp-14 (14.2.0-19) ...
+#12 172.1 Selecting previously unselected package cpp-x86-64-linux-gnu.
+#12 172.1 Preparing to unpack .../36-cpp-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#12 172.1 Unpacking cpp-x86-64-linux-gnu (4:14.2.0-1) ...
+#12 172.2 Selecting previously unselected package cpp.
+#12 172.2 Preparing to unpack .../37-cpp_4%3a14.2.0-1_amd64.deb ...
+#12 172.2 Unpacking cpp (4:14.2.0-1) ...
+#12 172.3 Selecting previously unselected package libcc1-0:amd64.
+#12 172.3 Preparing to unpack .../38-libcc1-0_14.2.0-19_amd64.deb ...
+#12 172.4 Unpacking libcc1-0:amd64 (14.2.0-19) ...
+#12 172.5 Selecting previously unselected package libgomp1:amd64.
+#12 172.5 Preparing to unpack .../39-libgomp1_14.2.0-19_amd64.deb ...
+#12 172.5 Unpacking libgomp1:amd64 (14.2.0-19) ...
+#12 172.6 Selecting previously unselected package libitm1:amd64.
+#12 172.6 Preparing to unpack .../40-libitm1_14.2.0-19_amd64.deb ...
+#12 172.6 Unpacking libitm1:amd64 (14.2.0-19) ...
+#12 172.7 Selecting previously unselected package libatomic1:amd64.
+#12 172.7 Preparing to unpack .../41-libatomic1_14.2.0-19_amd64.deb ...
+#12 172.8 Unpacking libatomic1:amd64 (14.2.0-19) ...
+#12 172.9 Selecting previously unselected package libasan8:amd64.
+#12 172.9 Preparing to unpack .../42-libasan8_14.2.0-19_amd64.deb ...
+#12 172.9 Unpacking libasan8:amd64 (14.2.0-19) ...
+#12 173.2 Selecting previously unselected package liblsan0:amd64.
+#12 173.2 Preparing to unpack .../43-liblsan0_14.2.0-19_amd64.deb ...
+#12 173.2 Unpacking liblsan0:amd64 (14.2.0-19) ...
+#12 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 8.39MB / 20.29MB 174.0s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 4.19MB / 11.30MB 174.3s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 9.44MB / 20.29MB 176.4s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 5.24MB / 11.30MB 176.6s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 4.19MB / 23.81MB 176.8s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 10.49MB / 20.29MB 178.4s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 6.29MB / 11.30MB 179.0s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 11.53MB / 20.29MB 179.7s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 6.29MB / 23.81MB 180.0s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 7.34MB / 11.30MB 181.0s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 12.58MB / 20.29MB 182.1s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 8.39MB / 11.30MB 183.5s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 13.63MB / 20.29MB 183.8s
+#10 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 173.4 Selecting previously unselected package libtsan2:amd64.
+#12 173.4 Preparing to unpack .../44-libtsan2_14.2.0-19_amd64.deb ...
+#12 173.4 Unpacking libtsan2:amd64 (14.2.0-19) ...
+#12 174.1 Selecting previously unselected package libubsan1:amd64.
+#12 174.1 Preparing to unpack .../45-libubsan1_14.2.0-19_amd64.deb ...
+#12 174.1 Unpacking libubsan1:amd64 (14.2.0-19) ...
+#12 174.3 Selecting previously unselected package libhwasan0:amd64.
+#12 174.3 Preparing to unpack .../46-libhwasan0_14.2.0-19_amd64.deb ...
+#12 174.3 Unpacking libhwasan0:amd64 (14.2.0-19) ...
+#12 174.6 Selecting previously unselected package libquadmath0:amd64.
+#12 174.6 Preparing to unpack .../47-libquadmath0_14.2.0-19_amd64.deb ...
+#12 174.6 Unpacking libquadmath0:amd64 (14.2.0-19) ...
+#12 174.7 Selecting previously unselected package libgcc-14-dev:amd64.
+#12 174.7 Preparing to unpack .../48-libgcc-14-dev_14.2.0-19_amd64.deb ...
+#12 174.7 Unpacking libgcc-14-dev:amd64 (14.2.0-19) ...
+#12 175.0 Selecting previously unselected package gcc-14-x86-64-linux-gnu.
+#12 175.0 Preparing to unpack .../49-gcc-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#12 175.0 Unpacking gcc-14-x86-64-linux-gnu (14.2.0-19) ...
+#12 176.2 Selecting previously unselected package gcc-14.
+#12 176.3 Preparing to unpack .../50-gcc-14_14.2.0-19_amd64.deb ...
+#12 176.3 Unpacking gcc-14 (14.2.0-19) ...
+#12 176.4 Selecting previously unselected package gcc-x86-64-linux-gnu.
+#12 176.4 Preparing to unpack .../51-gcc-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#12 176.4 Unpacking gcc-x86-64-linux-gnu (4:14.2.0-1) ...
+#12 176.5 Selecting previously unselected package gcc.
+#12 176.5 Preparing to unpack .../52-gcc_4%3a14.2.0-1_amd64.deb ...
+#12 176.5 Unpacking gcc (4:14.2.0-1) ...
+#12 176.6 Selecting previously unselected package libstdc++-14-dev:amd64.
+#12 176.6 Preparing to unpack .../53-libstdc++-14-dev_14.2.0-19_amd64.deb ...
+#12 176.6 Unpacking libstdc++-14-dev:amd64 (14.2.0-19) ...
+#12 177.0 Selecting previously unselected package g++-14-x86-64-linux-gnu.
+#12 177.0 Preparing to unpack .../54-g++-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#12 177.0 Unpacking g++-14-x86-64-linux-gnu (14.2.0-19) ...
+#12 178.2 Selecting previously unselected package g++-14.
+#12 178.2 Preparing to unpack .../55-g++-14_14.2.0-19_amd64.deb ...
+#12 178.2 Unpacking g++-14 (14.2.0-19) ...
+#12 178.3 Selecting previously unselected package g++-x86-64-linux-gnu.
+#12 178.3 Preparing to unpack .../56-g++-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#12 178.3 Unpacking g++-x86-64-linux-gnu (4:14.2.0-1) ...
+#12 178.4 Selecting previously unselected package g++.
+#12 178.4 Preparing to unpack .../57-g++_4%3a14.2.0-1_amd64.deb ...
+#12 178.4 Unpacking g++ (4:14.2.0-1) ...
+#12 178.4 Selecting previously unselected package make.
+#12 178.4 Preparing to unpack .../58-make_4.4.1-2_amd64.deb ...
+#12 178.4 Unpacking make (4.4.1-2) ...
+#12 178.5 Selecting previously unselected package libdpkg-perl.
+#12 178.5 Preparing to unpack .../59-libdpkg-perl_1.22.22_all.deb ...
+#12 178.5 Unpacking libdpkg-perl (1.22.22) ...
+#12 179.7 Selecting previously unselected package patch.
+#12 179.7 Preparing to unpack .../60-patch_2.8-2_amd64.deb ...
+#12 179.7 Unpacking patch (2.8-2) ...
+#12 179.8 Selecting previously unselected package dpkg-dev.
+#12 179.8 Preparing to unpack .../61-dpkg-dev_1.22.22_all.deb ...
+#12 179.8 Unpacking dpkg-dev (1.22.22) ...
+#12 179.9 Selecting previously unselected package build-essential.
+#12 179.9 Preparing to unpack .../62-build-essential_12.12_amd64.deb ...
+#12 180.0 Unpacking build-essential (12.12) ...
+#12 180.1 Selecting previously unselected package libbrotli1:amd64.
+#12 180.1 Preparing to unpack .../63-libbrotli1_1.1.0-2+b7_amd64.deb ...
+#12 180.1 Unpacking libbrotli1:amd64 (1.1.0-2+b7) ...
+#12 180.2 Selecting previously unselected package libunistring5:amd64.
+#12 180.2 Preparing to unpack .../64-libunistring5_1.3-2_amd64.deb ...
+#12 180.2 Unpacking libunistring5:amd64 (1.3-2) ...
+#12 180.3 Selecting previously unselected package libidn2-0:amd64.
+#12 180.3 Preparing to unpack .../65-libidn2-0_2.3.8-2_amd64.deb ...
+#12 180.4 Unpacking libidn2-0:amd64 (2.3.8-2) ...
+#12 180.4 Selecting previously unselected package libsasl2-modules-db:amd64.
+#12 180.4 Preparing to unpack .../66-libsasl2-modules-db_2.1.28+dfsg1-9_amd64.deb ...
+#12 180.5 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#12 180.6 Selecting previously unselected package libsasl2-2:amd64.
+#12 180.6 Preparing to unpack .../67-libsasl2-2_2.1.28+dfsg1-9_amd64.deb ...
+#12 180.6 Unpacking libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#12 180.7 Selecting previously unselected package libldap2:amd64.
+#12 180.7 Preparing to unpack .../68-libldap2_2.6.10+dfsg-1_amd64.deb ...
+#12 180.7 Unpacking libldap2:amd64 (2.6.10+dfsg-1) ...
+#12 180.8 Selecting previously unselected package libnghttp2-14:amd64.
+#12 180.8 Preparing to unpack .../69-libnghttp2-14_1.64.0-1.1+deb13u1_amd64.deb ...
+#12 180.9 Unpacking libnghttp2-14:amd64 (1.64.0-1.1+deb13u1) ...
+#12 181.0 Selecting previously unselected package libnghttp3-9:amd64.
+#12 181.0 Preparing to unpack .../70-libnghttp3-9_1.8.0-1_amd64.deb ...
+#12 181.0 Unpacking libnghttp3-9:amd64 (1.8.0-1) ...
+#12 181.1 Selecting previously unselected package libpsl5t64:amd64.
+#12 181.1 Preparing to unpack .../71-libpsl5t64_0.21.2-1.1+b1_amd64.deb ...
+#12 181.1 Unpacking libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#12 181.2 Selecting previously unselected package libp11-kit0:amd64.
+#12 181.2 Preparing to unpack .../72-libp11-kit0_0.25.5-3_amd64.deb ...
+#12 181.3 Unpacking libp11-kit0:amd64 (0.25.5-3) ...
+#12 181.4 Selecting previously unselected package libtasn1-6:amd64.
+#12 181.4 Preparing to unpack .../73-libtasn1-6_4.20.0-2+deb13u1_amd64.deb ...
+#12 181.5 Unpacking libtasn1-6:amd64 (4.20.0-2+deb13u1) ...
+#12 181.6 Selecting previously unselected package libgnutls30t64:amd64.
+#12 181.6 Preparing to unpack .../74-libgnutls30t64_3.8.9-3+deb13u4_amd64.deb ...
+#12 181.6 Unpacking libgnutls30t64:amd64 (3.8.9-3+deb13u4) ...
+#12 181.8 Selecting previously unselected package librtmp1:amd64.
+#12 181.8 Preparing to unpack .../75-librtmp1_2.4+20151223.gitfa8646d.1-2+b5_amd64.deb ...
+#12 181.8 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#12 181.9 Selecting previously unselected package libssh2-1t64:amd64.
+#12 181.9 Preparing to unpack .../76-libssh2-1t64_1.11.1-1+deb13u2_amd64.deb ...
+#12 181.9 Unpacking libssh2-1t64:amd64 (1.11.1-1+deb13u2) ...
+#12 182.0 Selecting previously unselected package libcurl4t64:amd64.
+#12 182.0 Preparing to unpack .../77-libcurl4t64_8.14.1-2+deb13u7_amd64.deb ...
+#12 182.0 Unpacking libcurl4t64:amd64 (8.14.1-2+deb13u7) ...
+#12 182.1 Selecting previously unselected package curl.
+#12 182.1 Preparing to unpack .../78-curl_8.14.1-2+deb13u7_amd64.deb ...
+#12 182.1 Unpacking curl (8.14.1-2+deb13u7) ...
+#12 182.2 Selecting previously unselected package libpq5:amd64.
+#12 182.2 Preparing to unpack .../79-libpq5_17.11-0+deb13u1_amd64.deb ...
+#12 182.2 Unpacking libpq5:amd64 (17.11-0+deb13u1) ...
+#12 182.3 Selecting previously unselected package libssl-dev:amd64.
+#12 182.3 Preparing to unpack .../80-libssl-dev_3.5.7-1~deb13u3_amd64.deb ...
+#12 182.3 Unpacking libssl-dev:amd64 (3.5.7-1~deb13u3) ...
+#12 182.6 Selecting previously unselected package libpq-dev.
+#12 182.6 Preparing to unpack .../81-libpq-dev_17.11-0+deb13u1_amd64.deb ...
+#12 182.6 Unpacking libpq-dev (17.11-0+deb13u1) ...
+#12 182.7 Setting up bubblewrap (0.12.0-1~deb13u1) ...
+#12 182.7 Setting up libkeyutils1:amd64 (1.6.3-6) ...
+#12 182.7 Setting up libgdbm-compat4t64:amd64 (1.24-2) ...
+#12 182.8 Setting up libcbor0.10:amd64 (0.10.2-2) ...
+#12 182.8 Setting up libbrotli1:amd64 (1.1.0-2+b7) ...
+#12 182.8 Setting up libedit2:amd64 (3.1-20250104-1) ...
+#12 182.8 Setting up binutils-common:amd64 (2.44-3) ...
+#12 182.9 Setting up libnghttp2-14:amd64 (1.64.0-1.1+deb13u1) ...
+#12 182.9 Setting up linux-libc-dev (6.12.111-1) ...
+#12 182.9 Setting up libctf-nobfd0:amd64 (2.44-3) ...
+#12 182.9 Setting up libcom-err2:amd64 (1.47.2-3+b12) ...
+#12 182.9 Setting up libgomp1:amd64 (14.2.0-19) ...
+#12 182.9 Setting up bzip2 (1.0.8-6) ...
+#12 183.0 Setting up libsframe1:amd64 (2.44-3) ...
+#12 183.0 Setting up libjansson4:amd64 (2.14-2+b3) ...
+#12 183.0 Setting up libkrb5support0:amd64 (1.21.3-5+deb13u1) ...
+#12 183.0 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#12 183.0 Setting up rpcsvc-proto (1.4.3-1) ...
+#12 183.1 Setting up make (4.4.1-2) ...
+#12 183.1 Setting up libmpfr6:amd64 (4.2.2-1) ...
+#12 183.1 Setting up xz-utils (5.8.1-1+deb13u2) ...
+#12 183.2 update-alternatives: using /usr/bin/xz to provide /usr/bin/lzma (lzma) in auto mode
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzma.1.gz because associated file /usr/share/man/man1/xz.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/unlzma.1.gz because associated file /usr/share/man/man1/unxz.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzcat.1.gz because associated file /usr/share/man/man1/xzcat.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzmore.1.gz because associated file /usr/share/man/man1/xzmore.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzless.1.gz because associated file /usr/share/man/man1/xzless.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzdiff.1.gz because associated file /usr/share/man/man1/xzdiff.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzcmp.1.gz because associated file /usr/share/man/man1/xzcmp.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzgrep.1.gz because associated file /usr/share/man/man1/xzgrep.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzegrep.1.gz because associated file /usr/share/man/man1/xzegrep.1.gz (of link group lzma) doesn't exist
+#12 183.2 update-alternatives: warning: skip creation of /usr/share/man/man1/lzfgrep.1.gz because associated file /usr/share/man/man1/xzfgrep.1.gz (of link group lzma) doesn't exist
+#12 183.2 Setting up libquadmath0:amd64 (14.2.0-19) ...
+#12 183.2 Setting up libp11-kit0:amd64 (0.25.5-3) ...
+#12 183.2 Setting up libunistring5:amd64 (1.3-2) ...
+#12 183.3 Setting up libssl-dev:amd64 (3.5.7-1~deb13u3) ...
+#12 183.3 Setting up libmpc3:amd64 (1.3.1-1+b3) ...
+#12 183.3 Setting up libatomic1:amd64 (14.2.0-19) ...
+#12 183.3 Setting up patch (2.8-2) ...
+#12 183.3 Setting up libk5crypto3:amd64 (1.21.3-5+deb13u1) ...
+#12 183.4 Setting up libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#12 183.4 Setting up libnghttp3-9:amd64 (1.8.0-1) ...
+#12 183.4 Setting up libubsan1:amd64 (14.2.0-19) ...
+#12 183.4 Setting up perl-modules-5.40 (5.40.1-6+deb13u1) ...
+#12 183.5 Setting up libhwasan0:amd64 (14.2.0-19) ...
+#12 183.5 Setting up libcrypt-dev:amd64 (1:4.4.38-1) ...
+#12 183.5 Setting up libasan8:amd64 (14.2.0-19) ...
+#12 183.6 Setting up libtasn1-6:amd64 (4.20.0-2+deb13u1) ...
+#12 183.6 Setting up libkrb5-3:amd64 (1.21.3-5+deb13u1) ...
+#12 183.6 Setting up libssh2-1t64:amd64 (1.11.1-1+deb13u2) ...
+#12 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 7.34MB / 23.81MB 185.0s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 9.44MB / 11.30MB 185.8s
+#10 ...
+
+#12 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#12 183.6 Setting up libtsan2:amd64 (14.2.0-19) ...
+#12 183.7 Setting up libbinutils:amd64 (2.44-3) ...
+#12 183.7 Setting up libfido2-1:amd64 (1.15.0-1+b1) ...
+#12 183.7 Setting up libisl23:amd64 (0.27-1) ...
+#12 183.8 Setting up libc-dev-bin (2.41-12+deb13u4) ...
+#12 183.8 Setting up libcc1-0:amd64 (14.2.0-19) ...
+#12 183.8 Setting up libldap2:amd64 (2.6.10+dfsg-1) ...
+#12 183.9 Setting up liblsan0:amd64 (14.2.0-19) ...
+#12 183.9 Setting up libitm1:amd64 (14.2.0-19) ...
+#12 183.9 Setting up libctf0:amd64 (2.44-3) ...
+#12 183.9 Setting up libidn2-0:amd64 (2.3.8-2) ...
+#12 184.0 Setting up libperl5.40:amd64 (5.40.1-6+deb13u1) ...
+#12 184.0 Setting up perl (5.40.1-6+deb13u1) ...
+#12 184.0 Setting up libgprofng0:amd64 (2.44-3) ...
+#12 184.0 Setting up libgssapi-krb5-2:amd64 (1.21.3-5+deb13u1) ...
+#12 184.1 Setting up cpp-14-x86-64-linux-gnu (14.2.0-19) ...
+#12 184.1 Setting up libdpkg-perl (1.22.22) ...
+#12 184.1 Setting up cpp-14 (14.2.0-19) ...
+#12 184.1 Setting up libc6-dev:amd64 (2.41-12+deb13u4) ...
+#12 184.2 Setting up libgcc-14-dev:amd64 (14.2.0-19) ...
+#12 184.2 Setting up libstdc++-14-dev:amd64 (14.2.0-19) ...
+#12 184.2 Setting up binutils-x86-64-linux-gnu (2.44-3) ...
+#12 184.2 Setting up cpp-x86-64-linux-gnu (4:14.2.0-1) ...
+#12 184.3 Setting up libgnutls30t64:amd64 (3.8.9-3+deb13u4) ...
+#12 184.3 Setting up openssh-client (1:10.0p1-7+deb13u4) ...
+#12 184.7 Setting up libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#12 184.7 Setting up libpq5:amd64 (17.11-0+deb13u1) ...
+#12 184.8 Setting up libpq-dev (17.11-0+deb13u1) ...
+#12 184.8 Setting up binutils (2.44-3) ...
+#12 184.8 Setting up dpkg-dev (1.22.22) ...
+#12 184.9 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#12 184.9 Setting up cpp (4:14.2.0-1) ...
+#12 184.9 Setting up gcc-14-x86-64-linux-gnu (14.2.0-19) ...
+#12 185.0 Setting up gcc-x86-64-linux-gnu (4:14.2.0-1) ...
+#12 185.0 Setting up libcurl4t64:amd64 (8.14.1-2+deb13u7) ...
+#12 185.0 Setting up gcc-14 (14.2.0-19) ...
+#12 185.1 Setting up g++-14-x86-64-linux-gnu (14.2.0-19) ...
+#12 185.1 Setting up g++-x86-64-linux-gnu (4:14.2.0-1) ...
+#12 185.1 Setting up curl (8.14.1-2+deb13u7) ...
+#12 185.2 Setting up g++-14 (14.2.0-19) ...
+#12 185.2 Setting up gcc (4:14.2.0-1) ...
+#12 185.2 Setting up g++ (4:14.2.0-1) ...
+#12 185.3 update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+#12 185.3 Setting up build-essential (12.12) ...
+#12 185.3 Processing triggers for libc-bin (2.41-12+deb13u4) ...
+#12 DONE 185.8s
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 14.68MB / 20.29MB 186.2s
+#10 ...
+
+#13 [stage-1  3/10] COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
+#13 DONE 0.6s
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 ...
+
+#14 [stage-1  4/10] COPY --from=node-runtime /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+#14 DONE 0.7s
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 15.73MB / 20.29MB 187.8s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 9.44MB / 23.81MB 187.8s
+#10 ...
+
+#15 [stage-1  5/10] RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm     && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+#15 DONE 0.4s
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 10.49MB / 11.30MB 188.4s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 16.78MB / 20.29MB 189.8s
+#10 sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 11.30MB / 11.30MB 190.4s done
+#10 sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 0B / 538B 190.5s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 17.83MB / 20.29MB 191.6s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 18.87MB / 20.29MB 192.7s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 11.53MB / 23.81MB 192.7s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 19.92MB / 20.29MB 194.0s
+#10 sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 20.29MB / 20.29MB 194.4s done
+#10 extracting sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0
+#10 sha256:7eab97391af1d66b54d8cd461c97234d4302eb299fd94f0dd108e23e4758d156 0B / 1.01kB 194.5s
+#10 extracting sha256:59b4881c46446349d20a8e0ba1853423cc313cf63b79b781604679b3a0d182d0 0.9s done
+#10 sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 0B / 538B 195.6s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 13.63MB / 23.81MB 197.7s
+#10 sha256:7eab97391af1d66b54d8cd461c97234d4302eb299fd94f0dd108e23e4758d156 0B / 1.01kB 199.5s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 15.73MB / 23.81MB 200.2s
+#10 sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 0B / 538B 200.7s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 17.83MB / 23.81MB 201.8s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 19.92MB / 23.81MB 203.1s
+#10 sha256:7eab97391af1d66b54d8cd461c97234d4302eb299fd94f0dd108e23e4758d156 0B / 1.01kB 204.5s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 22.02MB / 23.81MB 205.8s
+#10 sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 0B / 538B 205.8s
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 23.81MB / 23.81MB 206.5s
+#10 extracting sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e
+#10 sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 23.81MB / 23.81MB 206.5s done
+#10 sha256:6f8bb1f5db10e35664ec3202c3deabcfaa687da87639ac6c805ded5cbf3fd18d 0B / 116B 206.6s
+#10 extracting sha256:1373581dd8ee6d05a33dee68eb97e6f4b9508a6b728d9dc8439251a88e917f0e 2.2s done
+#10 extracting sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 0.1s
+#10 extracting sha256:79f88200dfcfdf6cdd034b1607da9861017a2d3fdf55c764f58dfec4811895e6 0.7s done
+#10 sha256:7eab97391af1d66b54d8cd461c97234d4302eb299fd94f0dd108e23e4758d156 0B / 1.01kB 209.7s
+#10 sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 0B / 538B 210.9s
+#10 extracting sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8
+#10 sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 538B / 538B 211.4s done
+#10 sha256:6f8bb1f5db10e35664ec3202c3deabcfaa687da87639ac6c805ded5cbf3fd18d 0B / 116B 211.6s
+#10 extracting sha256:5a54ab73c8841cd7b4ff2d55e245e6a72617b2045fb6e6fc61d98f1694c4fbe8 0.0s done
+#10 sha256:7eab97391af1d66b54d8cd461c97234d4302eb299fd94f0dd108e23e4758d156 1.01kB / 1.01kB 211.7s done
+#10 extracting sha256:7eab97391af1d66b54d8cd461c97234d4302eb299fd94f0dd108e23e4758d156 0.0s done
+#10 sha256:6f8bb1f5db10e35664ec3202c3deabcfaa687da87639ac6c805ded5cbf3fd18d 0B / 116B 216.6s
+#10 sha256:6f8bb1f5db10e35664ec3202c3deabcfaa687da87639ac6c805ded5cbf3fd18d 0B / 116B 221.7s
+#10 ...
+
+#9 FROM ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 0B / 23.02MB 221.6s
+#9 sha256:b3d2c6abdae87c43a56d2830b783d600de9274bb8791534edac6e02d23667aa3 0B / 98B 221.6s
+#9 ...
+
+#10 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#10 sha256:6f8bb1f5db10e35664ec3202c3deabcfaa687da87639ac6c805ded5cbf3fd18d 116B / 116B 223.5s done
+#10 extracting sha256:6f8bb1f5db10e35664ec3202c3deabcfaa687da87639ac6c805ded5cbf3fd18d 0.0s done
+#10 DONE 224.2s
+
+#9 FROM ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b
+#9 ...
+
+#16 [stage-1  6/10] COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
+#16 DONE 0.6s
+
+#9 FROM ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b
+#9 sha256:b3d2c6abdae87c43a56d2830b783d600de9274bb8791534edac6e02d23667aa3 98B / 98B 225.8s done
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 0B / 23.02MB 226.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 0B / 23.02MB 231.7s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 0B / 23.02MB 236.8s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 1.05MB / 23.02MB 241.8s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 1.05MB / 23.02MB 246.9s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 2.10MB / 23.02MB 252.0s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 2.10MB / 23.02MB 257.1s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 2.10MB / 23.02MB 262.2s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 3.15MB / 23.02MB 267.3s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 3.15MB / 23.02MB 272.3s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 4.19MB / 23.02MB 277.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 4.19MB / 23.02MB 282.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 4.19MB / 23.02MB 287.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 5.24MB / 23.02MB 292.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 5.24MB / 23.02MB 297.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 5.24MB / 23.02MB 302.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 6.29MB / 23.02MB 307.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 6.29MB / 23.02MB 312.8s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 7.34MB / 23.02MB 318.0s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 7.34MB / 23.02MB 323.1s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 8.39MB / 23.02MB 328.1s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 8.39MB / 23.02MB 333.2s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 9.44MB / 23.02MB 338.2s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 9.44MB / 23.02MB 343.3s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 9.44MB / 23.02MB 348.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 10.49MB / 23.02MB 353.5s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 10.49MB / 23.02MB 358.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 10.49MB / 23.02MB 363.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 11.53MB / 23.02MB 368.8s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 11.53MB / 23.02MB 373.8s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 12.58MB / 23.02MB 378.9s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 12.58MB / 23.02MB 383.9s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 12.58MB / 23.02MB 388.9s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 13.63MB / 23.02MB 394.0s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 13.63MB / 23.02MB 399.0s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 13.63MB / 23.02MB 404.1s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 13.63MB / 23.02MB 409.2s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 14.68MB / 23.02MB 414.3s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 14.68MB / 23.02MB 419.3s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 14.68MB / 23.02MB 424.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 15.73MB / 23.02MB 429.5s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 15.73MB / 23.02MB 434.7s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 16.78MB / 23.02MB 439.7s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 16.78MB / 23.02MB 444.7s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 16.78MB / 23.02MB 449.7s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 17.83MB / 23.02MB 454.7s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 17.83MB / 23.02MB 459.8s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 17.83MB / 23.02MB 464.9s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 18.87MB / 23.02MB 469.9s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 18.87MB / 23.02MB 475.0s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 19.92MB / 23.02MB 480.1s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 19.92MB / 23.02MB 485.2s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 19.92MB / 23.02MB 490.2s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 19.92MB / 23.02MB 495.3s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 20.97MB / 23.02MB 500.4s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 20.97MB / 23.02MB 505.5s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 20.97MB / 23.02MB 510.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 22.02MB / 23.02MB 515.6s
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 22.02MB / 23.02MB 520.7s
+#9 extracting sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6
+#9 sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 23.02MB / 23.02MB 521.5s done
+#9 extracting sha256:5b10ebfb4e369f07b34982c85caaab98838a61ebb54e54946271f61d7cf1f8a6 1.6s done
+#9 extracting sha256:b3d2c6abdae87c43a56d2830b783d600de9274bb8791534edac6e02d23667aa3 0.0s done
+#9 DONE 523.5s
+
+#17 [stage-1  7/10] COPY --from=ghcr.io/astral-sh/uv:0.9.26 /uv /uvx /usr/local/bin/
+#17 DONE 0.4s
+
+#18 [stage-1  8/10] WORKDIR /app
+#18 DONE 0.1s
+
+#19 [stage-1  9/10] COPY backend ./backend
+#19 DONE 2.9s
+
+#20 [stage-1 10/10] RUN --mount=type=cache,target=/root/.cache/uv     sh -c "cd backend && uv sync --locked"
+#20 0.750 Using CPython 3.12.15 interpreter at: /usr/local/bin/python3.12
+#20 0.750 Creating virtual environment at: .venv
+#20 0.779 Resolved 211 packages in 2ms
+#20 0.811    Building prismos-octop-capabilities @ file:///app/backend/packages/octop-capabilities
+#20 0.821    Building deerflow-harness @ file:///app/backend/packages/harness
+#20 1.346 Downloading openai (1.6MiB)
+#20 1.649 Downloading volcengine-python-sdk (27.7MiB)
+#20 1.652 Downloading speechrecognition (31.3MiB)
+#20 1.654 Downloading duckdb (19.5MiB)
+#20 1.657 Downloading numpy (15.6MiB)
+#20 1.658 Downloading magika (14.7MiB)
+#20 1.659 Downloading ruff (13.1MiB)
+#20 1.660 Downloading onnxruntime (12.7MiB)
+#20 1.661 Downloading lark-oapi (6.7MiB)
+#20 1.662 Downloading pandas (10.4MiB)
+#20 1.663 Downloading pillow (6.6MiB)
+#20 1.664 Downloading grpcio (6.5MiB)
+#20 1.664 Downloading pdfminer-six (6.3MiB)
+#20 1.666 Downloading sympy (6.0MiB)
+#20 1.666 Downloading zstandard (5.3MiB)
+#20 1.667 Downloading lxml (5.0MiB)
+#20 1.668 Downloading psycopg-binary (4.9MiB)
+#20 1.669 Downloading cryptography (4.5MiB)
+#20 1.670 Downloading uvloop (4.2MiB)
+#20 1.670 Downloading asyncpg (3.4MiB)
+#20 1.671 Downloading sqlalchemy (3.2MiB)
+#20 1.672 Downloading primp (3.1MiB)
+#20 1.673 Downloading pypdfium2 (2.9MiB)
+#20 1.674 Downloading grpcio-tools (2.5MiB)
+#20 1.675 Downloading pycryptodome (2.2MiB)
+#20 1.676 Downloading youtube-transcript-api (2.1MiB)
+#20 1.677 Downloading jsonschema-rs (2.0MiB)
+#20 1.678 Downloading pydantic-core (2.0MiB)
+#20 1.678 Downloading kubernetes (1.9MiB)
+#20 1.679 Downloading aiohttp (1.7MiB)
+#20 1.680 Downloading brotli (1.4MiB)
+#20 1.681 Downloading pygments (1.2MiB)
+#20 1.682 Downloading tiktoken (1.1MiB)
+#20 37.57  Downloaded tiktoken
+#20 40.89  Downloaded pydantic-core
+#20 46.89  Downloaded pygments
+#20 63.01  Downloaded brotli
+#20 76.09  Downloaded aiohttp
+#20 78.04  Downloaded jsonschema-rs
+#20 90.58  Downloaded openai
+#20 109.6    Building forbiddenfruit==0.1.4
+#20 118.4       Built deerflow-harness @ file:///app/backend/packages/harness
+#20 118.4       Built prismos-octop-capabilities @ file:///app/backend/packages/octop-capabilities
+#20 120.0  Downloaded kubernetes
+#20 120.1       Built forbiddenfruit==0.1.4
+#20 122.0  Downloaded youtube-transcript-api
+#20 133.8  Downloaded grpcio-tools
+#20 141.3  Downloaded pycryptodome
+#20 151.7  Downloaded sqlalchemy
+#20 165.2  Downloaded zstandard
+#20 166.2  Downloaded sympy
+#20 172.7  Downloaded asyncpg
+#20 172.8  Downloaded pypdfium2
+#20 175.3  Downloaded lxml
+#20 175.7  Downloaded psycopg-binary
+#20 182.3  Downloaded uvloop
+#20 186.3  Downloaded primp
+#20 193.5  Downloaded grpcio
+#20 204.4  Downloaded lark-oapi
+#20 207.9  Downloaded cryptography
+#20 208.9  Downloaded pillow
+#20 211.0  Downloaded pdfminer-six
+#20 235.6  Downloaded pandas
+#20 245.5  Downloaded ruff
+#20 258.1  Downloaded onnxruntime
+#20 265.1  Downloaded numpy
+#20 265.3  Downloaded magika
+#20 274.3  Downloaded duckdb
+#20 288.6  Downloaded volcengine-python-sdk
+#20 289.9  Downloaded speechrecognition
+#20 289.9 Prepared 202 packages in 4m 49s
+#20 289.9 warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+#20 289.9          If the cache and target directories are on different filesystems, hardlinking may not be supported.
+#20 289.9          If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+#20 375.2 Installed 202 packages in 1m 25s
+#20 375.2  + agent-sandbox==0.0.19
+#20 375.2  + aiohappyeyeballs==2.6.1
+#20 375.2  + aiohttp==3.14.3
+#20 375.2  + aiosignal==1.4.0
+#20 375.2  + aiosqlite==0.22.1
+#20 375.2  + alembic==1.18.4
+#20 375.2  + annotated-doc==0.0.4
+#20 375.2  + annotated-types==0.7.0
+#20 375.2  + anthropic==0.121.0
+#20 375.2  + anyio==4.12.1
+#20 375.2  + asyncpg==0.31.0
+#20 375.2  + attrs==25.4.0
+#20 375.2  + azure-ai-documentintelligence==1.0.2
+#20 375.2  + azure-core==1.38.0
+#20 375.2  + azure-identity==1.25.1
+#20 375.2  + bcrypt==5.0.0
+#20 375.2  + beautifulsoup4==4.14.3
+#20 375.2  + blockbuster==1.5.26
+#20 375.2  + brotli==1.2.0
+#20 375.2  + certifi==2026.1.4
+#20 375.2  + cffi==2.0.0
+#20 375.2  + charset-normalizer==3.4.4
+#20 375.2  + click==8.4.2
+#20 375.2  + cloudpickle==3.1.2
+#20 375.2  + cobble==0.1.4
+#20 375.2  + coloredlogs==15.0.1
+#20 375.2  + croniter==6.0.0
+#20 375.2  + cryptography==50.0.0
+#20 375.2  + ddgs==9.10.0
+#20 375.2  + deerflow-harness==0.1.0 (from file:///app/backend/packages/harness)
+#20 375.2  + defusedxml==0.7.1
+#20 375.2  + distro==1.9.0
+#20 375.2  + docstring-parser==0.17.0
+#20 375.2  + dotenv==0.9.9
+#20 375.2  + duckdb==1.4.4
+#20 375.2  + durationpy==0.10
+#20 375.2  + et-xmlfile==2.0.0
+#20 375.2  + fake-useragent==2.2.0
+#20 375.2  + fastapi==0.141.1
+#20 375.2  + filetype==1.2.0
+#20 375.2  + firecrawl-py==4.13.4
+#20 375.2  + flatbuffers==25.12.19
+#20 375.2  + forbiddenfruit==0.1.4
+#20 375.2  + frozenlist==1.8.0
+#20 375.2  + google-auth==2.48.0
+#20 375.2  + google-genai==1.65.0
+#20 375.2  + googleapis-common-protos==1.72.0
+#20 375.2  + greenlet==3.3.2
+#20 375.2  + grpcio==1.80.0
+#20 375.2  + grpcio-health-checking==1.80.0
+#20 375.2  + grpcio-tools==1.80.0
+#20 375.2  + h11==0.16.0
+#20 375.2  + h2==4.4.1
+#20 375.2  + hpack==4.2.0
+#20 375.2  + html5lib==1.1
+#20 375.2  + httpcore==1.0.9
+#20 375.2  + httptools==0.7.1
+#20 375.2  + httpx==0.28.1
+#20 375.2  + httpx-sse==0.4.3
+#20 375.2  + humanfriendly==10.0
+#20 375.2  + hyperframe==6.1.0
+#20 375.2  + idna==3.18
+#20 375.2  + importlib-metadata==8.7.1
+#20 375.2  + iniconfig==2.3.0
+#20 375.2  + isodate==0.7.2
+#20 375.2  + jiter==0.12.0
+#20 375.2  + jsonpatch==1.33
+#20 375.2  + jsonpointer==3.0.0
+#20 375.2  + jsonschema==4.26.0
+#20 375.2  + jsonschema-rs==0.29.1
+#20 375.2  + jsonschema-specifications==2025.9.1
+#20 375.2  + kubernetes==35.0.0
+#20 375.2  + langchain==1.3.14
+#20 375.2  + langchain-anthropic==1.5.4
+#20 375.2  + langchain-core==1.5.3
+#20 375.2  + langchain-deepseek==1.0.1
+#20 375.2  + langchain-google-genai==4.2.1
+#20 375.2  + langchain-mcp-adapters==0.2.1
+#20 375.2  + langchain-ollama==1.1.0
+#20 375.2  + langchain-openai==1.4.3
+#20 375.2  + langchain-protocol==0.0.18
+#20 375.2  + langgraph==1.2.10
+#20 375.2  + langgraph-api==0.12.2
+#20 375.2  + langgraph-checkpoint==4.2.0
+#20 375.2  + langgraph-checkpoint-postgres==3.1.2
+#20 375.2  + langgraph-checkpoint-sqlite==3.1.1
+#20 375.2  + langgraph-cli==0.4.31
+#20 375.2  + langgraph-prebuilt==1.1.0
+#20 375.2  + langgraph-runtime-inmem==0.32.2
+#20 375.2  + langgraph-sdk==0.4.2
+#20 375.2  + langsmith==0.10.17
+#20 375.2  + lark-oapi==1.5.3
+#20 375.2  + lxml==6.1.1
+#20 375.2  + magika==0.6.3
+#20 375.2  + mako==1.4.1
+#20 375.2  + mammoth==1.11.0
+#20 375.2  + markdown-to-mrkdwn==0.3.1
+#20 375.2  + markdownify==1.2.2
+#20 375.2  + markitdown==0.1.5b1
+#20 375.2  + markupsafe==3.0.3
+#20 375.2  + mcp==1.29.0
+#20 375.2  + mpmath==1.3.0
+#20 375.2  + msal==1.37.0
+#20 375.2  + msal-extensions==1.3.1
+#20 375.2  + multidict==6.7.1
+#20 375.2  + nest-asyncio==1.6.0
+#20 375.2  + numpy==2.4.1
+#20 375.2  + oauthlib==3.3.1
+#20 375.2  + olefile==0.47
+#20 375.2  + ollama==0.6.1
+#20 375.2  + onnxruntime==1.20.1
+#20 375.2  + openai==2.53.0
+#20 375.2  + openpyxl==3.1.5
+#20 375.2  + opentelemetry-api==1.37.0
+#20 375.2  + opentelemetry-exporter-otlp-proto-common==1.37.0
+#20 375.2  + opentelemetry-exporter-otlp-proto-http==1.37.0
+#20 375.2  + opentelemetry-exporter-prometheus==0.58b0
+#20 375.2  + opentelemetry-proto==1.37.0
+#20 375.2  + opentelemetry-sdk==1.37.0
+#20 375.2  + opentelemetry-semantic-conventions==0.58b0
+#20 375.2  + orjson==3.11.6
+#20 375.2  + ormsgpack==1.12.1
+#20 375.2  + packaging==25.0
+#20 375.2  + pandas==3.0.0
+#20 375.2  + pathspec==1.1.1
+#20 375.2  + pdfminer-six==20251230
+#20 375.2  + pdfplumber==0.11.9
+#20 375.2  + pillow==12.3.0
+#20 375.2  + pluggy==1.6.0
+#20 375.2  + primp==0.15.0
+#20 375.2  + prismos-octop-capabilities==0.1.0 (from file:///app/backend/packages/octop-capabilities)
+#20 375.2  + prometheus-client==0.26.0
+#20 375.2  + propcache==0.4.1
+#20 375.2  + protobuf==6.33.5
+#20 375.2  + psycopg==3.3.4
+#20 375.2  + psycopg-binary==3.3.4
+#20 375.2  + psycopg-pool==3.3.1
+#20 375.2  + pyasn1==0.6.4
+#20 375.2  + pyasn1-modules==0.4.2
+#20 375.2  + pycparser==2.23
+#20 375.2  + pycryptodome==3.23.0
+#20 375.2  + pydantic==2.12.5
+#20 375.2  + pydantic-core==2.41.5
+#20 375.2  + pydantic-settings==2.15.0
+#20 375.2  + pydub==0.25.1
+#20 375.2  + pygments==2.20.0
+#20 375.2  + pyjwt==2.13.0
+#20 375.2  + pypdfium2==5.3.0
+#20 375.2  + pytest==9.1.1
+#20 375.2  + python-dateutil==2.9.0.post0
+#20 375.2  + python-dotenv==1.2.2
+#20 375.2  + python-multipart==0.0.32
+#20 375.2  + python-pptx==1.0.2
+#20 375.2  + python-telegram-bot==22.6
+#20 375.2  + pytz==2026.1.post1
+#20 375.2  + pyyaml==6.0.3
+#20 375.2  + readabilipy==0.3.0
+#20 375.2  + referencing==0.37.0
+#20 375.2  + regex==2025.11.3
+#20 375.2  + requests==2.34.2
+#20 375.2  + requests-oauthlib==2.0.0
+#20 375.2  + requests-toolbelt==1.0.0
+#20 375.2  + rpds-py==0.30.0
+#20 375.2  + rsa==4.9.1
+#20 375.2  + ruff==0.14.11
+#20 375.2  + setuptools==84.0.0
+#20 375.2  + six==1.17.0
+#20 375.2  + slack-sdk==3.40.1
+#20 375.2  + sniffio==1.3.1
+#20 375.2  + socksio==1.0.0
+#20 375.2  + soupsieve==2.9.2
+#20 375.2  + speechrecognition==3.14.5
+#20 375.2  + sqlalchemy==2.0.48
+#20 375.2  + sqlite-vec==0.1.6
+#20 375.2  + sqlmodel==0.0.37
+#20 375.2  + sse-starlette==2.1.3
+#20 375.2  + starlette==1.6.0
+#20 375.2  + structlog==25.5.0
+#20 375.2  + sympy==1.14.0
+#20 375.2  + tavily-python==0.7.17
+#20 375.2  + tenacity==9.1.2
+#20 375.2  + tiktoken==0.12.0
+#20 375.2  + tqdm==4.67.1
+#20 375.2  + truststore==0.10.4
+#20 375.2  + typing-extensions==4.15.0
+#20 375.2  + typing-inspection==0.4.2
+#20 375.2  + urllib3==2.7.0
+#20 375.2  + uuid-utils==0.13.0
+#20 375.2  + uvicorn==0.40.0
+#20 375.2  + uvloop==0.22.1
+#20 375.2  + volcengine-python-sdk==5.0.5
+#20 375.2  + watchfiles==1.1.1
+#20 375.2  + webencodings==0.5.1
+#20 375.2  + websocket-client==1.9.0
+#20 375.2  + websockets==15.0.1
+#20 375.2  + xlrd==2.0.2
+#20 375.2  + xlsxwriter==3.2.9
+#20 375.2  + xxhash==3.6.0
+#20 375.2  + yarl==1.22.0
+#20 375.2  + youtube-transcript-api==1.0.3
+#20 375.2  + zipp==3.23.0
+#20 375.2  + zstandard==0.25.0
+#20 DONE 375.7s
+
+#21 exporting to image
+#21 exporting layers
+#21 exporting layers 77.3s done
+#21 writing image sha256:8e6a118e06b7f6a12f93817c6ccef38c6899a24d955976f62c650016fbce55a2 done
+#21 naming to docker.io/library/prismos-scoped-execution:test 0.0s done
+#21 DONE 77.4s

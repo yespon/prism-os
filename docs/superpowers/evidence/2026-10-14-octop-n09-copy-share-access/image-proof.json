@@ -1,0 +1,53 @@
+{
+  "image_id": "sha256:8e6a118e06b7f6a12f93817c6ccef38c6899a24d955976f62c650016fbce55a2",
+  "files": {
+    "app/gateway/routers/agents.py": {
+      "host_sha256": "7693964c1f3935e7940af4ecf4784303195db880c5cdf3213a2d8ec849c73393",
+      "image_sha256": "7693964c1f3935e7940af4ecf4784303195db880c5cdf3213a2d8ec849c73393",
+      "matches": true
+    },
+    "app/alerting/diagnosis_authorization.py": {
+      "host_sha256": "22ede1f68e80a9e2790afec0875b86b718c21f86389146fd457436b12b44a9cd",
+      "image_sha256": "22ede1f68e80a9e2790afec0875b86b718c21f86389146fd457436b12b44a9cd",
+      "matches": true
+    },
+    "tests/test_agent_copy_share_boundaries.py": {
+      "host_sha256": "e16f6e47468a41750eb0cf3290011edc116e4ba193b3b8726501aeac92c27877",
+      "image_sha256": "e16f6e47468a41750eb0cf3290011edc116e4ba193b3b8726501aeac92c27877",
+      "matches": true
+    },
+    "tests/test_custom_agent.py": {
+      "host_sha256": "5de007305d7bf3f530fe286197dd7a10ae20975b0c1cdb9c275f0fdca3217c1b",
+      "image_sha256": "5de007305d7bf3f530fe286197dd7a10ae20975b0c1cdb9c275f0fdca3217c1b",
+      "matches": true
+    },
+    "tests/test_agent_skill_references.py": {
+      "host_sha256": "62d586dc687c169cfd6e99459de257e3f04ef1271e648f5a2aa28a29d239e13e",
+      "image_sha256": "62d586dc687c169cfd6e99459de257e3f04ef1271e648f5a2aa28a29d239e13e",
+      "matches": true
+    },
+    "tests/test_skill_reference_transactions.py": {
+      "host_sha256": "dd8ef0b7acc891a0f36684086b8750a26ce98e382f0a265f10de5bd253bedf5c",
+      "image_sha256": "dd8ef0b7acc891a0f36684086b8750a26ce98e382f0a265f10de5bd253bedf5c",
+      "matches": true
+    },
+    "tests/test_diagnosis_authorization.py": {
+      "host_sha256": "2b28073cb820e1c4c3d9930d784f4feed61b7f5cbbf9993176179463acb12946",
+      "image_sha256": "2b28073cb820e1c4c3d9930d784f4feed61b7f5cbbf9993176179463acb12946",
+      "matches": true
+    },
+    "tests/test_octop_integration.py": {
+      "host_sha256": "62357ebd0b4be08c7bcc15559f662f9294812fa3c076bc91dcec9f0c0309007e",
+      "image_sha256": "62357ebd0b4be08c7bcc15559f662f9294812fa3c076bc91dcec9f0c0309007e",
+      "matches": true
+    },
+    "Dockerfile": {
+      "host_sha256": "a453fc956e78296854ce9ce535e392a45dc8e7a5493b0fb6146b0d8ad81c0d77",
+      "image_sha256": "a453fc956e78296854ce9ce535e392a45dc8e7a5493b0fb6146b0d8ad81c0d77",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "test_container_removed": true
+}

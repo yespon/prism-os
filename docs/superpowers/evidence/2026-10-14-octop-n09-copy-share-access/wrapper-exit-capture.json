@@ -1,0 +1,53 @@
+{
+  "reason": "initial Windows/WSL command interpolation lost shell result variables; invalid captures preserved verbatim, not acceptance evidence",
+  "files": [
+    {
+      "original": "backend-full.exit",
+      "retained_as": "backend-full.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "copy-network-reproduction.exit",
+      "retained_as": "copy-network-reproduction.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "docker-build.exit",
+      "retained_as": "docker-build.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "frontend-build-final.exit",
+      "retained_as": "frontend-build-final.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "frontend-copy-identity-delta.exit",
+      "retained_as": "frontend-copy-identity-delta.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "frontend-lint.exit",
+      "retained_as": "frontend-lint.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "source-gates.exit",
+      "retained_as": "source-gates.invalid-exit.log",
+      "sha256": "2106c36011520fe73876d45bfb9ef8bf7b2e9f4362096a320376d8ee9b27ef12",
+      "usable_as_exit_code": false
+    },
+    {
+      "original": "upgrade.exit",
+      "retained_as": "upgrade.invalid-exit.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "usable_as_exit_code": false
+    }
+  ]
+}

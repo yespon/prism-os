@@ -96,3 +96,12 @@ export interface UpdateAgentRequest {
   tags?: string[] | null;
   is_shared?: boolean | null;
 }
+
+export interface CopyAgentRequest {
+  name: string;
+  source_agent_id: string;
+  source_revision: string;
+  is_shared: boolean;
+  skill_binding_mode: "all" | "selected";
+  skill_resources: SkillResourceReference[];
+}

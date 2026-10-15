@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-copy-share-b5890a83f706",
+    "sha256:8e6a118e06b7f6a12f93817c6ccef38c6899a24d955976f62c650016fbce55a2",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_agent_copy_share_boundaries.py tests/test_agent_skill_references.py tests/test_skill_reference_transactions.py tests/test_diagnosis_authorization.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T02:36:56.886317+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T02:42:02.599246+00:00"
+}
