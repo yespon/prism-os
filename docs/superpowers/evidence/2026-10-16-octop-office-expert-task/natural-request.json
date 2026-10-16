@@ -1,0 +1,5 @@
+{
+  "template_id": "expert:office-automation",
+  "task": "请根据附件 /mnt/user-data/uploads/brief.txt 生成中文项目进度报告 Word 文件。标题为“集成进度报告”，包含原样验收标识、已完成和待办正文，一张进度表。保存为 /mnt/user-data/outputs/report-1a6a8a07c9.docx 并给出可下载结果。",
+  "explicit_tool_names_in_user_request": false
+}

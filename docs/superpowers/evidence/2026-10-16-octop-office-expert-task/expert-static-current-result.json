@@ -1,0 +1,15 @@
+{
+  "command": [
+    ".venv/bin/ruff",
+    "check",
+    "app/integrations/octop/runtime_prompts.py",
+    "app/runtime_adapters.py",
+    "tests/test_octop_integration.py",
+    "../scripts/octop_office_task_probe.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T12:30:10.056368+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T12:30:10.285480+00:00"
+}

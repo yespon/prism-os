@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-office-expert-task/expert_revoke_recover.py", line 12, in <module>
+    assert all(code in [403,404] for code in statuses.values()),statuses
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'artifact': 200, 'history': 200, 'state': 200}

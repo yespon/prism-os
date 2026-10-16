@@ -344,16 +344,18 @@
       "acceptance_scenario": "Native login → selected Agent → real model/read_file → approved ticket → restart/resume → history",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-live",
-        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service"
+        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "运行与资源闭环",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
     "id": "O05",
     "capability": "内置专家库、专家市场、共享专家、模板导入及复用",
-    "status": "partial: prompt catalog and source-tagged creation; market, publishing and full sharing pending",
+    "status": "partial: original office expert native DOCX user task accepted with actual model; remaining experts, sharing and market tasks pending",
     "full_parity": false,
     "owner_role": "platform/product integration; role only",
     "permissions": [
@@ -1215,20 +1217,22 @@
       "current_entry": [
         "agents.py"
       ],
-      "current_status": "源码已迁入；专家prompt/资源部分接入；完整专家及子Agent任务未验收",
+      "current_status": "功能已接入；Office专家基本DOCX任务真实模型已验收，其他专家/市场/完整共享仍待",
       "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
       "acceptance_scenario": "Template creation → actual expert tool task → artifact/history; later authorized child delegation/cancel/recovery",
       "valid_evidence": [
-        "docs/superpowers/evidence/2026-10-10-octop-inventory"
+        "docs/superpowers/evidence/2026-10-10-octop-inventory",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
       "behavior_difference": {
         "original": "Office expert prompt directs bundled docx/xlsx/pptx/pdf Skills and advertises all formats ready",
-        "current": "Those four upstream Skill source trees are excluded by the existing source policy; independent native Office tools exist but the expert prompt still points at bundled Skills",
+        "current": "Imported prompt and persisted source unchanged; runtime adapter maps the four excluded Office Skills to available independent native tools, with explicit advanced-operation boundaries",
         "reason": "Existing source/license boundary; native implementations preserve functional goals",
-        "user_task_impact": "Expert prompt can direct unavailable resources; needs explicit native tool adapter and real expert task. Advanced Office goals remain pending, not removed."
-      }
+        "user_task_impact": "Original office expert now completes the basic attachment-to-DOCX task. This does not accept other experts, advanced Office, or child delegation."
+      },
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
@@ -2610,10 +2614,12 @@
       "acceptance_scenario": "Native login → selected Agent → real model/read_file → approved ticket → restart/resume → history",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-live",
-        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service"
+        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "运行与资源闭环",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
@@ -3771,16 +3777,18 @@
       "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
       "acceptance_scenario": "Template creation → actual expert tool task → artifact/history; later authorized child delegation/cancel/recovery",
       "valid_evidence": [
-        "docs/superpowers/evidence/2026-10-10-octop-inventory"
+        "docs/superpowers/evidence/2026-10-10-octop-inventory",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
       "behavior_difference": {
         "original": "Office expert prompt directs bundled docx/xlsx/pptx/pdf Skills and advertises all formats ready",
-        "current": "Those four upstream Skill source trees are excluded by the existing source policy; independent native Office tools exist but the expert prompt still points at bundled Skills",
+        "current": "Imported prompt and persisted source unchanged; runtime adapter maps the four excluded Office Skills to available independent native tools, with explicit advanced-operation boundaries",
         "reason": "Existing source/license boundary; native implementations preserve functional goals",
-        "user_task_impact": "Expert prompt can direct unavailable resources; needs explicit native tool adapter and real expert task. Advanced Office goals remain pending, not removed."
-      }
+        "user_task_impact": "Original office expert now completes the basic attachment-to-DOCX task. This does not accept other experts, advanced Office, or child delegation."
+      },
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
@@ -4461,10 +4469,12 @@
       "acceptance_scenario": "Native login → selected Agent → real model/read_file → approved ticket → restart/resume → history",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-live",
-        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service"
+        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "运行与资源闭环",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
@@ -5110,7 +5120,8 @@
       "acceptance_scenario": "Upload brief → real model read/create/present DOCX → download → new-session history → deny nonowner",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
-        "docs/superpowers/evidence/2026-10-16-octop-office-user-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5119,7 +5130,8 @@
         "current": "Every file/artifact/history access checks current tenant, member, thread and resource authorization",
         "reason": "Preserve PrismOS current authorization boundary",
         "user_task_impact": "Authorized read/create/download/history retained; arbitrary or revoked paths rejected. No assertion that other unimplemented operations were deleted."
-      }
+      },
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
@@ -5726,10 +5738,12 @@
       "acceptance_scenario": "Upload brief → real model read/create/present DOCX → download → new-session history → deny nonowner",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
-        "docs/superpowers/evidence/2026-10-16-octop-office-user-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {
@@ -6459,10 +6473,12 @@
       "acceptance_scenario": "Upgrade/rollback → original task/artifact/history still available → current authorization",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle",
-        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service"
+        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
     }
   },
   {

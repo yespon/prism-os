@@ -194,3 +194,35 @@ def test_template_reaches_existing_runtime_prompt(catalog_client, monkeypatch):
         assert runtime_adapters._load_agent("runtime-template", "user-a", "tenant-b") is None
     finally:
         load_agent_config.cache_clear()
+
+
+def test_office_expert_uses_native_tools_without_mutating_import_or_stored_prompt(catalog_client, monkeypatch):
+    from app import runtime_adapters
+    from app.integrations.octop.runtime_prompts import OFFICE_RUNTIME
+
+    client, factory = catalog_client
+    source = get_template("expert:office-automation", "zh")
+    created = client.post("/api/agents", json={"name": "office-native", "template_id": source["id"], "skills": [], "tool_groups": []})
+    assert created.status_code == 201
+    stored = created.json()["system_prompt"]
+    assert stored == source["system_prompt"]
+    monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    loaded = runtime_adapters._load_agent("office-native", "user-a", "tenant-a")
+    assert loaded.system_prompt == stored + "\n\n" + OFFICE_RUNTIME
+    assert loaded.skills == [] and loaded.tool_groups == []
+    current = runtime_adapters._load_agent_context("office-native", "user-a", "tenant-a", created.json()["id"])
+    assert current.record.system_prompt == loaded.system_prompt
+    assert client.get("/api/agents/office-native").json()["system_prompt"] == stored
+    assert get_template(source["id"], "zh")["system_prompt"] == source["system_prompt"]
+    assert runtime_adapters._load_agent("office-native", "user-b", "tenant-a") is None
+    assert runtime_adapters._load_agent("office-native", "user-a", "tenant-b") is None
+    with pytest.raises(PermissionError):
+        runtime_adapters._load_agent_context("office-native", "user-b", "tenant-a", created.json()["id"])
+
+
+def test_office_runtime_adapter_is_not_inferred_from_name_or_prompt():
+    from app.integrations.octop.runtime_prompts import runtime_agent
+
+    for source in [{}, {"project": "Other", "template_id": "expert:office-automation"}, {"project": "Octop", "template_id": "expert:general-assistant"}]:
+        agent = CustomAgent(id="manual", name="office-automation", system_prompt="Use office", meta_info={"octop_source": source})
+        assert runtime_agent(agent) is agent

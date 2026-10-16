@@ -1,0 +1,13 @@
+{
+  "complete": false,
+  "configured_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/office-task-8995c5ddc5",
+  "phases": [],
+  "agent_id": "beb246cd-b3a7-4be5-9d31-37d549464414",
+  "agent_name": "office-task-e05eef16b6",
+  "thread_id": "b3de12f9-5819-450b-a597-8860337fafa2",
+  "reused_model_execution_receipt": "docs/superpowers/evidence/2026-10-16-octop-office-user-task/real-docx-current.json",
+  "failure_type": "AssertionError",
+  "failure": "Actual graph task must finish successfully"
+}

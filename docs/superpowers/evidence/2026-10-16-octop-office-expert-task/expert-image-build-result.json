@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "-f",
+    "backend/Dockerfile",
+    "-t",
+    "prismos-office-expert:test",
+    "."
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T12:18:22.297934+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T12:30:10.149714+00:00"
+}

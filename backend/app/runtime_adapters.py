@@ -13,6 +13,7 @@ from sqlalchemy import select
 from app.agent.prompts import TERMINAL_AGENT_SYSTEM_PROMPT
 from app.agent.terminal_tools import get_terminal_tools, set_terminal_context
 from app.alerting.governed_ticket_tool import governed_ticket_tools
+from app.integrations.octop.runtime_prompts import runtime_agent
 from app.models.agents import CustomAgent
 from app.platform.execution.trust import ExecutionCapabilityRepository
 from deerflow.database.session import get_session_factory
@@ -56,8 +57,8 @@ def _load_agent(name: str, user_id: str | None, tenant_id: str | None) -> Custom
             agents = result.scalars().all()
             for agent in agents:
                 if agent.user_id == user_id:
-                    return agent
-            return agents[0] if agents else None
+                    return runtime_agent(agent)
+            return runtime_agent(agents[0]) if agents else None
 
     return _run_async(_query())
 
@@ -121,7 +122,7 @@ def _load_agent_by_id(name, user_id, tenant_id, agent_id):
     async def load():
         async with get_session_factory()() as session:
             await verify_native_selection(session, tenant_id, user_id, name, agent_id)
-            return await session.get(CustomAgent, agent_id)
+            return runtime_agent(await session.get(CustomAgent, agent_id))
 
     return _run_async(load())
 
@@ -141,7 +142,7 @@ def _load_agent_context(name, user_id, tenant_id, agent_id, skill_name=None, res
                 # non-participating writer must not silently create a hybrid.
                 await verify_native_selection(session, tenant_id, user_id, name, agent_id, diagnosis_source_id, diagnosis_source_revision, diagnosis_incident_id=diagnosis_incident_id)
                 if record.model_dump() == values:
-                    return NativeAgentContext(SimpleNamespace(**values), section)
+                    return NativeAgentContext(SimpleNamespace(**runtime_agent(record).model_dump()), section)
         raise ExecutionTrustError("Native Agent configuration changed during assembly")
 
     try:

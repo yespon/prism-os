@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "paused_owner_history_http_status": {
+    "artifact": 200,
+    "history": 200,
+    "state": 200
+  },
+  "pause_preserves_thread_ownership": true,
+  "withdrawn_run_http": 403,
+  "restored_artifact_sha256": "554f4e22c9008c14ba722a10c52b4c89335c7f9ac5e7187fb71d2031dfbb45f7",
+  "stored_prompt_preserved": true,
+  "rejected_request_did_not_execute": true
+}

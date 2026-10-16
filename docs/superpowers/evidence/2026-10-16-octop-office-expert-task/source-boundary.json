@@ -1,0 +1,14 @@
+{
+  "pinned_revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "upstream_prompt_and_manifest_unchanged": {
+    "backend/packages/octop-capabilities/src/prismos_octop/data/experts/office-automation/SOUL.md": "1e05490a254dbe7b8f1164eaa52cf05257c8c570b592aa9cef04c93e6c55db4a",
+    "backend/packages/octop-capabilities/src/prismos_octop/data/experts/office-automation/IDENTITY.md": "820229992cb6bae7449c000ac48cee3a76d10d237be943dfe64dc5dd7884e31d",
+    "backend/packages/octop-capabilities/src/prismos_octop/data/experts/office-automation/manifest.json": "4bee7e88daa5bd0e2aa43edc1267fb0bf060201b1bce129e68349027f5e10435"
+  },
+  "adapter": "backend/app/integrations/octop/runtime_prompts.py",
+  "version": "1",
+  "persistent_prompt_rewrite": false,
+  "source_policy_changed": false,
+  "resource_or_delegation_grant": false,
+  "stored_template_prompt_sha256_matches_original": "c0003a4adefb5d98a5988c46052062d1906ca87e48eea441b496d0b733bb0ab5"
+}

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-office-expert-task/expert_revoke_recover.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T13:55:51.242952+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T13:55:54.093213+00:00"
+}
