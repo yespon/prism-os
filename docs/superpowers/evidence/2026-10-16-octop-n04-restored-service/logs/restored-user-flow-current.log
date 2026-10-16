@@ -1,0 +1,10 @@
+{"phase": "snapshot rows/files restored; starting independent services with Action off", "project": "prismos-n04-restored-bd0e6671df"}
+{"phase": "restored native CRUD/history/roles verified; model workload prepared", "project": "prismos-n04-restored-bd0e6671df"}
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/restored_stack.py", line 80, in <module>
+    receipt['phases'].append(probe('restored_native_probe.py',{'phase':'diagnose-approve'}));store('real restored model read and approval completed; restarting services')
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/restored_stack.py", line 40, in probe
+    assert result.returncode==0,('Restored native probe failed',script,result.returncode)
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('Restored native probe failed', 'restored_native_probe.py', 1)

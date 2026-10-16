@@ -1,0 +1,18 @@
+{
+  "image": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1",
+  "files": {
+    "app/gateway/routers/alerts.py": {
+      "sha256": "7bf63591028c04c40bce7d950708169d9956f7782981a6178b430d6fde36324f",
+      "matches": true
+    },
+    "tests/test_incident_diagnosis.py": {
+      "sha256": "e9fe6a92a14f63a0e337d2367e814791e330eb64948bd23fd488e83815cce2ba",
+      "matches": true
+    },
+    "tests/test_n04_ticket_receiver.py": {
+      "sha256": "f7c6da3a5f797575adf755e4496ea2eb6716c8d71da3033f59840626e86dbdf1",
+      "matches": true
+    }
+  },
+  "controller_scripts_run_from_host": true
+}

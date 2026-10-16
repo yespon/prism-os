@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "action": "read_file",
+      "verdict": "allow",
+      "risk": "read_only"
+    },
+    {
+      "action": "ticket.create",
+      "verdict": "require_approval",
+      "risk": "side_effect"
+    }
+  ],
+  "audits": [
+    {
+      "event_type": "action.policy_evaluated",
+      "action": "read_file",
+      "outcome": "pending"
+    },
+    {
+      "event_type": "action.read_result",
+      "action": "read_file",
+      "outcome": "failed"
+    },
+    {
+      "event_type": "action.policy_evaluated",
+      "action": "ticket.create",
+      "outcome": "pending"
+    }
+  ],
+  "diagnosis_status": "completed"
+}
