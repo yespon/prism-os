@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_probe.py",
+    "receiver",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/receiver-runtime.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:09:48.487148+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T03:10:24.669030+00:00"
+}

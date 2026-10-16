@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "scripts/octop_wsl_test_env.py",
+    "scripts/octop_wsl_test_probe.py",
+    "docker/n04-test/ticket_receiver.py",
+    "backend/tests/test_n04_ticket_receiver.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:11:35.499030+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T03:11:35.532224+00:00"
+}

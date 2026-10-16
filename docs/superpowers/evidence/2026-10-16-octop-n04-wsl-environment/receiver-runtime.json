@@ -1,0 +1,12 @@
+{
+  "scope": "real TLS and original Provider only; no model or governed Action",
+  "requests_before": 2,
+  "requests_after": 6,
+  "delta": 4,
+  "same_idempotency_ticket": true,
+  "http_failure_counted": true,
+  "actual_provider_timeout_counted": true,
+  "certificate_verification": true,
+  "real_model_verified": false,
+  "M1_exited": false
+}

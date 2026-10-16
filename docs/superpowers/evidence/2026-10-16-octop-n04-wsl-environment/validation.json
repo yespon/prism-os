@@ -1,0 +1,34 @@
+{
+  "base_commit": "645fb42",
+  "complete_local_environment_block": true,
+  "M1_exited": false,
+  "real_model_verified": false,
+  "N08_started": false,
+  "remote_ci_executed": false,
+  "frozen_inputs": 2051,
+  "unchanged_historical_inputs": 2045,
+  "current_image": "sha256:53f8583b2cbe380f02a03f30d81a63a71d4100da35efe154b55e00aa4630e3da",
+  "upgrade_inputs": 171,
+  "upgrade_results": [
+    "16 passed in 8.61s",
+    "16 passed in 7.85s",
+    "16 passed in 6.73s"
+  ],
+  "tests": "16 passed in 8.13s",
+  "raw_log_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/restart.log": "57aa9e70345eb0818df20530e16745c85f71d4b8a15234235ce31bea816f848d",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/backup.log": "f95f1de29633a06b6d9a7744c132372226b3eb3dedcfcff86aec439aa54cfa6a",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/receiver-tests.log": "c19ca374ef0feffa50996adcc985403f1e152947442a1d3783d0dbf59a4e0fa7",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/receiver-runtime-final.log": "3a0e1a73cb3a7fa8a24135d8e937ab25e0002f07573e3ad4718b5d5f41d7fd23",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/static-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/health.log": "9bd87d1d74ff541a404139ad1d2a30e8fe4d23ae739e2de3b86f973bed7d7724",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/receiver-runtime.log": "f106ef90d2bd85aa36f3438c0a02ec282c2e3e9fea398f2704dd43263622e889",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/receiver-tests-final.log": "e579e41e44eef351debf7059d40c6419e7174f7a1c820499550cc70f201e5d05",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/up.log": "a6906a22b329a2e8a8036f021b9292ef2e3e4cb1e72c9acfb893000c82dabdb9",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/brand-staged.log": "622c78458d116723f89bbb31bc38d8ba6dab96a438ee51345293a1d19cdd98c4",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/init.log": "f106422fbf4a79612c1ec57744b108ca60528e88c0f2e80249f6ec4c86cc6a8a",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/logs/static.log": "1030c04882792314389a66d4c987963f4d5e4e56a049409238955ccfdc0c8a5f"
+  },
+  "known_runtime_secret_export_check": "passed"
+}

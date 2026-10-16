@@ -1,0 +1,9 @@
+{
+  "health": 200,
+  "bootstrap_needs_setup": true,
+  "unauthenticated_catalog": 401,
+  "unauthenticated_thread": 401,
+  "frontend": 200,
+  "real_model_verified": false,
+  "M1_exited": false
+}
