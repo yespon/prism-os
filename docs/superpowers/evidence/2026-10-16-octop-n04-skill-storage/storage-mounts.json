@@ -1,0 +1,18 @@
+{
+  "services": {
+    "gateway": {
+      "source_readonly": true,
+      "custom_owned_writable": true,
+      "file_sha256": "439215843259828c8d897e242ef6fffe2bac189973334e433ce10cf74aad5234",
+      "image": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1"
+    },
+    "langgraph": {
+      "source_readonly": true,
+      "custom_owned_writable": true,
+      "file_sha256": "439215843259828c8d897e242ef6fffe2bac189973334e433ce10cf74aad5234",
+      "image": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1"
+    }
+  },
+  "source_checkout_unmodified": true,
+  "temporary_fault_schemas_removed": true
+}

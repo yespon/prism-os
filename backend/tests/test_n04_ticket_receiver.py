@@ -135,3 +135,71 @@ def test_management_refuses_unowned_runtime_without_invoking_compose(tmp_path, m
     monkeypatch.setattr(environment.subprocess, 'run', forbidden)
     with pytest.raises((ValueError, FileNotFoundError)):
         environment.main()
+
+
+def skill_storage_environment(tmp_path, monkeypatch):
+    spec = importlib.util.spec_from_file_location('n04_skill_env_test', ROOT / 'scripts/octop_wsl_test_env.py')
+    environment = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(environment)
+    target = tmp_path / 'backend/tmp/n04-wsl'
+    target.mkdir(parents=True)
+    (target / 'owner').write_text(environment.MARKER)
+    monkeypatch.setattr(environment, 'ROOT', tmp_path)
+    monkeypatch.setattr(environment, 'STATE', target)
+    services = {
+        name: {'volumes': [f'{tmp_path}/skills:/app/skills:ro', f'{target}/home:/app/backend/.prismos'], 'environment': {'PRESERVED_TEST_SETTING': 'unchanged'}}
+        for name in ['db-init', 'gateway', 'langgraph']
+    }
+    config = {'name': environment.PROJECT, 'services': services}
+    (target / 'compose.yaml').write_text(environment.yaml.safe_dump(config))
+    return environment, target, config
+
+
+def test_owned_skill_storage_preserves_config_and_original_bytes_idempotently(tmp_path, monkeypatch):
+    environment, target, _ = skill_storage_environment(tmp_path, monkeypatch)
+    original = (target / 'compose.yaml').read_bytes()
+    environment.enable_skill_storage()
+    config = environment.yaml.safe_load((target / 'compose.yaml').read_text())
+    for service in config['services'].values():
+        assert f'{tmp_path}/skills:/app/skills:ro' in service['volumes']
+        assert f'{target}/skills-custom:/app/skills/custom' in service['volumes']
+        assert service['environment'] == {'PRESERVED_TEST_SETTING': 'unchanged'}
+    canary = target / 'skills-custom/retained.txt'
+    canary.write_text('Retain current custom resource')
+    current = (target / 'compose.yaml').read_bytes()
+    environment.enable_skill_storage()
+    assert (target / 'compose.yaml').read_bytes() == current
+    assert canary.read_text() == 'Retain current custom resource'
+    backups = list(target.glob('compose-before-skill-storage-*.yaml'))
+    assert len(backups) == 1 and backups[0].read_bytes() == original
+    assert backups[0].stat().st_mode & 0o777 == 0o600
+    assert (target / 'skills-custom').stat().st_mode & 0o777 == 0o700
+
+
+def test_owned_skill_storage_refuses_filesystem_alias_before_config_write(tmp_path, monkeypatch):
+    environment, target, _ = skill_storage_environment(tmp_path, monkeypatch)
+    other = tmp_path / 'other-runtime'
+    other.mkdir()
+    (target / 'skills-custom').symlink_to(other, target_is_directory=True)
+    original = (target / 'compose.yaml').read_bytes()
+    with pytest.raises(ValueError, match='custom Skill storage'):
+        environment.enable_skill_storage()
+    assert (target / 'compose.yaml').read_bytes() == original
+    assert not list(other.iterdir())
+    assert not list(target.glob('compose-before-skill-storage-*'))
+
+
+@pytest.mark.parametrize('foreign', ['custom', 'source'])
+def test_owned_skill_storage_refuses_foreign_mounts_before_mutation(tmp_path, monkeypatch, foreign):
+    environment, target, config = skill_storage_environment(tmp_path, monkeypatch)
+    volumes = config['services']['gateway']['volumes']
+    if foreign == 'custom':
+        volumes.append('/other-project:/app/skills/custom')
+    else:
+        volumes[0] = '/other-project:/app/skills:ro'
+    (target / 'compose.yaml').write_text(environment.yaml.safe_dump(config))
+    original = (target / 'compose.yaml').read_bytes()
+    with pytest.raises(ValueError, match='mount'):
+        environment.enable_skill_storage()
+    assert (target / 'compose.yaml').read_bytes() == original
+    assert not (target / 'skills-custom').exists()

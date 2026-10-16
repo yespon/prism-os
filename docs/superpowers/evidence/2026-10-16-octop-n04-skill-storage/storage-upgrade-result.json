@@ -1,0 +1,23 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/upgrade.json",
+    "--test-file",
+    "tests/test_n04_ticket_receiver.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T05:28:14.613210+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T05:29:03.409772+00:00"
+}

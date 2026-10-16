@@ -1,0 +1,46 @@
+{
+  "complete": true,
+  "M1_exited": false,
+  "cases": [
+    {
+      "fault_event": "action.policy_evaluated",
+      "complete": true,
+      "stream_events": 40,
+      "actual_trigger_hits": 1,
+      "new_decisions": [],
+      "new_audits": [],
+      "requests_before": 25,
+      "requests_after": 25
+    },
+    {
+      "fault_event": "action.read_result",
+      "complete": true,
+      "stream_events": 40,
+      "actual_trigger_hits": 1,
+      "new_decisions": [
+        {
+          "id": "decision_46a3476f645847408af634edf1b778d2",
+          "verdict": "allow",
+          "action": "read_file",
+          "risk_class": "read_only",
+          "resource_id": "33532ff3-1875-44db-984d-869e98865934"
+        }
+      ],
+      "new_audits": [
+        {
+          "event_id": "event_c9f4ca650119dc396f77d34b27796ac3",
+          "event_type": "action.policy_evaluated",
+          "action": "read_file",
+          "outcome": "pending",
+          "policy_decision_id": "decision_46a3476f645847408af634edf1b778d2"
+        }
+      ],
+      "requests_before": 25,
+      "requests_after": 25
+    }
+  ],
+  "file_content_already_in_selected_skill_prompt": true,
+  "scope": "Test native read Tool Audit boundary; does not claim the selected main Skill contents were previously unknown to the model",
+  "triggers_and_schema_removed": true,
+  "canary_restored_off": true
+}

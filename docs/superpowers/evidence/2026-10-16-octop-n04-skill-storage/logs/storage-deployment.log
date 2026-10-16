@@ -1,0 +1,13 @@
+ Container prismos-n04-wsl-gateway-1  Recreate
+ Container prismos-n04-wsl-langgraph-1  Recreate
+ Container prismos-n04-wsl-langgraph-1  Recreated
+ Container prismos-n04-wsl-gateway-1  Recreated
+ Container prismos-n04-wsl-gateway-1  Starting
+ Container prismos-n04-wsl-langgraph-1  Starting
+ Container prismos-n04-wsl-langgraph-1  Started
+ Container prismos-n04-wsl-gateway-1  Started
+ Container prismos-n04-wsl-gateway-1  Waiting
+ Container prismos-n04-wsl-langgraph-1  Waiting
+ Container prismos-n04-wsl-langgraph-1  Healthy
+ Container prismos-n04-wsl-gateway-1  Healthy
+{"project": "prismos-n04-wsl", "custom_skill_storage": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/skills-custom", "source_skills_readonly": true, "configuration_changed": true}

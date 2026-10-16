@@ -1578,6 +1578,10 @@ async def diagnose_incident(
         raise HTTPException(409, "A different diagnosis is already running for this incident")
     diagnosis_prompt = await build_incident_diagnosis_prompt(session, incident, tenant_id, include_agent_configuration=False)
 
+    # Selected Skill preflight holds row locks. Release them before the SSE
+    # waits for a worker that independently rechecks those same resources.
+    await session.commit()
+
     # Check if a diagnosis is already running. If not, start it.
     if not diagnosis_task_manager.is_running(incident_id):
         from app.alerting.diagnosis_sse import StreamState

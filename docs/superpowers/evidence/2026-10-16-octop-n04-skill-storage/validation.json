@@ -1,0 +1,63 @@
+{
+  "complete_local_skill_runtime_block": true,
+  "M1_exited": false,
+  "N08_started": false,
+  "base_commit": "36941c7",
+  "frozen_inputs": 2058,
+  "reused_unchanged_inputs": 2054,
+  "image": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1",
+  "whole_backend_rerun": false,
+  "results": {
+    "storage-tests": "14 passed in 7.01s",
+    "storage-image-current": "14 passed in 8.71s",
+    "diagnosis-targeted": "89 passed, 80 warnings in 162.12s (0:02:42)",
+    "diagnosis-postgres-pytest": "9 passed, 1 warning in 21.05s",
+    "image-current": "82 passed, 60 warnings in 126.40s (0:02:06)"
+  },
+  "current_source_upgrade": [
+    "82 passed, 60 warnings in 115.41s (0:01:55)",
+    "82 passed, 60 warnings in 150.54s (0:02:30)",
+    "82 passed, 60 warnings in 129.73s (0:02:09)"
+  ],
+  "host_contracts": 181,
+  "real_model_read": true,
+  "readonly_audit_fault_events": [
+    "action.policy_evaluated",
+    "action.read_result"
+  ],
+  "receiver_counter": 25,
+  "remaining": [
+    "full other file/tool entry review",
+    "complete target configuration/artifact rollback",
+    "original five-gate final judgment",
+    "remote CI and all original capability targets"
+  ],
+  "raw_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/brand-staged.log": "3e697663f391ddc3deabac8208991b6641af88d73b0fb22115c6f3379ca40cbc",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/diagnosis-postgres-pytest.log": "332740f7e5f8f02a8ad1ce271f431901c64b7f5ca67fc89b1ac38cb71798e611",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/diagnosis-postgres.log": "e595046590a25d879bf0e31e95034d3a2722f4d3f3ce5ebfa3acddfb2cc157e2",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/diagnosis-static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/diagnosis-targeted.log": "26ee32bc1e970678c4c00a3639f1ac2d372ef874bcb846a5f8f84e0abc264c85",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/final-backup.log": "a39581152ccebeb6bfbea7c90855691f8fa18a45a2a493168a9e751ea43c9223",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/final-runtime.log": "eef324782c5ea795da26fabb643030ddbf3e60a43761e4d75bae7097ad9dfc72",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/image-current.log": "98052d7a90b2ca85c6b148f753a44ad6cb989efb5cb1b71b75bf35c2d0cf8778",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/live-skill-read-current.log": "9168a9dd91b93b00147f584f36b3c6a345c31e23508e80429222ed3b780bcd31",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/live-skill-read.log": "b355df4c6e20081b1199cdc5ac8eb4af2a019b8284e977b71b3639db782d29b0",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/public-secrets.log": "4f5bfe41bdaa3a66b17200df62c1f615d9192737665acc27c03c9b802f356bf8",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/read-audit-faults.log": "f99abc2fc8b33799dfc732aa0f0260d0875a0159a6a2aaf3cf833aa72f2fa2eb",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/request-lock-regression-before.log": "16993fdbc2878760c258be55d62dff3fbc25e9c6ca8c0d8d8308c8d45768ba4d",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/runtime-image-build.log": "a32b2852f77cf8ce4db9c8815f1564e4219d878c4070991212aa57aade45a0d7",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/skill-lock-reproduction.log": "f776ad4eefc4423fbb276dc88b9574b430c372f7d3fad0fe80ea62fbf1c9f553",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-deployment.log": "ebb4101633e8a31a38e011335786beb28bdd644ae38e2113d9e695bf8f8c9ae0",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-image-current.log": "66ee2400ff7d44e09c45861afa878af38dee68e3e371ba32b5370dec16b1c533",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-image.log": "2996b317e206944bd52055ff044da483e3feb306af0715891be5b5e4c03bc4b2",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-mounts.log": "8e74b05bf813b6a77fd6250fe1ee4421b8d0f2d4ab214d390bddca0849900d71",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-static-current.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-static.log": "a8abd0efedd729ff1d0e6cd9f93093d2f6ba0e7a2561046f77875d6da3bc6722",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-tests.log": "1fa6a35ab4c0b646b22d0abb7b881eac7f2257b839f986ebd53507630bcdc7e1",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/storage-upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/logs/upgrade-current.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/policy-activations.jsonl": "2ecd8c10afbe2481be12bccf769490ab8463c26f29e892fc7561c66626067c74",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/source-before-skill-lock-fix.tar.gz": "8879529998fa60069a28ac23df7aa8225c5ac686d2550212e93ccd05796aa738"
+  }
+}

@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+from sqlalchemy.pool import NullPool
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -20,6 +22,8 @@ from deerflow.database.models import Tenant, TenantMembership
 # ---------------------------------------------------------------------------
 
 def _make_test_engine(path=None) -> AsyncEngine:
+    if url := os.environ.get('PRISMOS_SKILL_TEST_DB_URL'):
+        return create_async_engine(url, poolclass=NullPool)
     return create_async_engine(
         f"sqlite+aiosqlite:///{path}" if path else "sqlite+aiosqlite://",
         echo=False,
@@ -457,3 +461,39 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
         changed = client.post("/api/incidents/incident-1/governed-ticket/resume",
             headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"})
         assert changed.status_code == 409 and len(sent) == 1
+
+
+def test_diagnosis_stream_releases_preflight_resource_transaction(client, mock_langgraph, test_session_factory, monkeypatch):
+    from sqlmodel import select
+
+    from app.integrations import agent_skill_references
+    from deerflow.database.models import TenantSkill
+
+    asyncio.run(TestIncidentDiagnosis()._setup_data(test_session_factory))
+
+    async def resource():
+        async with test_session_factory() as session:
+            session.add(TenantSkill(tenant_id="tenant-a", user_id="__tenant_shared_skill__:tenant-a", name="transaction-probe", category="custom", enabled=False))
+            await session.commit()
+    asyncio.run(resource())
+    sessions = []
+    observed = []
+
+    async def lock_selected_resource(session, *_args, **_kwargs):
+        await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == "tenant-a", TenantSkill.name == "transaction-probe").with_for_update())
+        sessions.append(session)
+        return None
+
+    async def create_thread(**_kwargs):
+        observed.append(not sessions[0].in_transaction())
+        async with test_session_factory() as session:
+            # PostgreSQL must permit an independent worker to acquire this row now.
+            await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == "tenant-a", TenantSkill.name == "transaction-probe").with_for_update(nowait=True))
+        return {"thread_id": "mock-thread-xyz"}
+
+    monkeypatch.setattr(agent_skill_references, "current_skill_prompt", lock_selected_resource)
+    mock_langgraph.threads.create.side_effect = create_thread
+    with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+        response = client.post("/api/incidents/incident-1/diagnose")
+    assert response.status_code == 200
+    assert observed == [True]

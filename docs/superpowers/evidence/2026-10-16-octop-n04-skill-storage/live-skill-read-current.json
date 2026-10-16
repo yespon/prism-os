@@ -1,0 +1,56 @@
+{
+  "complete": true,
+  "M1_exited": false,
+  "N08_started": false,
+  "reused_passed_crud": "live-skill-read.json create/edit/duplicate/current ownership/persistent bytes; diagnosis previously timed out, not reused",
+  "case": {
+    "complete": false,
+    "M1_exited": false,
+    "N08_started": false,
+    "skill_name": "n04-read-b7f9751353",
+    "resource_id": "skill:1:8796791ed9f55bcef28a1839b35b927203282bd078235a2c707c8786cf2d8019",
+    "create_http_status": 201,
+    "edit_and_duplicate_protection": true,
+    "owned_storage_sha256": "439215843259828c8d897e242ef6fffe2bac189973334e433ce10cf74aad5234",
+    "source_checkout_unchanged": true,
+    "survives_gateway_langgraph_recreation": true,
+    "incident_id": "33532ff3-1875-44db-984d-869e98865934",
+    "agent_id": "4307a1ec-eca9-48b0-91ca-3deb0538ac1e",
+    "source_id": "6293bb1e-cff6-4eb5-ba3c-c874a223f50b",
+    "requests_before": 25,
+    "canary_restored_off": true
+  },
+  "requests_before": 25,
+  "stream_events": 40,
+  "native_facts": {
+    "decisions": [
+      {
+        "id": "decision_08b767ddcb6053cda602d005c40979ba",
+        "verdict": "allow",
+        "action": "read_file",
+        "risk_class": "read_only",
+        "resource_id": "33532ff3-1875-44db-984d-869e98865934"
+      }
+    ],
+    "audits": [
+      {
+        "event_id": "event_5efa5ddad74c5303d91e5dfbe8c8d875",
+        "event_type": "action.policy_evaluated",
+        "action": "read_file",
+        "outcome": "pending",
+        "policy_decision_id": "decision_08b767ddcb6053cda602d005c40979ba"
+      },
+      {
+        "event_id": "event_f0f655979860b7c689bf8d2246f4fcb0",
+        "event_type": "action.read_result",
+        "action": "read_file",
+        "outcome": "succeeded",
+        "policy_decision_id": "decision_08b767ddcb6053cda602d005c40979ba"
+      }
+    ]
+  },
+  "actual_model_tool_read_success": true,
+  "disabled_resource_blocks_new_diagnosis_http": 403,
+  "requests_after": 25,
+  "canary_restored_off": true
+}

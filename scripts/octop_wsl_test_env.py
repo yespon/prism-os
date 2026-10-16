@@ -40,7 +40,7 @@ def initialize(image):
     STATE.mkdir(parents=True, mode=0o700)
     os.chmod(STATE, 0o700)
     (STATE / 'owner').write_text(MARKER + '\n')
-    for name in ['home', 'langgraph', 'receiver']:
+    for name in ['home', 'langgraph', 'receiver', 'skills-custom']:
         (STATE / name).mkdir(mode=0o700)
     password = secrets.token_hex(24)
     encryption_key = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode()
@@ -58,7 +58,7 @@ def initialize(image):
     subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', str(receiver / 'server.key'), '-out', str(receiver / 'server.crt'), '-days', '30', '-subj', '/CN=ticket-receiver', '-addext', 'subjectAltName=DNS:ticket-receiver,DNS:localhost,IP:127.0.0.1'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     (STATE / 'ca-bundle.crt').write_bytes(Path('/etc/ssl/certs/ca-certificates.crt').read_bytes() + (receiver / 'server.crt').read_bytes())
     environment = {'CI': 'true', 'PRISMOS_HOME': '/app/backend/.prismos', 'PRISMOS_CONFIG_PATH': '/app/config.yaml', 'DEERFLOW_SECRETS_ENCRYPTION_KEY': '${DEERFLOW_SECRETS_ENCRYPTION_KEY:?required}', 'PRISMOS_TRUSTED_GRAPH_CONTEXT': 'off', 'PRISMOS_GOVERNED_TICKET_ACTION': 'off', 'PRISMOS_GOVERNED_TICKET_VERDICT': 'deny', 'LANGCHAIN_TRACING_V2': 'false', 'SSL_CERT_FILE': '/run/n04-ca-bundle.crt', 'CORS_ORIGINS': 'http://localhost:18026,http://127.0.0.1:18026', 'LANGGRAPH_API_URL': 'http://langgraph:2024', 'PRISMOS_RUNTIME_ADAPTER_MODULE': 'app.runtime_adapters'}
-    volumes = [f'{STATE}/config.yaml:/app/config.yaml:ro', f'{STATE}/home:/app/backend/.prismos', f'{STATE}/ca-bundle.crt:/run/n04-ca-bundle.crt:ro', f'{ROOT}/skills:/app/skills:ro']
+    volumes = [f'{STATE}/config.yaml:/app/config.yaml:ro', f'{STATE}/home:/app/backend/.prismos', f'{STATE}/ca-bundle.crt:/run/n04-ca-bundle.crt:ro', f'{ROOT}/skills:/app/skills:ro', f'{STATE}/skills-custom:/app/skills/custom']
     services = {}
     for name, command in [('db-init', 'uv run --frozen alembic upgrade head'), ('gateway', 'uv run --frozen uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001'), ('langgraph', 'uv run --frozen langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024')]:
         service = {'image': image, 'working_dir': '/app/backend', 'command': ['sh', '-c', command], 'volumes': list(volumes), 'environment': dict(environment), 'restart': 'no', 'mem_limit': '1g', 'cpus': 1.0, 'security_opt': ['no-new-privileges:true'], 'depends_on': {'postgres': {'condition': 'service_healthy'}}}
@@ -84,17 +84,59 @@ def initialize(image):
     print(json.dumps(receipt))
 
 
+
+def enable_skill_storage():
+    """Add only the owned writable custom mount; preserve readonly source/public files."""
+    owned()
+    compose_path = STATE / 'compose.yaml'
+    original = compose_path.read_bytes()
+    config = yaml.safe_load(original)
+    if config.get('name') != PROJECT:
+        raise ValueError('Unexpected compose project')
+    target = STATE / 'skills-custom'
+    if target.is_symlink() or target.resolve() != target or (target.exists() and not target.is_dir()):
+        raise ValueError('Unexpected custom Skill storage')
+    source_mount = f'{ROOT}/skills:/app/skills:ro'
+    custom_mount = f'{target}:/app/skills/custom'
+    changed = False
+    for name in ['db-init', 'gateway', 'langgraph']:
+        volumes = config['services'][name]['volumes']
+        if not all(isinstance(value, str) for value in volumes) or source_mount not in volumes:
+            raise ValueError('Readonly source Skill mount required')
+        existing = [value for value in volumes if value.split(':')[1] == '/app/skills/custom']
+        if existing and existing != [custom_mount]:
+            raise ValueError('Foreign custom Skill mount refused')
+        if not existing:
+            volumes.append(custom_mount)
+            changed = True
+    target.mkdir(mode=0o700, exist_ok=True)
+    os.chmod(target, 0o700)
+    if changed:
+        suffix = secrets.token_hex(8)
+        backup = STATE / f'compose-before-skill-storage-{suffix}.yaml'
+        temporary = STATE / f'compose-skill-storage-{suffix}.yaml'
+        for path, data in [(backup, original), (temporary, yaml.safe_dump(config, sort_keys=False).encode())]:
+            with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'wb') as stream:
+                stream.write(data)
+                stream.flush()
+                os.fsync(stream.fileno())
+        os.replace(temporary, compose_path)
+    print(json.dumps({'project': PROJECT, 'custom_skill_storage': str(target), 'source_skills_readonly': True, 'configuration_changed': changed}))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['init', 'up', 'status', 'stop', 'restart'])
+    parser.add_argument('action', choices=['init', 'up', 'status', 'stop', 'restart', 'skills-storage'])
     parser.add_argument('--backend-image', default='prismos-office-docx-images:test')
     args = parser.parse_args()
     if args.action == 'init':
         initialize(args.backend_image)
         return
     owned()
+    if args.action == 'skills-storage':
+        enable_skill_storage()
     compose = ['docker', 'compose', '-p', PROJECT, '--env-file', str(STATE / 'runtime.env'), '-f', str(STATE / 'compose.yaml')]
-    actions = {'up': ['up', '-d', '--no-build', '--wait', '--wait-timeout', '240'], 'status': ['ps'], 'stop': ['stop'], 'restart': ['restart']}
+    actions = {'up': ['up', '-d', '--no-build', '--wait', '--wait-timeout', '240'], 'status': ['ps'], 'stop': ['stop'], 'restart': ['restart'], 'skills-storage': ['up', '-d', '--no-build', '--no-deps', '--wait', '--wait-timeout', '240', 'gateway', 'langgraph']}
     # Never print resolved compose config or runtime environment: both contain credentials.
     subprocess.run(compose + actions[args.action], cwd=ROOT, check=True)
 
