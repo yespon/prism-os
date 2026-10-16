@@ -1,0 +1,24 @@
+{
+  "base_commit": "630a5f1",
+  "source_imported": "No excluded Office source imported",
+  "functional_integration": "Original office_pptx edit_charts with current file authority and synchronized caches/editable workbook",
+  "actual_local_acceptance": {
+    "related": "58 passed, 17 warnings in 24.88s",
+    "backend-full": "2389 passed, 18 skipped, 762 warnings in 1307.91s (0:21:47)",
+    "image-runtime": "137 passed, 67 warnings in 181.12s (0:03:01)",
+    "postgres": "137 passed, 67 warnings in 173.98s (0:02:53)",
+    "upgrade": [
+      "137 passed, 67 warnings in 183.63s (0:03:03)",
+      "137 passed, 67 warnings in 133.57s (0:02:13)",
+      "137 passed, 67 warnings in 200.02s (0:03:20)"
+    ]
+  },
+  "remaining": [
+    "Shared-part independent cloning",
+    "Advanced combination/type/layout/style/full Office fidelity",
+    "Real models/external tools/tickets, real remote and remote CI",
+    "All original N/O/F and PrismOS exits"
+  ],
+  "M1_exited": false,
+  "N08_started": false
+}

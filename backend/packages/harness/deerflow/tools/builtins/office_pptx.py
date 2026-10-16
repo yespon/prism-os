@@ -85,7 +85,7 @@ def _embedded_workbooks(data):
             _workbook_budget(_load_workbook(body), validate_formulas=True)
 
 
-def _chart(slide, spec):
+def _chart_data(spec):
     if not isinstance(spec, dict) or set(spec) - {"kind", "title", "categories", "series"} or spec.get("kind") not in {"bar", "line", "pie"}:
         raise ValueError("Presentation chart schema unavailable")
     categories, series = spec.get("categories"), spec.get("series")
@@ -107,12 +107,24 @@ def _chart(slide, spec):
     title = spec.get("title", "")
     if not isinstance(title, str) or len(title) > 1000:
         raise ValueError("Presentation chart title unavailable")
+    return data
+
+
+def _chart_workbook(spec):
+    categories, series = spec["categories"], spec["series"]
+    rows = [["", *[item["name"] for item in series]]]
+    rows += [[category, *[item["values"][index] for item in series]] for index, category in enumerate(categories)]
+    return create_xlsx({"sheets": [{"name": "Sheet1", "rows": rows}]})
+
+
+def _chart(slide, spec):
+    data = _chart_data(spec)
+    series = spec["series"]
+    title = spec.get("title", "")
     chart = slide.shapes.add_chart({"bar": XL_CHART_TYPE.COLUMN_CLUSTERED, "line": XL_CHART_TYPE.LINE, "pie": XL_CHART_TYPE.PIE}[spec["kind"]], Inches(0.7), Inches(1.6), Inches(11.9), Inches(5.1), data).chart
     # The chart engine normally interprets '=' and URL-like labels in its XLSX
     # writer. Replace its data part with our literal-cell workbook before output.
-    rows = [["", *[item["name"] for item in series]]]
-    rows += [[category, *[item["values"][index] for item in series]] for index, category in enumerate(categories)]
-    chart.part.chart_workbook.update_from_xlsx_blob(create_xlsx({"sheets": [{"name": "Sheet1", "rows": rows}]}))
+    chart.part.chart_workbook.update_from_xlsx_blob(_chart_workbook(spec))
     chart.chart_style = 10
     chart.has_legend = len(series) > 1 or spec["kind"] == "pie"
     if title:
@@ -245,17 +257,56 @@ def edit_pptx(data, replacements):
     return _save(presentation)
 
 
+def edit_pptx_charts(data, changes):
+    if not isinstance(changes, list) or not 1 <= len(changes) <= 32 or len(json.dumps(changes, ensure_ascii=False)) > 2_000_000:
+        raise ValueError("Presentation chart changes unavailable")
+    presentation = _load(data)
+    all_charts = [shape.chart for slide in presentation.slides for shape in _shapes(slide.shapes) if shape.has_chart]
+    seen = set()
+    for change in changes:
+        if not isinstance(change, dict) or set(change) != {"slide", "chart", "document"} or type(change["slide"]) is not int or type(change["chart"]) is not int:
+            raise ValueError("Presentation chart target unavailable")
+        slide_number, chart_number = change["slide"], change["chart"]
+        if not 1 <= slide_number <= len(presentation.slides):
+            raise ValueError("Presentation chart slide unavailable")
+        charts = [shape.chart for shape in _shapes(presentation.slides[slide_number - 1].shapes) if shape.has_chart]
+        if not 1 <= chart_number <= len(charts) or (slide_number, chart_number) in seen:
+            raise ValueError("Presentation chart target unavailable")
+        seen.add((slide_number, chart_number))
+        chart = charts[chart_number - 1]
+        workbook_part = chart.part.chart_workbook.xlsx_part
+        if sum(other.part is chart.part for other in all_charts) != 1 or (workbook_part is not None and sum(other.part.chart_workbook.xlsx_part is workbook_part for other in all_charts) != 1):
+            raise ValueError("Shared chart data requires an independent copy")
+        kind = {XL_CHART_TYPE.COLUMN_CLUSTERED: "bar", XL_CHART_TYPE.LINE: "line", XL_CHART_TYPE.PIE: "pie"}.get(chart.chart_type)
+        document = change["document"]
+        if kind is None or len(chart.plots) != 1 or not isinstance(document, dict) or document.get("kind") != kind:
+            raise ValueError("Existing chart kind must be preserved")
+        replacement = _chart_data(document)
+        chart.replace_data(replacement)
+        chart.part.chart_workbook.update_from_xlsx_blob(_chart_workbook(document))
+        if "title" in document:
+            title = _text(document["title"])
+            chart.has_title = bool(title)
+            if title:
+                chart.chart_title.text_frame.text = title
+    return _save(presentation)
+
+
 @tool("office_pptx", parse_docstring=True)
-def office_pptx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None) -> dict:
+def office_pptx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None, chart_changes: list[dict] | None = None) -> dict:
     """Create, inspect or edit an owned PPTX without rendering slides or executing content.
 
     Args:
-        action: create, inspect or edit. Desktop rendering, animations and advanced layouts remain pending.
+        action: create, inspect, edit (literal text) or edit_charts (chart data). Desktop rendering, animations and advanced layouts remain pending.
         source_path: Current authorized PPTX for inspect or edit.
         output_path: New /mnt/user-data/outputs/*.pptx, never overwrites; present with present_files.
         document: Create schema: slides list of title, paragraphs (strings) OR table (rectangular strings) OR chart (kind bar/line/pie, optional title, categories strings, series
             list of name and finite numeric values), optional notes. Charts embed editable XLSX data; max 200 categories and 8 series, pie one nonnegative series. Uses a simple
             wide layout.
         replacements: Literal text replacements in slide text, tables and notes. Cross-run matches adopt the first run style; advanced roundtrip fidelity is not claimed.
+        chart_changes: edit_charts list of slide/chart (1-based chart order including groups), document (same chart create schema). Keeps chart kind/position/style; title omitted
+            preserves it, empty title removes it. Shared chart/workbook parts require an independent copy.
     """
-    return owned_office_operation(runtime, action, ".pptx", source_path, output_path, lambda: create_pptx(document), inspect_pptx, lambda data: edit_pptx(data, replacements))
+    edit = (lambda data: edit_pptx_charts(data, chart_changes)) if action == "edit_charts" else (lambda data: edit_pptx(data, replacements))
+    mapped = "edit" if action == "edit_charts" else action
+    return owned_office_operation(runtime, mapped, ".pptx", source_path, output_path, lambda: create_pptx(document), inspect_pptx, edit)

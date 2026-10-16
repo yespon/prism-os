@@ -1,0 +1,66 @@
+{
+  "scope": "Actual OOXML charts/caches/editable workbook; native authority/download separately tested; no desktop rendering/model call",
+  "files": {
+    "demo-original.pptx": {
+      "sha256": "046613465c01a3cc65feabddb8acbcc4b167efc4a559676e75fcbcb62e10b79e",
+      "bytes": 39035
+    },
+    "demo-edited.pptx": {
+      "sha256": "914bc057fd8541f1e5a593973fb25a9240c60fd8c42d7b3353731e5e965f3049",
+      "bytes": 39172
+    }
+  },
+  "inspection": {
+    "slides": [
+      {
+        "texts": [
+          "季度预算与实际"
+        ],
+        "tables": [],
+        "charts": [
+          {
+            "kind": "COLUMN_CLUSTERED (51)",
+            "series": [
+              {
+                "name": "预算",
+                "values": [
+                  125.0,
+                  165.0,
+                  190.0
+                ]
+              },
+              {
+                "name": "实际",
+                "values": [
+                  110.0,
+                  150.0,
+                  180.0
+                ]
+              }
+            ],
+            "categories": [
+              "第一季",
+              "第二季",
+              "第三季"
+            ]
+          }
+        ],
+        "notes": "独立图表数据编辑演示"
+      },
+      {
+        "texts": [
+          "保留的其他内容",
+          "编辑指定图表，保留其他页面\n桌面渲染与高级组合图仍待验收"
+        ],
+        "tables": [],
+        "charts": [],
+        "notes": ""
+      }
+    ],
+    "size_emu": [
+      12191695,
+      6858000
+    ],
+    "rendered": false
+  }
+}
