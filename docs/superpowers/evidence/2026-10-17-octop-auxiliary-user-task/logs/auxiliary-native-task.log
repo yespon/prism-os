@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_auxiliary_task_probe.py", line 150, in <module>
+    execute(options.output, options.base_url, options.fixture)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_auxiliary_task_probe.py", line 122, in execute
+    again = call(requester, "/api/agents/" + agent["id"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_auxiliary_task_probe.py", line 28, in call
+    assert response.status_code == status, (path, response.status_code)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('/api/agents/1274ae03-5e4a-4f89-8a10-27a43d3f1eca', 404)

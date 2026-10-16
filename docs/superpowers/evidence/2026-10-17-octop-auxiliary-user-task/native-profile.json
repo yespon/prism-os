@@ -1,0 +1,26 @@
+{
+  "complete": true,
+  "profile": "owned-wsl-native",
+  "base_url": "http://127.0.0.1:18031",
+  "main_url": "http://localhost:18026",
+  "main_compose_unchanged": true,
+  "databases": {
+    "app": "prismos_native_app_9e5d88c08d",
+    "auth": "prismos_native_auth_9e5d88c08d",
+    "checkpoints": "prismos_native_checkpoints_9e5d88c08d"
+  },
+  "native_state": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/native-profile",
+  "processes": {
+    "langgraph": {
+      "pid": 2555803,
+      "starttime": "12436975",
+      "cmdline_sha256": "61885a57f7160be2a0c648e92b0c369fe3135290cfbc9f0f2d71a9859af212cf"
+    },
+    "gateway": {
+      "pid": 2555804,
+      "starttime": "12436976",
+      "cmdline_sha256": "e9043da4b80c2fd021b1116429939b83060215b2ec6b643834bc54cd631f2e6c"
+    }
+  },
+  "M1_exited": false
+}

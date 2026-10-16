@@ -1227,7 +1227,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
-        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -1258,6 +1259,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
           "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
           "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
+        },
+        {
+          "task": "Original parenting expert → selected retained memory freshness script → actual fresh/stale/recovered states → Markdown/download/history",
+          "level": "真实模型/WSL原生命令已验收；默认应用容器此场景失败保留",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
+          "current_entry": "http://localhost:18036 (owned WSL native test profile)",
+          "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
         }
       ]
     }
@@ -3804,7 +3812,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -3815,7 +3823,8 @@
       "acceptance_scenario": "Template creation → actual expert tool task → artifact/history; later authorized child delegation/cancel/recovery",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-10-octop-inventory",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -3825,7 +3834,16 @@
         "reason": "Existing source/license boundary; native implementations preserve functional goals",
         "user_task_impact": "Original office expert now completes the basic attachment-to-DOCX task. This does not accept other experts, advanced Office, or child delegation."
       },
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Original parenting expert → selected retained memory freshness script → actual fresh/stale/recovered states → Markdown/download/history",
+          "level": "真实模型/WSL原生命令已验收；默认应用容器此场景失败保留",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
+          "current_entry": "http://localhost:18036 (owned WSL native test profile)",
+          "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        }
+      ]
     }
   },
   {
@@ -5021,7 +5039,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Layered memory, recall/compression and migration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -5031,10 +5049,20 @@
       "missing_chain": "Layered memory/recall/compression/portable migration and N08 durable execution",
       "acceptance_scenario": "Owned history survives restart; full memory lifecycle separately accepted",
       "valid_evidence": [
-        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service"
+        "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_user_tasks": [
+        {
+          "task": "Original parenting expert → selected retained memory freshness script → actual fresh/stale/recovered states → Markdown/download/history",
+          "level": "真实模型/WSL原生命令已验收；默认应用容器此场景失败保留",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
+          "current_entry": "http://localhost:18036 (owned WSL native test profile)",
+          "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        }
+      ]
     }
   },
   {
@@ -5185,7 +5213,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
-        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5216,6 +5245,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
           "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
           "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
+        },
+        {
+          "task": "Original parenting expert → selected retained memory freshness script → actual fresh/stale/recovered states → Markdown/download/history",
+          "level": "真实模型/WSL原生命令已验收；默认应用容器此场景失败保留",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
+          "current_entry": "http://localhost:18036 (owned WSL native test profile)",
+          "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
         }
       ]
     }
@@ -5827,7 +5863,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
-        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5852,6 +5889,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
           "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
           "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
+        },
+        {
+          "task": "Original parenting expert → selected retained memory freshness script → actual fresh/stale/recovered states → Markdown/download/history",
+          "level": "真实模型/WSL原生命令已验收；默认应用容器此场景失败保留",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
+          "current_entry": "http://localhost:18036 (owned WSL native test profile)",
+          "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
         }
       ]
     }
@@ -6585,7 +6629,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
-        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
@@ -6610,6 +6655,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
           "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
           "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
+        },
+        {
+          "task": "Original parenting expert → selected retained memory freshness script → actual fresh/stale/recovered states → Markdown/download/history",
+          "level": "真实模型/WSL原生命令已验收；默认应用容器此场景失败保留",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
+          "current_entry": "http://localhost:18036 (owned WSL native test profile)",
+          "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
         }
       ]
     }

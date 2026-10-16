@@ -30,6 +30,7 @@ def main():
     )
     args = parser.parse_args()
     test_files = args.test_file or [
+        "tests/test_wsl_native_profile.py",
         "tests/test_governed_native_reads.py",
         "tests/test_octop_integration.py",
         "tests/test_octop_presentation.py",
@@ -103,6 +104,10 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "scripts/octop_auxiliary_task_probe.py",
+        "scripts/octop_wsl_native_env.py",
+        "scripts/octop_wsl_native_proxy.py",
+        "backend/tests/test_wsl_native_profile.py",
         "backend/app/alerting/governed_native_reads.py",
         "backend/tests/test_governed_native_reads.py",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_binary_task.py",
