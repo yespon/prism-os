@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-office-task-check",
+    "sha256:d92ae2ea1544e2c3371ace986bdb0f79ec8f8b859c491571a4d1693ae97ff51b",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_office_docx.py tests/test_office_docx_images.py -q --tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T10:17:05.210477+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T10:18:46.503355+00:00"
+}

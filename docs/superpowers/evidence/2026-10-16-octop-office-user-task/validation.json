@@ -1,0 +1,73 @@
+{
+  "required_passed": [
+    "docx-schema-current",
+    "static-final",
+    "runtime-image-final",
+    "owned-runtime-current",
+    "task-artifact-history",
+    "task-runtime-cycle",
+    "image-office",
+    "upgrade-final",
+    "final-runtime",
+    "public-final",
+    "brand-final"
+  ],
+  "results": {
+    "brand-staged-result.json": 1,
+    "public-secrets-result.json": 0,
+    "static-current-result.json": 0,
+    "docx-schema-result.json": 1,
+    "upgrade-behavior-result.json": 1,
+    "runtime-image-build-result.json": 0,
+    "public-final-result.json": 0,
+    "static-result.json": 1,
+    "upgrade-final-result.json": 0,
+    "final-runtime-result.json": 0,
+    "runtime-image-final-result.json": 0,
+    "static-final-result.json": 0,
+    "brand-final-result.json": 0,
+    "docx-schema-current-result.json": 0,
+    "real-docx-current-result.json": 1,
+    "task-runtime-cycle-result.json": 0,
+    "image-office-result.json": 0,
+    "task-artifact-history-result.json": 0,
+    "real-docx-first-result.json": 1,
+    "owned-runtime-current-result.json": 0
+  },
+  "failed_attempts_retained": true,
+  "raw_logs_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/upgrade-final.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/final-runtime.log": "eef324782c5ea795da26fabb643030ddbf3e60a43761e4d75bae7097ad9dfc72",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/public-secrets.log": "d42b0f349d2b5f37425b26f9260012f6851015dbad890d45a159032ad95999ca",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/upgrade-behavior.log": "74256a41220a2ac4febc83e486e16acd2882f3d8756818cd50f49c6376b0baa4",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/real-docx-first.log": "71667236f16627d5aef39499e035d13044fdc65527e623b83c4378a5274cd241",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/runtime-image-build.log": "88f31d1e8fa599efbb8f5815cf92258db958f84152857e110e9e9d710a39aaa4",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/image-office.log": "d8b3bee01d5282c5839ff84e18564658b4a51afe99d9437de916b0fc23391681",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/static-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/public-final.log": "d27869369f0281d301d2b5f19aa4f6124059cab14d87d164b2739b17684e2e82",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/real-docx-current.log": "1d8e8bd8e88d19ddb36674869c30b7c3957a01b016b622423b52fb8e4ca11e24",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/docx-schema.log": "520c0844e049f2ef40d1640e7e9d366cb011feff29de069ad98633a534c717e1",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/task-runtime-cycle.log": "c8afad57839d79320bd4a4c39822924c615fc0682cbc90d5dec26c22e7e006db",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/owned-runtime-current.log": "5cf5f3d9a54cba220ba54747d74dbc2e3f5c147d6337135d977c3c27c914788b",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/task-artifact-history.log": "8d94bc929fbe33beb6bb7a09fd220fbe5f20ca7807eda949e6b195b1e346315d",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/brand-final.log": "9da33e7cdc28d36caac1435cee78fd86d71850c97bb95f0a7f9ca76641b197eb",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/static.log": "fb92fc3d4b4956fb48897c229a6fae658d0a23d6f671dd6327630bfba0932232",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/docx-schema-current.log": "5f570f8ebfc3acce3d9b1699916f213b9550f2c7dfadd2e66037c630927f34a4",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/static-current.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/runtime-image-final.log": "a00c2302116808268ca602aa1ee5dc7fb94ba005b259591c100c25f963170bf1"
+  },
+  "raw_diagnostic_archives": [
+    {
+      "original_log": "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/brand-staged.log",
+      "lossless_archive": "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/brand-staged.log.gz",
+      "raw_sha256": "ed74ea56d5217d25eae4424320c7e1809289159a1e39670a0e76c3af9125114e",
+      "reason": "Lossless retention of raw gate diagnostics containing the detected legacy token; no new brand allowance."
+    },
+    {
+      "original_log": "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/brand-staged.log",
+      "lossless_archive": "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/brand-staged.log.gz",
+      "raw_sha256": "03060a507b7b7f2a6ace912f97b4a2f058ec9e43b7fc6dd48f57fee0084a42e1",
+      "reason": "Lossless retention of raw gate diagnostics containing the detected legacy token; no new brand allowance."
+    }
+  ]
+}

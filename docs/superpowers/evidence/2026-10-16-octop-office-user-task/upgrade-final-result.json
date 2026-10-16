@@ -1,0 +1,25 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/upgrade-final.json",
+    "--test-file",
+    "tests/test_office_docx.py",
+    "--test-file",
+    "tests/test_office_docx_images.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T10:17:00.190811+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T10:20:35.691938+00:00"
+}

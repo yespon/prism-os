@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_office_task_probe.py",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-office-user-task/real-docx-first.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T10:05:16.364594+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T10:05:59.029555+00:00"
+}

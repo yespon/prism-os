@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_upgrade_probe.py", line 415, in <module>
+    main()
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_upgrade_probe.py", line 396, in main
+    raise ValueError("Host contract changed during upgrade probe")
+ValueError: Host contract changed during upgrade probe

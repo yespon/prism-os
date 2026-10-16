@@ -115,6 +115,7 @@ def main():
         "backend/tests/test_office_pptx_images.py",
         "scripts/octop_wsl_test_env.py",
         "scripts/octop_wsl_test_snapshot.py",
+        "scripts/octop_office_task_probe.py",
         "backend/tests/test_n04_deployment_snapshot.py",
         "scripts/octop_wsl_test_probe.py",
         "docker/n04-test/ticket_receiver.py",

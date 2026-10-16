@@ -1,0 +1,13 @@
+{
+  "image": "sha256:d92ae2ea1544e2c3371ace986bdb0f79ec8f8b859c491571a4d1693ae97ff51b",
+  "previous": {
+    "gateway": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1",
+    "langgraph": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1"
+  },
+  "files": {
+    "packages/harness/deerflow/tools/builtins/office_docx.py": "656dfc18ffb0387557ebd171535ef324321234ba441ee3d3dce76962a977d909",
+    "tests/test_office_docx.py": "4de228bf9571f0bd0ad9a75888b437a1d4a1667d81924e2fe2cbb18029c85872"
+  },
+  "action": "off",
+  "private_original_compose": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/compose-before-office-task.yaml"
+}

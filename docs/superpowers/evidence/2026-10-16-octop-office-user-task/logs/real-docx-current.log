@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_task_probe.py", line 121, in <module>
+    execute(parser.parse_args().output)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_task_probe.py", line 92, in execute
+    assert response.headers['cache-control'] == 'no-store'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,10 @@
+{
+  "baseline_commit": "2338505",
+  "frozen_files": 13631,
+  "changed_inputs": [
+    "backend/packages/harness/deerflow/tools/builtins/office_docx.py",
+    "backend/tests/test_office_docx.py",
+    "scripts/octop_upgrade_probe.py"
+  ],
+  "scope": "Prior full backend baseline only; current schema has new targeted/integration/image/source-upgrade acceptance. Prior frontend/source/lock/other file authority evidence covers unchanged inputs only."
+}

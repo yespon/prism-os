@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "phases": [
+    {
+      "phase": "task-after-restart",
+      "artifact_sha256": "52e790620776faca42ff63713101ada2f7a00aff4366211d2337d4d822c971cd",
+      "history_and_acl": true,
+      "model_reinvoked": false
+    },
+    {
+      "phase": "task-after-image-rollback",
+      "artifact_sha256": "52e790620776faca42ff63713101ada2f7a00aff4366211d2337d4d822c971cd",
+      "history_and_acl": true,
+      "model_reinvoked": false
+    },
+    {
+      "phase": "task-after-image-reapply",
+      "artifact_sha256": "52e790620776faca42ff63713101ada2f7a00aff4366211d2337d4d822c971cd",
+      "history_and_acl": true,
+      "model_reinvoked": false
+    }
+  ]
+}

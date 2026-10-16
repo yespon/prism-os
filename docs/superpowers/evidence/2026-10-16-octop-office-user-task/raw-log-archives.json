@@ -1,0 +1,14 @@
+[
+  {
+    "original_log": "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/brand-staged.log",
+    "lossless_archive": "docs/superpowers/evidence/2026-10-16-octop-office-user-task/logs/brand-staged.log.gz",
+    "raw_sha256": "ed74ea56d5217d25eae4424320c7e1809289159a1e39670a0e76c3af9125114e",
+    "reason": "Lossless retention of raw gate diagnostics containing the detected legacy token; no new brand allowance."
+  },
+  {
+    "original_log": "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/brand-staged.log",
+    "lossless_archive": "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/brand-staged.log.gz",
+    "raw_sha256": "03060a507b7b7f2a6ace912f97b4a2f058ec9e43b7fc6dd48f57fee0084a42e1",
+    "reason": "Lossless retention of raw gate diagnostics containing the detected legacy token; no new brand allowance."
+  }
+]

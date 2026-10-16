@@ -1,0 +1,48 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/packages/harness/deerflow/tools/builtins/office_docx.py:3:1
+   |
+ 1 |   """Independent DOCX operations; no excluded upstream Office source or execution."""
+ 2 |
+ 3 | / import hashlib
+ 4 | | import io
+ 5 | | import json
+ 6 | | import zipfile
+ 7 | | from pathlib import PurePosixPath
+ 8 | | from typing import Literal
+ 9 | |
+10 | | from typing_extensions import TypedDict
+11 | | from xml.etree import ElementTree as ET
+12 | |
+13 | | from langchain.tools import ToolRuntime, tool
+14 | |
+15 | | from deerflow.runtime import current_file_access
+   | |________________________________________________^
+16 |
+17 |   W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+   |
+help: Organize imports
+
+E702 Multiple statements on one line (semicolon)
+  --> scripts/octop_office_task_probe.py:67:37
+   |
+65 |             transcript = '\n'.join(response.iter_lines())
+66 |         saved = private / 'stream.txt'
+67 |         saved.write_text(transcript); saved.chmod(0o600)
+   |                                     ^
+68 |         result['stream_received'] = True
+69 |         checkpoint()
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> scripts/octop_office_task_probe.py:72:64
+   |
+70 |         state = call(requester, graph + '/state')
+71 |         saved = private / 'state.json'
+72 |         saved.write_text(json.dumps(state, ensure_ascii=False)); saved.chmod(0o600)
+   |                                                                ^
+73 |         messages = state.get('values', {}).get('messages', [])
+74 |         calls = [item for message in messages for item in message.get('tool_calls', [])]
+   |
+
+Found 3 errors.
+[*] 1 fixable with the `--fix` option.

@@ -306,3 +306,21 @@ def test_document_resource_limits_reject_before_unbounded_processing(kind):
             package.writestr(name, data)
     with pytest.raises(ValueError, match="structure limit"):
         inspect_docx(output.getvalue())
+
+
+def test_model_document_schema_disambiguates_table_row_cell_levels():
+    from pydantic import ValidationError
+
+    schema = office_docx_tool.tool_call_schema.model_json_schema()
+    document_schema = schema["$defs"]["DocxDocument"]
+    table = document_schema["properties"]["tables"]
+    assert table["type"] == "array"
+    assert table["items"]["type"] == "array"
+    assert table["items"]["items"]["type"] == "array"
+    assert table["items"]["items"]["items"]["type"] == "string"
+    valid = {"action": "create", "output_path": OUTPUT, "document": DOCUMENT}
+    assert office_docx_tool.tool_call_schema.model_validate(valid).document == DOCUMENT
+    # Both shapes actually produced by the real model must fail before any file write.
+    for tables in [[{"rows": [["Status", "Task"]]}], [["Status", "Task"]]]:
+        with pytest.raises(ValidationError):
+            office_docx_tool.tool_call_schema.model_validate({**valid, "document": {"tables": tables}})

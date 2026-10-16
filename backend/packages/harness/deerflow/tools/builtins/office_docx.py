@@ -5,9 +5,11 @@ import io
 import json
 import zipfile
 from pathlib import PurePosixPath
+from typing import Literal
 from xml.etree import ElementTree as ET
 
 from langchain.tools import ToolRuntime, tool
+from typing_extensions import TypedDict
 
 from deerflow.runtime import current_file_access
 
@@ -266,15 +268,33 @@ def edit_docx(data, replacements):
     return _package(parts), matches
 
 
+class DocxParagraph(TypedDict, total=False):
+    """A paragraph with an optional supported Word style."""
+
+    text: str
+    style: Literal["Normal", "Title", "Heading1", "Heading2", "Heading3"]
+
+
+class DocxDocument(TypedDict, total=False):
+    """Document content; tables is a list of tables, each a list of rows of cells."""
+
+    title: str
+    paragraphs: list[str | DocxParagraph]
+    tables: list[list[list[str]]]
+    header: str
+    footer: str
+
+
 @tool("office_docx", parse_docstring=True)
-def office_docx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None, images: list[dict] | None = None) -> dict:
+def office_docx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: DocxDocument | None = None, replacements: dict[str, str] | None = None, images: list[dict] | None = None) -> dict:
     """Create, inspect or edit an owned DOCX without executing document content.
 
     Args:
         action: create, inspect, replace or add_images (append inline owned images). Advanced layout, tracked changes and rendering are pending.
         source_path: Existing owned uploads/workspace/outputs DOCX for inspect or replace.
         output_path: New /mnt/user-data/outputs/*.docx; never overwrites. Use present_files afterward.
-        document: Create schema: title, paragraphs (text or text/style objects), tables (rows of strings), header, footer. Styles: Normal, Title, Heading1..3.
+        document: Create schema: title, paragraphs (text or text/style objects), tables (list of tables, each a list of rows of string cells), header, footer.
+            Example: {"title": "Report", "paragraphs": ["Summary"], "tables": [[["Status", "Task"], ["Done", "Review"]]]}. Styles: Normal, Title, Heading1..3.
         replacements: Literal text replacements across paragraphs, table cells and headers/footers. Cross-run matches adopt the first run character style.
         images: add_images list of source_path (current owned PNG/JPEG), optional width_inches (0.1..6.2) and alt text. Max 16 images, aspect ratio preserved; append before final
             section. Other image placement/cropping and desktop rendering remain pending.
