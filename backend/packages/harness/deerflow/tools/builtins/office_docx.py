@@ -267,18 +267,20 @@ def edit_docx(data, replacements):
 
 
 @tool("office_docx", parse_docstring=True)
-def office_docx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None) -> dict:
+def office_docx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None, images: list[dict] | None = None) -> dict:
     """Create, inspect or edit an owned DOCX without executing document content.
 
     Args:
-        action: create, inspect or replace. Advanced layout, tracked changes and rendering are pending.
+        action: create, inspect, replace or add_images (append inline owned images). Advanced layout, tracked changes and rendering are pending.
         source_path: Existing owned uploads/workspace/outputs DOCX for inspect or replace.
         output_path: New /mnt/user-data/outputs/*.docx; never overwrites. Use present_files afterward.
         document: Create schema: title, paragraphs (text or text/style objects), tables (rows of strings), header, footer. Styles: Normal, Title, Heading1..3.
         replacements: Literal text replacements across paragraphs, table cells and headers/footers. Cross-run matches adopt the first run character style.
+        images: add_images list of source_path (current owned PNG/JPEG), optional width_inches (0.1..6.2) and alt text. Max 16 images, aspect ratio preserved; append before final
+            section. Other image placement/cropping and desktop rendering remain pending.
     """
     try:
-        if action not in {"create", "inspect", "replace"}:
+        if action not in {"create", "inspect", "replace", "add_images"}:
             raise ValueError("Document action unavailable")
         data = None
         if action != "create":
@@ -298,6 +300,28 @@ def office_docx_tool(runtime: ToolRuntime, action: str, source_path: str = "", o
             raise ValueError("New output required")
         if action == "create":
             data = create_docx(document)
+            matches = None
+        elif action == "add_images":
+            from .office_docx_images import add_docx_images
+
+            if not isinstance(images, list) or not 1 <= len(images) <= 16 or len(json.dumps(images, ensure_ascii=False)) > 100_000:
+                raise ValueError("Owned document images unavailable")
+            resolved = []
+            image_bytes = 0
+            for item in images:
+                if not isinstance(item, dict) or set(item) - {"source_path", "width_inches", "alt"} or not isinstance(item.get("source_path"), str) or not item["source_path"].lower().endswith((".png", ".jpg", ".jpeg")):
+                    raise ValueError("Owned PNG/JPEG image required")
+                image = current_file_access(runtime, "read_bytes", item["source_path"])
+                if not isinstance(image, bytes) or len(image) > 4 * 1024 * 1024:
+                    raise ValueError("Owned image size unavailable")
+                image_bytes += len(image)
+                if image_bytes > 8 * 1024 * 1024:
+                    raise ValueError("Owned image total unavailable")
+                resolved.append({"data": image, **{key: value for key, value in item.items() if key != "source_path"}})
+            data = add_docx_images(data, resolved)
+            for item in images:
+                current_file_access(runtime, "read_bytes", item["source_path"])
+            current_file_access(runtime, "read_bytes", source_path)
             matches = None
         else:
             data, matches = edit_docx(data, replacements)

@@ -48,6 +48,7 @@ def main():
         "tests/test_agent_skill_references.py",
         "tests/test_agent_copy_share_boundaries.py",
         "tests/test_office_pdf_fonts.py",
+        "tests/test_office_docx_images.py",
         "tests/test_office_chart_editing.py",
         "tests/test_office_charts.py",
         "tests/test_office_xlsx.py",
@@ -94,6 +95,8 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/packages/harness/deerflow/tools/builtins/office_docx_images.py",
+        "backend/tests/test_office_docx_images.py",
         "backend/tests/test_office_chart_editing.py",
         "backend/packages/harness/deerflow/tools/builtins/office_fonts.py",
         "backend/tests/test_office_pdf_fonts.py",

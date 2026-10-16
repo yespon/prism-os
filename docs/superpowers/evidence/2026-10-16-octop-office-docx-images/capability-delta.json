@@ -1,0 +1,24 @@
+{
+  "base_commit": "26eaca7",
+  "source_imported": "No excluded Office source copied",
+  "functional_integration": "Original office_docx add_images with current authorized files, normalized inline PNG, aspect ratio and alt text",
+  "actual_local_acceptance": {
+    "related-final": "71 passed, 46 warnings in 59.95s",
+    "backend-full": "2403 passed, 18 skipped, 765 warnings in 1353.27s (0:22:33)",
+    "image-runtime": "151 passed, 70 warnings in 213.75s (0:03:33)",
+    "postgres": "151 passed, 70 warnings in 187.61s (0:03:07)",
+    "upgrade": [
+      "151 passed, 70 warnings in 211.34s (0:03:31)",
+      "151 passed, 70 warnings in 163.83s (0:02:43)",
+      "151 passed, 70 warnings in 164.21s (0:02:44)"
+    ]
+  },
+  "remaining": [
+    "Advanced placement/wrapping/cropping/full Office fidelity",
+    "Desktop rendering",
+    "Actual expert/delegation/external runtime and original platform goals",
+    "M1/N04/N07 exits"
+  ],
+  "M1_exited": false,
+  "N08_started": false
+}

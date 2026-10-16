@@ -67,7 +67,7 @@ def test_tool_schema_available_without_injected_runtime_and_native_registration(
     assert office_docx_tool in BUILTIN_TOOLS
     schema = office_docx_tool.tool_call_schema.model_json_schema()
     assert "runtime" not in schema["properties"]
-    assert set(schema["properties"]) == {"action", "source_path", "output_path", "document", "replacements"}
+    assert set(schema["properties"]) == {"action", "source_path", "output_path", "document", "replacements", "images"}
 
 
 def test_native_create_inspect_edit_and_original_artifact_download(file_client):
