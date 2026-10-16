@@ -118,4 +118,9 @@ class GovernedReadMiddleware(AgentMiddleware):
 
 
 def governed_read_middleware(scope):
+    if scope is None:
+        frame = _scope.get()
+        scope = frame[0] if frame else None
+    if scope is None:
+        return []
     return [GovernedReadMiddleware(scope)] if ticket_canary_enabled(scope["tenant_id"]) else []

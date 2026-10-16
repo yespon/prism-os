@@ -1,0 +1,31 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-child-user-task/upgrade.json",
+    "--test-file",
+    "tests/test_child_execution_context.py",
+    "--test-file",
+    "tests/test_task_tool_core_logic.py",
+    "--test-file",
+    "tests/test_governed_native_reads.py",
+    "--test-file",
+    "tests/test_graph_execution_context.py",
+    "--test-file",
+    "tests/test_file_access_boundaries.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T22:48:09.990076+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T22:50:42.292230+00:00"
+}

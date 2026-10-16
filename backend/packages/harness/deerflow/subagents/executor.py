@@ -6,6 +6,8 @@ import threading
 import uuid
 from concurrent.futures import Future, ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
+from contextvars import copy_context
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -17,6 +19,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 
 from deerflow.agents.thread_state import SandboxState, ThreadDataState, ThreadState
+from deerflow.config.tenant_context import tenant_context
 from deerflow.models import create_chat_model
 from deerflow.subagents.config import SubagentConfig
 
@@ -148,6 +151,7 @@ class SubagentExecutor:
         user_id: str | None = None,
         tenant_id: str | None = None,
         trace_id: str | None = None,
+        execution_context: dict[str, Any] | None = None,
     ):
         """Initialize the executor.
 
@@ -169,6 +173,10 @@ class SubagentExecutor:
         self.thread_id = thread_id
         self.user_id = user_id
         self.tenant_id = tenant_id
+        self.execution_context = deepcopy(execution_context or {})
+        for key, value in (("thread_id", thread_id), ("user_id", user_id), ("tenant_id", tenant_id)):
+            if value is not None and self.execution_context.get(key, value) != value:
+                raise ValueError("Child execution cannot retarget the parent identity")
         # Generate trace_id if not provided (for top-level calls)
         self.trace_id = trace_id or str(uuid.uuid4())[:8]
 
@@ -184,12 +192,23 @@ class SubagentExecutor:
     def _create_agent(self):
         """Create the agent instance."""
         model_name = _get_model_name(self.config, self.parent_model)
+        if self.tenant_id:
+            from deerflow.database.user_config_store import load_enabled_tenant_model_names
+
+            allowed = load_enabled_tenant_model_names(self.tenant_id)
+            if model_name not in allowed:
+                raise PermissionError("Child model is not enabled for the current tenant")
         model = create_chat_model(name=model_name, thinking_enabled=False)
 
         from deerflow.agents.middlewares.tool_error_handling_middleware import build_subagent_runtime_middlewares
 
         # Reuse shared middleware composition with lead agent.
         middlewares = build_subagent_runtime_middlewares(lazy_init=True)
+        from deerflow.runtime import get_execution_middleware_provider
+
+        provider = get_execution_middleware_provider()
+        if provider:
+            middlewares += provider(None)  # Host reads its private inherited scope.
 
         return create_agent(
             model=model,
@@ -197,6 +216,9 @@ class SubagentExecutor:
             middleware=middlewares,
             system_prompt=self.config.system_prompt,
             state_schema=ThreadState,
+            # This worker runs on a separate loop. Keep the existing ephemeral
+            # child execution independent of the parent's loop-bound saver.
+            checkpointer=False,
         )
 
     def _build_initial_state(self, task: str) -> dict[str, Any]:
@@ -221,6 +243,10 @@ class SubagentExecutor:
         return state
 
     async def _aexecute(self, task: str, result_holder: SubagentResult | None = None) -> SubagentResult:
+        with tenant_context(user_id=self.user_id, tenant_id=self.tenant_id):
+            return await self._aexecute_in_context(task, result_holder)
+
+    async def _aexecute_in_context(self, task: str, result_holder: SubagentResult | None = None) -> SubagentResult:
         """Execute a task asynchronously.
 
         Args:
@@ -251,7 +277,7 @@ class SubagentExecutor:
             run_config: RunnableConfig = {
                 "recursion_limit": self.config.max_turns,
             }
-            context: dict[str, str] = {}
+            context = deepcopy(self.execution_context)
             if self.thread_id:
                 context["thread_id"] = self.thread_id
             if self.user_id:
@@ -473,7 +499,7 @@ class SubagentExecutor:
             try:
                 # Submit execution to execution pool with timeout
                 # Pass result_holder so execute() can update it in real-time
-                execution_future: Future = _execution_pool.submit(self.execute, task, result_holder)
+                execution_future: Future = _execution_pool.submit(copy_context().run, self.execute, task, result_holder)
                 try:
                     # Wait for execution with timeout
                     exec_result = execution_future.result(timeout=self.config.timeout_seconds)
@@ -547,7 +573,7 @@ class SubagentExecutor:
                     completed_at=datetime.now(),
                 )
 
-        _scheduler_pool.submit(run_task)
+        _scheduler_pool.submit(copy_context().run, run_task)
         return task_id
 
 

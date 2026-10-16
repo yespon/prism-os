@@ -30,6 +30,8 @@ def main():
     )
     args = parser.parse_args()
     test_files = args.test_file or [
+        "tests/test_child_execution_context.py",
+        "tests/test_task_tool_core_logic.py",
         "tests/test_wsl_native_profile.py",
         "tests/test_governed_native_reads.py",
         "tests/test_octop_integration.py",
@@ -104,6 +106,12 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "scripts/octop_child_task_probe.py",
+        "backend/tests/test_child_execution_context.py",
+        "backend/tests/test_task_tool_core_logic.py",
+        "backend/tests/test_subagent_executor.py",
+        "backend/packages/harness/deerflow/subagents/executor.py",
+        "backend/packages/harness/deerflow/tools/builtins/task_tool.py",
         "scripts/octop_auxiliary_task_probe.py",
         "scripts/octop_wsl_native_env.py",
         "scripts/octop_wsl_native_proxy.py",

@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "-v",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_child_execution_context.py:/app/backend/tests/test_child_execution_context.py:ro",
+    "-w",
+    "/app/backend",
+    "--entrypoint",
+    "/app/backend/.venv/bin/python",
+    "prismos-child-task:test",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_child_execution_context.py",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T22:55:34.476622+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T22:55:49.508041+00:00"
+}

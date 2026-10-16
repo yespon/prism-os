@@ -4,6 +4,7 @@ import inspect
 import logging
 import time
 import uuid
+from copy import deepcopy
 from dataclasses import replace
 from typing import Annotated, Literal
 
@@ -56,6 +57,7 @@ def task_tool(
         description: A short (3-5 word) description of the task for logging/display. ALWAYS PROVIDE THIS PARAMETER FIRST.
         prompt: The task description for the subagent. Be specific and clear about what needs to be done. ALWAYS PROVIDE THIS PARAMETER SECOND.
         subagent_type: The type of subagent to use. ALWAYS PROVIDE THIS PARAMETER THIRD.
+        max_turns: Optional graph-step budget, including middleware and cleanup; leave unset to use the configured default.
     """
     # Get subagent configuration
     config = get_subagent_config(subagent_type)
@@ -70,7 +72,51 @@ def task_tool(
     # Build config overrides
     overrides: dict = {}
 
-    skills_section = get_skills_prompt_section()
+    from deerflow.runtime import get_agent_context_provider, get_skill_prompt_provider
+
+    inherited_keys = {
+        "tenant_id",
+        "user_id",
+        "thread_id",
+        "agent_name",
+        "agent_id",
+        "diagnosis_source_id",
+        "diagnosis_source_revision",
+        "diagnosis_incident_id",
+        "skill_name",
+        "skill_resource_id",
+        "referenced_attachments",
+    }
+    parent_context = {key: deepcopy(value) for key, value in (runtime.context or {}).items() if key in inherited_keys} if runtime is not None else {}
+    skill_provider = get_skill_prompt_provider()
+    context_provider = get_agent_context_provider()
+    inherited_groups = None
+    if context_provider and parent_context.get("agent_id"):
+        authority = {key: parent_context.get(key) for key in ("diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id")}
+        native = context_provider(
+            parent_context.get("agent_name"),
+            parent_context.get("user_id"),
+            parent_context.get("tenant_id"),
+            parent_context["agent_id"],
+            parent_context.get("skill_name"),
+            parent_context.get("skill_resource_id"),
+            **authority,
+        )
+        if native is None or native.record is None:
+            raise PermissionError("Current parent Agent context is unavailable for delegation")
+        skills_section = native.skill_section
+        inherited_groups = native.record.tool_groups
+    elif skill_provider and parent_context.get("tenant_id"):
+        skills_section = skill_provider(
+            parent_context.get("agent_name"),
+            parent_context.get("tenant_id"),
+            parent_context.get("user_id"),
+            parent_context.get("skill_name"),
+            parent_context.get("skill_resource_id"),
+            parent_context.get("agent_id"),
+        )
+    else:
+        skills_section = get_skills_prompt_section()
     if skills_section:
         overrides["system_prompt"] = config.system_prompt + "\n\n" + skills_section
 
@@ -111,7 +157,10 @@ def task_tool(
     from deerflow.tools import get_available_tools
 
     # Subagents should not have subagent tools enabled (prevent recursive nesting)
-    tools = get_available_tools(model_name=parent_model, subagent_enabled=False)
+    tool_options = {"model_name": parent_model, "subagent_enabled": False}
+    if inherited_groups is not None:
+        tool_options["groups"] = inherited_groups
+    tools = get_available_tools(**tool_options)
 
     # Create executor
     executor = SubagentExecutor(
@@ -124,6 +173,7 @@ def task_tool(
         user_id=user_id,
         tenant_id=tenant_id,
         trace_id=trace_id,
+        execution_context=parent_context,
     )
 
     # Start background execution (always async to prevent blocking)
@@ -131,11 +181,7 @@ def task_tool(
     execute_kwargs = {"task_id": tool_call_id, "description": description}
     parameters = inspect.signature(executor.execute_async).parameters
     if not any(parameter.kind == inspect.Parameter.VAR_KEYWORD for parameter in parameters.values()):
-        execute_kwargs = {
-            key: value
-            for key, value in execute_kwargs.items()
-            if key in parameters
-        }
+        execute_kwargs = {key: value for key, value in execute_kwargs.items() if key in parameters}
     task_id = executor.execute_async(prompt, **execute_kwargs)
 
     # Poll for task completion in backend (removes need for LLM to poll)
@@ -221,7 +267,7 @@ def task_tool(
             )
             logger.info(f"[trace={trace_id}] Task {task_id} completed after {poll_count} polls")
             cleanup_background_task(task_id)
-            return f"Task Succeeded. Result: {result.result}"
+            return f"Task execution completed. Verify the returned outcome and required artifacts before reporting success. Result: {result.result}"
         elif result.status == SubagentStatus.FAILED:
             writer(
                 {

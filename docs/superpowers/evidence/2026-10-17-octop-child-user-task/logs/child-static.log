@@ -1,0 +1,35 @@
+I001 [*] Import block is un-sorted or un-formatted
+   --> backend/tests/test_child_execution_context.py:108:5
+    |
+106 |   @pytest.mark.parametrize("model_allowed", [True, False])
+107 |   async def test_child_model_uses_parent_tenant_and_current_allowlist(real_executor, monkeypatch, model_allowed):
+108 | /     from deerflow.config.tenant_context import get_current_tenant_id, tenant_context
+109 | |     from deerflow.database import user_config_store
+110 | |     from deerflow.agents.middlewares import tool_error_handling_middleware
+    | |__________________________________________________________________________^
+111 |
+112 |       observed = []
+    |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/tests/test_task_tool_core_logic.py:3:1
+   |
+ 1 |   """Core behavior tests for task tool orchestration."""
+ 2 |
+ 3 | / import importlib
+ 4 | |
+ 5 | | import pytest
+ 6 | | from enum import Enum
+ 7 | | from types import SimpleNamespace
+ 8 | | from unittest.mock import MagicMock
+ 9 | |
+10 | | from deerflow.subagents.config import SubagentConfig
+   | |____________________________________________________^
+11 |
+12 |   # Use module import so tests can patch the exact symbols referenced inside task_tool().
+   |
+help: Organize imports
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

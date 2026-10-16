@@ -1,0 +1,19 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_child_execution_context.py",
+    "tests/test_subagent_executor.py",
+    "tests/test_subagent_timeout_config.py",
+    "tests/test_subagent_limit_middleware.py",
+    "tests/test_task_tool_core_logic.py",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T22:47:12.718832+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T22:47:18.304664+00:00"
+}

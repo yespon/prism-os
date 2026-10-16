@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_child_task_probe.py",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-context-fixed.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T22:45:23.949487+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T22:45:55.859701+00:00"
+}

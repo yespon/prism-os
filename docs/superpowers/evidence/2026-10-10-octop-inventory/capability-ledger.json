@@ -3816,15 +3816,17 @@
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "/api/agent-catalog/templates (subagent prompts/resources only; full delegation unaccepted)"
+        "/api/agent-catalog/templates (subagent prompts/resources only; full delegation unaccepted)",
+        "Authenticated chat stream with subagent_enabled=true → existing task tool (generic child only)"
       ],
-      "current_status": "源码已迁入；专家prompt/资源部分接入；完整专家及子Agent任务未验收",
-      "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
+      "current_status": "源码保留；既有Harness通用子Agent文档任务真实模型已验收；完整Octop协作未验收",
+      "missing_chain": "Catalog-specific subagent binding/selection, all expert/resource scenarios, full Octop AgentTeams/cross-Agent collaboration, cancel/recovery and persistent execution remain; N08 waits original M1 exit",
       "acceptance_scenario": "Template creation → actual expert tool task → artifact/history; later authorized child delegation/cancel/recovery",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-10-octop-inventory",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
-        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -3842,6 +3844,12 @@
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
           "current_entry": "http://localhost:18036 (owned WSL native test profile)",
           "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        },
+        {
+          "task": "Authenticated attachment → general-purpose child read/create Chinese DOCX/table → parent presentation → download/new-login history/current ACL",
+          "level": "真实模型已验收；WSL native profile and owned main application image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
+          "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
         }
       ]
     }
@@ -4396,20 +4404,30 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "Generic harness task tool is distinct from full Octop collaboration; no complete accepted delegation entry"
+        "Generic harness task tool is distinct from full Octop collaboration; no complete accepted delegation entry",
+        "Authenticated chat stream with subagent_enabled=true → existing task tool (generic child only)"
       ],
-      "current_status": "源码已迁入；专家prompt/资源部分接入；完整专家及子Agent任务未验收",
-      "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
+      "current_status": "源码保留；既有Harness通用子Agent文档任务真实模型已验收；完整Octop协作未验收",
+      "missing_chain": "Catalog-specific subagent binding/selection, all expert/resource scenarios, full Octop AgentTeams/cross-Agent collaboration, cancel/recovery and persistent execution remain; N08 waits original M1 exit",
       "acceptance_scenario": "Template creation → actual expert tool task → artifact/history; later authorized child delegation/cancel/recovery",
       "valid_evidence": [
-        "docs/superpowers/evidence/2026-10-10-octop-inventory"
+        "docs/superpowers/evidence/2026-10-10-octop-inventory",
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
-      "full_capability_accepted": false
+      "full_capability_accepted": false,
+      "accepted_user_tasks": [
+        {
+          "task": "Authenticated attachment → general-purpose child read/create Chinese DOCX/table → parent presentation → download/new-login history/current ACL",
+          "level": "真实模型已验收；WSL native profile and owned main application image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
+          "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
+        }
+      ]
     }
   },
   {
@@ -4527,7 +4545,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
-        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
@@ -4552,6 +4571,12 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
           "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
           "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
+        },
+        {
+          "task": "Authenticated attachment → general-purpose child read/create Chinese DOCX/table → parent presentation → download/new-login history/current ACL",
+          "level": "真实模型已验收；WSL native profile and owned main application image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
+          "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
         }
       ]
     }
@@ -5214,7 +5239,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
-        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5252,6 +5278,12 @@
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
           "current_entry": "http://localhost:18036 (owned WSL native test profile)",
           "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        },
+        {
+          "task": "Authenticated attachment → general-purpose child read/create Chinese DOCX/table → parent presentation → download/new-login history/current ACL",
+          "level": "真实模型已验收；WSL native profile and owned main application image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
+          "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
         }
       ]
     }
@@ -6630,7 +6662,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
-        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
@@ -6662,6 +6695,12 @@
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
           "current_entry": "http://localhost:18036 (owned WSL native test profile)",
           "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        },
+        {
+          "task": "Authenticated attachment → general-purpose child read/create Chinese DOCX/table → parent presentation → download/new-login history/current ACL",
+          "level": "真实模型已验收；WSL native profile and owned main application image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
+          "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
         }
       ]
     }

@@ -39,7 +39,7 @@ _agent_lister: AgentLister | None = None
 _agent_persister: AgentPersister | None = None
 _terminal_provider: dict[str, Any] | None = None
 _governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
-_execution_middleware_provider: Callable[[dict[str, str]], list[Any]] | None = None
+_execution_middleware_provider: Callable[[dict[str, str] | None], list[Any]] | None = None
 _execution_validator: ExecutionValidator | None = None
 _agent_identity_provider: Callable[..., Any] | None = None
 _agent_context_provider: Callable[..., NativeAgentContext] | None = None
@@ -97,7 +97,7 @@ def register_governed_action_provider(provider: Callable[[dict[str, str]], list[
     _governed_action_provider = provider
 
 
-def register_execution_middleware_provider(provider: Callable[[dict[str, str]], list[Any]]) -> None:
+def register_execution_middleware_provider(provider: Callable[[dict[str, str] | None], list[Any]]) -> None:
     """Register optional host middleware for a server-verified execution scope."""
     global _execution_middleware_provider
     _execution_middleware_provider = provider

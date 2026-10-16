@@ -1,0 +1,52 @@
+{
+  "complete": true,
+  "source_receipt": "real-child-loop-fixed.json",
+  "events": [
+    {
+      "type": "task_started",
+      "task_id": "call_WVM9tD7OIZBDK9y1uNyLbNT9",
+      "tool_calls": []
+    },
+    {
+      "type": "task_started",
+      "task_id": "call_WVM9tD7OIZBDK9y1uNyLbNT9",
+      "tool_calls": []
+    },
+    {
+      "type": "task_running",
+      "task_id": "call_WVM9tD7OIZBDK9y1uNyLbNT9",
+      "tool_calls": [
+        {
+          "name": "read_file",
+          "id": "call_qyvl7V1Li1UJ61DBTS1OH4xx"
+        }
+      ]
+    },
+    {
+      "type": "task_running",
+      "task_id": "call_WVM9tD7OIZBDK9y1uNyLbNT9",
+      "tool_calls": [
+        {
+          "name": "office_docx",
+          "id": "call_KppQbTCMqyUpbKO2xkPhP3tG"
+        }
+      ]
+    },
+    {
+      "type": "task_running",
+      "task_id": "call_WVM9tD7OIZBDK9y1uNyLbNT9",
+      "tool_calls": []
+    },
+    {
+      "type": "task_completed",
+      "task_id": "call_WVM9tD7OIZBDK9y1uNyLbNT9",
+      "tool_calls": []
+    }
+  ],
+  "parent_tool_names": [
+    "task",
+    "present_files"
+  ],
+  "child_full_trace_durable_recovery_accepted": false,
+  "new_model_task_submissions": 0
+}
