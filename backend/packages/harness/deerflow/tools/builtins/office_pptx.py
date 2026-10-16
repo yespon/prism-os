@@ -4,6 +4,7 @@ import io
 import json
 import math
 import zipfile
+from typing import Literal
 
 from langchain.tools import ToolRuntime, tool
 from pptx import Presentation
@@ -11,6 +12,8 @@ from pptx.chart.data import CategoryChartData
 from pptx.enum.chart import XL_CHART_TYPE
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Inches, Pt
+from pydantic import StrictFloat, StrictInt
+from typing_extensions import TypedDict
 
 from .office_common import check_office_package, owned_office_operation
 from .office_xlsx import _budget as _workbook_budget
@@ -292,14 +295,74 @@ def edit_pptx_charts(data, changes):
     return _save(presentation)
 
 
+def edit_pptx_notes(data, notes):
+    if not isinstance(notes, list) or not 1 <= len(notes) <= 100 or len(json.dumps(notes, ensure_ascii=False)) > 2_000_000:
+        raise ValueError("Presentation notes changes unavailable")
+    presentation = _load(data)
+    seen = set()
+    for change in notes:
+        if not isinstance(change, dict) or set(change) != {"slide", "text"} or type(change["slide"]) is not int:
+            raise ValueError("Presentation notes target unavailable")
+        number = change["slide"]
+        if not 1 <= number <= len(presentation.slides) or number in seen:
+            raise ValueError("Presentation notes target unavailable")
+        seen.add(number)
+        text = _text(change["text"])
+        slide = presentation.slides[number - 1]
+        if not text and not slide.has_notes_slide:
+            continue
+        frame = slide.notes_slide.notes_text_frame
+        if frame is None:
+            raise ValueError("Presentation notes placeholder unavailable")
+        frame.text = text
+    return _save(presentation)
+
+
+class PptxSeries(TypedDict):
+    name: str
+    values: list[StrictInt | StrictFloat]
+
+
+class PptxChart(TypedDict, total=False):
+    kind: Literal["bar", "line", "pie"]
+    title: str
+    categories: list[str]
+    series: list[PptxSeries]
+
+
+class PptxSlide(TypedDict, total=False):
+    title: str
+    paragraphs: list[str]
+    table: list[list[str]]
+    chart: PptxChart
+    notes: str
+
+
+class PptxDocument(TypedDict):
+    slides: list[PptxSlide]
+
+
+class PptxNoteChange(TypedDict):
+    slide: StrictInt
+    text: str
+
+
 @tool("office_pptx", parse_docstring=True)
 def office_pptx_tool(
-    runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None, chart_changes: list[dict] | None = None, images: list[dict] | None = None,
+    runtime: ToolRuntime,
+    action: str,
+    source_path: str = "",
+    output_path: str = "",
+    document: PptxDocument | None = None,
+    replacements: dict[str, str] | None = None,
+    chart_changes: list[dict] | None = None,
+    images: list[dict] | None = None,
+    notes: list[PptxNoteChange] | None = None,
 ) -> dict:
     """Create, inspect or edit an owned PPTX without rendering slides or executing content.
 
     Args:
-        action: create, inspect, edit (literal text), edit_charts (chart data) or add_images (owned PNG/JPEG). Desktop rendering, animations and advanced layouts remain pending.
+        action: create, inspect, edit (literal text), edit_charts (chart data), edit_notes (speaker notes), or add_images (owned PNG/JPEG). Desktop rendering, animations and advanced layouts remain pending.
         source_path: Current authorized PPTX for inspect or edit.
         output_path: New /mnt/user-data/outputs/*.pptx, never overwrites; present with present_files.
         document: Create schema: slides list of title, paragraphs (strings) OR table (rectangular strings) OR chart (kind bar/line/pie, optional title, categories strings, series
@@ -308,15 +371,20 @@ def office_pptx_tool(
         replacements: Literal text replacements in slide text, tables and notes. Cross-run matches adopt the first run style; advanced roundtrip fidelity is not claimed.
         chart_changes: edit_charts list of slide/chart (1-based chart order including groups), document (same chart create schema). Keeps chart kind/position/style; title omitted
             preserves it, empty title removes it. Shared chart/workbook parts require an independent copy.
+        notes: edit_notes list of slide (1-based) and text. Adds or replaces speaker notes; empty text clears existing notes. Preserves slides/charts and saves a new file.
         images: add_images list of slide (1-based), source_path (current owned PNG/JPEG), optional left_inches/top_inches/width_inches and alt.
             Uses aspect ratio, applies EXIF orientation and removes metadata; max 16 new images, 64 pictures total, 4 MiB each and 8 MiB combined. Images must fit inside the slide.
     """
-    if action == "add_images":
+    if action == "edit_notes":
+
+        def edit(data):
+            return edit_pptx_notes(data, notes)
+    elif action == "add_images":
         from .office_pptx_images import add_owned_pptx_images
 
         def edit(data):
             return add_owned_pptx_images(runtime, data, images)
     else:
         edit = (lambda data: edit_pptx_charts(data, chart_changes)) if action == "edit_charts" else (lambda data: edit_pptx(data, replacements))
-    mapped = "edit" if action in {"edit_charts", "add_images"} else action
+    mapped = "edit" if action in {"edit_charts", "add_images", "edit_notes"} else action
     return owned_office_operation(runtime, mapped, ".pptx", source_path, output_path, lambda: create_pptx(document), inspect_pptx, edit)

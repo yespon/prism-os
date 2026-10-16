@@ -1,0 +1,30 @@
+{
+  "suffix": "c53e648aed",
+  "phases": [],
+  "complete": false,
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/office-charts-db3cde9db2",
+  "actual_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "new_model_task_submissions": 1,
+  "agent_id": "5fa8fb5a-5a7e-4821-9a9c-d28abd688224",
+  "agent_name": "office-charts-c53e648aed",
+  "thread_id": "5f30a553-a799-4b0c-beb9-28183aaf1f07",
+  "marker": "CHART_TASK_eaea5aae894bfa3516cd5ce7",
+  "template_id": "expert:office-automation",
+  "template_prompt_sha256": "c0003a4adefb5d98a5988c46052062d1906ca87e48eea441b496d0b733bb0ab5",
+  "source_attachment": {
+    "attachment_id": "att-54fa97c98163706f",
+    "filename": "revenue.csv",
+    "original_filename": "revenue.csv",
+    "stored_filename": "revenue.csv",
+    "size": "101",
+    "path": "/app/backend/.prismos/tenants/t-276660fc4e994418/users/usr_6a23ce170e6a3ffc/threads/5f30a553-a799-4b0c-beb9-28183aaf1f07/user-data/uploads/revenue.csv",
+    "virtual_path": "/mnt/user-data/uploads/revenue.csv",
+    "artifact_url": "/api/threads/5f30a553-a799-4b0c-beb9-28183aaf1f07/artifacts/mnt/user-data/uploads/revenue.csv",
+    "content_type": "text/plain",
+    "derived_files": []
+  },
+  "output_prefix": "/mnt/user-data/outputs/charts-c53e648aed",
+  "failure_type": "AssertionError",
+  "failure": ""
+}

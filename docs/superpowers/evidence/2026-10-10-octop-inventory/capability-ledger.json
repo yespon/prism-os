@@ -1228,7 +1228,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
-        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -1266,6 +1267,12 @@
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
           "current_entry": "http://localhost:18036 (owned WSL native test profile)",
           "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        },
+        {
+          "task": "Original Office expert → CSV → editable XLSX/PPTX charts → add speaker notes → correct second value in original charts/workbooks → separate revision/download/history/checkpoint/current ACL",
+          "level": "真实模型已验收；owned main image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
+          "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
         }
       ]
     }
@@ -4546,7 +4553,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
-        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
@@ -4577,6 +4585,12 @@
           "level": "真实模型已验收；WSL native profile and owned main application image",
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
           "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
+        },
+        {
+          "task": "Original Office expert → CSV → editable XLSX/PPTX charts → add speaker notes → correct second value in original charts/workbooks → separate revision/download/history/checkpoint/current ACL",
+          "level": "真实模型已验收；owned main image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
+          "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
         }
       ]
     }
@@ -5240,7 +5254,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
         "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
-        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5284,6 +5299,12 @@
           "level": "真实模型已验收；WSL native profile and owned main application image",
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
           "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
+        },
+        {
+          "task": "Original Office expert → CSV → editable XLSX/PPTX charts → add speaker notes → correct second value in original charts/workbooks → separate revision/download/history/checkpoint/current ACL",
+          "level": "真实模型已验收；owned main image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
+          "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
         }
       ]
     }
@@ -6663,7 +6684,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
         "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
-        "docs/superpowers/evidence/2026-10-17-octop-child-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-child-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
@@ -6701,6 +6723,12 @@
           "level": "真实模型已验收；WSL native profile and owned main application image",
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-main-image.json",
           "boundaries": "Existing generic Harness child path only; not full Octop AgentTeams/catalog-specific delegation or independent durable child recovery. Parent history/artifact retained through image restart/rollback/reapply; N08 prerequisite unchanged."
+        },
+        {
+          "task": "Original Office expert → CSV → editable XLSX/PPTX charts → add speaker notes → correct second value in original charts/workbooks → separate revision/download/history/checkpoint/current ACL",
+          "level": "真实模型已验收；owned main image",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
+          "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
         }
       ]
     }

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "backend/packages/harness/deerflow/tools/builtins/office_pptx.py",
+    "backend/tests/test_office_pptx_notes.py",
+    "scripts/octop_office_chart_task_probe.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:08:28.351781+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:08:28.377125+00:00"
+}

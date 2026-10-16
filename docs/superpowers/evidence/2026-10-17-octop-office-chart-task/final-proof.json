@@ -1,0 +1,34 @@
+{
+  "complete": true,
+  "image": "sha256:2885e41b33eb0a80353b6cabaf23fa089ac282426234c9b3cd44d9d93ea17bc4",
+  "main_and_native_healthy": true,
+  "main_security_unchanged": true,
+  "canary_off": true,
+  "receiver_count": 26,
+  "native_ownership_reference_updated_for_recorded_main_image_only": {
+    "before": "305402c73cb5bf2a0ff274fd76c3a187b501252f805b631b58e4cab829b62c70",
+    "after": "94624adfdddf285113f046d3ecdb45ba1d5637a6354f2fe8319504583b1e4835"
+  },
+  "production_image_sources_match": {
+    "app/alerting/governed_native_reads.py": "355d24199de62b86eb6fce0397d0c18720c85c1844e5ee13a8b8f8938ac8a432",
+    "app/alerting/governed_read_tool.py": "a41c4a25411ff867bf8938ada97992c49c496ccdeb954d1f6f1001a57a953c70",
+    "app/integrations/file_access.py": "ffe387d1575e3ad48eaa479b66f69a706adb9fbbb5685e0758c8ef7933dbc0eb",
+    "app/runtime_adapters.py": "79bbfd2feb466060eb2dd362d56ae4d5051901600ffc381960bf9f0f33beba78",
+    "packages/harness/deerflow/runtime.py": "6255e25cc12548b2894e7a722de37fe311d0d92141956442dc6a19d0b6695bcc",
+    "packages/harness/deerflow/agents/lead_agent/agent.py": "ab211cf8339c7d8ab94e5dc606c4108fc38143a2b1eb76cacd091de105a80cbe",
+    "tests/test_office_pptx_notes.py": "2016aa8524035901ea406d80623a3f4ec80f46dc81fdf4446d9985031afcdde2",
+    "packages/harness/deerflow/tools/builtins/office_pptx.py": "b657398ce28230af10238bf4fdba4de675b63ccc30f074e05abaf7a0cd57dc38",
+    "tests/test_governed_native_reads.py": "deae3dec8927e028e04bc6382f7d401ef90ea01c3d2a5f73b91398c60d68efde",
+    "packages/harness/deerflow/subagents/executor.py": "86da9054fedf519a5334c8ca2ff5fa124c0d3657ee22a25de7c9d69b478ee30e",
+    "packages/harness/deerflow/tools/builtins/task_tool.py": "5b2af9107dde99f48b6dac3a29b30d5384848bb60ef96101f0538468d0220816"
+  },
+  "unchanged_input_scope_from_68eb3f42": [
+    "frontend",
+    "backend/uv.lock",
+    "backend/Dockerfile",
+    "backend/packages/octop-capabilities",
+    "vendor/octop"
+  ],
+  "M1_exited": false,
+  "N08_started": false
+}

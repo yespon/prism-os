@@ -1,0 +1,45 @@
+{
+  "complete": true,
+  "required_successful_receipts": [
+    "chart-notes-corrected",
+    "chart-notes-strict-schema",
+    "chart-notes-static-final",
+    "chart-notes-strict-image-related",
+    "chart-notes-strict-deploy",
+    "chart-notes-strict-upgrade",
+    "chart-notes-real-recovery",
+    "chart-task-runtime-cycle",
+    "chart-notes-final-runtime",
+    "chart-task-public-secrets",
+    "chart-task-brand-staged"
+  ],
+  "all_started_validations_terminal": true,
+  "failed_receipts_preserved": [
+    "chart-notes-related-result",
+    "charts-real-user-task-result"
+  ],
+  "raw_log_sha256": {
+    "logs/chart-task-runtime-cycle.log": "a86f72b1d5f46a6c6f09444863ca3354ccb0ca9635d0335e2295eb4c1fcf3eba",
+    "logs/chart-notes-static-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/chart-task-public-secrets.log": "78fe4aa0c0869eb43efeb650f79cd168395af783aad3e69cb9ea723b234e2810",
+    "logs/chart-notes-related.log": "b29258f5df15efaeebe9ff9acb56786888afc48534655e464d9902c95566e050",
+    "logs/chart-notes-strict-deploy.log": "203bc3a2a767ed4bde9cde0c1827cf1c0ac087a8b022e3cb0b8bed98d3e7b4f2",
+    "logs/chart-notes-real-recovery.log": "c12853c785e007e57cb446c16baa47c82616886ae2b2e3a3b57a0ba9ad3318a1",
+    "logs/chart-notes-strict-image-build.log": "0ea60dc5eb5904f0059b616c025a4313fe8ea124a8e8f8a5894629407272a188",
+    "logs/chart-notes-corrected.log": "89dd9b529fdd239ab31ee242d8cd80872d75c4f4147bc634c23e18061eaa97a9",
+    "logs/chart-notes-image-related.log": "8a8854dd349d62a7541e27b2ee2b625dd8afba6d089c9acec0344b176fa5e341",
+    "logs/chart-notes-final-runtime.log": "f70f557a553f71323f6b663fa5de835b7b6869230e0785bf78f01edf628a12fd",
+    "logs/chart-notes-image-build.log": "c41065fff11712723a61b0c776b1ceaf91d5dc0b63668739582952c38d3ac02c",
+    "logs/chart-notes-strict-upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/chart-notes-upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/chart-notes-static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/charts-real-user-task.log": "58ae8db56e61df5c43d4fc3bca9e78d904415ec1ebe15ab2eb1ed2aafdac0842",
+    "logs/chart-notes-strict-image-related.log": "99a96edec521c0568e5f9192e8190ee7a6b81e4843b2bca26f46e7157cffea19",
+    "logs/chart-notes-strict-schema.log": "894d9aef49cb286f71e98cc802608c97b7b57316f9c231cd42a6031212ec9cee",
+    "logs/chart-task-brand-staged.log": "702420ac9c96c72a2e9a9a3a45724a09187dd2a53615b155e9ec383586281970",
+    "logs/chart-notes-deploy-owned.log": "203bc3a2a767ed4bde9cde0c1827cf1c0ac087a8b022e3cb0b8bed98d3e7b4f2"
+  },
+  "full_backend_claimed": false,
+  "M1_exited": false,
+  "N08_started": false
+}

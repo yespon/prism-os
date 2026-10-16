@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_office_chart_task_probe.py",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:02:14.735480+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T23:03:56.242875+00:00"
+}

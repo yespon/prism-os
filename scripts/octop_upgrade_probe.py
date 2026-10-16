@@ -30,6 +30,7 @@ def main():
     )
     args = parser.parse_args()
     test_files = args.test_file or [
+        "tests/test_office_pptx_notes.py",
         "tests/test_child_execution_context.py",
         "tests/test_task_tool_core_logic.py",
         "tests/test_wsl_native_profile.py",
@@ -106,6 +107,8 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "scripts/octop_office_chart_task_probe.py",
+        "backend/tests/test_office_pptx_notes.py",
         "scripts/octop_child_task_probe.py",
         "backend/tests/test_child_execution_context.py",
         "backend/tests/test_task_tool_core_logic.py",
