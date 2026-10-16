@@ -1,0 +1,39 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> backend/tests/test_ticket_policy_changes.py:3:1
+  |
+1 |   """An old Approval is not a capability under a different current Policy."""
+2 |
+3 | / from datetime import timedelta
+4 | |
+5 | | import pytest
+6 | | from test_governed_ticket import NOW
+7 | | from test_governed_ticket import ticket_setup  # noqa: F401
+8 | |
+9 | | from app.platform.policy.evaluator import PolicyConfiguration, PolicyRule
+  | |_________________________________________________________________________^
+  |
+help: Organize imports
+
+F811 Redefinition of unused `ticket_setup` from line 7
+  --> backend/tests/test_ticket_policy_changes.py:14:91
+   |
+12 | …
+13 | …-m1', 'v2', 'deny'), ('ticket-m1', 'v2', 'allow'), ('other-policy', 'v1', 'require_approval'), ('ticket-m1', 'v1', 'deny'), None])
+14 | …sume_or_submit_under_a_changed_configuration(ticket_setup, current):
+   |                                               ^^^^^^^^^^^^ `ticket_setup` redefined here
+15 | …er, _, _, submissions, _ = ticket_setup
+16 | …
+   |
+  ::: backend/tests/test_ticket_policy_changes.py:7:34
+   |
+ 5 | import pytest
+ 6 | from test_governed_ticket import NOW
+ 7 | from test_governed_ticket import ticket_setup  # noqa: F401
+   |                                  ------------ previous definition of `ticket_setup` here
+ 8 |
+ 9 | from app.platform.policy.evaluator import PolicyConfiguration, PolicyRule
+   |
+help: Remove definition: `ticket_setup`
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.

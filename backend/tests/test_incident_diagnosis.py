@@ -426,3 +426,34 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
         assert any(event.event_type == "action.submitted" for event in
                    await AuditEventRepository(test_session_factory).list_recent("tenant-a"))
     asyncio.run(verify_facts())
+
+    # Real durable native decisions must survive the HTTP resume projection.
+    # Only the server-stored selection may be restored, even if a body is forged.
+    from app.platform.approval import repository as approval_repository
+    from app.platform.policy import repository as policy_repository
+    from app.platform.submission import repository as submission_repository
+
+    for repository in (approval_repository, policy_repository, submission_repository):
+        monkeypatch.setattr(repository, "get_session_factory", lambda: test_session_factory)
+    async def finish_diagnosis():
+        async with test_session_factory() as session:
+            incident = await session.get(Incident, "incident-1")
+            incident.diagnosis_result = "Completed diagnosis after the Tool returned"
+            await session.commit()
+    asyncio.run(finish_diagnosis())
+    with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+        resumed = client.post("/api/incidents/incident-1/governed-ticket/resume",
+            headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"},
+            json={"agent_id": "agent-private", "diagnosis_source_id": "forged-source"})
+        assert resumed.status_code == 200
+        assert resumed.json()["status"] == "submitted" and len(sent) == 1
+
+        async def replace_selection():
+            async with test_session_factory() as session:
+                incident = await session.get(Incident, "incident-1")
+                incident.agent_id = "agent-private"
+                await session.commit()
+        asyncio.run(replace_selection())
+        changed = client.post("/api/incidents/incident-1/governed-ticket/resume",
+            headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"})
+        assert changed.status_code == 409 and len(sent) == 1

@@ -1,0 +1,190 @@
+{
+  "M1_exited": false,
+  "N08_started": false,
+  "services": {
+    "gateway": {
+      "image": "sha256:04eef0d269316cf578b963d7535612ea9ec7557761a2839fd5d04e37d4eda01b",
+      "action": "off",
+      "trusted_graph": "off",
+      "version": "n04-off-ab567f57"
+    },
+    "langgraph": {
+      "image": "sha256:04eef0d269316cf578b963d7535612ea9ec7557761a2839fd5d04e37d4eda01b",
+      "action": "off",
+      "trusted_graph": "off",
+      "version": "n04-off-ab567f57"
+    },
+    "postgres": {
+      "image": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+      "running": true
+    },
+    "frontend": {
+      "image": "sha256:53f8583b2cbe380f02a03f30d81a63a71d4100da35efe154b55e00aa4630e3da",
+      "running": true
+    },
+    "nginx": {
+      "image": "sha256:6769dc3a703c719c1d2756bda113659be28ae16cf0da58dd5fd823d6b9a050ea",
+      "running": true
+    },
+    "ticket-receiver": {
+      "image": "sha256:53f8583b2cbe380f02a03f30d81a63a71d4100da35efe154b55e00aa4630e3da",
+      "running": true
+    }
+  },
+  "secrets_owner_only": true,
+  "docker/n04-test/ticket_receiver.py": {
+    "sha256": "e5e86996daab3f9e4836c6a5766824550d24ae67d1986795beb2b45db2def375",
+    "deployed_bytes_match": true
+  },
+  "docker/nginx/nginx.conf": {
+    "sha256": "95630aa7cd203289b64bc1b974e4798757263eee45a8df45aea2d99ecc673032",
+    "deployed_bytes_match": true
+  },
+  "migration_head": "n8h9i0j1k2l3",
+  "receiver": {
+    "counter_version": 2,
+    "historical_v1_receipts": 18,
+    "request_count": 23,
+    "distinct_ticket_count": 22,
+    "receipts": [
+      {
+        "sequence": 1,
+        "ticket_id": "N04-1",
+        "mode": "ok",
+        "received_at": 1792120065.9989905
+      },
+      {
+        "sequence": 2,
+        "ticket_id": "N04-2",
+        "mode": "ok",
+        "received_at": 1792120152.2517152
+      },
+      {
+        "sequence": 3,
+        "ticket_id": "N04-3",
+        "mode": "ok",
+        "received_at": 1792120190.1073694
+      },
+      {
+        "sequence": 4,
+        "ticket_id": "N04-3",
+        "mode": "ok",
+        "received_at": 1792120191.469309
+      },
+      {
+        "sequence": 5,
+        "ticket_id": "N04-5",
+        "mode": "fail",
+        "received_at": 1792120192.8401334
+      },
+      {
+        "sequence": 6,
+        "ticket_id": "N04-6",
+        "mode": "timeout",
+        "received_at": 1792120194.459349
+      },
+      {
+        "sequence": 7,
+        "ticket_id": "N04-7",
+        "mode": "ok",
+        "received_at": 1792122433.5319736
+      },
+      {
+        "sequence": 8,
+        "ticket_id": "N04-8",
+        "mode": "ok",
+        "received_at": 1792122834.9718935
+      },
+      {
+        "sequence": 9,
+        "ticket_id": "N04-9",
+        "mode": "ok",
+        "received_at": 1792123437.4890027
+      },
+      {
+        "sequence": 10,
+        "ticket_id": "N04-10",
+        "mode": "ok",
+        "received_at": 1792123533.4613104
+      },
+      {
+        "sequence": 11,
+        "ticket_id": "N04-11",
+        "mode": "ok",
+        "received_at": 1792123896.3340793
+      },
+      {
+        "sequence": 12,
+        "ticket_id": "N04-12",
+        "mode": "fail",
+        "received_at": 1792123975.7561228
+      },
+      {
+        "sequence": 13,
+        "ticket_id": "N04-13",
+        "mode": "timeout",
+        "received_at": 1792124065.2087915
+      },
+      {
+        "sequence": 14,
+        "ticket_id": "N04-14",
+        "mode": "ok",
+        "received_at": 1792124237.5716777
+      },
+      {
+        "sequence": 15,
+        "ticket_id": "N04-15",
+        "mode": "ok",
+        "received_at": 1792125175.538951
+      },
+      {
+        "sequence": 16,
+        "ticket_id": "N04-16",
+        "mode": "ok",
+        "received_at": 1792125206.9270632
+      },
+      {
+        "sequence": 17,
+        "ticket_id": "N04-17",
+        "mode": "ok",
+        "received_at": 1792125279.895607
+      },
+      {
+        "sequence": 18,
+        "ticket_id": "N04-18",
+        "mode": "timeout",
+        "received_at": 1792125348.720957
+      },
+      {
+        "sequence": 19,
+        "ticket_id": "N04-19",
+        "mode": "ok",
+        "received_at": 1792126378.9875069
+      },
+      {
+        "sequence": 20,
+        "ticket_id": "N04-20",
+        "mode": "ok",
+        "received_at": 1792126456.4735715
+      },
+      {
+        "sequence": 21,
+        "ticket_id": "N04-21",
+        "mode": "ok",
+        "received_at": 1792126516.1596816
+      },
+      {
+        "sequence": 22,
+        "ticket_id": "N04-22",
+        "mode": "timeout",
+        "received_at": 1792126577.7698562
+      },
+      {
+        "sequence": 23,
+        "ticket_id": "N04-23",
+        "mode": "fail",
+        "received_at": 1792127075.4724472
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "case": "deny-routed",
+  "verdict": "deny",
+  "complete": false,
+  "actual_model": true,
+  "M1_exited": false,
+  "actual_logins": 3,
+  "agent_id": "f116db1d-a216-40e3-bb74-0e81076e4c34",
+  "source_id": "cfafebf6-597c-4442-9c25-133dcaad5f2c",
+  "secret_ref_id": "secret_8c821c4681eb40fdbb529fbadebe7200",
+  "incident_id": "fc09779d-add5-49e4-8ce4-4709b82ddaa7",
+  "requests_before": 6,
+  "stream_events": 2,
+  "governed_status_before_review": {
+    "enabled": true,
+    "status": null
+  },
+  "canary_restored_off": true
+}

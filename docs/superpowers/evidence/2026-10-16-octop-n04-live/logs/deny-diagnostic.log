@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py", line 71, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py", line 37, in main
+    assert result['actor_id']==FIXTURE['users']['requester']['id']
+           ~~~~~~^^^^^^^^^^^^
+KeyError: 'actor_id'

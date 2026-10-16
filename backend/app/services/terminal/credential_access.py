@@ -7,7 +7,6 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.gateway.authorization import require_tenant_context
 from app.integrations.file_access import verify_member
 from app.integrations.skill_reference_transactions import begin_reference_transaction
 from app.models.assets import AssetGroup, Keychain
@@ -18,6 +17,10 @@ from deerflow.runtime import ExecutionTrustError
 
 
 async def asset_session(request: Request, db: AsyncSession = Depends(get_session)):
+    # Import after Terminal classes are initialized; importing the Gateway package
+    # at module load recursively registers its Terminal/asset plugin routers.
+    from app.gateway.authorization import require_tenant_context
+
     tenant = require_tenant_context(request)
     actor = getattr(request.state, "user_id", None)
     if request.method not in {"GET", "HEAD", "OPTIONS"} and not request.url.path.endswith("/test-connection"):

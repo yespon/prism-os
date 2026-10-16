@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-live/model_probe.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:26:58.245492+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T03:27:12.240399+00:00"
+}

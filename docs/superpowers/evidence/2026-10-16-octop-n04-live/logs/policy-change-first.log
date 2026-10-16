@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_policy_change.py", line 46, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_policy_change.py", line 32, in main
+    assert receipt['requests_after']==before,'Old approval must not send after the current policy changes'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Old approval must not send after the current policy changes

@@ -1,0 +1,44 @@
+{
+  "backend/app/gateway/routers/alerts.py": {
+    "old_sha256": "a8f6a3b95db8084933c84bc91538dbbb31ab97aaa054931089d6d1d5878010d0",
+    "current_sha256": "d5e9323d8ab6ec2d76fae2f073f390deb3fcfe7f51e30cdf0b4740f91248fba2",
+    "changed_functions": [
+      "resume_governed_incident_ticket",
+      "_governed_ticket_status"
+    ],
+    "changed_method": null,
+    "all_other_AST_unchanged": true
+  },
+  "backend/tests/test_incident_diagnosis.py": {
+    "old_sha256": "33cf81e3dd06552a3aa880bc915fb15aa7ec64e98c781e4276209fb795743216",
+    "current_sha256": "716178999c2f0ff9f4f3750af38d47c50a878a16b7cd8f409158b7d828dd915d",
+    "changed_functions": [
+      "test_authenticated_diagnosis_stream_invokes_scoped_governed_tool"
+    ],
+    "changed_method": null,
+    "all_other_AST_unchanged": true
+  },
+  "backend/app/alerting/governed_ticket.py": {
+    "old_sha256": "1f904783340d5223a7ff4b8bc6684bd0990694de2ae83c2697c3bb56217cfecc",
+    "current_sha256": "bdadc493a90a55ba3d32aa30a02967ec2909ffe3f14c97207700d7c35621d8d4",
+    "changed_functions": [
+      "ticket_decision_matches_current_policy"
+    ],
+    "changed_method": [
+      "TicketActionAdapter",
+      "execute"
+    ],
+    "all_other_AST_unchanged": true
+  },
+  "backend/app/alerting/governed_ticket_tool.py": {
+    "old_sha256": "750fe7983213f021618870530417a46682192ae692fabd8e767ad8e3b3df415b",
+    "current_sha256": "b61269073477197b54b364793e7f071a6a3be1bbbd05df54137a417ebae604ee",
+    "changed_functions": [
+      "ticket_adapter",
+      "ticket_policy_configuration"
+    ],
+    "changed_method": null,
+    "all_other_AST_unchanged": true
+  },
+  "configuration_extraction_preserves_original_constructor_AST": true
+}

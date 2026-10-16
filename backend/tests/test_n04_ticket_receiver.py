@@ -61,10 +61,13 @@ def test_actual_tls_unauthorized_invalid_or_conflicting_requests_have_no_ticket(
     assert client.post('/tickets?secret=not-logged', json={}).status_code == 404
     assert client.post('/tickets', content=b'not-json').status_code == 400
     assert client.post('/tickets', json=[]).status_code == 400
-    assert store.stats()['request_count'] == 0
+    assert store.stats()['request_count'] == 4
+    assert store.stats()['distinct_ticket_count'] == 0
     assert client.post('/tickets', json={'n': 1}, headers={'Idempotency-Key': 'same'}).status_code == 200
     assert client.post('/tickets', json={'n': 2}, headers={'Idempotency-Key': 'same'}).status_code == 409
-    assert store.stats()['request_count'] == 1
+    assert store.stats()['request_count'] == 6
+    assert store.stats()['distinct_ticket_count'] == 1
+    assert store.stats()['receipts'][-1]['mode'] == 'idempotency_conflict'
 
 
 def test_parallel_actual_https_calls_preserve_every_request_and_one_ticket(endpoint):
@@ -73,7 +76,8 @@ def test_parallel_actual_https_calls_preserve_every_request_and_one_ticket(endpo
         return client.post('/tickets', json={'value': 1}, headers={'Idempotency-Key': 'concurrent'})
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         responses = list(pool.map(send, range(8)))
-    assert all(r.status_code == 200 and r.json()['id'] == 'N04-1' for r in responses)
+    assert all(r.status_code == 200 for r in responses)
+    assert len({r.json()['id'] for r in responses}) == 1
     assert store.stats()['request_count'] == 8
     assert store.stats()['distinct_ticket_count'] == 1
 
@@ -95,11 +99,12 @@ def test_actual_client_timeout_does_not_erase_received_request(endpoint):
     assert store.stats()['receipts'][0]['mode'] == 'timeout'
 
 
-def test_unknown_fault_mode_fails_closed_without_recording(endpoint):
+def test_unknown_fault_mode_is_recorded_and_creates_no_ticket(endpoint):
     client, store, mode = endpoint
     mode.write_text('arbitrary')
     assert client.post('/tickets', json={}).status_code == 400
-    assert store.stats()['request_count'] == 0
+    assert store.stats()['request_count'] == 1
+    assert store.stats()['distinct_ticket_count'] == 0
 
 
 def test_empty_receiver_credential_is_rejected(tmp_path):

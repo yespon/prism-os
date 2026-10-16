@@ -1,0 +1,31 @@
+{
+  "case": "allow-resume-fixed",
+  "verdict": "allow",
+  "complete": false,
+  "real_model_configured": true,
+  "M1_exited": false,
+  "actual_logins": 3,
+  "agent_id": "b256faf5-8ab6-4ece-9ad7-10c15b2e52fb",
+  "source_id": "dc9ef1f6-3b87-4189-b989-bf89cb60c680",
+  "secret_ref_id": "secret_59c259ae1147450e96bb505f3d7a40fd",
+  "incident_id": "1cccbb1f-8204-4807-a413-d87320ba2081",
+  "requests_before": 7,
+  "stream_events": 17,
+  "governed_status_before_review": {
+    "enabled": true,
+    "status": "submitted",
+    "decision_id": "decision_db65b019adfc4af75f2bf8d69cda14af",
+    "approval_id": null,
+    "tenant_id": "t-276660fc4e994418",
+    "actor_id": "usr_6a23ce170e6a3ffc",
+    "workload_id": "diagnosis-agent:n04-ticket-cd7bce3a32",
+    "run_id": "run_4088f2e264f2997f475e21facc461f08",
+    "policy_id": "aiops-ticket-m1",
+    "policy_version": "n04-allow-4998e28f",
+    "reason_code": "policy.rule",
+    "ticket_id": "N04-8",
+    "can_resume": false
+  },
+  "private_diagnostic_reference": "backend/tmp/n04-wsl/allow-resume-fixed-{gateway,langgraph}.log",
+  "canary_restored_off": true
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py",
+    "allow",
+    "--case",
+    "provider-timeout-current",
+    "--provider-mode",
+    "timeout"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T04:13:37.218667+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T04:15:27.335800+00:00"
+}

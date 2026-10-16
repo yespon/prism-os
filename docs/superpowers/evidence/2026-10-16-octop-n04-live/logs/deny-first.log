@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py", line 67, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py", line 19, in main
+    source=expect(owner,'/api/alert-sources',{'name':'N04 '+args.case+' '+suffix,'type':'webhook','config_json':{'ticket':{'provider':'webhook'}},'ai_analysis_enabled':False,'diagnosis_agent_id':agent['id']},status=201)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/live_common.py", line 43, in expect
+    assert response.status_code==status,(path,response.status_code,response.text[:300])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('/api/alert-sources', 404, '<!DOCTYPE html><html lang="en-US"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/661734fcc889b677.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/css/879c4fe73b6fcdc7.css" data-p')

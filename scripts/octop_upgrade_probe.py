@@ -51,6 +51,10 @@ def main():
         "tests/test_office_docx_images.py",
         "tests/test_office_pptx_images.py",
         "tests/test_n04_ticket_receiver.py",
+        "tests/test_ticket_policy_changes.py",
+        "tests/test_runtime_worker_bootstrap.py",
+        "tests/test_langgraph_proxy_nginx.py",
+        "tests/test_nginx_runtime_resolution.py",
         "tests/test_office_chart_editing.py",
         "tests/test_office_charts.py",
         "tests/test_office_xlsx.py",
@@ -97,6 +101,15 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        'backend/tests/test_ticket_policy_changes.py',
+        'backend/packages/harness/deerflow/database/session.py',
+        'backend/tests/test_runtime_worker_bootstrap.py',
+        'backend/tests/test_langgraph_proxy_nginx.py',
+        'backend/tests/test_nginx_runtime_resolution.py',
+        'docker/nginx/nginx.conf',
+        'docker/nginx/nginx.local.conf',
+        'docker/docker-compose.yaml',
+
         "backend/packages/harness/deerflow/tools/builtins/office_pptx_images.py",
         "backend/tests/test_office_pptx_images.py",
         "scripts/octop_wsl_test_env.py",

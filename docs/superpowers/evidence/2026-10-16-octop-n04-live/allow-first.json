@@ -1,0 +1,31 @@
+{
+  "case": "allow-first",
+  "verdict": "allow",
+  "complete": false,
+  "real_model_configured": true,
+  "M1_exited": false,
+  "actual_logins": 3,
+  "agent_id": "bd9ee254-5b23-4d0d-b2da-8d67018f049a",
+  "source_id": "9bba22a5-337a-4684-9ae1-8e8ed9cc2e1c",
+  "secret_ref_id": "secret_d4767b10ab564a05ae5aa349d8cb98d9",
+  "incident_id": "7d5c9dae-24d7-4e71-b0d3-f6f89bc2ab03",
+  "requests_before": 6,
+  "stream_events": 18,
+  "governed_status_before_review": {
+    "enabled": true,
+    "status": "submitted",
+    "decision_id": "decision_e9afa3e17088fd974d0b843a256b41df",
+    "approval_id": null,
+    "tenant_id": "t-276660fc4e994418",
+    "actor_id": "usr_6a23ce170e6a3ffc",
+    "workload_id": "diagnosis-agent:n04-ticket-35f378ab2e",
+    "run_id": "run_bc321bca7ae307ba9394274a8bfe2de4",
+    "policy_id": "aiops-ticket-m1",
+    "policy_version": "n04-allow-026a5c4b",
+    "reason_code": "policy.rule",
+    "ticket_id": "N04-7",
+    "can_resume": false
+  },
+  "private_diagnostic_reference": "backend/tmp/n04-wsl/allow-first-{gateway,langgraph}.log",
+  "canary_restored_off": true
+}

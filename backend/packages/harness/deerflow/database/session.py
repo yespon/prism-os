@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import NullPool
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from deerflow.config import get_app_config
@@ -54,6 +55,10 @@ def get_engine() -> AsyncEngine:
             echo=get_database_echo(),
             connect_args=connect_args,
             pool_pre_ping=not db_url.startswith("sqlite"),
+            # Synchronous runtime providers run on short-lived event loops.
+            # asyncpg connections belong to their creating loop and cannot be
+            # reused by the global factory on another worker loop.
+            **({"poolclass": NullPool} if not db_url.startswith("sqlite") else {}),
         )
     return _engine
 

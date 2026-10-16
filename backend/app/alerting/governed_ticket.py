@@ -99,6 +99,14 @@ async def link_incident_ticket(tenant_id: str, incident_id: str, result: TicketR
         await session.commit()
 
 
+def ticket_decision_matches_current_policy(decision, configuration) -> bool:
+    if configuration is None:
+        return False
+    rule = configuration.rules.get(decision.action)
+    return (rule is not None and decision.policy_id == configuration.policy_id
+            and decision.policy_version == configuration.version and decision.verdict == rule.verdict)
+
+
 class TicketActionAdapter:
     def __init__(
         self,
@@ -201,6 +209,8 @@ class TicketActionAdapter:
         decision = await self._policy.evaluate_and_record(request, self._configuration, at=instant)
         if decision.verdict == "deny":
             return TicketActionOutcome(status="denied", decision_id=decision.decision_id)
+        if not ticket_decision_matches_current_policy(decision, self._configuration):
+            raise ValueError("ticket policy changed; start a new diagnosis")
         existing = await self._submissions.get(decision.tenant_id, decision.decision_id)
         if existing is not None and existing.status in ("submitted", "unknown"):
             return replace(

@@ -1,0 +1,21 @@
+{
+  "tenant_id": "t-276660fc4e994418",
+  "other_tenant_id": "t-983bf42d606a4e08",
+  "model_name": "gpt-5.6-luna",
+  "users": {
+    "requester": {
+      "id": "usr_6a23ce170e6a3ffc",
+      "scope": "owned test account"
+    },
+    "approver": {
+      "id": "usr_2bca44e301e60e61",
+      "scope": "owned test account"
+    },
+    "outsider": {
+      "id": "usr_bd2bc2de0f41a29e",
+      "scope": "owned test account"
+    }
+  },
+  "private_fixture_reference": "backend/tmp/n04-wsl/live-fixture.json",
+  "provisioning": "original local operator repositories/services; not counted as HTTP authentication acceptance"
+}

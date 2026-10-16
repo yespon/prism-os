@@ -1,0 +1,114 @@
+{
+  "request_count": 18,
+  "distinct_ticket_count": 17,
+  "receipts": [
+    {
+      "sequence": 1,
+      "ticket_id": "N04-1",
+      "mode": "ok",
+      "received_at": 1792120065.9989905
+    },
+    {
+      "sequence": 2,
+      "ticket_id": "N04-2",
+      "mode": "ok",
+      "received_at": 1792120152.2517152
+    },
+    {
+      "sequence": 3,
+      "ticket_id": "N04-3",
+      "mode": "ok",
+      "received_at": 1792120190.1073694
+    },
+    {
+      "sequence": 4,
+      "ticket_id": "N04-3",
+      "mode": "ok",
+      "received_at": 1792120191.469309
+    },
+    {
+      "sequence": 5,
+      "ticket_id": "N04-5",
+      "mode": "fail",
+      "received_at": 1792120192.8401334
+    },
+    {
+      "sequence": 6,
+      "ticket_id": "N04-6",
+      "mode": "timeout",
+      "received_at": 1792120194.459349
+    },
+    {
+      "sequence": 7,
+      "ticket_id": "N04-7",
+      "mode": "ok",
+      "received_at": 1792122433.5319736
+    },
+    {
+      "sequence": 8,
+      "ticket_id": "N04-8",
+      "mode": "ok",
+      "received_at": 1792122834.9718935
+    },
+    {
+      "sequence": 9,
+      "ticket_id": "N04-9",
+      "mode": "ok",
+      "received_at": 1792123437.4890027
+    },
+    {
+      "sequence": 10,
+      "ticket_id": "N04-10",
+      "mode": "ok",
+      "received_at": 1792123533.4613104
+    },
+    {
+      "sequence": 11,
+      "ticket_id": "N04-11",
+      "mode": "ok",
+      "received_at": 1792123896.3340793
+    },
+    {
+      "sequence": 12,
+      "ticket_id": "N04-12",
+      "mode": "fail",
+      "received_at": 1792123975.7561228
+    },
+    {
+      "sequence": 13,
+      "ticket_id": "N04-13",
+      "mode": "timeout",
+      "received_at": 1792124065.2087915
+    },
+    {
+      "sequence": 14,
+      "ticket_id": "N04-14",
+      "mode": "ok",
+      "received_at": 1792124237.5716777
+    },
+    {
+      "sequence": 15,
+      "ticket_id": "N04-15",
+      "mode": "ok",
+      "received_at": 1792125175.538951
+    },
+    {
+      "sequence": 16,
+      "ticket_id": "N04-16",
+      "mode": "ok",
+      "received_at": 1792125206.9270632
+    },
+    {
+      "sequence": 17,
+      "ticket_id": "N04-17",
+      "mode": "ok",
+      "received_at": 1792125279.895607
+    },
+    {
+      "sequence": 18,
+      "ticket_id": "N04-18",
+      "mode": "timeout",
+      "received_at": 1792125348.720957
+    }
+  ]
+}

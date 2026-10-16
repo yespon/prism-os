@@ -1,0 +1,252 @@
+F..............................                                          [100%]
+=================================== FAILURES ===================================
+______ test_fresh_terminal_first_worker_import_keeps_both_plugin_routers _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-179/test_fresh_terminal_first_work0')
+
+    def test_fresh_terminal_first_worker_import_keeps_both_plugin_routers(tmp_path):
+        root = Path(__file__).resolve().parents[2]
+        config = tmp_path / 'config.yaml'
+        config.write_text(f'database:\n  type: sqlite\n  url: sqlite+aiosqlite:///{tmp_path}/tenant.db\nsandbox:\n  use: LocalSandboxProvider\nplugins:\n  ops-terminal:\n    enabled: true\n  ops-assets:\n    enabled: true\n')
+        code = '''import app.services.terminal.session as terminal
+    assert callable(terminal.build_ssh_command)
+    from app.gateway.app import app
+    paths=[route.path for route in app.routes]
+    assert any(path.startswith('/api/v1/assets') for path in paths)
+    assert any(path.startswith('/api/v1/terminal') for path in paths)
+    print('Fresh Terminal-first worker imports both original plugin routers')
+    '''
+        env = dict(os.environ, PRISMOS_CONFIG_PATH=str(config))
+        result = subprocess.run([sys.executable, '-c', code], cwd=root / 'backend', env=env, capture_output=True, text=True, timeout=45)
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 4, in <module>
+E         AttributeError: '_IncludedRouter' object has no attribute 'path'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python', '-c', "import app...ast):\n  File "<string>", line 4, in <module>\nAttributeError: \'_IncludedRouter\' object has no attribute \'path\'\n').returncode
+
+tests/test_runtime_worker_bootstrap.py:31: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_credential_asset_access.py::test_credential_is_encrypted_and_never_returned_in_dto
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/assets.py:100: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_credential_asset_access.py::test_credential_with_active_asset_reference_cannot_be_orphaned
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/assets.py:135: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_credential_asset_access.py::test_credential_with_active_asset_reference_cannot_be_orphaned
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/assets.py:140: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    referenced = (await db.execute(sa_select(LocalAsset.id).where(LocalAsset.tenant_id == request.state.tenant_id, LocalAsset.user_id == request.state.user_id, LocalAsset.keychain_id == kc.id))).first()
+
+tests/test_credential_asset_access.py::test_credential_with_active_asset_reference_cannot_be_orphaned
+tests/test_credential_asset_access.py::test_update_cannot_attach_foreign_reference_or_overwrite_existing_asset
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/assets.py:215: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_credential_asset_access.py::test_update_cannot_attach_foreign_reference_or_overwrite_existing_asset
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/assets.py:255: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_credential_asset_access.py::test_connection_probe_stops_actual_local_transport_children_on_withdrawal[credential]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/assets.py:119: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+  /root/.codex/worktrees/octop-integration/prism-os/backend/scripts/rotate_encrypted_secrets.py:26: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    user_configs = (await session.execute(select(UserConfig))).scalars().all()
+
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+  /root/.codex/worktrees/octop-integration/prism-os/backend/scripts/rotate_encrypted_secrets.py:27: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    model_rows = (await session.execute(select(TenantModelConfig))).scalars().all()
+
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+tests/test_credential_asset_access.py::test_original_rotation_seals_legacy_rows_and_rotates_keychains_atomically
+  /root/.codex/worktrees/octop-integration/prism-os/backend/scripts/rotate_encrypted_secrets.py:28: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    mcp_rows = (await session.execute(select(TenantMcpServer))).scalars().all()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_runtime_worker_bootstrap.py::test_fresh_terminal_first_worker_import_keeps_both_plugin_routers
+1 failed, 30 passed, 17 warnings in 14.31s

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_approval_matrix.py", line 89, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_approval_matrix.py", line 67, in main
+    assert resumed.status_code==200,(scenario,resumed.status_code)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('approve', 409)

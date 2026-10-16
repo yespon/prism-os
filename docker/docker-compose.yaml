@@ -120,6 +120,7 @@ services:
       - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
     environment:
       SERVER_BACKEND_URL: http://gateway:8001
+      GATEWAY_URL: http://gateway:8001
     networks:
       - prismos
     restart: unless-stopped

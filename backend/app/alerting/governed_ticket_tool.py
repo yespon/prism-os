@@ -37,15 +37,19 @@ async def authorize_diagnosis_execution(execution, factory):
         await verify_runtime_selection(session, context)
 
 
-def ticket_adapter(tenant_id: str) -> TicketActionAdapter:
+def ticket_policy_configuration() -> PolicyConfiguration:
     verdict = os.getenv("PRISMOS_GOVERNED_TICKET_VERDICT", "deny")
     if verdict not in ("allow", "deny", "require_approval"):
         verdict = "deny"
-    configuration = PolicyConfiguration(
+    return PolicyConfiguration(
         policy_id="aiops-ticket-m1",
         version=os.getenv("PRISMOS_GOVERNED_TICKET_POLICY_VERSION", "v1") or "v1",
         rules={"ticket.create": PolicyRule(risk_class="side_effect", verdict=verdict)},
     )
+
+
+def ticket_adapter(tenant_id: str) -> TicketActionAdapter:
+    configuration = ticket_policy_configuration()
     return TicketActionAdapter(enabled_tenants=frozenset({tenant_id}) if ticket_canary_enabled(tenant_id) else frozenset(),
                                configuration=configuration, execution_authorizer=authorize_diagnosis_execution)
 

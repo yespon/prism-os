@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_approval_matrix.py",
+    "--case",
+    "approval-policy-synchronized",
+    "--scenarios",
+    "approve",
+    "restart"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T04:32:01.836453+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T04:33:56.022230+00:00"
+}

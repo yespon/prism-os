@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py",
+    "allow",
+    "--case",
+    "allow-resume-fixed"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:53:00.202575+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T03:54:29.122033+00:00"
+}

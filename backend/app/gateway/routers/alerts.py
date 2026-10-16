@@ -572,7 +572,8 @@ async def _governed_ticket_status(incident_id: str, tenant_id: str, user_id: str
     """Read durable Decision, Approval and Submission facts for the current diagnosis."""
     from datetime import UTC, datetime
 
-    from app.alerting.governed_ticket_tool import ticket_canary_enabled, ticket_request_id
+    from app.alerting.governed_ticket import ticket_decision_matches_current_policy
+    from app.alerting.governed_ticket_tool import ticket_canary_enabled, ticket_policy_configuration, ticket_request_id
     from app.platform.approval.repository import ApprovalRepository
     from app.platform.policy.repository import PolicyDecisionRepository
     from app.platform.submission.repository import ActionSubmissionRepository
@@ -614,7 +615,8 @@ async def _governed_ticket_status(incident_id: str, tenant_id: str, user_id: str
         "workload_id": decision.execution.workload.id, "run_id": decision.execution.run_id,
         "policy_id": decision.policy_id, "policy_version": decision.policy_version,
         "reason_code": decision.reason_code, "ticket_id": submission.ticket_id if submission else None,
-        "can_resume": (approval is not None and approval.status == "approved" and submission is None
+        "can_resume": (ticket_decision_matches_current_policy(decision, ticket_policy_configuration())
+                       and approval is not None and approval.status == "approved" and submission is None
                        and decision.expires_at > datetime.now(UTC) and decision.execution.actor is not None
                        and decision.execution.actor.id == user_id),
     }
@@ -647,9 +649,32 @@ async def resume_governed_incident_ticket(incident_id: str, request: Request) ->
         ))).scalars().first()
     if incident is None or not incident.thread_id or not status["workload_id"].startswith("diagnosis-agent:"):
         raise HTTPException(409, "Diagnosis context changed")
+    from app.alerting.governed_ticket_tool import ticket_request_id
+    from app.platform.policy.repository import PolicyDecisionRepository
+
+    decision = await PolicyDecisionRepository(get_session_factory()).get_by_request(
+        tenant_id, ticket_request_id(incident.thread_id, incident_id),
+    )
+    if decision is None or decision.decision_id != status["decision_id"]:
+        raise HTTPException(409, "Diagnosis decision changed")
+    attributes = decision.execution.attributes
+    if attributes.get("agent_id") is not None and incident.agent_id != attributes["agent_id"]:
+        raise HTTPException(409, "Diagnosis Agent changed")
     scope = {"tenant_id": tenant_id, "user_id": user_id, "thread_id": incident.thread_id,
              "incident_id": incident_id, "agent_name": status["workload_id"].removeprefix("diagnosis-agent:")}
+    # Only immutable server-side decision facts may restore protected context.
+    # Client fields and the current replacement Agent cannot rewrite an old Action.
+    scope.update({key: attributes[key] for key in (
+        "agent_id", "diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id",
+    ) if attributes.get(key) is not None})
     try:
+        if status["status"] in {"submitted", "unknown"}:
+            from app.alerting.governed_ticket_tool import authorize_diagnosis_execution
+
+            await authorize_diagnosis_execution(decision.execution, get_session_factory())
+            # This endpoint reads a settled submission fact. Later diagnosis
+            # text must not re-render an old payload or attempt a second send.
+            return await _governed_ticket_status(incident_id, tenant_id, user_id)
         await execute_ticket_scope(scope)
     except PermissionError as exc:
         raise HTTPException(403, str(exc)) from exc

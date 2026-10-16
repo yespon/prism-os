@@ -1,0 +1,42 @@
+{
+  "image": "sha256:88af90128741aae5742037a267f21c701c9bd500c33468ab920851f18b3d5a3a",
+  "files": {
+    "app/alerting/governed_ticket.py": {
+      "sha256": "bdadc493a90a55ba3d32aa30a02967ec2909ffe3f14c97207700d7c35621d8d4",
+      "matches": true
+    },
+    "app/alerting/governed_ticket_tool.py": {
+      "sha256": "b61269073477197b54b364793e7f071a6a3be1bbbd05df54137a417ebae604ee",
+      "matches": true
+    },
+    "app/gateway/routers/alerts.py": {
+      "sha256": "d5e9323d8ab6ec2d76fae2f073f390deb3fcfe7f51e30cdf0b4740f91248fba2",
+      "matches": true
+    },
+    "tests/test_ticket_policy_changes.py": {
+      "sha256": "7abeadd43938210124d6cab9476b5c860bd9c422584e16afc0cd35974606ce78",
+      "matches": true
+    },
+    "packages/harness/deerflow/database/session.py": {
+      "sha256": "34faa2ab9868773c0426c9a6b9cf6f64a80b99bca2413a4256b5362092587d95",
+      "matches": true
+    },
+    "app/services/terminal/credential_access.py": {
+      "sha256": "27e64254b11120bbaa1a5c40411644f3beead0739f4c5ceebb8235c441322692",
+      "matches": true
+    },
+    "tests/test_runtime_worker_bootstrap.py": {
+      "sha256": "a94ab4a8f65d1948a1bfa0b73e480870141eadbd4df380203fa72fea2d12cee1",
+      "matches": true
+    },
+    "tests/test_incident_diagnosis.py": {
+      "sha256": "398a2ed3cfa73af9122d16b927252d52c2516ec55ba0a05ccbfcffa9c1191d37",
+      "matches": true
+    },
+    "uv.lock": {
+      "sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+      "matches": true
+    }
+  },
+  "current_code_and_new_tests": true
+}

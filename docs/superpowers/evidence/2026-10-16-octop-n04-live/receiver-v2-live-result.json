@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-live/receiver_v2_live.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T04:49:10.635830+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T04:49:55.721175+00:00"
+}

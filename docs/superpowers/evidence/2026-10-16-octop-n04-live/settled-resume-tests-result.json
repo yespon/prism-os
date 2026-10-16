@@ -1,0 +1,16 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_incident_diagnosis.py",
+    "tests/test_governed_ticket.py",
+    "tests/test_ticket_secret_provider.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T03:56:44.908819+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T03:59:46.313313+00:00"
+}

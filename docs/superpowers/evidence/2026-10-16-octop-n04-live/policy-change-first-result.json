@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-live/run_policy_change.py",
+    "--case",
+    "policy-change-first"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T04:15:57.440687+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T04:17:46.228294+00:00"
+}
