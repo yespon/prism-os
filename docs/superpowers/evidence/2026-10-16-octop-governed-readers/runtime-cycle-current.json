@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "phases": [
+    {
+      "phase": "restart",
+      "owned_binary_report_and_previous_chinese_pdf_preview_sha_unchanged": true,
+      "run_status_history_acl": true,
+      "new_model_task_submissions": 0
+    },
+    {
+      "phase": "previous_accepted_image",
+      "owned_binary_report_and_previous_chinese_pdf_preview_sha_unchanged": true,
+      "run_status_history_acl": true,
+      "new_model_task_submissions": 0
+    },
+    {
+      "phase": "reapply",
+      "owned_binary_report_and_previous_chinese_pdf_preview_sha_unchanged": true,
+      "run_status_history_acl": true,
+      "new_model_task_submissions": 0
+    }
+  ],
+  "receiver_before": 26,
+  "receiver_after": 26
+}

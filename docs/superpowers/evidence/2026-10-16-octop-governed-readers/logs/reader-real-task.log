@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_binary_task.py", line 28, in <module>
+    incident=expect(requester,'/api/incidents/'+case['incident_id']);graph='/api/langgraph/threads/'+incident['thread_id'];state=expect(requester,graph+'/state');runs=expect(requester,graph+'/runs')
+                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_common.py", line 53, in expect
+    assert response.status_code==status,(path,response.status_code,response.text[:300])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('/api/langgraph/threads/01a14577-eb43-79a1-afbc-a3ad7e5abf78/state', 500, 'Internal Server Error')

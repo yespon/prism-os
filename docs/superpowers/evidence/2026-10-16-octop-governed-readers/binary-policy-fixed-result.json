@@ -1,0 +1,15 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_governed_native_reads.py",
+    "-q",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T15:55:47.078511+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T15:55:51.262051+00:00"
+}

@@ -30,6 +30,7 @@ def main():
     )
     args = parser.parse_args()
     test_files = args.test_file or [
+        "tests/test_governed_native_reads.py",
         "tests/test_octop_integration.py",
         "tests/test_octop_presentation.py",
         "tests/test_octop_resources.py",
@@ -102,6 +103,10 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/app/alerting/governed_native_reads.py",
+        "backend/tests/test_governed_native_reads.py",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_binary_task.py",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_binary_faults.py",
         'backend/tests/test_ticket_policy_changes.py',
         'backend/packages/harness/deerflow/database/session.py',
         'backend/tests/test_runtime_worker_bootstrap.py',

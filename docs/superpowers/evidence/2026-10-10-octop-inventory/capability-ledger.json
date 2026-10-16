@@ -1211,7 +1211,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -1226,7 +1226,8 @@
         "docs/superpowers/evidence/2026-10-10-octop-inventory",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
-        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -1250,6 +1251,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
           "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
           "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
+        },
+        {
+          "task": "Authenticated incident → real model inspect selected resource DOCX → new DOCX/present → current-authorized download/fresh-login history",
+          "level": "真实模型及目标PostgreSQL已验收；仅原生共享读取子范围",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
+          "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
+          "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
         }
       ]
     }
@@ -2620,7 +2628,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Web conversation and selected Agent/Skill task, tool trace and history",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -2634,11 +2642,21 @@
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-live",
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Authenticated incident → real model inspect selected resource DOCX → new DOCX/present → current-authorized download/fresh-login history",
+          "level": "真实模型及目标PostgreSQL已验收；仅原生共享读取子范围",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
+          "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
+          "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
+        }
+      ]
     }
   },
   {
@@ -4474,7 +4492,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Web conversation and selected Agent/Skill task, tool trace and history",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -4490,7 +4508,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
-        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
@@ -4508,6 +4527,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
           "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
           "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
+        },
+        {
+          "task": "Authenticated incident → real model inspect selected resource DOCX → new DOCX/present → current-authorized download/fresh-login history",
+          "level": "真实模型及目标PostgreSQL已验收；仅原生共享读取子范围",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
+          "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
+          "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
         }
       ]
     }
@@ -5142,7 +5168,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Agent file/workspace tasks and native tools, including retained independent Office goals",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -5158,7 +5184,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
-        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5182,6 +5209,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
           "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
           "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
+        },
+        {
+          "task": "Authenticated incident → real model inspect selected resource DOCX → new DOCX/present → current-authorized download/fresh-login history",
+          "level": "真实模型及目标PostgreSQL已验收；仅原生共享读取子范围",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
+          "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
+          "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
         }
       ]
     }
@@ -5777,7 +5811,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Agent file/workspace tasks and native tools, including retained independent Office goals",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -5792,7 +5826,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
-        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5810,6 +5845,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
           "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
           "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
+        },
+        {
+          "task": "Authenticated incident → real model inspect selected resource DOCX → new DOCX/present → current-authorized download/fresh-login history",
+          "level": "真实模型及目标PostgreSQL已验收；仅原生共享读取子范围",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
+          "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
+          "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
         }
       ]
     }
@@ -6525,7 +6567,7 @@
     ],
     "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
     "task_acceptance": {
-      "reviewed_on": "2026-10-16",
+      "reviewed_on": "2026-10-17",
       "octop_task_baseline": "Backup/restore, upgrade and operations",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
@@ -6542,7 +6584,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
-        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
+        "docs/superpowers/evidence/2026-10-16-octop-governed-readers"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
@@ -6560,6 +6603,13 @@
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
           "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
           "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
+        },
+        {
+          "task": "Authenticated incident → real model inspect selected resource DOCX → new DOCX/present → current-authorized download/fresh-login history",
+          "level": "真实模型及目标PostgreSQL已验收；仅原生共享读取子范围",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-task-current.json",
+          "failure_receipt": "docs/superpowers/evidence/2026-10-16-octop-governed-readers/real-binary-faults.json",
+          "boundaries": "SDK lead state/history reconstruction repaired; actual Policy/result Audit SQL faults withhold contents; command/other runtime entrypoints and complete original capability still pending"
         }
       ]
     }

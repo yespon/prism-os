@@ -46,7 +46,7 @@ def thread_roots(paths, tenant, actor, thread):
     return {key: getattr(paths, "sandbox_" + ("work" if key == "workspace" else key) + "_dir")(actor, thread, tenant_id=tenant) for key in ("workspace", "uploads", "outputs")}
 
 
-async def runtime_file_access(context, state, operation, path, factory):
+async def _runtime_file_access(context, state, operation, path, factory):
     # A standalone harness has no tenant facts. A host identity must never
     # fall back on forged runtime directories or a global sandbox.
     if not context.get("tenant_id") and not context.get("agent_id"):
@@ -129,3 +129,9 @@ async def runtime_file_access(context, state, operation, path, factory):
         return result
     except Exception:
         raise ExecutionTrustError("Current file or resource access unavailable") from None
+
+
+async def runtime_file_access(context, state, operation, path, factory):
+    from app.alerting.governed_native_reads import guard_native_read
+
+    return await guard_native_read(context, operation, path, lambda: _runtime_file_access(context, state, operation, path, factory))

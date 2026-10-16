@@ -1,0 +1,17 @@
+{
+  "complete": false,
+  "configured_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "M1_exited": false,
+  "incident_id": "78db0c08-fc1f-434f-a250-6bf11f37b221",
+  "agent_id": "b6493bba-3b7f-4b77-8684-92e60a10f652",
+  "source_id": "b694ead1-d04d-4eed-be8a-e9d75591da3a",
+  "skill_name": "native-reader-49a9784b42",
+  "resource_id": "skill:2:ebe8d0f131344a51b373ba38087f31b7ac431763330b0a1756e8dca5612a6bef",
+  "marker": "BINARY_TASK_01cb78bcf652c471568e08a0",
+  "source_path": "/mnt/skills/custom/t-276660fc4e994418/native-reader-49a9784b42/report.docx",
+  "output_path": "/mnt/user-data/outputs/native-reader-49a9784b42.docx",
+  "receiver_before": 26,
+  "stream_events": 104,
+  "canary_restored_off": true
+}

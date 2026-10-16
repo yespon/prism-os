@@ -8,6 +8,8 @@ from uuid import uuid4
 
 from langchain.tools import ToolRuntime, tool
 
+from app.alerting.governed_native_reads import governed_read_middleware as governed_read_middleware
+from app.alerting.governed_native_reads import recorded_read
 from app.alerting.governed_ticket import active_requester
 from app.alerting.governed_ticket_tool import execution_matches_diagnosis_scope, ticket_canary_enabled, ticket_execution
 from app.platform.audit.repository import AuditEventRepository
@@ -80,10 +82,11 @@ def governed_read_file_tool(scope: dict[str, str]):
             raise PermissionError("read_file denied by platform Policy")
         if not await active_requester(tenant_id, scope["user_id"]):
             raise PermissionError("requester authorization changed")
-        result = await asyncio.to_thread(
-            read_file_tool.func, runtime=runtime, description=description, path=path,
-            start_line=start_line, end_line=end_line,
-        )
+        with recorded_read(scope, call_id, path):
+            result = await asyncio.to_thread(
+                read_file_tool.func, runtime=runtime, description=description, path=path,
+                start_line=start_line, end_line=end_line,
+            )
         completed_at = datetime.now(UTC)
         await AuditEventRepository().append(AuditEvent(
             tenant_id=tenant_id,

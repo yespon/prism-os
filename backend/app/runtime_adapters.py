@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import uuid
+from contextvars import copy_context
 from copy import deepcopy
 from types import SimpleNamespace
 
@@ -12,6 +13,7 @@ from sqlalchemy import select
 
 from app.agent.prompts import TERMINAL_AGENT_SYSTEM_PROMPT
 from app.agent.terminal_tools import get_terminal_tools, set_terminal_context
+from app.alerting.governed_native_reads import governed_read_middleware
 from app.alerting.governed_ticket_tool import governed_ticket_tools
 from app.integrations.octop.runtime_prompts import runtime_agent
 from app.models.agents import CustomAgent
@@ -24,6 +26,7 @@ from deerflow.runtime import (
     register_agent_context_provider,
     register_agent_identity_provider,
     register_agent_persistence_provider,
+    register_execution_middleware_provider,
     register_execution_validator,
     register_file_access_provider,
     register_governed_action_provider,
@@ -41,7 +44,7 @@ def _run_async(coro):
     except RuntimeError:
         return asyncio.run(coro)
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        return executor.submit(asyncio.run, coro).result()
+        return executor.submit(copy_context().run, asyncio.run, coro).result()
 
 
 def _load_agent(name: str, user_id: str | None, tenant_id: str | None) -> CustomAgent | None:
@@ -233,6 +236,18 @@ def _scoped_context(context):
 
 
 def _current_skill_member(context, operation, path, container_prefix):
+    from app.alerting.governed_native_reads import guard_native_read, requires_governed_read
+
+    if not requires_governed_read(context, operation, path):
+        return _current_skill_member_impl(context, operation, path, container_prefix)
+
+    async def read():
+        return _current_skill_member_impl(context, operation, path, container_prefix)
+
+    return _run_async(guard_native_read(context, operation, path, read))
+
+
+def _current_skill_member_impl(context, operation, path, container_prefix):
     context = _scoped_context(context)
     if context is None:
         return None
@@ -358,6 +373,7 @@ def register_runtime_adapters() -> None:
     )
     register_governed_action_provider(governed_ticket_tools)
     register_execution_validator(_consume_graph_capability)
+    register_execution_middleware_provider(governed_read_middleware)
     register_skill_prompt_provider(_current_skill_prompt)
     register_skill_file_provider(_current_skill_member)
     register_file_access_provider(_current_file_access)

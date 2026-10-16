@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_binary_task.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T16:07:03.523941+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T16:08:29.633918+00:00"
+}

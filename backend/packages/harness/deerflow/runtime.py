@@ -39,6 +39,7 @@ _agent_lister: AgentLister | None = None
 _agent_persister: AgentPersister | None = None
 _terminal_provider: dict[str, Any] | None = None
 _governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
+_execution_middleware_provider: Callable[[dict[str, str]], list[Any]] | None = None
 _execution_validator: ExecutionValidator | None = None
 _agent_identity_provider: Callable[..., Any] | None = None
 _agent_context_provider: Callable[..., NativeAgentContext] | None = None
@@ -94,6 +95,16 @@ def register_governed_action_provider(provider: Callable[[dict[str, str]], list[
     """Register a host-owned Tool factory for a verified graph execution."""
     global _governed_action_provider
     _governed_action_provider = provider
+
+
+def register_execution_middleware_provider(provider: Callable[[dict[str, str]], list[Any]]) -> None:
+    """Register optional host middleware for a server-verified execution scope."""
+    global _execution_middleware_provider
+    _execution_middleware_provider = provider
+
+
+def get_execution_middleware_provider():
+    return _execution_middleware_provider
 
 
 def get_governed_action_provider() -> Callable[[dict[str, str]], list[Any]] | None:
@@ -190,8 +201,9 @@ def load_runtime_adapters() -> None:
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
-    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider, _file_access_provider
+    global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider, _file_access_provider, _execution_middleware_provider
     _file_access_provider = None
+    _execution_middleware_provider = None
     _skill_command_provider = None
     _skill_file_provider = None
     _agent_context_provider = None

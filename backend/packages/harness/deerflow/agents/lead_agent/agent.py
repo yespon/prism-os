@@ -4,6 +4,7 @@ import logging
 import os
 
 from langchain.agents import create_agent
+from langgraph_sdk.runtime import ServerRuntime, _ReadRuntime
 
 from deerflow.agents.lead_agent.prompt import apply_prompt_template
 from deerflow.agents.middlewares.summarization_middleware import (
@@ -30,6 +31,7 @@ from deerflow.models.factory import create_chat_model
 from deerflow.runtime import (
     ExecutionTrustError,
     get_agent_context_provider,
+    get_execution_middleware_provider,
     get_execution_validator,
     get_governed_action_provider,
     get_skill_prompt_provider,
@@ -136,7 +138,32 @@ def _validate_execution_context(config: dict) -> dict[str, str] | None:
         return {"tenant_id": tenant_id, "user_id": user_id, "thread_id": thread_id, "agent_name": agent_name, "incident_id": incident_id, "agent_id": agent_id, **authority}
 
 
-def make_lead_agent(config):
+
+def _make_history_agent(config):
+    """Reconstruct ordinary lead topology for SDK state/history formatting only.
+
+    Gateway checks the current member and thread owner before forwarding reads.
+    State inspection has no run identity and must not load current Agent/Skill
+    resources (an owner may still read history after an Agent is paused).
+    The SDK read handler only calls aget_state/aget_state_history on this graph.
+    """
+    from deerflow.tools import get_available_tools
+
+    cfg = config.get("configurable", {}) or {}
+    model_name = _resolve_model_name(cfg.get("model_name") or cfg.get("model"))
+    return create_agent(
+        model=create_chat_model(name=model_name, thinking_enabled=False),
+        tools=get_available_tools(model_name=model_name, subagent_enabled=cfg.get("subagent_enabled", False)),
+        middleware=_build_middlewares(config, model_name=model_name),
+        state_schema=ThreadState,
+    )
+
+
+def make_lead_agent(config, runtime: ServerRuntime | None = None):
+    # Only the SDK server supplies this object. A client config flag cannot turn
+    # a run into a history read or consume/replay a one-use execution capability.
+    if isinstance(runtime, _ReadRuntime) and runtime.access_context == "threads.read":
+        return _make_history_agent(config)
     trusted_execution = _validate_execution_context(config)
     trusted_action = trusted_execution if trusted_execution and trusted_execution.get("incident_id") else None
     trusted_agent_id = trusted_execution.get("agent_id") if trusted_execution else None
@@ -270,12 +297,14 @@ def make_lead_agent(config):
             groups=agent_config.tool_groups if agent_config else None,
             subagent_enabled=subagent_enabled,
         )
+        middleware_provider = get_execution_middleware_provider()
+        execution_middlewares = middleware_provider(trusted_action) if trusted_action and middleware_provider else []
         governed_names = {tool.name for tool in action_tools if getattr(tool, "name", None)}
         available_tools = [tool for tool in available_tools if getattr(tool, "name", None) not in governed_names]
         return create_agent(
             model=create_chat_model(name=model_name, thinking_enabled=thinking_enabled, reasoning_effort=reasoning_effort),
             tools=available_tools + action_tools,
-            middleware=_build_middlewares(config, model_name=model_name, agent_name=agent_name),
+            middleware=_build_middlewares(config, model_name=model_name, agent_name=agent_name) + execution_middlewares,
             system_prompt=apply_prompt_template(
                 subagent_enabled=subagent_enabled,
                 max_concurrent_subagents=max_concurrent_subagents,
