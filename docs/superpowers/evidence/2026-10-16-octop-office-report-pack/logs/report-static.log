@@ -1,0 +1,23 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> /root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_report_probe.py:3:1
+   |
+ 1 |   """Actual original Office expert: turn its existing Word report into a report pack."""
+ 2 |
+ 3 | / from pathlib import Path
+ 4 | | import argparse
+ 5 | | import hashlib
+ 6 | | import io
+ 7 | | import json
+ 8 | | import secrets
+ 9 | | import zipfile
+10 | | from xml.etree import ElementTree as ET
+11 | |
+12 | | import httpx
+   | |____________^
+13 |
+14 |   ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

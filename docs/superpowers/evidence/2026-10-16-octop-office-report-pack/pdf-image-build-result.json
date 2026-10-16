@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "-f",
+    "backend/Dockerfile",
+    "-t",
+    "prismos-office-report-pack:test",
+    "."
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T14:20:29.761520+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T14:21:20.726180+00:00"
+}

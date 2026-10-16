@@ -1,0 +1,262 @@
+[
+  {
+    "created_at": "2026-10-16T14:09:33.040482+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-6087-6a6a-803e-783fa492f026",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "LoopDetectionMiddleware.after_model"
+    ],
+    "tasks": [
+      {
+        "name": "LoopDetectionMiddleware.after_model",
+        "error": null
+      }
+    ],
+    "messages": 16,
+    "last": "ai",
+    "tool_calls": [
+      "office_xlsx",
+      "office_pptx",
+      "office_pdf"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:33.037666+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-6080-6c61-803d-233f0d7d7dbc",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "TokenUsageMiddleware.after_model"
+    ],
+    "tasks": [
+      {
+        "name": "TokenUsageMiddleware.after_model",
+        "error": null
+      }
+    ],
+    "messages": 16,
+    "last": "ai",
+    "tool_calls": [
+      "office_xlsx",
+      "office_pptx",
+      "office_pdf"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:33.032960+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-6075-64b0-803c-70be4d6536c1",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "TodoMiddleware.after_model"
+    ],
+    "tasks": [
+      {
+        "name": "TodoMiddleware.after_model",
+        "error": null
+      }
+    ],
+    "messages": 16,
+    "last": "ai",
+    "tool_calls": [
+      "office_xlsx",
+      "office_pptx",
+      "office_pdf"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.212642+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3c06-6594-803b-61f5628b6108",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "model"
+    ],
+    "tasks": [
+      {
+        "name": "model",
+        "error": null
+      }
+    ],
+    "messages": 15,
+    "last": "tool",
+    "tool_calls": []
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.209004+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3bfd-673a-803a-db81fbab08fa",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "TodoMiddleware.before_model"
+    ],
+    "tasks": [
+      {
+        "name": "TodoMiddleware.before_model",
+        "error": null
+      }
+    ],
+    "messages": 15,
+    "last": "tool",
+    "tool_calls": []
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.199300+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3be5-6c48-8039-4a1dfe70a9a8",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "DeerflowSummarizationMiddleware.before_model"
+    ],
+    "tasks": [
+      {
+        "name": "DeerflowSummarizationMiddleware.before_model",
+        "error": null
+      }
+    ],
+    "messages": 15,
+    "last": "tool",
+    "tool_calls": []
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.192066+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3bd4-6214-8038-c321c494733b",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "tools"
+    ],
+    "tasks": [
+      {
+        "name": "tools",
+        "error": null
+      }
+    ],
+    "messages": 14,
+    "last": "ai",
+    "tool_calls": [
+      "write_todos"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.189009+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3bcc-6a38-8037-d5d797c1e523",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "LoopDetectionMiddleware.after_model"
+    ],
+    "tasks": [
+      {
+        "name": "LoopDetectionMiddleware.after_model",
+        "error": null
+      }
+    ],
+    "messages": 14,
+    "last": "ai",
+    "tool_calls": [
+      "write_todos"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.186500+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3bc6-6825-8036-c3d314aedf0c",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "TokenUsageMiddleware.after_model"
+    ],
+    "tasks": [
+      {
+        "name": "TokenUsageMiddleware.after_model",
+        "error": null
+      }
+    ],
+    "messages": 14,
+    "last": "ai",
+    "tool_calls": [
+      "write_todos"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:29.182467+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-3bbc-6aa3-8035-23153ae0a779",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "TodoMiddleware.after_model"
+    ],
+    "tasks": [
+      {
+        "name": "TodoMiddleware.after_model",
+        "error": null
+      }
+    ],
+    "messages": 14,
+    "last": "ai",
+    "tool_calls": [
+      "write_todos"
+    ]
+  },
+  {
+    "created_at": "2026-10-16T14:09:26.027407+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-1da5-6e03-8034-541984cfdb98",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "model"
+    ],
+    "tasks": [
+      {
+        "name": "model",
+        "error": null
+      }
+    ],
+    "messages": 13,
+    "last": "tool",
+    "tool_calls": []
+  },
+  {
+    "created_at": "2026-10-16T14:09:26.024997+00:00",
+    "checkpoint": {
+      "checkpoint_id": "1f1c96b3-1da0-603f-8033-0d31f45ee7a5",
+      "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+      "checkpoint_ns": ""
+    },
+    "next": [
+      "TodoMiddleware.before_model"
+    ],
+    "tasks": [
+      {
+        "name": "TodoMiddleware.before_model",
+        "error": null
+      }
+    ],
+    "messages": 13,
+    "last": "tool",
+    "tool_calls": []
+  }
+]

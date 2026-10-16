@@ -2,6 +2,9 @@
 
 import asyncio
 import io
+import json
+import subprocess
+import sys
 import zipfile
 from pathlib import Path
 
@@ -16,8 +19,20 @@ from test_skill_member_tools import configured, scoped_client  # noqa: F401
 from test_skill_reference_transactions import durable_sqlite  # noqa: F401
 
 from deerflow.database.models import TenantMembership
-from deerflow.tools.builtins.office_pdf import create_pdf, inspect_pdf, merge_pdf, office_pdf_tool, render_pdf_page, select_pdf_pages
-from deerflow.tools.builtins.office_pptx import create_pptx, edit_pptx, inspect_pptx, office_pptx_tool
+from deerflow.tools.builtins.office_pdf import (
+    create_pdf,
+    inspect_pdf,
+    merge_pdf,
+    office_pdf_tool,
+    render_pdf_page,
+    select_pdf_pages,
+)
+from deerflow.tools.builtins.office_pptx import (
+    create_pptx,
+    edit_pptx,
+    inspect_pptx,
+    office_pptx_tool,
+)
 
 owned_runtime = owned_fixture
 file_client = client_fixture
@@ -189,3 +204,40 @@ def test_authority_withdrawn_during_format_processing_discards_private_result(ow
         result = office_pdf_tool.func(runtime, "inspect", source_path="/mnt/user-data/outputs/source.pdf")
     assert result == {"status": "unavailable", "inspection_required": True, "retry": False}
     assert not (root / "merged.pdf").exists()
+
+
+def test_pdf_blank_lines_do_not_crash_native_process_and_keep_vertical_space(tmp_path):
+    path = tmp_path / "blank-lines.pdf"
+    code = """import json,sys
+from pathlib import Path
+from deerflow.tools.builtins.office_pdf import create_pdf
+spec = {"pages": [["", "Before blank", "", "After blank", ""], ["", ""]]}
+Path(sys.argv[1]).write_bytes(create_pdf(spec))
+print(json.dumps({"completed": True}))
+"""
+    result = subprocess.run([sys.executable, "-c", code, str(path)], capture_output=True, text=True, timeout=60)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["completed"]
+    data = path.read_bytes()
+    assert len(inspect_pdf(data)["pages"]) == 2
+    import pypdfium2 as pdfium
+
+    with pdfium.PdfDocument(data) as document:
+        page = document[0]
+        textpage = page.get_textpage()
+        try:
+            text = textpage.get_text_range()
+            assert "Before blank" in text and "After blank" in text
+            before = textpage.get_charbox(text.index("Before blank"))
+            after = textpage.get_charbox(text.index("After blank"))
+            assert before[1] - after[1] == pytest.approx(36, abs=0.5)
+        finally:
+            textpage.close()
+            page.close()
+        page = document[1]
+        textpage = page.get_textpage()
+        try:
+            assert textpage.count_chars() == 0
+        finally:
+            textpage.close()
+            page.close()

@@ -1,0 +1,28 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-pdf-current-check",
+    "-v",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_office_formats.py:/app/backend/tests/test_office_formats.py:ro",
+    "sha256:3c0dcb8778d3370243d61cd92aa75a729617f6f6d021cd59303053ef0b4fc2bc",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_office_formats.py tests/test_office_pdf_fonts.py -q --tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T14:29:15.143970+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T14:29:55.782515+00:00"
+}

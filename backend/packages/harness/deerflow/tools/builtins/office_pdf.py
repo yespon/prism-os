@@ -72,6 +72,10 @@ def create_pdf(spec, *, font_bytes=None):
                 try:
                     for index, line in enumerate(lines):
                         _line_text(line, coverage)
+                        # PDFium traps on an empty text object. Keep the line index
+                        # for layout, but represent blank lines without native objects.
+                        if not line:
+                            continue
                         handle = raw.FPDFPageObj_CreateTextObj(document, font, 12) if font else raw.FPDFPageObj_NewTextObj(document, b"Helvetica", 12)
                         if not handle:
                             raise ValueError("PDF text unavailable")

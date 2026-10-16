@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".venv/bin/ruff",
+    "check",
+    "../scripts/octop_office_report_probe.py",
+    "packages/harness/deerflow/tools/builtins/office_pdf.py",
+    "tests/test_office_formats.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T14:24:50.786106+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T14:24:50.796406+00:00"
+}

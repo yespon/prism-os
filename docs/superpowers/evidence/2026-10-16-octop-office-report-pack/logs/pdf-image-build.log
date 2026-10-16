@@ -1,0 +1,285 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.41kB 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#2 DONE 0.4s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 0.5s
+
+#4 [internal] load metadata for docker.io/library/docker:cli
+#4 DONE 0.5s
+
+#5 [internal] load metadata for ghcr.io/astral-sh/uv:0.9.26
+#5 DONE 2.1s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 1.25kB done
+#6 DONE 0.0s
+
+#7 [stage-1  1/10] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#7 DONE 0.0s
+
+#8 FROM docker.io/library/docker:cli@sha256:1a4c7cb63513f349bdad01fcc6e0f3f2f67d37b9da86f14dc0d4a0942eecda00
+#8 DONE 0.0s
+
+#9 [node-runtime 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#9 DONE 0.0s
+
+#10 FROM ghcr.io/astral-sh/uv:0.9.26@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00fe9fbeded4b
+#10 DONE 0.0s
+
+#11 [internal] load build context
+#11 transferring context: 345.90kB 0.2s done
+#11 DONE 0.3s
+
+#12 [stage-1  4/10] COPY --from=node-runtime /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+#12 CACHED
+
+#13 [stage-1  5/10] RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm     && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+#13 CACHED
+
+#14 [stage-1  6/10] COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
+#14 CACHED
+
+#15 [stage-1  7/10] COPY --from=ghcr.io/astral-sh/uv:0.9.26 /uv /uvx /usr/local/bin/
+#15 CACHED
+
+#16 [stage-1  2/10] RUN apt-get update && apt-get install -y --no-install-recommends     curl build-essential libpq-dev ca-certificates bubblewrap openssh-client     && rm -rf /var/lib/apt/lists/*
+#16 CACHED
+
+#17 [stage-1  3/10] COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
+#17 CACHED
+
+#18 [stage-1  8/10] WORKDIR /app
+#18 CACHED
+
+#19 [stage-1  9/10] COPY backend ./backend
+#19 DONE 2.3s
+
+#20 [stage-1 10/10] RUN --mount=type=cache,target=/root/.cache/uv     sh -c "cd backend && uv sync --locked"
+#20 1.243 Using CPython 3.12.15 interpreter at: /usr/local/bin/python3.12
+#20 1.247 Creating virtual environment at: .venv
+#20 1.322 Resolved 211 packages in 42ms
+#20 1.433    Building deerflow-harness @ file:///app/backend/packages/harness
+#20 1.438    Building prismos-octop-capabilities @ file:///app/backend/packages/octop-capabilities
+#20 4.212       Built deerflow-harness @ file:///app/backend/packages/harness
+#20 4.228       Built prismos-octop-capabilities @ file:///app/backend/packages/octop-capabilities
+#20 4.230 Prepared 202 packages in 2.87s
+#20 4.235 warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+#20 4.236          If the cache and target directories are on different filesystems, hardlinking may not be supported.
+#20 4.236          If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+#20 30.04 Installed 202 packages in 26.30s
+#20 30.04  + agent-sandbox==0.0.19
+#20 30.05  + aiohappyeyeballs==2.6.1
+#20 30.05  + aiohttp==3.14.3
+#20 30.05  + aiosignal==1.4.0
+#20 30.05  + aiosqlite==0.22.1
+#20 30.05  + alembic==1.18.4
+#20 30.05  + annotated-doc==0.0.4
+#20 30.05  + annotated-types==0.7.0
+#20 30.05  + anthropic==0.121.0
+#20 30.05  + anyio==4.12.1
+#20 30.05  + asyncpg==0.31.0
+#20 30.05  + attrs==25.4.0
+#20 30.05  + azure-ai-documentintelligence==1.0.2
+#20 30.05  + azure-core==1.38.0
+#20 30.05  + azure-identity==1.25.1
+#20 30.05  + bcrypt==5.0.0
+#20 30.05  + beautifulsoup4==4.14.3
+#20 30.05  + blockbuster==1.5.26
+#20 30.05  + brotli==1.2.0
+#20 30.05  + certifi==2026.1.4
+#20 30.05  + cffi==2.0.0
+#20 30.05  + charset-normalizer==3.4.4
+#20 30.05  + click==8.4.2
+#20 30.05  + cloudpickle==3.1.2
+#20 30.05  + cobble==0.1.4
+#20 30.05  + coloredlogs==15.0.1
+#20 30.05  + croniter==6.0.0
+#20 30.05  + cryptography==50.0.0
+#20 30.05  + ddgs==9.10.0
+#20 30.05  + deerflow-harness==0.1.0 (from file:///app/backend/packages/harness)
+#20 30.05  + defusedxml==0.7.1
+#20 30.05  + distro==1.9.0
+#20 30.05  + docstring-parser==0.17.0
+#20 30.05  + dotenv==0.9.9
+#20 30.05  + duckdb==1.4.4
+#20 30.05  + durationpy==0.10
+#20 30.05  + et-xmlfile==2.0.0
+#20 30.05  + fake-useragent==2.2.0
+#20 30.05  + fastapi==0.141.1
+#20 30.05  + filetype==1.2.0
+#20 30.05  + firecrawl-py==4.13.4
+#20 30.05  + flatbuffers==25.12.19
+#20 30.05  + forbiddenfruit==0.1.4
+#20 30.05  + frozenlist==1.8.0
+#20 30.05  + google-auth==2.48.0
+#20 30.05  + google-genai==1.65.0
+#20 30.05  + googleapis-common-protos==1.72.0
+#20 30.05  + greenlet==3.3.2
+#20 30.05  + grpcio==1.80.0
+#20 30.05  + grpcio-health-checking==1.80.0
+#20 30.05  + grpcio-tools==1.80.0
+#20 30.05  + h11==0.16.0
+#20 30.05  + h2==4.4.1
+#20 30.05  + hpack==4.2.0
+#20 30.05  + html5lib==1.1
+#20 30.05  + httpcore==1.0.9
+#20 30.05  + httptools==0.7.1
+#20 30.05  + httpx==0.28.1
+#20 30.05  + httpx-sse==0.4.3
+#20 30.05  + humanfriendly==10.0
+#20 30.05  + hyperframe==6.1.0
+#20 30.05  + idna==3.18
+#20 30.05  + importlib-metadata==8.7.1
+#20 30.05  + iniconfig==2.3.0
+#20 30.05  + isodate==0.7.2
+#20 30.05  + jiter==0.12.0
+#20 30.05  + jsonpatch==1.33
+#20 30.05  + jsonpointer==3.0.0
+#20 30.05  + jsonschema==4.26.0
+#20 30.05  + jsonschema-rs==0.29.1
+#20 30.05  + jsonschema-specifications==2025.9.1
+#20 30.05  + kubernetes==35.0.0
+#20 30.05  + langchain==1.3.14
+#20 30.05  + langchain-anthropic==1.5.4
+#20 30.05  + langchain-core==1.5.3
+#20 30.05  + langchain-deepseek==1.0.1
+#20 30.05  + langchain-google-genai==4.2.1
+#20 30.05  + langchain-mcp-adapters==0.2.1
+#20 30.05  + langchain-ollama==1.1.0
+#20 30.05  + langchain-openai==1.4.3
+#20 30.05  + langchain-protocol==0.0.18
+#20 30.05  + langgraph==1.2.10
+#20 30.05  + langgraph-api==0.12.2
+#20 30.05  + langgraph-checkpoint==4.2.0
+#20 30.05  + langgraph-checkpoint-postgres==3.1.2
+#20 30.05  + langgraph-checkpoint-sqlite==3.1.1
+#20 30.05  + langgraph-cli==0.4.31
+#20 30.05  + langgraph-prebuilt==1.1.0
+#20 30.05  + langgraph-runtime-inmem==0.32.2
+#20 30.05  + langgraph-sdk==0.4.2
+#20 30.05  + langsmith==0.10.17
+#20 30.05  + lark-oapi==1.5.3
+#20 30.05  + lxml==6.1.1
+#20 30.05  + magika==0.6.3
+#20 30.05  + mako==1.4.1
+#20 30.05  + mammoth==1.11.0
+#20 30.05  + markdown-to-mrkdwn==0.3.1
+#20 30.05  + markdownify==1.2.2
+#20 30.05  + markitdown==0.1.5b1
+#20 30.05  + markupsafe==3.0.3
+#20 30.05  + mcp==1.29.0
+#20 30.05  + mpmath==1.3.0
+#20 30.05  + msal==1.37.0
+#20 30.05  + msal-extensions==1.3.1
+#20 30.05  + multidict==6.7.1
+#20 30.05  + nest-asyncio==1.6.0
+#20 30.05  + numpy==2.4.1
+#20 30.05  + oauthlib==3.3.1
+#20 30.05  + olefile==0.47
+#20 30.05  + ollama==0.6.1
+#20 30.05  + onnxruntime==1.20.1
+#20 30.05  + openai==2.53.0
+#20 30.05  + openpyxl==3.1.5
+#20 30.05  + opentelemetry-api==1.37.0
+#20 30.05  + opentelemetry-exporter-otlp-proto-common==1.37.0
+#20 30.05  + opentelemetry-exporter-otlp-proto-http==1.37.0
+#20 30.05  + opentelemetry-exporter-prometheus==0.58b0
+#20 30.05  + opentelemetry-proto==1.37.0
+#20 30.05  + opentelemetry-sdk==1.37.0
+#20 30.05  + opentelemetry-semantic-conventions==0.58b0
+#20 30.05  + orjson==3.11.6
+#20 30.05  + ormsgpack==1.12.1
+#20 30.05  + packaging==25.0
+#20 30.05  + pandas==3.0.0
+#20 30.05  + pathspec==1.1.1
+#20 30.05  + pdfminer-six==20251230
+#20 30.05  + pdfplumber==0.11.9
+#20 30.05  + pillow==12.3.0
+#20 30.05  + pluggy==1.6.0
+#20 30.05  + primp==0.15.0
+#20 30.05  + prismos-octop-capabilities==0.1.0 (from file:///app/backend/packages/octop-capabilities)
+#20 30.05  + prometheus-client==0.26.0
+#20 30.05  + propcache==0.4.1
+#20 30.05  + protobuf==6.33.5
+#20 30.05  + psycopg==3.3.4
+#20 30.05  + psycopg-binary==3.3.4
+#20 30.05  + psycopg-pool==3.3.1
+#20 30.05  + pyasn1==0.6.4
+#20 30.05  + pyasn1-modules==0.4.2
+#20 30.05  + pycparser==2.23
+#20 30.05  + pycryptodome==3.23.0
+#20 30.05  + pydantic==2.12.5
+#20 30.05  + pydantic-core==2.41.5
+#20 30.05  + pydantic-settings==2.15.0
+#20 30.05  + pydub==0.25.1
+#20 30.05  + pygments==2.20.0
+#20 30.05  + pyjwt==2.13.0
+#20 30.05  + pypdfium2==5.3.0
+#20 30.05  + pytest==9.1.1
+#20 30.05  + python-dateutil==2.9.0.post0
+#20 30.05  + python-dotenv==1.2.2
+#20 30.05  + python-multipart==0.0.32
+#20 30.05  + python-pptx==1.0.2
+#20 30.05  + python-telegram-bot==22.6
+#20 30.05  + pytz==2026.1.post1
+#20 30.05  + pyyaml==6.0.3
+#20 30.05  + readabilipy==0.3.0
+#20 30.05  + referencing==0.37.0
+#20 30.05  + regex==2025.11.3
+#20 30.05  + requests==2.34.2
+#20 30.05  + requests-oauthlib==2.0.0
+#20 30.05  + requests-toolbelt==1.0.0
+#20 30.05  + rpds-py==0.30.0
+#20 30.05  + rsa==4.9.1
+#20 30.05  + ruff==0.14.11
+#20 30.05  + setuptools==84.0.0
+#20 30.05  + six==1.17.0
+#20 30.05  + slack-sdk==3.40.1
+#20 30.05  + sniffio==1.3.1
+#20 30.05  + socksio==1.0.0
+#20 30.05  + soupsieve==2.9.2
+#20 30.05  + speechrecognition==3.14.5
+#20 30.05  + sqlalchemy==2.0.48
+#20 30.05  + sqlite-vec==0.1.6
+#20 30.05  + sqlmodel==0.0.37
+#20 30.05  + sse-starlette==2.1.3
+#20 30.05  + starlette==1.6.0
+#20 30.05  + structlog==25.5.0
+#20 30.05  + sympy==1.14.0
+#20 30.05  + tavily-python==0.7.17
+#20 30.05  + tenacity==9.1.2
+#20 30.05  + tiktoken==0.12.0
+#20 30.05  + tqdm==4.67.1
+#20 30.05  + truststore==0.10.4
+#20 30.05  + typing-extensions==4.15.0
+#20 30.05  + typing-inspection==0.4.2
+#20 30.05  + urllib3==2.7.0
+#20 30.05  + uuid-utils==0.13.0
+#20 30.05  + uvicorn==0.40.0
+#20 30.05  + uvloop==0.22.1
+#20 30.05  + volcengine-python-sdk==5.0.5
+#20 30.05  + watchfiles==1.1.1
+#20 30.05  + webencodings==0.5.1
+#20 30.05  + websocket-client==1.9.0
+#20 30.05  + websockets==15.0.1
+#20 30.05  + xlrd==2.0.2
+#20 30.05  + xlsxwriter==3.2.9
+#20 30.05  + xxhash==3.6.0
+#20 30.05  + yarl==1.22.0
+#20 30.05  + youtube-transcript-api==1.0.3
+#20 30.05  + zipp==3.23.0
+#20 30.05  + zstandard==0.25.0
+#20 DONE 30.2s
+
+#21 exporting to image
+#21 exporting layers
+#21 exporting layers 14.1s done
+#21 writing image sha256:3c0dcb8778d3370243d61cd92aa75a729617f6f6d021cd59303053ef0b4fc2bc done
+#21 naming to docker.io/library/prismos-office-report-pack:test done
+#21 DONE 14.2s

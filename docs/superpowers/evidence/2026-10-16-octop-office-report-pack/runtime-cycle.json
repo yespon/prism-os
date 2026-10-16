@@ -1,0 +1,35 @@
+{
+  "complete": true,
+  "phases": [
+    {
+      "phase": "pack-after-restart",
+      "artifacts": {
+        "xlsx": "d4911e89c115300e0c2488fc6cc33e7a3d8df5b2ec2d848b5a2831bb423b86ce",
+        "pptx": "9869ae6c5623a9de6e214118a720250a4c75c9f29d7392e638e529d20edfdc6b",
+        "pdf": "287ed45ae4022ee7e29bbb3644f6d39649dee37610189a34af94682f8331a3d4"
+      },
+      "task_status": "success",
+      "model_task_resubmitted": false
+    },
+    {
+      "phase": "pack-after-rollback",
+      "artifacts": {
+        "xlsx": "d4911e89c115300e0c2488fc6cc33e7a3d8df5b2ec2d848b5a2831bb423b86ce",
+        "pptx": "9869ae6c5623a9de6e214118a720250a4c75c9f29d7392e638e529d20edfdc6b",
+        "pdf": "287ed45ae4022ee7e29bbb3644f6d39649dee37610189a34af94682f8331a3d4"
+      },
+      "task_status": "success",
+      "model_task_resubmitted": false
+    },
+    {
+      "phase": "pack-after-reapply",
+      "artifacts": {
+        "xlsx": "d4911e89c115300e0c2488fc6cc33e7a3d8df5b2ec2d848b5a2831bb423b86ce",
+        "pptx": "9869ae6c5623a9de6e214118a720250a4c75c9f29d7392e638e529d20edfdc6b",
+        "pdf": "287ed45ae4022ee7e29bbb3644f6d39649dee37610189a34af94682f8331a3d4"
+      },
+      "task_status": "success",
+      "model_task_resubmitted": false
+    }
+  ]
+}

@@ -335,9 +335,9 @@
       "octop_task_baseline": "Web conversation and selected Agent/Skill task, tool trace and history",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py",
-        "skills.py",
-        "threads.py"
+        "/workspace/agents",
+        "POST /api/agents",
+        "POST /api/langgraph/threads/{id}/runs/stream"
       ],
       "current_status": "功能已接入；诊断子场景真实模型/HTTPS测试目标已验收",
       "missing_chain": "All remaining named modes, channels, draft/notification and Skill distribution scenarios remain",
@@ -1215,14 +1215,17 @@
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py"
+        "/workspace/agents template picker",
+        "GET /api/agent-catalog/templates",
+        "POST /api/agents (template_id=expert:office-automation)"
       ],
-      "current_status": "功能已接入；Office专家基本DOCX任务真实模型已验收，其他专家/市场/完整共享仍待",
+      "current_status": "功能已接入；基本四格式任务真实模型已验收；原完整能力范围其余子项仍待",
       "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
       "acceptance_scenario": "Template creation → actual expert tool task → artifact/history; later authorized child delegation/cancel/recovery",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-10-octop-inventory",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -1232,7 +1235,15 @@
         "reason": "Existing source/license boundary; native implementations preserve functional goals",
         "user_task_impact": "Original office expert now completes the basic attachment-to-DOCX task. This does not accept other experts, advanced Office, or child delegation."
       },
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Existing Word → Chinese XLSX / Chinese PPTX / English PDF → download / history; real native-crash recovery",
+          "level": "真实模型已验收；既有框架原生API恢复",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
+          "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        }
+      ]
     }
   },
   {
@@ -2605,9 +2616,9 @@
       "octop_task_baseline": "Web conversation and selected Agent/Skill task, tool trace and history",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py",
-        "skills.py",
-        "threads.py"
+        "/workspace/skills",
+        "POST /api/tenants/skills",
+        "/api/skills/{name}/detail"
       ],
       "current_status": "功能已接入；诊断子场景真实模型/HTTPS测试目标已验收",
       "missing_chain": "All remaining named modes, channels, draft/notification and Skill distribution scenarios remain",
@@ -3771,7 +3782,7 @@
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py"
+        "/api/agent-catalog/templates (subagent prompts/resources only; full delegation unaccepted)"
       ],
       "current_status": "源码已迁入；专家prompt/资源部分接入；完整专家及子Agent任务未验收",
       "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
@@ -4345,7 +4356,7 @@
       "octop_task_baseline": "Expert templates/resources, member binding and collaboration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py"
+        "Generic harness task tool is distinct from full Octop collaboration; no complete accepted delegation entry"
       ],
       "current_status": "源码已迁入；专家prompt/资源部分接入；完整专家及子Agent任务未验收",
       "missing_chain": "Actual expert tasks/resources; full sharing; persistent delegation requires original M1 exit/N08",
@@ -4401,9 +4412,8 @@
       "octop_task_baseline": "Web conversation and selected Agent/Skill task, tool trace and history",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py",
-        "skills.py",
-        "threads.py"
+        "/workspace/chats/{thread_id}",
+        "/api/langgraph/threads/{id}/runs/stream"
       ],
       "current_status": "功能已接入；诊断子场景真实模型/HTTPS测试目标已验收",
       "missing_chain": "All remaining named modes, channels, draft/notification and Skill distribution scenarios remain",
@@ -4460,9 +4470,9 @@
       "octop_task_baseline": "Web conversation and selected Agent/Skill task, tool trace and history",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "agents.py",
-        "skills.py",
-        "threads.py"
+        "/workspace/chats/{thread_id}",
+        "/api/threads/{id}/uploads",
+        "/api/langgraph/threads/{id}/history"
       ],
       "current_status": "功能已接入；诊断子场景真实模型/HTTPS测试目标已验收",
       "missing_chain": "All remaining named modes, channels, draft/notification and Skill distribution scenarios remain",
@@ -4470,11 +4480,20 @@
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-live",
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Existing Word → Chinese XLSX / Chinese PPTX / English PDF → download / history; real native-crash recovery",
+          "level": "真实模型已验收；既有框架原生API恢复",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
+          "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        }
+      ]
     }
   },
   {
@@ -4964,7 +4983,7 @@
       "octop_task_baseline": "Layered memory, recall/compression and migration",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "threads.py"
+        "/api/langgraph/threads/{id}/history (thread history only; full layered memory unaccepted)"
       ],
       "current_status": "源码已迁入；线程历史/恢复部分有真实证据，不能视为完整记忆能力",
       "missing_chain": "Layered memory/recall/compression/portable migration and N08 durable execution",
@@ -5111,17 +5130,18 @@
       "octop_task_baseline": "Agent file/workspace tasks and native tools, including retained independent Office goals",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "uploads.py",
-        "artifacts.py",
-        "agents.py"
+        "Chat attachments/results",
+        "/api/threads/{id}/uploads",
+        "/api/threads/{id}/artifacts/mnt/user-data/outputs/{file}"
       ],
-      "current_status": "功能已接入；本地/隔离验证；DOCX附件任务真实模型已验收（其余格式/工具分别待验）",
+      "current_status": "功能已接入；基本四格式任务真实模型已验收；原完整能力范围其余子项仍待",
       "missing_chain": "All native tool groups user tasks; full Office capabilities; real device/remote tools",
       "acceptance_scenario": "Upload brief → real model read/create/present DOCX → download → new-session history → deny nonowner",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
         "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5131,7 +5151,15 @@
         "reason": "Preserve PrismOS current authorization boundary",
         "user_task_impact": "Authorized read/create/download/history retained; arbitrary or revoked paths rejected. No assertion that other unimplemented operations were deleted."
       },
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Existing Word → Chinese XLSX / Chinese PPTX / English PDF → download / history; real native-crash recovery",
+          "level": "真实模型已验收；既有框架原生API恢复",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
+          "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        }
+      ]
     }
   },
   {
@@ -5729,21 +5757,29 @@
       "octop_task_baseline": "Agent file/workspace tasks and native tools, including retained independent Office goals",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "uploads.py",
-        "artifacts.py",
-        "agents.py"
+        "Agent tool groups + chat native tool calls",
+        "office_docx / office_xlsx / office_pptx / office_pdf in lead_agent"
       ],
-      "current_status": "功能已接入；本地/隔离验证；DOCX附件任务真实模型已验收（其余格式/工具分别待验）",
+      "current_status": "功能已接入；基本四格式任务真实模型已验收；原完整能力范围其余子项仍待",
       "missing_chain": "All native tool groups user tasks; full Office capabilities; real device/remote tools",
       "acceptance_scenario": "Upload brief → real model read/create/present DOCX → download → new-session history → deny nonowner",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
         "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Existing Word → Chinese XLSX / Chinese PPTX / English PDF → download / history; real native-crash recovery",
+          "level": "真实模型已验收；既有框架原生API恢复",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
+          "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        }
+      ]
     }
   },
   {
@@ -5808,7 +5844,9 @@
       "reviewed_on": "2026-10-16",
       "octop_task_baseline": "External IDE/runner and remote expert protocols",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
-      "current_entry": [],
+      "current_entry": [
+        "Isolated external SDK/MCP probe; no accepted business entry"
+      ],
       "current_status": "源码已迁入；外部SDK/MCP隔离协议已验证；业务运行未闭环",
       "missing_chain": "Registered business runtime, user entry, execution, artifacts/history/recovery; real Bridge target",
       "acceptance_scenario": "Actual authorized external runner task → streamed result/artifact → reconnect/recovery",
@@ -5881,7 +5919,9 @@
       "reviewed_on": "2026-10-16",
       "octop_task_baseline": "External IDE/runner and remote expert protocols",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
-      "current_entry": [],
+      "current_entry": [
+        "Isolated external SDK/MCP probe; no accepted business entry"
+      ],
       "current_status": "源码已迁入；外部SDK/MCP隔离协议已验证；业务运行未闭环",
       "missing_chain": "Registered business runtime, user entry, execution, artifacts/history/recovery; real Bridge target",
       "acceptance_scenario": "Actual authorized external runner task → streamed result/artifact → reconnect/recovery",
@@ -5928,9 +5968,9 @@
       "octop_task_baseline": "交互式终端、AI 辅助命令与排障",
       "baseline_source": "Existing O record children + capability-items.json source_refs, pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "terminal.py",
-        "assets.py",
-        "tools.py"
+        "/workspace/terminal",
+        "POST /api/terminal/execute",
+        "WS /api/terminal/ws; remote targets remain per-scenario pending"
       ],
       "current_status": "源码已迁入；部分原生接口/资源已接入，本地验证仅覆盖明确命令/协议范围",
       "missing_chain": "Per-tool real browser/remote/device task, runtime and actual artifacts/history/recovery; Apple/cluster/phone environment acceptance pending",
@@ -5978,9 +6018,7 @@
       "octop_task_baseline": "浏览器会话、持久 profile、截图、远程操控与自动化",
       "baseline_source": "Existing O record children + capability-items.json source_refs, pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "terminal.py",
-        "assets.py",
-        "tools.py"
+        "Existing Agent resource configuration/preflight and native resource install/read entry; full browser/recording/desktop/phone task entry is not accepted by current evidence"
       ],
       "current_status": "源码已迁入；部分原生接口/资源已接入，本地验证仅覆盖明确命令/协议范围",
       "missing_chain": "Per-tool real browser/remote/device task, runtime and actual artifacts/history/recovery; Apple/cluster/phone environment acceptance pending",
@@ -6028,9 +6066,7 @@
       "octop_task_baseline": "浏览器录制、回放、停止后生成 Skill 草稿",
       "baseline_source": "Existing O record children + capability-items.json source_refs, pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "terminal.py",
-        "assets.py",
-        "tools.py"
+        "Existing Agent resource configuration/preflight and native resource install/read entry; full browser/recording/desktop/phone task entry is not accepted by current evidence"
       ],
       "current_status": "源码已迁入；部分原生接口/资源已接入，本地验证仅覆盖明确命令/协议范围",
       "missing_chain": "Per-tool real browser/remote/device task, runtime and actual artifacts/history/recovery; Apple/cluster/phone environment acceptance pending",
@@ -6069,9 +6105,7 @@
       "octop_task_baseline": "远程桌面：屏幕、键鼠、安装/卸载、隔离桌面、跨平台",
       "baseline_source": "Existing O record children + capability-items.json source_refs, pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "terminal.py",
-        "assets.py",
-        "tools.py"
+        "Existing Agent resource configuration/preflight and native resource install/read entry; full browser/recording/desktop/phone task entry is not accepted by current evidence"
       ],
       "current_status": "源码已迁入；部分原生接口/资源已接入，本地验证仅覆盖明确命令/协议范围",
       "missing_chain": "Per-tool real browser/remote/device task, runtime and actual artifacts/history/recovery; Apple/cluster/phone environment acceptance pending",
@@ -6111,9 +6145,7 @@
       "octop_task_baseline": "Remote Phone：手机设备状态、绑定、看屏/操控、shell",
       "baseline_source": "Existing O record children + capability-items.json source_refs, pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
-        "terminal.py",
-        "assets.py",
-        "tools.py"
+        "Existing Agent resource configuration/preflight and native resource install/read entry; full browser/recording/desktop/phone task entry is not accepted by current evidence"
       ],
       "current_status": "源码已迁入；部分原生接口/资源已接入，本地验证仅覆盖明确命令/协议范围",
       "missing_chain": "Per-tool real browser/remote/device task, runtime and actual artifacts/history/recovery; Apple/cluster/phone environment acceptance pending",
@@ -6466,7 +6498,9 @@
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
       "current_entry": [
         "scripts/octop_wsl_test_snapshot.py",
-        "scripts/octop_upgrade_probe.py"
+        "scripts/octop_upgrade_probe.py",
+        "scripts/octop_office_task_probe.py",
+        "scripts/octop_office_report_probe.py"
       ],
       "current_status": "恢复任务真实模型/HTTPS测试目标已验收；来源/制品回退已有验证",
       "missing_chain": "Remaining system/TLS/platform operations; accepted tasks must remain upgrade behavior regressions",
@@ -6474,11 +6508,20 @@
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle",
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
-        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task"
+        "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
-      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access."
+      "accepted_task_scope": "Basic DOCX actual task requires successful run and no pending nodes; earlier file/history-only proof is qualified by the cleanup continuation and terminal-aware recheck. Agent pause blocks execution while current legitimate owner retains history/artifact access.",
+      "accepted_user_tasks": [
+        {
+          "task": "Existing Word → Chinese XLSX / Chinese PPTX / English PDF → download / history; real native-crash recovery",
+          "level": "真实模型已验收；既有框架原生API恢复",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
+          "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        }
+      ]
     }
   },
   {
@@ -6520,7 +6563,9 @@
       "reviewed_on": "2026-10-16",
       "octop_task_baseline": "External IDE/runner and remote expert protocols",
       "baseline_source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md + existing children/source_refs in capability-items.json; current pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
-      "current_entry": [],
+      "current_entry": [
+        "Retained Bridge source; no accepted remote expert entry"
+      ],
       "current_status": "源码已迁入；外部SDK/MCP隔离协议已验证；业务运行未闭环",
       "missing_chain": "Registered business runtime, user entry, execution, artifacts/history/recovery; real Bridge target",
       "acceptance_scenario": "Actual authorized external runner task → streamed result/artifact → reconnect/recovery",

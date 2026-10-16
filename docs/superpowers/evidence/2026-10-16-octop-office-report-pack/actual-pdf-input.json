@@ -1,0 +1,28 @@
+{
+  "action": "create",
+  "document": {
+    "pages": [
+      [
+        "Integration Progress Brief",
+        "Project: PrismOS Integration Acceptance",
+        "Acceptance ID: OFFICE_TASK_1a6a8a07c9",
+        "",
+        "Completed",
+        "A real model task after service recovery has been completed.",
+        "",
+        "",
+        "Pending",
+        "Complete Office and expert tasks remain pending.",
+        "",
+        "",
+        "Progress Summary",
+        "Completed: A real model task after service recovery.",
+        "Pending: Complete Office and expert tasks.",
+        "",
+        "",
+        "No numeric figures or completion rate are provided."
+      ]
+    ]
+  },
+  "output_path": "/mnt/user-data/outputs/brief-pack-f44da91eda.pdf"
+}

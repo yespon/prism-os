@@ -1,0 +1,61 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_office_formats.py:3:1
+   |
+ 1 |   """Actual presentation and PDF engines plus original owned output authorization."""
+ 2 |
+ 3 | / import asyncio
+ 4 | | import io
+ 5 | | import json
+ 6 | | import subprocess
+ 7 | | import sys
+ 8 | | import zipfile
+ 9 | | from pathlib import Path
+10 | |
+11 | | import pytest
+12 | | from deerflow.database.models import TenantMembership
+13 | | from deerflow.tools.builtins.office_pdf import (
+14 | |     create_pdf,
+15 | |     inspect_pdf,
+16 | |     merge_pdf,
+17 | |     office_pdf_tool,
+18 | |     render_pdf_page,
+19 | |     select_pdf_pages,
+20 | | )
+21 | | from deerflow.tools.builtins.office_pptx import (
+22 | |     create_pptx,
+23 | |     edit_pptx,
+24 | |     inspect_pptx,
+25 | |     office_pptx_tool,
+26 | | )
+27 | | from PIL import Image
+28 | | from pptx import Presentation
+29 | | from sqlalchemy import select
+30 | | from test_file_access_boundaries import owned_runtime as owned_fixture
+31 | | from test_file_access_boundaries import selected_runtime  # noqa: F401
+32 | | from test_file_access_http import file_client as client_fixture
+33 | | from test_skill_member_tools import configured, scoped_client  # noqa: F401
+34 | | from test_skill_reference_transactions import durable_sqlite  # noqa: F401
+   | |____________________________________________________________^
+35 |
+36 |   owned_runtime = owned_fixture
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> tests/test_office_formats.py:167:5
+    |
+165 |   @pytest.mark.parametrize("kind", ["xlsx", "pptx", "pdf", "merge"])
+166 |   def test_authority_withdrawn_during_format_processing_discards_private_result(owned_runtime, monkeypatch, kind):
+167 | /     import importlib
+168 | |
+169 | |     from deerflow.tools.builtins.office_xlsx import create_xlsx, office_xlsx_tool
+170 | |     from test_office_docx import withdraw
+171 | |     from test_office_xlsx import DOCUMENT as workbook_spec
+    | |__________________________________________________________^
+172 |
+173 |       factory, _, _, _, runtime = owned_runtime
+    |
+help: Organize imports
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

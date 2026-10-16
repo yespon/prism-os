@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_report_probe.py", line 245, in <module>
+    execute(args.source, args.output)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_report_probe.py", line 103, in execute
+    state = call(requester, graph + "/state")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_report_probe.py", line 41, in call
+    assert response.status_code == 200, (path, response.status_code)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('/api/langgraph/threads/9ddb8681-488d-46c7-9a98-768de17f6ede/state', 502)

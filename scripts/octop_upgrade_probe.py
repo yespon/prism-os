@@ -116,6 +116,7 @@ def main():
         "scripts/octop_wsl_test_env.py",
         "scripts/octop_wsl_test_snapshot.py",
         "scripts/octop_office_task_probe.py",
+        "scripts/octop_office_report_probe.py",
         "backend/app/integrations/octop/runtime_prompts.py",
         "backend/tests/test_n04_deployment_snapshot.py",
         "scripts/octop_wsl_test_probe.py",
