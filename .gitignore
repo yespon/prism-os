@@ -73,3 +73,6 @@ solutions/
 !backend/packages/octop-capabilities/src/prismos_octop/data/**
 backend/packages/octop-capabilities/src/prismos_octop/data/**/__pycache__/
 backend/packages/octop-capabilities/src/prismos_octop/data/**/*.pyc
+
+# Local owned compatibility contexts and validation artifacts
+backend/tmp/

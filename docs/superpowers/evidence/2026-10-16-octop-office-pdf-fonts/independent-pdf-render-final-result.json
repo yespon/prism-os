@@ -1,0 +1,16 @@
+{
+  "command": [
+    "pdftoppm",
+    "-scale-to",
+    "1024",
+    "-singlefile",
+    "-png",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/demo-chinese-final.pdf",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/demo-poppler-final"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T01:31:16.424811+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:31:16.670996+00:00"
+}

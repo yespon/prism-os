@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/reproduce_map_budget.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T23:27:26.911632+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T23:27:29.093553+00:00"
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "database": "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+  "container_id": "bc41f71e9e1a5abfc7825b9302cf2d1fc61557a29a949215fbce358edfd5a132",
+  "loopback_only": true,
+  "owned_tmpfs_database": true,
+  "schema": "existing SQLModel metadata including native TenantSkill uniqueness; no production database",
+  "test_files": [
+    "tests/test_office_pdf_fonts.py",
+    "tests/test_office_charts.py",
+    "tests/test_office_xlsx.py",
+    "tests/test_office_formats.py",
+    "tests/test_office_docx.py",
+    "tests/test_file_access_http.py"
+  ],
+  "scope": "selected changed functional block",
+  "credentials_in_evidence": false,
+  "returncode": 0,
+  "owned_container_removed": true
+}

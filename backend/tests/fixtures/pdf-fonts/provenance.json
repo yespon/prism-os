@@ -1,0 +1,9 @@
+{
+  "name": "NotoMono-Regular.ttf",
+  "sha256": "41fd7ccc82375e2a1e47f0cc2c941c14d7c99ba2f57cf69c9f738d07fb257686",
+  "source": "Ubuntu installed fonts-noto-mono; original binary, unmodified",
+  "upstream_as_declared_by_source_package": "https://github.com/googlei18n/noto-fonts",
+  "font_license": "OFL-1.1",
+  "scope": "Test input font only; no implicit runtime system font lookup or font distribution default",
+  "copyright_notice": "copyright.txt retains source-package notices; Debian packaging code is not included"
+}

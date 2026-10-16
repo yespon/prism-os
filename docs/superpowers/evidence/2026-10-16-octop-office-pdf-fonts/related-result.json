@@ -1,0 +1,18 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_OFFICE_FONT_CHECK=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_office_pdf_fonts.py",
+    "tests/test_office_formats.py",
+    "tests/test_office_charts.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T23:18:43.292978+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T23:19:06.254475+00:00"
+}

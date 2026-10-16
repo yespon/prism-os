@@ -1,0 +1,22 @@
+{
+  "scope": "Actual font engine bytes/text/pixels; native authorization/download/revocation separately tested, not OCR or complex shaping",
+  "font": {
+    "source": "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+    "sha256": "79c18ebe7b811951e8311bad7103ebeae8c337ed9988ea69e8a78a66cfe029b9",
+    "bytes": 16791251,
+    "package": "0.9.45-8",
+    "declared_license": "GPL-2 with Font embedding exception and M+ FONTS License; original source-package notice retained",
+    "implicit_runtime_font_lookup": false
+  },
+  "extracted_text": "PrismOS 独立 PDF 中文字体\r\n季度预算：研发 120，验证 80\r\n使用当前有权读取的字体文件生成\r\n缺字与复杂文字整形会明确拒绝",
+  "files": {
+    "demo-chinese.pdf": {
+      "sha256": "cfc31b66b56ef1c9aef51bc4c38fffe16d1890d35500b691734e8061e1ef8160",
+      "bytes": 9503890
+    },
+    "demo-chinese.png": {
+      "sha256": "38155edcb9a253837552905879fcf9281170b26cbdd3a14d7e2ac5183fe68d13",
+      "bytes": 27868
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"scope": "Synthetic table metadata only; no native font parsing or exhaustion attempted", "font_bytes": 175668, "aliased_table_bytes": 8388608, "recorded_snapshot_accepted": true, "current_rejected": "PDF font total table budget exceeded", "required_fix": "Bound total declared table bytes before copying table payloads"}

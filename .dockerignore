@@ -85,3 +85,6 @@ backend/.pytest_cache/
 # The pinned capability package is verified as complete inside the backend image.
 # Markdown is runtime template/skill data here, not optional project docs.
 !backend/packages/octop-capabilities/src/prismos_octop/data/**
+
+# Local owned compatibility contexts and validation artifacts
+backend/tmp/

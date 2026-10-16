@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "backend/tmp/font_table_budget_probe.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T01:25:34.649166+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:25:37.283106+00:00"
+}

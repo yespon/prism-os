@@ -1,0 +1,14 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_SCOPED_TEST_IMAGE=sha256:b62a025ddfcb7fc2bf98cc3d82f3da8bea359dc708b6e0cff52bdf747b70483d",
+    "PRISMOS_OFFICE_FONT_CHECK=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+    ".venv/bin/python",
+    "../docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/collect_scope.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T01:45:05.660696+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:45:16.113497+00:00"
+}

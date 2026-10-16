@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "scripts/octop_skill_postgres.py",
+    "--output-dir",
+    "/tmp/prismos-office-pdf-fonts-pg-20261016",
+    "--test-file",
+    "tests/test_office_pdf_fonts.py",
+    "--test-file",
+    "tests/test_office_charts.py",
+    "--test-file",
+    "tests/test_office_xlsx.py",
+    "--test-file",
+    "tests/test_office_formats.py",
+    "--test-file",
+    "tests/test_office_docx.py",
+    "--test-file",
+    "tests/test_file_access_http.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T23:21:28.624529+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T23:23:42.102843+00:00"
+}

@@ -1,10 +1,12 @@
 """Independent PDF extraction, page composition and bounded page rendering."""
 
 import ctypes
+import hashlib
 import io
 import json
 import math
 import threading
+import unicodedata
 
 import pypdfium2 as pdfium
 import pypdfium2.raw as raw
@@ -13,6 +15,7 @@ from langchain.tools import ToolRuntime, tool
 from deerflow.runtime import current_file_access
 
 from .office_common import MAX_BYTES, owned_office_operation
+from .office_fonts import font_coverage
 
 PDF_LOCK = threading.RLock()  # PDFium is not thread-safe across documents.
 
@@ -36,24 +39,40 @@ def _save(document):
     return result
 
 
-def create_pdf(spec):
+def _line_text(line, coverage):
+    if not isinstance(line, str) or len(line) > 200 or any(ord(c) < 32 or 127 <= ord(c) < 160 or unicodedata.category(c) in {"Cf", "Cs"} for c in line):
+        raise ValueError("PDF text unavailable")
+    if coverage is None:
+        if any(ord(c) > 255 for c in line):
+            raise ValueError("Basic PDF font requires printable Latin-1; an authorized Unicode font is required")
+    elif any(unicodedata.combining(c) or unicodedata.bidirectional(c) in {"R", "AL", "AN"} or not coverage(ord(c)) for c in line):
+        raise ValueError("PDF font glyph coverage or complex shaping unavailable")
+
+
+def create_pdf(spec, *, font_bytes=None):
     if not isinstance(spec, dict) or set(spec) != {"pages"} or len(json.dumps(spec)) > 2_000_000:
         raise ValueError("PDF schema unavailable")
     pages = spec["pages"]
     if not isinstance(pages, list) or not 1 <= len(pages) <= 100:
         raise ValueError("PDF pages unavailable")
+    coverage = font_coverage(font_bytes) if font_bytes is not None else None
     with PDF_LOCK:
         document = pdfium.PdfDocument.new()
+        font = None
         try:
+            if font_bytes is not None:
+                font_data = (ctypes.c_ubyte * len(font_bytes)).from_buffer_copy(font_bytes)
+                font = raw.FPDFText_LoadFont(document, font_data, len(font_bytes), raw.FPDF_FONT_TRUETYPE, True)
+                if not font:
+                    raise ValueError("PDF font could not be loaded")
             for lines in pages:
                 if not isinstance(lines, list) or len(lines) > 42:
                     raise ValueError("PDF line limit exceeded")
                 page = document.new_page(595, 842)
                 try:
                     for index, line in enumerate(lines):
-                        if not isinstance(line, str) or len(line) > 200 or any(ord(c) < 32 or 127 <= ord(c) < 160 or ord(c) > 255 for c in line):
-                            raise ValueError("Basic PDF font requires printable Latin-1; Unicode font embedding pending")
-                        handle = raw.FPDFPageObj_NewTextObj(document, b"Helvetica", 12)
+                        _line_text(line, coverage)
+                        handle = raw.FPDFPageObj_CreateTextObj(document, font, 12) if font else raw.FPDFPageObj_NewTextObj(document, b"Helvetica", 12)
                         if not handle:
                             raise ValueError("PDF text unavailable")
                         obj = pdfium.PdfObject(handle, pdf=document)
@@ -75,6 +94,8 @@ def create_pdf(spec):
                     page.close()
             return _save(document)
         finally:
+            if font:
+                raw.FPDFFont_Close(font)
             document.close()
 
 
@@ -169,7 +190,7 @@ def render_pdf_page(data, page_number=1, scale=1):
 
 @tool("office_pdf", parse_docstring=True)
 def office_pdf_tool(
-    runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, pages: list[int] | None = None, sources: list[str] | None = None, page_number: int = 1, scale: float = 1
+    runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, pages: list[int] | None = None, sources: list[str] | None = None, page_number: int = 1, scale: float = 1, font_path: str = ""
 ) -> dict:
     """Inspect PDF text, select/reorder pages, merge owned PDFs, render a bounded PNG, or create a basic text PDF.
 
@@ -177,12 +198,31 @@ def office_pdf_tool(
         action: create, inspect, select, merge or render. No OCR, form filling, JavaScript execution or advanced document rendering claims.
         source_path: Current authorized PDF for inspect/select/render.
         output_path: New owned outputs PDF, or PNG for render; never overwrites. Present with present_files.
-        document: Create schema: pages (list of lists of printable Latin-1 lines). Basic Helvetica font; Unicode font embedding and advanced layout remain pending. Lines must fit A4 page width.
+        document: Create schema: pages (list of lists of lines). Default font supports printable Latin-1. An authorized TrueType font enables horizontal precomposed Unicode/CJK
+            text with actual glyph coverage. Complex shaping/RTL, automatic wrapping and advanced layout remain pending. Lines must fit A4 page width.
         pages: Select action: 1-based page numbers, supporting reordering and repeats.
         sources: Merge action: current authorized PDF virtual paths, checked before and after processing; total max 100 pages.
         page_number: Render action: 1-based PDF page.
         scale: Render action: 0.25..3; total image limited to five million pixels.
+        font_path: Create only: current authorized uploaded/owned .ttf or .ttc (first face), max 32 MiB. No implicit host font lookup. Missing glyphs or restricted embedding flags fail explicitly.
     """
+
+    font_receipt = {}
+    if font_path and action != "create":
+        return {"status": "unavailable", "inspection_required": True, "retry": False}
+
+    def create_owned():
+        if not font_path:
+            return create_pdf(document)
+        if not isinstance(font_path, str) or not font_path.lower().endswith((".ttf", ".ttc")):
+            raise ValueError("Owned TrueType font required")
+        data = current_file_access(runtime, "read_bytes", font_path)
+        if not isinstance(data, bytes):
+            raise PermissionError("Current font authority required")
+        result = create_pdf(document, font_bytes=data)
+        current_file_access(runtime, "read_bytes", font_path)
+        font_receipt["source_font_sha256"] = hashlib.sha256(data).hexdigest()
+        return result
 
     def merge_owned():
         if not isinstance(sources, list) or not 1 <= len(sources) <= 16 or any(not isinstance(path, str) or not path.lower().endswith(".pdf") for path in sources):
@@ -206,4 +246,7 @@ def office_pdf_tool(
     if action == "render":
         return owned_office_operation(runtime, "edit", ".png", source_path, output_path, lambda: b"", inspect_pdf, lambda data: render_pdf_page(data, page_number, scale), source_extension=".pdf")
     mapped = "edit" if action == "select" else action
-    return owned_office_operation(runtime, mapped, ".pdf", source_path, output_path, lambda: create_pdf(document), inspect_pdf, lambda data: select_pdf_pages(data, pages))
+    result = owned_office_operation(runtime, mapped, ".pdf", source_path, output_path, create_owned, inspect_pdf, lambda data: select_pdf_pages(data, pages))
+    if result["status"] == "ok":
+        result.update(font_receipt)
+    return result

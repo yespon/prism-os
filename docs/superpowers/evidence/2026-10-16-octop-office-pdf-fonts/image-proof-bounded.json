@@ -1,0 +1,73 @@
+{
+  "readonly_test_font_mount": {
+    "sha256": "79c18ebe7b811951e8311bad7103ebeae8c337ed9988ea69e8a78a66cfe029b9",
+    "target": "/tmp/prismos-test-font.ttc",
+    "scope": "Public system test font only; original native API reads copied owned thread upload"
+  },
+  "image": "sha256:ae87b6a4e870201c162aa29204815aeed1ae4aef3612785a604f4e5f05c9f53c",
+  "files": {
+    "backend/packages/harness/deerflow/tools/builtins/office_fonts.py": {
+      "sha256": "ab89efa77a3a996733c01a945acd744bade3931ad9293e2dc5859483357fba94",
+      "matches": true
+    },
+    "backend/tests/test_office_pdf_fonts.py": {
+      "sha256": "93019f9b3a4533e40eb718a62b326ec5bc4aaafe47f7317c18d293a7eb38cb4a",
+      "matches": true
+    },
+    "backend/tests/fixtures/pdf-fonts/NotoMono-Regular.ttf": {
+      "sha256": "41fd7ccc82375e2a1e47f0cc2c941c14d7c99ba2f57cf69c9f738d07fb257686",
+      "matches": true
+    },
+    "backend/tests/fixtures/pdf-fonts/copyright.txt": {
+      "sha256": "075f91382875da1c4b491f1facf2586f55448705133264d98ce15cab6211b125",
+      "matches": true
+    },
+    "backend/tests/fixtures/pdf-fonts/provenance.json": {
+      "sha256": "31f76e83bd163474cec04faf7fe0dcee86f055d6327fc11b8d6db519b6501eb4",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_xlsx.py": {
+      "sha256": "773e6890badb1db2422b0e2f4a20b1d9c2206f14cb9d835e641e18a7e5b61c75",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_pptx.py": {
+      "sha256": "e77fec2779c420ca0c5ea0eb18c34c0a569f614feca47c68c82a66b3f2073acf",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_common.py": {
+      "sha256": "17b16ccf755048a5020ce6f4d3125ece977f33f6a6892e5036d721c1e789b161",
+      "matches": true
+    },
+    "backend/tests/test_office_charts.py": {
+      "sha256": "36e55eb9f8e6ff10b071361e08d96837d98623363cda5d4ba1b77e087566c021",
+      "matches": true
+    },
+    "backend/tests/test_office_xlsx.py": {
+      "sha256": "5d1a4109f97615ac41c9047dc5c9935d99765658606979986cc1a07c6dfb2d89",
+      "matches": true
+    },
+    "backend/tests/test_office_formats.py": {
+      "sha256": "d6f61dc18630c5f41bafc0b317c3d6f75487d95554113fb521e519240f87c5d0",
+      "matches": true
+    },
+    "backend/tests/test_office_docx.py": {
+      "sha256": "d334bb4c9e90a0af982d48e40142cfa14588d9a9b3023a93fcfd3ecabff5d43f",
+      "matches": true
+    },
+    "backend/tests/test_file_access_http.py": {
+      "sha256": "f1b75ee589ed98a07ae33ad1bdcf54514ca4b0fef9f8e2af9a92a7e7c21eb0d3",
+      "matches": true
+    },
+    "backend/uv.lock": {
+      "sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+      "matches": true
+    },
+    "backend/packages/harness/pyproject.toml": {
+      "sha256": "4802e3a62995b0036f837e264117c0315f558432802b2576320bbc599ded4070",
+      "matches": true
+    }
+  },
+  "network": "none",
+  "default_privileges": true,
+  "container_removed": true
+}

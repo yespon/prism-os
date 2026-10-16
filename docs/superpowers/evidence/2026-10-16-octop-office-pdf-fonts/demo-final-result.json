@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/generate_final_demo.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T01:31:13.105670+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:31:16.245121+00:00"
+}

@@ -1,0 +1,8 @@
+{
+  "native_pdfium_initial_viewed": true,
+  "independent_poppler_initial_viewed": true,
+  "four_intended_Chinese_lines_legible_without_missing_glyph_boxes": true,
+  "final_native_pixels_equal_initial_viewed_pixels": true,
+  "final_native_png_sha256": "38155edcb9a253837552905879fcf9281170b26cbdd3a14d7e2ac5183fe68d13",
+  "final_poppler_png_sha256": "a98a75738a06e5c1a7d4ed893fe6120c3052ecfda5416a36198d3bc7fd19a1f7"
+}

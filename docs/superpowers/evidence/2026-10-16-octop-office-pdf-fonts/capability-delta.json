@@ -1,0 +1,29 @@
+{
+  "base_commit": "b6b886c",
+  "source_imported": "No excluded Octop Office source imported; immutable OFL NotoMono test asset with provenance/notices",
+  "functional_integration": "Original office_pdf explicit current-authorized font_path, native upload/owned creation/download; horizontal precomposed text/CJK",
+  "actual_local_acceptance": {
+    "related-final": "21 passed, 7 warnings in 13.94s",
+    "backend-full-before-table-budget": "2368 passed, 18 skipped, 759 warnings in 2459.78s (0:40:59)",
+    "backend-composite": "2348 unchanged non-font passed + 21 current font passed = 2369 passed, 18 skipped; composite, not one new whole-suite run",
+    "image-runtime-final": "21 passed, 7 warnings in 13.64s",
+    "upgrade-final": [
+      "21 passed, 7 warnings in 12.42s",
+      "21 passed, 7 warnings in 13.05s",
+      "21 passed, 7 warnings in 13.24s"
+    ],
+    "postgres-final": "21 passed, 7 warnings in 17.60s"
+  },
+  "independent_pdf_checks": [
+    "PDFium text/visible Chinese PNG",
+    "Poppler text/embedding facts/visible Chinese PNG"
+  ],
+  "remaining": [
+    "Full complex-script shaping, wrapping and advanced typography",
+    "OCR/forms and full Office fidelity",
+    "Actual expert/delegation/external runtime and original platform goals",
+    "N04 real model/tool/countable ticket, real remote and N07 remote CI"
+  ],
+  "M1_exited": false,
+  "N08_started": false
+}

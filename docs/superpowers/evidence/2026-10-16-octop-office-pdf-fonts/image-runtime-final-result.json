@@ -1,0 +1,30 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-office-pdf-fonts-efc7c6076c04",
+    "--mount",
+    "type=bind,source=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc,target=/tmp/prismos-test-font.ttc,readonly",
+    "-e",
+    "PRISMOS_OFFICE_FONT_CHECK=/tmp/prismos-test-font.ttc",
+    "sha256:9001a645fee15ecabae01f213a0efdd2478112b496724fd146c757fe9211c703",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_office_pdf_fonts.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T01:34:58.662171+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:35:16.159383+00:00"
+}
