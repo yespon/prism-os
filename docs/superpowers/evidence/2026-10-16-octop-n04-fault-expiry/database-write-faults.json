@@ -1,0 +1,186 @@
+{
+  "complete": true,
+  "M1_exited": false,
+  "fault_method": "owned PostgreSQL trigger raises SQLSTATE 55000; sequence hit survives transaction rollback",
+  "scoped_tenant": "t-276660fc4e994418",
+  "cases": [
+    {
+      "scenario": "policy",
+      "complete": true,
+      "incident_id": "0ccf1b4c-7e61-454e-a0c4-93255306dc0a",
+      "agent_id": "2fb643a5-b1b5-4cf7-8808-fe23943eb4c2",
+      "source_id": "f4b7683e-5677-4a06-a29e-a7f965cb10d8",
+      "requests_before": 23,
+      "stream_events": 14,
+      "actual_trigger_hits": 1,
+      "governed": {
+        "enabled": true,
+        "status": null
+      },
+      "facts_during_fault": {
+        "decisions": 0,
+        "policy_audits": 0,
+        "submitted_audits": 0,
+        "submissions": [],
+        "deliveries": [],
+        "legacy_actions": 0
+      },
+      "requests_after": 23
+    },
+    {
+      "scenario": "audit_policy",
+      "complete": true,
+      "incident_id": "75f651e9-75be-4bd1-85fe-eb034a6ee140",
+      "agent_id": "68021086-1425-4430-b575-16245386da8f",
+      "source_id": "2821a35d-eacd-4d33-b8bb-d939a155e477",
+      "requests_before": 23,
+      "stream_events": 13,
+      "actual_trigger_hits": 1,
+      "governed": {
+        "enabled": true,
+        "status": null
+      },
+      "facts_during_fault": {
+        "decisions": 0,
+        "policy_audits": 0,
+        "submitted_audits": 0,
+        "submissions": [],
+        "deliveries": [],
+        "legacy_actions": 0
+      },
+      "requests_after": 23
+    },
+    {
+      "scenario": "audit_result",
+      "complete": true,
+      "incident_id": "737f98f6-128e-4b94-adb5-ad9237899556",
+      "agent_id": "094464a9-7660-4f50-ba3a-9bb4f27ba7c5",
+      "source_id": "628fee93-e0da-4508-8c1e-13af12be5dce",
+      "requests_before": 23,
+      "stream_events": 30,
+      "actual_trigger_hits": 1,
+      "governed": {
+        "enabled": true,
+        "status": "unknown",
+        "decision_id": "decision_718e45ec3930ff208118ec6595e880ee",
+        "approval_id": null,
+        "tenant_id": "t-276660fc4e994418",
+        "actor_id": "usr_6a23ce170e6a3ffc",
+        "workload_id": "diagnosis-agent:n04-gate-af4aae1ed5",
+        "run_id": "run_9f3f1929724346a797db2559be4a5c98",
+        "policy_id": "aiops-ticket-m1",
+        "policy_version": "n04-allow-c9180058",
+        "reason_code": "policy.rule",
+        "ticket_id": null,
+        "can_resume": false
+      },
+      "facts_during_fault": {
+        "decisions": 1,
+        "policy_audits": 1,
+        "submitted_audits": 0,
+        "submissions": [
+          {
+            "status": "unknown",
+            "decision_id": "decision_718e45ec3930ff208118ec6595e880ee",
+            "ticket_id": null
+          }
+        ],
+        "deliveries": [],
+        "legacy_actions": 0
+      },
+      "resume_after_fault_did_not_resend": true,
+      "requests_after": 24
+    },
+    {
+      "scenario": "legacy_action",
+      "complete": true,
+      "incident_id": "86a44966-5097-4b6d-b1a4-868fb9d94e98",
+      "agent_id": "c8d398f0-92e8-4329-98dc-71d8c0ea229f",
+      "source_id": "4d709648-49bd-4798-8b15-411311ab3697",
+      "requests_before": 24,
+      "stream_events": 18,
+      "actual_trigger_hits": 1,
+      "governed": {
+        "enabled": true,
+        "status": "submitted",
+        "decision_id": "decision_b07e7f1b00801fb9dbb0d0f27918cdbf",
+        "approval_id": null,
+        "tenant_id": "t-276660fc4e994418",
+        "actor_id": "usr_6a23ce170e6a3ffc",
+        "workload_id": "diagnosis-agent:n04-gate-8af15bd06d",
+        "run_id": "run_f72a1fcbe9022d2303a5876476ee5e74",
+        "policy_id": "aiops-ticket-m1",
+        "policy_version": "n04-allow-c9180058",
+        "reason_code": "policy.rule",
+        "ticket_id": "N04-25",
+        "can_resume": false
+      },
+      "facts_during_fault": {
+        "decisions": 1,
+        "policy_audits": 1,
+        "submitted_audits": 1,
+        "submissions": [
+          {
+            "status": "submitted",
+            "decision_id": "decision_b07e7f1b00801fb9dbb0d0f27918cdbf",
+            "ticket_id": "N04-25"
+          }
+        ],
+        "deliveries": [
+          {
+            "status": "delivered",
+            "destination": "gateway_jsonl",
+            "attempts": 1,
+            "error_category": null,
+            "event_id": "event_b22b2e466af1ec71f08a8a2f64269d7d"
+          },
+          {
+            "status": "failed",
+            "destination": "incident_action",
+            "attempts": 1,
+            "error_category": "DBAPIError",
+            "event_id": "event_b22b2e466af1ec71f08a8a2f64269d7d"
+          }
+        ],
+        "legacy_actions": 0
+      },
+      "resume_after_fault_did_not_resend": true,
+      "replay": {
+        "original_service_replayed_twice": true
+      },
+      "facts_after_recovery": {
+        "decisions": 1,
+        "policy_audits": 1,
+        "submitted_audits": 1,
+        "submissions": [
+          {
+            "status": "submitted",
+            "decision_id": "decision_b07e7f1b00801fb9dbb0d0f27918cdbf",
+            "ticket_id": "N04-25"
+          }
+        ],
+        "deliveries": [
+          {
+            "status": "delivered",
+            "destination": "gateway_jsonl",
+            "attempts": 1,
+            "error_category": null,
+            "event_id": "event_b22b2e466af1ec71f08a8a2f64269d7d"
+          },
+          {
+            "status": "delivered",
+            "destination": "incident_action",
+            "attempts": 2,
+            "error_category": null,
+            "event_id": "event_b22b2e466af1ec71f08a8a2f64269d7d"
+          }
+        ],
+        "legacy_actions": 1
+      },
+      "original_timeline_restored": true,
+      "requests_after": 25
+    }
+  ],
+  "triggers_and_schema_removed": true,
+  "canary_restored_off": true
+}

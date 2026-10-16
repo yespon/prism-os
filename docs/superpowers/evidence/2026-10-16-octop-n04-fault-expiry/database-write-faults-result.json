@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/run_database_faults.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T05:19:42.924939+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T05:21:30.605983+00:00"
+}
