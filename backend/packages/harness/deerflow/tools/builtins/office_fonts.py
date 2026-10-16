@@ -13,7 +13,8 @@ def _unpack(data, offset, format):
     return struct.unpack_from(format, data, offset)
 
 
-def font_coverage(data):
+def font_character_map(data):
+    """Return validated Unicode-to-glyph IDs, retaining character aliases."""
     if not isinstance(data, bytes) or not 12 <= len(data) <= MAX_FONT_BYTES:
         raise ValueError("PDF font size unavailable")
     offset = 0
@@ -100,7 +101,7 @@ def font_coverage(data):
             if kind == 12:
                 first, _, glyph = entries[index]
                 if first <= code and 0 < glyph + code - first < glyphs:
-                    return True
+                    return glyph + code - first
             elif code <= 0xFFFF:
                 table, starts, segments = entries
                 if code < starts[index]:
@@ -112,7 +113,13 @@ def font_coverage(data):
                 if glyph:
                     glyph = (glyph + delta) & 0xFFFF
                 if 0 < glyph < glyphs:
-                    return True
-        return False
+                    return glyph
+        return 0
 
     return covered
+
+
+def font_coverage(data):
+    """Preserve the existing boolean coverage interface."""
+    characters = font_character_map(data)
+    return lambda code: bool(characters(code))

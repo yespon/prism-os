@@ -1,0 +1,11 @@
+{
+  "original_checks_scope": "Text/download/auth passed; visual failed, not a complete Chinese acceptance",
+  "fixed_native_and_independent_visual_inspection": "Chinese and Latin text readable; ordinary spaces blank; no replacement boxes in inspected report",
+  "images": {
+    "chinese-report-preview.png": "296757872e06e151e316cd362a34763115309e57bdcf6b240fe3b19576fab7eb",
+    "independent-original.png": "f7b3e972140f940747cb45e0ab1ceb98716db796b1ad22fcce75fa2e509f2d9e",
+    "chinese-report-preview-fixed.png": "a7f40ab7cb1e81860788ffbfd3f4f35efc1b1ecc7498dae7c5ba84c4143d94b3",
+    "independent-fixed.png": "e17e498866782c7e81a33719db64ac196686d5c239c0ee2621f9cdb02f4d29e5"
+  },
+  "font_or_pdf_binaries_in_public_evidence": false
+}

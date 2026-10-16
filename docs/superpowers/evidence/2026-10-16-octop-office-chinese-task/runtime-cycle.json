@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "phases": [
+    {
+      "phase": "restart",
+      "pdf_and_preview_sha_unchanged": true,
+      "task_status_history_and_acl": true,
+      "new_model_task_submissions": 0
+    },
+    {
+      "phase": "rollback",
+      "pdf_and_preview_sha_unchanged": true,
+      "task_status_history_and_acl": true,
+      "new_model_task_submissions": 0
+    },
+    {
+      "phase": "reapply",
+      "pdf_and_preview_sha_unchanged": true,
+      "task_status_history_and_acl": true,
+      "new_model_task_submissions": 0
+    }
+  ]
+}

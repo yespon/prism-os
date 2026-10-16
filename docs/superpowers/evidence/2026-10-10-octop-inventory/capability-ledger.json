@@ -1225,7 +1225,8 @@
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-10-octop-inventory",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
       ],
       "original_milestone": "可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -1242,6 +1243,13 @@
           "level": "真实模型已验收；既有框架原生API恢复",
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
           "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        },
+        {
+          "task": "Owned font upload → original expert → Chinese PDF → native PNG preview → current-authorized download/history",
+          "level": "真实模型、字体、PDF及原生渲染已验收",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
+          "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
+          "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
         }
       ]
     }
@@ -4481,7 +4489,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-n04-live",
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
@@ -4492,6 +4501,13 @@
           "level": "真实模型已验收；既有框架原生API恢复",
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
           "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        },
+        {
+          "task": "Owned font upload → original expert → Chinese PDF → native PNG preview → current-authorized download/history",
+          "level": "真实模型、字体、PDF及原生渲染已验收",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
+          "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
+          "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
         }
       ]
     }
@@ -5141,7 +5157,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
         "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5158,6 +5175,13 @@
           "level": "真实模型已验收；既有框架原生API恢复",
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
           "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        },
+        {
+          "task": "Owned font upload → original expert → Chinese PDF → native PNG preview → current-authorized download/history",
+          "level": "真实模型、字体、PDF及原生渲染已验收",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
+          "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
+          "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
         }
       ]
     }
@@ -5767,7 +5791,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
         "docs/superpowers/evidence/2026-10-16-octop-office-user-task",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5778,6 +5803,13 @@
           "level": "真实模型已验收；既有框架原生API恢复",
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
           "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        },
+        {
+          "task": "Owned font upload → original expert → Chinese PDF → native PNG preview → current-authorized download/history",
+          "level": "真实模型、字体、PDF及原生渲染已验收",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
+          "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
+          "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
         }
       ]
     }
@@ -6509,7 +6541,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle",
         "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service",
         "docs/superpowers/evidence/2026-10-16-octop-office-expert-task",
-        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack"
+        "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
@@ -6520,6 +6553,13 @@
           "level": "真实模型已验收；既有框架原生API恢复",
           "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/report-task-acceptance.json",
           "boundaries": "Basic content only; PDF default Latin-1, actual CJK-font task remains pending; advanced Office and N08 durable execution not accepted"
+        },
+        {
+          "task": "Owned font upload → original expert → Chinese PDF → native PNG preview → current-authorized download/history",
+          "level": "真实模型、字体、PDF及原生渲染已验收",
+          "receipt": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-fixed.json",
+          "preview": "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native-preview-fixed.json",
+          "boundaries": "Basic horizontal precomposed Unicode; actual tested font only, not advanced layout/shaping/OCR/forms or all Office parity"
         }
       ]
     }

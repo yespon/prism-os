@@ -1,0 +1,17 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_office_unicode_probe.py",
+    "--source",
+    "docs/superpowers/evidence/2026-10-16-octop-office-expert-task/real-expert-task.json",
+    "--font",
+    "/mnt/c/Windows/Fonts/msyh.ttc",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/real-chinese-task.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T14:55:56.342718+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T14:56:22.446060+00:00"
+}

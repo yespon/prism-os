@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import math
+import struct
 import threading
 import unicodedata
 
@@ -15,7 +16,7 @@ from langchain.tools import ToolRuntime, tool
 from deerflow.runtime import current_file_access
 
 from .office_common import MAX_BYTES, owned_office_operation
-from .office_fonts import font_coverage
+from .office_fonts import font_character_map
 
 PDF_LOCK = threading.RLock()  # PDFium is not thread-safe across documents.
 
@@ -49,22 +50,65 @@ def _line_text(line, coverage):
         raise ValueError("PDF font glyph coverage or complex shaping unavailable")
 
 
+def _unicode_font(document, data, glyphs, characters):
+    """Keep one CID per Unicode character, including aliases sharing one glyph.
+
+    PDFium's automatic mapping can lose U+0020 when a font maps both space and
+    no-break space to the same glyph. Explicit maps preserve both text and ink.
+    """
+    if len(characters) > 65535:
+        raise ValueError("PDF Unicode character limit exceeded")
+    glyph_map = bytearray(2 * (len(characters) + 1))
+    entries = []
+    for cid, code in enumerate(characters, 1):
+        struct.pack_into(">H", glyph_map, cid * 2, glyphs(code))
+        entries.append(f"<{cid:04X}> <{chr(code).encode('utf-16-be').hex().upper()}>")
+    sections = [
+        "/CIDInit /ProcSet findresource begin",
+        "12 dict begin",
+        "begincmap",
+        "/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def",
+        "/CMapName /PrismOS-Unicode def",
+        "/CMapType 2 def",
+        "1 begincodespacerange",
+        "<0000> <FFFF>",
+        "endcodespacerange",
+    ]
+    for start in range(0, len(entries), 100):
+        block = entries[start : start + 100]
+        sections.extend([f"{len(block)} beginbfchar", *block, "endbfchar"])
+    sections.extend(["endcmap", "CMapName currentdict /CMap defineresource pop", "end", "end"])
+    cmap = "\n".join(sections).encode("ascii")
+    font_data = (ctypes.c_ubyte * len(data)).from_buffer_copy(data)
+    cid_data = (ctypes.c_ubyte * len(glyph_map)).from_buffer_copy(glyph_map)
+    font = raw.FPDFText_LoadCidType2Font(document, font_data, len(data), cmap, cid_data, len(glyph_map))
+    if not font:
+        raise ValueError("PDF Unicode font could not be loaded")
+    return font
+
+
 def create_pdf(spec, *, font_bytes=None):
     if not isinstance(spec, dict) or set(spec) != {"pages"} or len(json.dumps(spec)) > 2_000_000:
         raise ValueError("PDF schema unavailable")
     pages = spec["pages"]
     if not isinstance(pages, list) or not 1 <= len(pages) <= 100:
         raise ValueError("PDF pages unavailable")
-    coverage = font_coverage(font_bytes) if font_bytes is not None else None
+    glyphs = font_character_map(font_bytes) if font_bytes is not None else None
+    coverage = (lambda code: bool(glyphs(code))) if glyphs else None
+    characters = set()
+    for lines in pages:
+        if not isinstance(lines, list) or len(lines) > 42:
+            raise ValueError("PDF line limit exceeded")
+        for line in lines:
+            _line_text(line, coverage)
+            if glyphs:
+                characters.update(map(ord, line))
     with PDF_LOCK:
         document = pdfium.PdfDocument.new()
         font = None
         try:
-            if font_bytes is not None:
-                font_data = (ctypes.c_ubyte * len(font_bytes)).from_buffer_copy(font_bytes)
-                font = raw.FPDFText_LoadFont(document, font_data, len(font_bytes), raw.FPDF_FONT_TRUETYPE, True)
-                if not font:
-                    raise ValueError("PDF font could not be loaded")
+            if characters:
+                font = _unicode_font(document, font_bytes, glyphs, sorted(characters))
             for lines in pages:
                 if not isinstance(lines, list) or len(lines) > 42:
                     raise ValueError("PDF line limit exceeded")

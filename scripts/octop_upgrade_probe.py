@@ -117,6 +117,8 @@ def main():
         "scripts/octop_wsl_test_snapshot.py",
         "scripts/octop_office_task_probe.py",
         "scripts/octop_office_report_probe.py",
+        "scripts/octop_office_unicode_probe.py",
+        "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native_preview.py",
         "backend/app/integrations/octop/runtime_prompts.py",
         "backend/tests/test_n04_deployment_snapshot.py",
         "scripts/octop_wsl_test_probe.py",

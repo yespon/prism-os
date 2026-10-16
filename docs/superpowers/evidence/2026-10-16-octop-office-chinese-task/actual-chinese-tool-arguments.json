@@ -1,0 +1,31 @@
+{
+  "action": "create",
+  "document": {
+    "pages": [
+      [
+        "中文项目进度报告",
+        "",
+        "项目名称：PrismOS 集成验收",
+        "",
+        "已完成",
+        "",
+        "已完成恢复服务后的真实模型任务。",
+        "",
+        "待办",
+        "",
+        "待完成完整 Office 与专家任务。",
+        "",
+        "验收标识：",
+        "OFFICE_TASK_1a6a8a07c9",
+        "",
+        "进度概览",
+        "",
+        "当前项目已完成恢复服务后的",
+        "真实模型任务，后续需推进",
+        "完整 Office 与专家任务。"
+      ]
+    ]
+  },
+  "font_path": "/mnt/user-data/uploads/font-4ee19ccb88.ttc",
+  "output_path": "/mnt/user-data/outputs/chinese-report-4ee19ccb88.pdf"
+}

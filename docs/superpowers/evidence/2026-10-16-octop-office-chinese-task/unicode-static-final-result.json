@@ -1,0 +1,15 @@
+{
+  "command": [
+    ".venv/bin/ruff",
+    "check",
+    "../scripts/octop_office_unicode_probe.py",
+    "packages/harness/deerflow/tools/builtins/office_pdf.py",
+    "packages/harness/deerflow/tools/builtins/office_fonts.py",
+    "tests/test_office_pdf_fonts.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T15:22:28.595881+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T15:22:28.609137+00:00"
+}

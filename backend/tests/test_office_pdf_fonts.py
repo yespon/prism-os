@@ -65,7 +65,7 @@ def test_malformed_or_embedding_restricted_fonts_fail_before_native_parse(mutati
     def native(*args):
         pytest.fail("Malformed font reached the native parser")
 
-    monkeypatch.setattr(MODULE.raw, "FPDFText_LoadFont", native)
+    monkeypatch.setattr(MODULE.raw, "FPDFText_LoadCidType2Font", native)
     with pytest.raises(ValueError):
         create_pdf(SPEC, font_bytes=bytes(data))
 
@@ -143,7 +143,7 @@ def test_combined_character_maps_have_one_total_budget_before_native_parse(monke
     def native(*args):
         pytest.fail("Character map budget exceeded before native parsing")
 
-    monkeypatch.setattr(MODULE.raw, "FPDFText_LoadFont", native)
+    monkeypatch.setattr(MODULE.raw, "FPDFText_LoadCidType2Font", native)
     with pytest.raises(ValueError, match="total character map limit"):
         create_pdf(SPEC, font_bytes=bytes(data))
 
@@ -194,6 +194,31 @@ def test_aliased_font_table_payloads_cannot_amplify_copy_budget_before_native_pa
     def native(*args):
         pytest.fail("Aliased table budget reached native parsing")
 
-    monkeypatch.setattr(MODULE.raw, "FPDFText_LoadFont", native)
+    monkeypatch.setattr(MODULE.raw, "FPDFText_LoadCidType2Font", native)
     with pytest.raises(ValueError, match="total table budget"):
         create_pdf(SPEC, font_bytes=bytes(data))
+
+
+def test_font_aliases_keep_space_blank_and_distinct_unicode_text():
+    from deerflow.tools.builtins.office_fonts import font_character_map
+
+    glyph = font_character_map(FONT)
+    data = bytearray(FONT)
+    count = struct.unpack_from(">H", data, 4)[0]
+    record = next(12 + i * 16 for i in range(count) if data[12 + i * 16 : 16 + i * 16] == b"cmap")
+    entries = [(32, glyph(32)), (65, glyph(65)), (66, glyph(66)), (160, glyph(32))]
+    groups = b"".join(struct.pack(">III", code, code, gid) for code, gid in entries)
+    payload = struct.pack(">HHIII", 12, 0, 16 + len(groups), 0, len(entries)) + groups
+    cmap = struct.pack(">HHHHI", 0, 1, 3, 10, 12) + payload
+    data.extend(b"\0" * (-len(data) % 4))
+    struct.pack_into(">II", data, record + 8, len(data), len(cmap))
+    data.extend(cmap)
+    mapped = font_character_map(bytes(data))
+    assert mapped(32) == mapped(160) != 0
+    pdf = create_pdf({"pages": [["A B", "A\u00a0B"]]}, font_bytes=bytes(data))
+    text = inspect_pdf(pdf)["pages"][0]["text"]
+    assert "A B" in text and "A\u00a0B" in text
+    # A shared blank glyph must remain blank for both Unicode spellings.
+    with Image.open(io.BytesIO(render_pdf_page(pdf, 1, 2))) as image:
+        for top in [70, 106]:
+            assert image.convert("RGB").crop((112, top, 123, top + 28)).getextrema() == ((255, 255), (255, 255), (255, 255))
