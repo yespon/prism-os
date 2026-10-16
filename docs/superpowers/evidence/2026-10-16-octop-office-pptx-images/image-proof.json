@@ -1,0 +1,72 @@
+{
+  "image": "sha256:9f19d4074b7feca17114cf57be564636cb81877524a88cfe5e3aa460256811e3",
+  "files": {
+    "backend/packages/harness/deerflow/tools/builtins/office_pptx_images.py": {
+      "sha256": "7469273304142f3be3b8cd6b25b3dd9b795bbf783a9a5939ccd79ef66821e3f2",
+      "matches": true
+    },
+    "backend/tests/test_office_pptx_images.py": {
+      "sha256": "a72c896b9c96632ee1215da2ff4c06c9682f981a3a47cd16bdc530cc758a8535",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_docx_images.py": {
+      "sha256": "ea06d66b7fe490af95c8aca2a4d00600ff2834e02620e0ea38dfa510cca0d477",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_docx.py": {
+      "sha256": "5825fb5af62ac76ea965e027993b5bfc5174672e0645dc5385a2e43fe486c09e",
+      "matches": true
+    },
+    "backend/tests/test_office_docx_images.py": {
+      "sha256": "fc5cf5122c9a15fc68899120dedac45d2b0a5d706d8521a56446229296da4725",
+      "matches": true
+    },
+    "backend/tests/test_office_chart_editing.py": {
+      "sha256": "9abbe2720ccf3f0a5c740e026903a8f860927969fd9e338a663d9049429266db",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_xlsx.py": {
+      "sha256": "773e6890badb1db2422b0e2f4a20b1d9c2206f14cb9d835e641e18a7e5b61c75",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_pptx.py": {
+      "sha256": "21223fc80c19ca93b1b342b9f1787c694ad8636b845c581639f742a21a30790f",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_common.py": {
+      "sha256": "17b16ccf755048a5020ce6f4d3125ece977f33f6a6892e5036d721c1e789b161",
+      "matches": true
+    },
+    "backend/tests/test_office_charts.py": {
+      "sha256": "36e55eb9f8e6ff10b071361e08d96837d98623363cda5d4ba1b77e087566c021",
+      "matches": true
+    },
+    "backend/tests/test_office_xlsx.py": {
+      "sha256": "5d1a4109f97615ac41c9047dc5c9935d99765658606979986cc1a07c6dfb2d89",
+      "matches": true
+    },
+    "backend/tests/test_office_formats.py": {
+      "sha256": "d6f61dc18630c5f41bafc0b317c3d6f75487d95554113fb521e519240f87c5d0",
+      "matches": true
+    },
+    "backend/tests/test_office_docx.py": {
+      "sha256": "db67ce9fc8125cc2f47d9771e4480a213752c400bc12e942b7420a662332a1ce",
+      "matches": true
+    },
+    "backend/tests/test_file_access_http.py": {
+      "sha256": "f1b75ee589ed98a07ae33ad1bdcf54514ca4b0fef9f8e2af9a92a7e7c21eb0d3",
+      "matches": true
+    },
+    "backend/uv.lock": {
+      "sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+      "matches": true
+    },
+    "backend/packages/harness/pyproject.toml": {
+      "sha256": "4802e3a62995b0036f837e264117c0315f558432802b2576320bbc599ded4070",
+      "matches": true
+    }
+  },
+  "network": "none",
+  "default_privileges": true,
+  "container_removed": true
+}

@@ -49,6 +49,7 @@ def main():
         "tests/test_agent_copy_share_boundaries.py",
         "tests/test_office_pdf_fonts.py",
         "tests/test_office_docx_images.py",
+        "tests/test_office_pptx_images.py",
         "tests/test_n04_ticket_receiver.py",
         "tests/test_office_chart_editing.py",
         "tests/test_office_charts.py",
@@ -96,6 +97,8 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "backend/packages/harness/deerflow/tools/builtins/office_pptx_images.py",
+        "backend/tests/test_office_pptx_images.py",
         "scripts/octop_wsl_test_env.py",
         "scripts/octop_wsl_test_probe.py",
         "docker/n04-test/ticket_receiver.py",

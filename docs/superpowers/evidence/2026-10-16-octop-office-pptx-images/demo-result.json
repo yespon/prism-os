@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/generate_demo.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:19:34.074592+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T03:19:38.347108+00:00"
+}

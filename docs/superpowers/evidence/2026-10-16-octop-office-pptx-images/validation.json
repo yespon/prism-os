@@ -1,0 +1,41 @@
+{
+  "complete": true,
+  "base_commit": "0ba4466",
+  "frozen_inputs": 2053,
+  "historical_unchanged_inputs": 2048,
+  "host_lock_sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+  "image": "sha256:9f19d4074b7feca17114cf57be564636cb81877524a88cfe5e3aa460256811e3",
+  "upgrade_inputs": 173,
+  "M1_exited": false,
+  "N08_started": false,
+  "remote_ci_executed": false,
+  "whole_backend_rerun": false,
+  "results": {
+    "related": "90 passed, 23 warnings in 33.50s",
+    "image-runtime": "169 passed, 73 warnings in 206.66s (0:03:26)",
+    "postgres": "169 passed, 73 warnings in 209.29s (0:03:29)",
+    "upgrade": [
+      "169 passed, 73 warnings in 200.23s (0:03:20)",
+      "169 passed, 73 warnings in 145.24s (0:02:25)",
+      "169 passed, 73 warnings in 118.38s (0:01:58)"
+    ]
+  },
+  "raw_log_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/backend-image-build.log": "c4a4ca6f9afdff839301480890369e7522e4a3ca049f70145334a5d8e32eb788",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/brand-staged.log": "c9ccdbd4efae639bb14e5f5f2a8fb19af79855784de9d639d7b6f908c1686a76",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/demo.log": "045a344655f47cf72e647765592c8ed0a6cc4d307fbbebbfee8c53b3299f1601",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/image-runtime.log": "e67c03efc3268fb3beab2e784b85b9fa1332f3a7a5e0013e5dd3f90a1fd31e00",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/postgres.log": "077682b3c170c1696371cc1822c22ab9c278b2cd3ad59ca8358bdcefe785a3c0",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/related.log": "179872545ab71c31737dfd9e4924278b3b81d18d6a9d5bba2f614f39dd1d39df",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pptx-images/logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  },
+  "additional_raw_sha256": {
+    "postgres-runtime.log": "8785f6aff796c6556a72dfa20215a21acfb5ab791ebc4854d4b878774772cd01"
+  },
+  "demo_sha256": {
+    "demo-source.png": "8b7d9402b7a22b404c4f05409fd4d5037e30e60b8fa4b718cc4c8b8954822ff7",
+    "demo-pictured.pptx": "e363bbcf623704e416728af1af271e02f7e5f45e0ca7add08070d75fee600b43",
+    "demo-source.pptx": "c4c95196cfcf0d15aefafb9f35cecfd893c649eef27a28169d3fd03f706d1784"
+  }
+}

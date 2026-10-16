@@ -293,11 +293,13 @@ def edit_pptx_charts(data, changes):
 
 
 @tool("office_pptx", parse_docstring=True)
-def office_pptx_tool(runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None, chart_changes: list[dict] | None = None) -> dict:
+def office_pptx_tool(
+    runtime: ToolRuntime, action: str, source_path: str = "", output_path: str = "", document: dict | None = None, replacements: dict[str, str] | None = None, chart_changes: list[dict] | None = None, images: list[dict] | None = None,
+) -> dict:
     """Create, inspect or edit an owned PPTX without rendering slides or executing content.
 
     Args:
-        action: create, inspect, edit (literal text) or edit_charts (chart data). Desktop rendering, animations and advanced layouts remain pending.
+        action: create, inspect, edit (literal text), edit_charts (chart data) or add_images (owned PNG/JPEG). Desktop rendering, animations and advanced layouts remain pending.
         source_path: Current authorized PPTX for inspect or edit.
         output_path: New /mnt/user-data/outputs/*.pptx, never overwrites; present with present_files.
         document: Create schema: slides list of title, paragraphs (strings) OR table (rectangular strings) OR chart (kind bar/line/pie, optional title, categories strings, series
@@ -306,7 +308,15 @@ def office_pptx_tool(runtime: ToolRuntime, action: str, source_path: str = "", o
         replacements: Literal text replacements in slide text, tables and notes. Cross-run matches adopt the first run style; advanced roundtrip fidelity is not claimed.
         chart_changes: edit_charts list of slide/chart (1-based chart order including groups), document (same chart create schema). Keeps chart kind/position/style; title omitted
             preserves it, empty title removes it. Shared chart/workbook parts require an independent copy.
+        images: add_images list of slide (1-based), source_path (current owned PNG/JPEG), optional left_inches/top_inches/width_inches and alt.
+            Uses aspect ratio, applies EXIF orientation and removes metadata; max 16 new images, 64 pictures total, 4 MiB each and 8 MiB combined. Images must fit inside the slide.
     """
-    edit = (lambda data: edit_pptx_charts(data, chart_changes)) if action == "edit_charts" else (lambda data: edit_pptx(data, replacements))
-    mapped = "edit" if action == "edit_charts" else action
+    if action == "add_images":
+        from .office_pptx_images import add_owned_pptx_images
+
+        def edit(data):
+            return add_owned_pptx_images(runtime, data, images)
+    else:
+        edit = (lambda data: edit_pptx_charts(data, chart_changes)) if action == "edit_charts" else (lambda data: edit_pptx(data, replacements))
+    mapped = "edit" if action in {"edit_charts", "add_images"} else action
     return owned_office_operation(runtime, mapped, ".pptx", source_path, output_path, lambda: create_pptx(document), inspect_pptx, edit)
