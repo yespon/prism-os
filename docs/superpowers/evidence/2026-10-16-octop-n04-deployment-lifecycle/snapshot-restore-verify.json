@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "private_snapshot_directory": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-deployment-snapshot-20261016",
+  "private_restored_files": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-deployment-snapshot-20261016/restored-files-a7193b9cc4ff",
+  "all_file_bytes_and_modes_match": true,
+  "databases": {
+    "prismos": {
+      "tables": 38,
+      "rows": 638,
+      "all_row_digests_match": true
+    },
+    "prismos_auth_db": {
+      "tables": 5,
+      "rows": 91,
+      "all_row_digests_match": true
+    },
+    "prismos_checkpoints": {
+      "tables": 4,
+      "rows": 1966,
+      "all_row_digests_match": true
+    }
+  },
+  "owned_clone_databases_removed": true,
+  "model_configuration": {
+    "configured_model_restored": true,
+    "restored_database_selected": true,
+    "opaque_model_credential_restored": true,
+    "model_request_sent": false,
+    "plaintext_credential_exported": false
+  },
+  "scope": "Full runtime bytes/modes and all database row contents restored into owned clones; optional original model factory validates restored encrypted settings without a model request. Not an application artifact rollback or full restored user-flow claim.",
+  "M1_exited": false
+}

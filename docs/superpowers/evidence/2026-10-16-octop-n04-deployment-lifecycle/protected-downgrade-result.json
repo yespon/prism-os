@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/protected_downgrade.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T08:52:38.199232+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T08:52:40.336634+00:00"
+}

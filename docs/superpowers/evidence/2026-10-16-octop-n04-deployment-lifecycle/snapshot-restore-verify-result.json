@@ -1,0 +1,18 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_snapshot.py",
+    "verify",
+    "--snapshot-dir",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-deployment-snapshot-20261016",
+    "--model-name",
+    "gpt-5.6-luna",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/snapshot-restore-verify.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T08:41:07.900570+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T08:41:17.794296+00:00"
+}
