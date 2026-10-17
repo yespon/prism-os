@@ -7,7 +7,9 @@ cache invalidation between the Gateway and LangGraph Server processes.
 import asyncio
 import logging
 import os
+import threading
 import time
+import weakref
 
 from langchain_core.tools import BaseTool
 
@@ -19,12 +21,32 @@ _MCP_CACHE_TTL_SECONDS = int(os.getenv("MCP_CACHE_TTL_SECONDS", "300"))
 
 _mcp_tools_cache: dict[tuple[str, str, tuple[str, ...] | None], list[BaseTool]] = {}
 _cache_initialized: dict[tuple[str, str, tuple[str, ...] | None], float] = {}
-_initialization_lock = asyncio.Lock()
+_initialization_locks = weakref.WeakKeyDictionary()
+_initialization_locks_guard = threading.Lock()
+
+
+def _loop_initialization_lock():
+    """Serialize a loop's cache fills without sharing loop-bound async locks.
+
+    Both keys and lock references are weak so short-lived runtime worker loops
+    are not kept alive by their own lock's reference back to the loop.
+    """
+    loop = asyncio.get_running_loop()
+    with _initialization_locks_guard:
+        reference = _initialization_locks.get(loop)
+        lock = reference() if reference else None
+        if lock is None:
+            lock = asyncio.Lock()
+            _initialization_locks[loop] = weakref.ref(lock)
+        return lock
+
+
 _last_cache_version: int = 0
 
 
 def _cache_version_file() -> str:
     from deerflow.config.paths import get_paths
+
     return str(get_paths().base_dir / ".mcp_cache_version")
 
 
@@ -70,7 +92,8 @@ def _check_cross_process_invalidation() -> None:
         _cache_initialized.clear()
         logger.info(
             "MCP tools cache cleared via version file (version %d → %d)",
-            _last_cache_version, current_version,
+            _last_cache_version,
+            current_version,
         )
 
 
@@ -86,7 +109,7 @@ async def initialize_mcp_tools(
     """
     cache_key = _make_cache_key(tenant_id, user_id, server_names)
 
-    async with _initialization_lock:
+    async with _loop_initialization_lock():
         if _is_cache_valid(cache_key):
             return _mcp_tools_cache.get(cache_key, [])
 
@@ -112,10 +135,9 @@ def _lazy_init_tools(
         loop = asyncio.get_event_loop()
         if loop.is_running():
             import concurrent.futures
+
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(
-                    asyncio.run, initialize_mcp_tools(tenant_id, user_id, server_names)
-                )
+                future = executor.submit(asyncio.run, initialize_mcp_tools(tenant_id, user_id, server_names))
                 future.result()
         else:
             loop.run_until_complete(initialize_mcp_tools(tenant_id, user_id, server_names))

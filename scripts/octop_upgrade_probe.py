@@ -30,6 +30,9 @@ def main():
     )
     args = parser.parse_args()
     test_files = args.test_file or [
+        "tests/test_mcp_runtime_access.py",
+        "tests/test_agent_mcp_scope.py",
+        "tests/test_mcp_sync_wrapper.py",
         "tests/test_office_pptx_notes.py",
         "tests/test_child_execution_context.py",
         "tests/test_task_tool_core_logic.py",
@@ -107,6 +110,15 @@ def main():
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     contract_paths = [
+        "scripts/octop_mcp_analytics_service.py",
+        "scripts/octop_mcp_test_env.py",
+        "scripts/octop_mcp_task_probe.py",
+        "backend/app/integrations/mcp_access.py",
+        "backend/packages/harness/deerflow/mcp/authorization.py",
+        "backend/packages/harness/deerflow/mcp/tools.py",
+        "backend/packages/harness/deerflow/mcp/cache.py",
+        "backend/tests/test_mcp_runtime_access.py",
+        "backend/tests/test_mcp_sync_wrapper.py",
         "scripts/octop_office_chart_task_probe.py",
         "backend/tests/test_office_pptx_notes.py",
         "scripts/octop_child_task_probe.py",

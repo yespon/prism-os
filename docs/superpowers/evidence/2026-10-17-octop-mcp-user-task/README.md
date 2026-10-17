@@ -1,0 +1,32 @@
+# Selected real MCP analytics → report, with current runtime authority
+
+Branch `codex/octop-integration`, baseline `ee28fa57`. Continues existing O24/O26 and the original user-task ledger; no new milestone, Task/Run schema, N08 start or full-parity claim.
+
+## Usable task and actual scope
+
+Authenticated native test product (18036) → selected Agent/server → upload synthetic CSV with unpredictable marker → configured `gpt-5.6-luna` reads it → real HTTP MCP tool executes SQLite aggregation in an independently running owned target → native Markdown report → download/fresh-login history/current ACL.
+
+`real-mcp-task.json` first proved the existing registration/adapter path usable. `real-mcp-current.json` then preserved a real failure introduced by requiring an ID at an existing ordinary named entry. The existing host identity resolver repairs that compatibility without relaxing thread/member/Agent checks. `real-mcp-current-recovered.json` continues that same failed Agent/thread/attachment and only creates its previously absent output. It completes actual computation and report delivery. `real-mcp-after-restart.json` rechecks its unchanged report/hash/history/current ACL without another model call.
+
+The self-hosted target genuinely parses CSV and queries SQLite; it is not a model stub or echo. It is a test service with synthetic data, not an enterprise business connector or acceptance of the Octop browser/memory/gateway/Harness SDKs. It supports one bounded, read-only computation. Its counter is explicitly **successful completed tool analyses**, not all HTTP/MCP requests or failed invocations. Separate invalid-RPC evidence does not call an unchanged success counter “zero outbound calls.”
+
+## Preserved defects and repair
+
+* `cached-disable-before.json`: load actual tools, disable via the product configuration API, invoke the previously loaded object inside an actual graph; valid target call completed and incremented the success counter. `cached-disable-after.json` uses the host adapter and same real service: current disabled configuration rejects dispatch, no counter increment, configuration restored.
+* `cache-overlap-before.json`: three real discoveries under controlled overlap on independent event loops produced a lock error and a timeout. `cache-overlap-after.json`: all complete. Per-loop locks retain same-loop discovery deduplication without retaining short-lived loops.
+* Current host guards check tenant/user/thread/current account/member/Agent ownership/status/groups and the exact current effective connection fingerprint before dispatch and result delivery. A changed connection requires reloading tools. The MCP loader binds exact per-server discovery provenance rather than guessing a tool-name prefix. Sync bridging copies private runtime context. Ordinary/legacy named identity resolves through the existing host seam and stays pinned within that call. Host-private diagnosis source/incident constraints remain in protected calls.
+* Post-dispatch authorization/storage failure withholds the result and explicitly warns against automatically repeating the tool; the wrapper never replays it. This does not introduce exactly-once semantics or a durable external-action recovery engine. Generic write-effect classification/Policy mapping, broader SecretRef/OAuth lifecycle and full MCP catalog acceptance remain original outstanding work. Existing Policy/Approval/Action/Audit paths are retained; this ordinary read-only test is not a new real incident-governed MCP acceptance.
+
+The first standalone sync test assumed no host registration; its setup now explicitly selects standalone behavior. All previous failure receipts remain. `service-error-recovery.json` records an actual invalid-input RPC returning a tool error and then one valid guarded follow-up; no model is simulated or called by that protocol check.
+
+## Validation and configuration references
+
+Related host and final network-disabled image checks cover current authority, pre/post failures, protected scope, ordinary named compatibility, original graph/child/read behavior and MCP/OAuth/server selection. `upgrade.json` covers the initial guard/cache inputs; `upgrade-final.json` reruns changed named/protected/probe contracts while unchanged MCP client/OAuth/selection inputs retain their earlier exact-hash receipt. No old full backend run is relabeled current; frontend, lock, schemas and retained upstream source remain unchanged.
+
+Main image lifecycle checks retain the earlier Office charts/notes/originals/child document. The first restart recheck got a transient public-login 502; `runtime-cycle.json` stays failed. `runtime-cycle-v2.json` adds read-only readiness on the actual gateway session entry before login and verifies restart/previous accepted image/reapplication. These are main-image and main-result checks. The MCP task is accepted on the separate native runtime, whose restart and unchanged report are independently checked; it is not misrepresented as executing in the main container or under the previous image.
+
+No additional model configuration is needed in the existing owned environment. Use the configured `gpt-5.6-luna`; native UI `http://localhost:18036`, main UI `http://localhost:18026`. MCP binding: ignored owner-only `backend/tmp/n04-wsl/native-profile/analytics-service/binding.json`; token reference: its sibling `token` file; model/native settings: existing private `config.yaml` and `live-fixture.json`. Never paste their values into evidence. The source scripts `octop_mcp_test_env.py` and `octop_mcp_analytics_service.py` prepare an owned fresh target and refuse overwriting existing state. The running target is loopback-only at 18041, with recorded PID/starttime/exact command ownership. Full WSL shutdown recovery is not claimed.
+
+To validate the already accepted task, run `scripts/octop_mcp_task_probe.py --resume <accepted receipt> --output <new receipt>` with the existing backend Python. It submits no model task. Default invocation performs a new actual task. `--retry-failed` is limited to a failed terminal thread with no existing output; it never resubmits an accepted task. No keys, main MCP configuration changes, push, remote CI or production deployment are required for this local acceptance.
+
+All original N01–N15/O01–O42/F01–F12 and exits remain. M1 is open, N08 unstarted; remote targets/full tools, universal Secret purposes, original M1 gates/remote CI, complete experts/Office/external runtimes and later milestones remain.

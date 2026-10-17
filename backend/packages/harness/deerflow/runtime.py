@@ -47,6 +47,7 @@ _skill_prompt_provider: Callable[..., str | None] | None = None
 _skill_file_provider: Callable[..., Any] | None = None
 _skill_command_provider: Callable[..., Any] | None = None
 _file_access_provider: Callable[..., Any] | None = None
+_mcp_tool_authorizer: Callable[..., Any] | None = None
 _loaded_adapter_module: str | None = None
 
 
@@ -166,6 +167,15 @@ def get_skill_command_provider():
     return _skill_command_provider
 
 
+def register_mcp_tool_authorizer(provider: Callable[..., Any]) -> None:
+    global _mcp_tool_authorizer
+    _mcp_tool_authorizer = provider
+
+
+def get_mcp_tool_authorizer() -> Callable[..., Any] | None:
+    return _mcp_tool_authorizer
+
+
 def register_file_access_provider(provider: Callable[..., Any]) -> None:
     global _file_access_provider
     _file_access_provider = provider
@@ -202,6 +212,8 @@ def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
     global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider, _file_access_provider, _execution_middleware_provider
+    global _mcp_tool_authorizer
+    _mcp_tool_authorizer = None
     _file_access_provider = None
     _execution_middleware_provider = None
     _skill_command_provider = None

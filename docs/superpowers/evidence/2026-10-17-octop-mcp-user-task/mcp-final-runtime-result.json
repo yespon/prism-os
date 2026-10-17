@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/final_runtime_proof.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-17T00:01:12.528073+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-17T00:01:14.055047+00:00"
+}

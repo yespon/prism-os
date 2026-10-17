@@ -1,0 +1,16 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_mcp_task_probe.py",
+    "--resume",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current.json",
+    "--retry-failed",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:48:47.045304+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:49:18.752555+00:00"
+}

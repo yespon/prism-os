@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/config_isolation.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-17T00:02:15.947333+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-17T00:02:16.944587+00:00"
+}

@@ -4554,7 +4554,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
         "docs/superpowers/evidence/2026-10-17-octop-child-user-task",
-        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task",
+        "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task"
       ],
       "original_milestone": "运行与资源闭环",
       "full_capability_accepted": false,
@@ -4591,6 +4592,12 @@
           "level": "真实模型已验收；owned main image",
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
           "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
+        },
+        {
+          "task": "Selected real self-hosted MCP CSV/SQLite analysis → real-model report/download/history; cached disable and parallel discovery repaired; ordinary named failure recovered in its original thread",
+          "level": "真实模型/自有MCP目标已验收；独立WSL原生环境18036",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json",
+          "boundaries": "One read-only self-hosted target; not enterprise connectors or full external SDK/browser/IM acceptance. Pre/post current authority and errors verified; generic write Policy/effect/recovery, universal Secret/OAuth lifecycle remain. Main image tests/lifecycle and native task restart are separately scoped."
         }
       ]
     }
@@ -5255,7 +5262,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
         "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
         "docs/superpowers/evidence/2026-10-17-octop-child-user-task",
-        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task",
+        "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5305,6 +5313,12 @@
           "level": "真实模型已验收；owned main image",
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
           "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
+        },
+        {
+          "task": "Selected real self-hosted MCP CSV/SQLite analysis → real-model report/download/history; cached disable and parallel discovery repaired; ordinary named failure recovered in its original thread",
+          "level": "真实模型/自有MCP目标已验收；独立WSL原生环境18036",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json",
+          "boundaries": "One read-only self-hosted target; not enterprise connectors or full external SDK/browser/IM acceptance. Pre/post current authority and errors verified; generic write Policy/effect/recovery, universal Secret/OAuth lifecycle remain. Main image tests/lifecycle and native task restart are separately scoped."
         }
       ]
     }
@@ -5436,7 +5450,7 @@
   {
     "id": "O24",
     "capability": "Connector 目录、实例、OAuth/API Key、刷新、健康及 MCP 装配",
-    "status": "pending: full source archived; no new equivalence exit claimed",
+    "status": "partial: selected self-hosted MCP analytics user task accepted; complete catalog, Secret/OAuth lifecycle and governed write effects pending",
     "full_parity": false,
     "owner_role": "platform/product integration; role only",
     "permissions": [
@@ -5516,7 +5530,33 @@
       "endpoint:connectors.py:test_custom_mcp:642",
       "endpoint:connectors.py:test_instance:990"
     ],
-    "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior"
+    "verification_rule": "All explicit subcapabilities and directory entries require host success/deny/recovery/fault evidence; hashes are not behavior",
+    "task_acceptance": {
+      "octop_task_baseline": "Configured connectors/MCP servers supply selected Agent tools for actual user tasks",
+      "baseline_source": "Original capability children and docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md; pinned b6 eb28011249c02cafd389b2d424294c6c1b9cf422",
+      "current_entry": [
+        "GET/PUT /api/mcp/config",
+        "Agent tool_groups selection",
+        "Authenticated chat stream and report artifact/history"
+      ],
+      "current_status": "功能已接入；选择MCP工具→真实模型/自有MCP目标→报告/历史已验收；完整目录仍待",
+      "missing_chain": "Full original Connector/internal MCP/plugin catalog, enterprise targets, generic SecretRef/OAuth/refresh, governed write effect classification and durable recovery remain; N08/N10 prerequisites unchanged",
+      "acceptance_scenario": "Selected MCP server → actual model/tool computation → native report → download/history/current authority",
+      "valid_evidence": [
+        "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task"
+      ],
+      "original_milestone": "知识与连接器；既有运行与资源闭环工具接缝",
+      "full_capability_accepted": false,
+      "reviewed_on": "2026-10-17",
+      "accepted_user_tasks": [
+        {
+          "task": "Selected real self-hosted MCP CSV/SQLite analysis → real-model report/download/history; cached disable and parallel discovery repaired; ordinary named failure recovered in its original thread",
+          "level": "真实模型/自有MCP目标已验收；独立WSL原生环境18036",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json",
+          "boundaries": "One read-only self-hosted target; not enterprise connectors or full external SDK/browser/IM acceptance. Pre/post current authority and errors verified; generic write Policy/effect/recovery, universal Secret/OAuth lifecycle remain. Main image tests/lifecycle and native task restart are separately scoped."
+        }
+      ]
+    }
   },
   {
     "id": "O25",
@@ -5606,7 +5646,7 @@
   {
     "id": "O26",
     "capability": "内部 MCP、工具发现/启停、Agent 工具与插件开关",
-    "status": "pending: full source archived; no new equivalence exit claimed",
+    "status": "partial: selected self-hosted MCP analytics user task accepted; complete catalog, Secret/OAuth lifecycle and governed write effects pending",
     "full_parity": false,
     "owner_role": "platform/product integration; role only",
     "permissions": [
@@ -5907,8 +5947,8 @@
         "Agent tool groups + chat native tool calls",
         "office_docx / office_xlsx / office_pptx / office_pdf in lead_agent"
       ],
-      "current_status": "功能已接入；基本四格式任务真实模型已验收；原完整能力范围其余子项仍待",
-      "missing_chain": "All native tool groups user tasks; full Office capabilities; real device/remote tools",
+      "current_status": "功能已接入；选择MCP工具→真实模型/自有MCP目标→报告/历史已验收；完整目录仍待",
+      "missing_chain": "Full original Connector/internal MCP/plugin catalog, enterprise targets, generic SecretRef/OAuth/refresh, governed write effect classification and durable recovery remain; N08/N10 prerequisites unchanged",
       "acceptance_scenario": "Upload brief → real model read/create/present DOCX → download → new-session history → deny nonowner",
       "valid_evidence": [
         "docs/superpowers/evidence/2026-10-16-octop-office-docx-images",
@@ -5917,7 +5957,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-office-report-pack",
         "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task",
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
-        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task"
+        "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
+        "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task"
       ],
       "original_milestone": "运行与资源闭环；可恢复执行与完整功能包",
       "full_capability_accepted": false,
@@ -5949,6 +5990,12 @@
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-current.json",
           "current_entry": "http://localhost:18036 (owned WSL native test profile)",
           "boundaries": "Manual synthetic memory reconciliation; full expertise/delegation/heartbeat/external delivery/universal Bash governance remain pending"
+        },
+        {
+          "task": "Selected real self-hosted MCP CSV/SQLite analysis → real-model report/download/history; cached disable and parallel discovery repaired; ordinary named failure recovered in its original thread",
+          "level": "真实模型/自有MCP目标已验收；独立WSL原生环境18036",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json",
+          "boundaries": "One read-only self-hosted target; not enterprise connectors or full external SDK/browser/IM acceptance. Pre/post current authority and errors verified; generic write Policy/effect/recovery, universal Secret/OAuth lifecycle remain. Main image tests/lifecycle and native task restart are separately scoped."
         }
       ]
     }
@@ -6685,7 +6732,8 @@
         "docs/superpowers/evidence/2026-10-16-octop-governed-readers",
         "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task",
         "docs/superpowers/evidence/2026-10-17-octop-child-user-task",
-        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task"
+        "docs/superpowers/evidence/2026-10-17-octop-office-chart-task",
+        "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task"
       ],
       "original_milestone": "运行与资源闭环；原平台全生命周期与持续升级",
       "full_capability_accepted": false,
@@ -6729,6 +6777,12 @@
           "level": "真实模型已验收；owned main image",
           "receipt": "docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json",
           "boundaries": "Basic editable charts and speaker notes only; no desktop rendering or full Office fidelity. Original ambiguous-note acceptance failure retained and repaired in same thread; immutable original files retained."
+        },
+        {
+          "task": "Selected real self-hosted MCP CSV/SQLite analysis → real-model report/download/history; cached disable and parallel discovery repaired; ordinary named failure recovered in its original thread",
+          "level": "真实模型/自有MCP目标已验收；独立WSL原生环境18036",
+          "receipt": "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json",
+          "boundaries": "One read-only self-hosted target; not enterprise connectors or full external SDK/browser/IM acceptance. Pre/post current authority and errors verified; generic write Policy/effect/recovery, universal Secret/OAuth lifecycle remain. Main image tests/lifecycle and native task restart are separately scoped."
         }
       ]
     }

@@ -30,6 +30,7 @@ from deerflow.runtime import (
     register_execution_validator,
     register_file_access_provider,
     register_governed_action_provider,
+    register_mcp_tool_authorizer,
     register_skill_command_provider,
     register_skill_file_provider,
     register_skill_prompt_provider,
@@ -377,6 +378,9 @@ def register_runtime_adapters() -> None:
     register_skill_prompt_provider(_current_skill_prompt)
     register_skill_file_provider(_current_skill_member)
     register_file_access_provider(_current_file_access)
+    from app.integrations.mcp_access import authorize_mcp_tool
+
+    register_mcp_tool_authorizer(authorize_mcp_tool)
     register_skill_command_provider(_current_skill_command)
 
 

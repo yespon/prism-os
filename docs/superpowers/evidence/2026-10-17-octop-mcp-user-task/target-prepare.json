@@ -1,0 +1,20 @@
+{
+  "complete": true,
+  "scope": "owned loopback native-profile target only",
+  "url": "http://127.0.0.1:18041/mcp",
+  "server_name": "owned_analytics_d162d469",
+  "process": {
+    "pid": 3103024,
+    "starttime": "14858101",
+    "cmdline_sha256": "5917b2a4cae50573127331c3af2f6dcab4923d04b7216f15eab02c9a1861e3cf",
+    "nonce": "35f1cede46f17373f3a472d30b337fda",
+    "command": [
+      "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+      "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_mcp_analytics_service.py"
+    ]
+  },
+  "service_source_sha256": "0ca805c84a392086b981f9a1d9aa05b0ac60b649328f592bd707bcc65551aa35",
+  "anonymous_stats_denied": true,
+  "real_tool_calls_at_start": 0,
+  "main_config_unchanged": true
+}

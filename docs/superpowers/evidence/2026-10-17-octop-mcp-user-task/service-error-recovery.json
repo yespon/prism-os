@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "new_model_task_submissions": 0,
+  "scope": "real guarded MCP RPC; success counter excludes rejected/failed invocations",
+  "invalid_rpc_outbound": true,
+  "invalid_input_rejected_error_type": "ToolException",
+  "successful_calls_before": 3,
+  "successful_calls_after": 4,
+  "valid_followup_completed": true
+}

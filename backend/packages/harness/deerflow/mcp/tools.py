@@ -5,6 +5,7 @@ import atexit
 import concurrent.futures
 import logging
 from collections.abc import Callable
+from contextvars import copy_context
 from typing import Any
 
 from langchain_core.tools import BaseTool
@@ -43,7 +44,7 @@ def _make_sync_tool_wrapper(coro: Callable[..., Any], tool_name: str) -> Callabl
         try:
             if loop is not None and loop.is_running():
                 # Use global executor to avoid nested loop issues and improve performance
-                future = _SYNC_TOOL_EXECUTOR.submit(asyncio.run, coro(*args, **kwargs))
+                future = _SYNC_TOOL_EXECUTOR.submit(copy_context().run, asyncio.run, coro(*args, **kwargs))
                 return future.result()
             else:
                 return asyncio.run(coro(*args, **kwargs))
@@ -129,12 +130,24 @@ async def get_mcp_tools(
         client = MultiServerMCPClient(servers_config, tool_interceptors=tool_interceptors, tool_name_prefix=True)
 
         # Get all tools from all servers
-        tools = await client.get_tools()
+        from deerflow.mcp.authorization import configuration_fingerprint, guard_mcp_tool
+
+        tools = []
+        seen_names = set()
+        for server_name in servers_config:
+            # Bind exact discovery provenance, never guess a server by tool-name prefix.
+            discovered = await client.get_tools(server_name=server_name)
+            binding = {"tenant_id": tenant_id, "user_id": user_id, "server_name": server_name, "configuration_sha256": configuration_fingerprint(server_name, mcp_servers[server_name])}
+            for tool in discovered:
+                if tool.name in seen_names:
+                    raise ValueError("Ambiguous MCP tool identity")
+                seen_names.add(tool.name)
+                tools.append(guard_mcp_tool(tool, binding))
         logger.info(f"Successfully loaded {len(tools)} tool(s) from MCP servers")
         
         # Patch tools to support sync invocation, as deerflow client streams synchronously
         for tool in tools:
-            if getattr(tool, "func", None) is None and getattr(tool, "coroutine", None) is not None:
+            if getattr(tool, "coroutine", None) is not None:
                 tool.func = _make_sync_tool_wrapper(tool.coroutine, tool.name)
 
         return tools

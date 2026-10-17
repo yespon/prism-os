@@ -1,0 +1,45 @@
+{
+  "complete": true,
+  "actual_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "server_name": "owned_analytics_d162d469",
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/native-profile/mcp-task-6026a02a34",
+  "new_model_task_submissions": 1,
+  "agent_id": "b2c61100-49f8-4743-ada9-e7519186372b",
+  "agent_name": "mcp-task-6026a02a34",
+  "thread_id": "b508a8fb-efa7-4d30-8b4f-b413b146a480",
+  "marker": "MCP_TASK_9ec6b8a3858338956f9e8e85",
+  "output_path": "/mnt/user-data/outputs/mcp-revenue-6026a02a34.md",
+  "receiver_before": 0,
+  "actual_tool_calls": [
+    {
+      "id": "call_fr3e0qzp3e4gdl6qlf35PBnP",
+      "name": "read_file",
+      "action": null
+    },
+    {
+      "id": "call_n83QOYww27qyaXaokhR5Z1m0",
+      "name": "owned_analytics_d162d469_analyze_revenue",
+      "action": null
+    },
+    {
+      "id": "call_FkirO9TKd5n8U6shbcfRwBbO",
+      "name": "write_file",
+      "action": null
+    },
+    {
+      "id": "call_y2ugZ2AELAPlQTiM3AE7aZwV",
+      "name": "present_files",
+      "action": null
+    }
+  ],
+  "run_id": "01a1470b-f0d7-75d2-95ae-abb85b6e6eba",
+  "run_status": "success",
+  "artifact_url": "/api/threads/b508a8fb-efa7-4d30-8b4f-b413b146a480/artifacts/mnt/user-data/outputs/mcp-revenue-6026a02a34.md?download=true",
+  "artifact_sha256": "4003cd875548d2b79e54f1121e9d2b90bc980c542720515a9a1e0711d38e8d70",
+  "artifact_bytes": 573,
+  "receiver_after": 1,
+  "actual_matching_mcp_calls": 1,
+  "real_sqlite_result_verified": true,
+  "fresh_login_history_and_current_acl": true
+}

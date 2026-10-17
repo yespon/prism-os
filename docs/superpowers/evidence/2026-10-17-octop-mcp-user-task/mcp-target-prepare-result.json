@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_mcp_test_env.py",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/target-prepare.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:27:15.514931+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:27:17.292113+00:00"
+}
