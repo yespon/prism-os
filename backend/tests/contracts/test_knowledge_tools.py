@@ -43,12 +43,16 @@ async def test_search_tool_returns_cited_context(tmp_path, monkeypatch):
     from app.knowledge.index import KnowledgeIndex
     from app.knowledge.retrieve import hash_embed_chunks
     from app.models import knowledge as _knowledge_models  # noqa: F401
+    from deerflow.database import models as _deerflow_models  # noqa: F401  (tenant_model_configs)
 
     engine = create_async_engine(f"sqlite+aiosqlite:///{tmp_path / 'tool.db'}")
     async with engine.begin() as connection:
         await connection.run_sync(SQLModel.metadata.create_all)
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     service = KnowledgeService(factory)
+    from app.knowledge import embedding as embedding_module
+
+    monkeypatch.setattr(embedding_module, "get_session_factory", lambda: factory)
 
     base = await service.create_base("t1", "owner-1", "runbooks")
     document = await service.add_document(

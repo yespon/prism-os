@@ -29,6 +29,8 @@ def _client(monkeypatch, tmp_path):
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     service = KnowledgeService(factory)
     monkeypatch.setattr(routes, "_service", lambda: service)
+    from app.knowledge import embedding as embedding_module
+    monkeypatch.setattr(embedding_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(routes, "get_session_factory", lambda: factory)
 
     monkeypatch.setattr(auth, "_resolve_user_from_auth_db", lambda token: ("user-1", "user", False) if token == "valid" else None)

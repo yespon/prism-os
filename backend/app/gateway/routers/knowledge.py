@@ -175,7 +175,9 @@ async def _index_document(storage, tenant_id: str, kb_id: str, document) -> obje
             text = parse_document(_Path(tmp.name))
         chunks = chunk_text(text)
         if chunks:
-            embeddings = _embed_chunks(chunks)
+            from app.knowledge.embedding import embed_for_tenant
+
+            embeddings = await embed_for_tenant(tenant_id, chunks)
             index = KnowledgeIndex(tenant_id, kb_id)
             index.replace_doc_chunks(
                 document.id, chunks, embeddings,
@@ -202,20 +204,3 @@ async def _index_document(storage, tenant_id: str, kb_id: str, document) -> obje
     document.indexed_at = row_indexed_at
     return document
 
-
-def _embed_chunks(chunks: list[str]) -> list[list[float]]:
-    """R2 embedding seam: deterministic local hashing when no remote embedding is configured.
-
-    A real embedding endpoint plugs in here in week 2 (retrieval quality);
-    the hash embedding keeps the upload->index->ready loop complete and
-    deterministic for the acceptance scenarios.
-    """
-    dimensions = 64
-    vectors: list[list[float]] = []
-    for text in chunks:
-        vector = [0.0] * dimensions
-        for token in text.lower().split():
-            digest = int(sha256(token.encode()).hexdigest()[:8], 16)
-            vector[digest % dimensions] += 1.0
-        vectors.append(vector)
-    return vectors

@@ -24,6 +24,11 @@ async def service(tmp_path, monkeypatch):
     async with engine.begin() as connection:
         await connection.run_sync(SQLModel.metadata.create_all)
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    # Retrieval resolves the embedding model through the same factory: with no
+    # embedding row configured it degrades to the deterministic hash vectors.
+    from app.knowledge import embedding as embedding_module
+
+    monkeypatch.setattr(embedding_module, "get_session_factory", lambda: factory)
     yield KnowledgeService(factory)
     await engine.dispose()
 

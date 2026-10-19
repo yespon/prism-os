@@ -7,8 +7,9 @@ citation marker are unchanged; the seams are:
 - visibility: upstream user_id/is_admin -> PrismOS KnowledgeService
   per-call membership check (revocation is immediate);
 - readiness: upstream document.status -> index_state == "ready";
-- embedding: injected through the embedding function so the deterministic
-  week-1 hash vectors and the week-2 remote endpoint share one path.
+- embedding: tenant-level dispatch (app.knowledge.embedding) so indexed
+  documents and queries share one vector space; switching a tenant's
+  embedding model requires reindexing existing documents.
 """
 
 from __future__ import annotations
@@ -111,7 +112,6 @@ async def retrieve_chunks(
     knowledge_base_ids: Sequence[str],
     *,
     k: int = DEFAULT_RETRIEVAL_K,
-    embed: EmbeddingFn = hash_embed_chunks,
 ) -> list[RetrievedChunk]:
     """Search the caller's visible knowledge bases and return cited chunks.
 
@@ -127,7 +127,9 @@ async def retrieve_chunks(
     if not selected_ids:
         return []
 
-    query_vector = embed([query_text])[0]
+    from app.knowledge.embedding import embed_for_tenant
+
+    query_vector = (await embed_for_tenant(tenant_id, [query_text]))[0]
     ranked: list[tuple[float, RetrievedChunk]] = []
     for kb_id in selected_ids:
         if not await service.can_read(tenant_id, kb_id, user_id):
