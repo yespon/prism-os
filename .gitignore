@@ -76,3 +76,6 @@ backend/packages/octop-capabilities/src/prismos_octop/data/**/*.pyc
 
 # Local owned compatibility contexts and validation artifacts
 backend/tmp/
+
+# Desktop shell fork (R4): Wails binary build outputs stay out of git
+desktop-shell-fork/src/build/bin/
