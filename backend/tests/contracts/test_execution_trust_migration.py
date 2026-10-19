@@ -18,7 +18,7 @@ def test_execution_trust_migration_round_trip(tmp_path) -> None:
     with sqlite3.connect(db_path) as connection:
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         assert {"platform_thread_bindings", "platform_execution_capabilities", "platform_legacy_audit_deliveries"} <= tables
-        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "p0j1k2l3m4n5"
+        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "q1k2l3m4n5o6"
         columns = {row[1] for row in connection.execute("PRAGMA table_info(platform_execution_capabilities)")}
         assert "action_incident_id" in columns
     command.downgrade(config, "l6f7g8h9i0j1")

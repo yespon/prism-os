@@ -18,6 +18,7 @@ from app.gateway.routers import (
     channels,
     files,
     knowledge,
+    schedules,
     langgraph_proxy,
     mcp,
     memory,
@@ -353,6 +354,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # File Center API — unified file and folder management
     app.include_router(files.router)
     app.include_router(knowledge.router)
+    app.include_router(schedules.router)
 
     # Summarization settings API (tenant-admin)
     app.include_router(summarization.router)
