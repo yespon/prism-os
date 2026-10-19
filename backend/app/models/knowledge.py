@@ -61,7 +61,7 @@ class ConnectorCatalogRecord(SQLModel, table=True):
     tenant_id: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
     kind: str = Field(sa_column=Column(String(64), nullable=False))
     display_name: str = Field(sa_column=Column(String(255), nullable=False))
-    schema_json: str = Field(sa_column=Column(Text, nullable=False))
+    config_schema_json: str = Field(sa_column=Column("schema_json", Text, nullable=False))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
 
 
