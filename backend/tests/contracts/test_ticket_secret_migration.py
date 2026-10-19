@@ -12,7 +12,7 @@ def test_secret_schema_upgrade_and_nonempty_downgrade_protection(tmp_path):
     database = tmp_path / "ticket-secret-migration.db"
     config = Config(str(Path("alembic.ini").resolve()))
     config.set_main_option("sqlalchemy.url", f"sqlite+aiosqlite:///{database}")
-    assert ScriptDirectory.from_config(config).get_heads() == ["o9i0j1k2l3m4"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["p0j1k2l3m4n5"]
     command.upgrade(config, "head")
     with sqlite3.connect(database) as conn:
         conn.execute("INSERT INTO platform_ticket_secrets VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
