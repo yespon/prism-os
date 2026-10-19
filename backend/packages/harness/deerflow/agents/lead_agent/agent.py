@@ -301,6 +301,20 @@ def make_lead_agent(config, runtime: ServerRuntime | None = None):
         execution_middlewares = middleware_provider(trusted_action) if trusted_action and middleware_provider else []
         governed_names = {tool.name for tool in action_tools if getattr(tool, "name", None)}
         available_tools = [tool for tool in available_tools if getattr(tool, "name", None) not in governed_names]
+        from deerflow.runtime import get_agent_tool_provider
+
+        agent_tool_provider = get_agent_tool_provider()
+        if agent_tool_provider is not None:
+            extra_context = {
+                "tenant_id": tenant_id,
+                "user_id": user_id,
+                "agent_name": agent_name,
+                "agent_id": getattr(agent_config, "id", None) if agent_config else None,
+                "meta_info": getattr(agent_config, "meta_info", None) if agent_config else None,
+            }
+            extra_tools = agent_tool_provider(extra_context) or []
+            extra_names = {getattr(tool, "name", None) for tool in extra_tools}
+            available_tools = [tool for tool in available_tools if getattr(tool, "name", None) not in extra_names] + extra_tools
         return create_agent(
             model=create_chat_model(name=model_name, thinking_enabled=thinking_enabled, reasoning_effort=reasoning_effort),
             tools=available_tools + action_tools,

@@ -39,6 +39,7 @@ _agent_lister: AgentLister | None = None
 _agent_persister: AgentPersister | None = None
 _terminal_provider: dict[str, Any] | None = None
 _governed_action_provider: Callable[[dict[str, str]], list[Any]] | None = None
+_agent_tool_provider: Callable[[dict[str, Any]], list[Any]] | None = None
 _execution_middleware_provider: Callable[[dict[str, str] | None], list[Any]] | None = None
 _execution_validator: ExecutionValidator | None = None
 _agent_identity_provider: Callable[..., Any] | None = None
@@ -96,6 +97,21 @@ def register_governed_action_provider(provider: Callable[[dict[str, str]], list[
     """Register a host-owned Tool factory for a verified graph execution."""
     global _governed_action_provider
     _governed_action_provider = provider
+
+
+def register_agent_tool_provider(provider: Callable[[dict[str, Any]], list[Any]]) -> None:
+    """Register a host-owned extra-Tool factory for any agent execution.
+
+    The provider receives the agent execution context (tenant/user/agent
+    identity and configuration) and returns tools to append after the
+    group-selected tools. Returning an empty list means no extra tools.
+    """
+    global _agent_tool_provider
+    _agent_tool_provider = provider
+
+
+def get_agent_tool_provider() -> Callable[[dict[str, Any]], list[Any]] | None:
+    return _agent_tool_provider
 
 
 def register_execution_middleware_provider(provider: Callable[[dict[str, str] | None], list[Any]]) -> None:

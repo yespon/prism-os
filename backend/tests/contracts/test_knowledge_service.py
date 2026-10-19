@@ -1,6 +1,5 @@
 """R2 knowledge service contracts: visibility, revocation, lifecycle."""
 
-from datetime import UTC, datetime
 
 import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -8,8 +7,8 @@ from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.knowledge import KnowledgeError, KnowledgeService
-from app.models import knowledge as _knowledge_models  # noqa: F401
 from app.models import governance as _governance_models  # noqa: F401
+from app.models import knowledge as _knowledge_models  # noqa: F401
 
 
 @pytest.fixture

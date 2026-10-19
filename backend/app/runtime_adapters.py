@@ -26,6 +26,7 @@ from deerflow.runtime import (
     register_agent_context_provider,
     register_agent_identity_provider,
     register_agent_persistence_provider,
+    register_agent_tool_provider,
     register_execution_middleware_provider,
     register_execution_validator,
     register_file_access_provider,
@@ -348,6 +349,18 @@ def _current_file_access(context, state, operation, path):
     return _run_async(runtime_file_access(context, state, operation, path, get_session_factory()))
 
 
+def _agent_extra_tools(context: dict) -> list:
+    """Host-owned extra agent tools (R2: knowledge.search for KB-bound agents)."""
+    meta_info = context.get("meta_info") or {}
+    kb_ids = meta_info.get("knowledge_base_ids") if isinstance(meta_info, dict) else None
+    if not kb_ids:
+        return []
+    from app.knowledge.tools import knowledge_search_tool
+
+    scope = {"tenant_id": context["tenant_id"], "user_id": context["user_id"]}
+    return [knowledge_search_tool(scope, list(kb_ids))]
+
+
 def _authorize_terminal_context(context):
     from app.services.terminal.access import verify_terminal_access
 
@@ -373,6 +386,7 @@ def register_runtime_adapters() -> None:
         authorize=_authorize_terminal_context,
     )
     register_governed_action_provider(governed_ticket_tools)
+    register_agent_tool_provider(_agent_extra_tools)
     register_execution_validator(_consume_graph_capability)
     register_execution_middleware_provider(governed_read_middleware)
     register_skill_prompt_provider(_current_skill_prompt)

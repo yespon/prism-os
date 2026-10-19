@@ -61,7 +61,10 @@ class KnowledgeService:
                 )
             )).all()
             member_rows = (await session.exec(
-                select(KnowledgeBaseRecord).join(KnowledgeMemberRecord).where(
+                select(KnowledgeBaseRecord).join(
+                    KnowledgeMemberRecord,
+                    KnowledgeMemberRecord.kb_id == KnowledgeBaseRecord.id,
+                ).where(
                     KnowledgeBaseRecord.tenant_id == tenant_id,
                     KnowledgeMemberRecord.tenant_id == tenant_id,
                     KnowledgeMemberRecord.user_id == user_id,
