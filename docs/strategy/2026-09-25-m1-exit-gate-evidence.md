@@ -65,3 +65,11 @@ AlertSource 列表、创建和更新响应现统一隐藏工单 Header 值和 UR
 管理接口与脱敏定向测试 `17 passed`；完整后端 `1420 passed, 18 skipped, 30 warnings`，零失败；Ruff、Compose YAML 结构和 diff 检查通过。18 个跳过仍对应未配置 live/LLM/S3 条件。Provider 最小注入、旧配置迁移、新 head 的 PostgreSQL 迁移和 CAS、真实模型/webhook 与回退仍待验证；Security Gate 和 M1 退出判定不变。
 
 平台门禁脚本本轮通过：130 项契约测试、48 项相邻测试；Alembic 唯一 head 为 `n8h9i0j1k2l3`。
+
+## 2026-10-18 五门重裁：M1 退出（同步记录）
+
+完整裁定记录在 `codex/octop-integration` worktree 的本文件同名章节；对账明细与裁定建议见 [integrations/octop](../integrations/octop/2026-10-18-r0a-gate-reconciliation.md)。
+
+**裁定结果：Contract / Golden / Quality / Migration / Security 五门全部通过，M1 正式退出。** 决定性证据：严格图上下文真实部署 12 次激活；真实模型三态矩阵（V2 幂等计数）；审批 wall-clock 到期与四个 SQL 写故障点真实命中且 fail-closed；三库备份恢复；完整后端 2453 passed / 0 failed。
+
+本分支（`codex/octop-research-plan`）与 `codex/octop-integration` 合并时以 worktree 的完整记录为准。
