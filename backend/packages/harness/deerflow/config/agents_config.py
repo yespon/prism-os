@@ -45,6 +45,7 @@ def _db_agent_to_config(agent) -> "AgentConfig":
         skills=agent.skills or [],
         enabled=agent.enabled,
         tags=agent.tags or [],
+        meta_info=dict(agent.meta_info) if getattr(agent, "meta_info", None) else None,
     )
 
 
