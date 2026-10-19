@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from hashlib import sha256
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.gateway.authorization import require_tenant_context
@@ -51,6 +51,37 @@ async def create_base(request: Request, body: dict, _ctx: None = Depends(require
     except KnowledgeError as error:
         raise HTTPException(400, str(error)) from error
     return {"id": base.id, "name": base.name, "visibility": base.visibility}
+
+
+@router.post("/bases/{kb_id}/members", status_code=201)
+async def grant_member(kb_id: str, request: Request, body: dict,
+                       _ctx: None = Depends(require_tenant_context)) -> dict:
+    tenant_id = request.state.tenant_id
+    user_id = request.state.user_id
+    grantee = body.get("user_id")
+    if not isinstance(grantee, str) or not grantee:
+        raise HTTPException(400, "user_id is required")
+    try:
+        member = await _service().grant(tenant_id, kb_id, user_id, grantee)
+    except KnowledgeError as error:
+        raise HTTPException(404 if "not found" in str(error) else 400, str(error)) from error
+    return {"kb_id": kb_id, "user_id": member.user_id}
+
+
+@router.delete("/bases/{kb_id}/members")
+async def revoke_member(kb_id: str, request: Request, body: dict | None = None,
+                        user_id: str = Query(default=None),
+                        _ctx: None = Depends(require_tenant_context)) -> dict:
+    tenant_id = request.state.tenant_id
+    owner_id = request.state.user_id
+    grantee = user_id or (body or {}).get("user_id")
+    if not isinstance(grantee, str) or not grantee:
+        raise HTTPException(400, "user_id is required")
+    try:
+        await _service().revoke(tenant_id, kb_id, owner_id, grantee)
+    except KnowledgeError as error:
+        raise HTTPException(404 if "not found" in str(error) else 400, str(error)) from error
+    return {"revoked": grantee}
 
 
 @router.get("/bases/{kb_id}/documents")

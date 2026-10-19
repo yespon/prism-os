@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "@/core/api/auth-client";
+
 import { useCallback, useState, useRef } from 'react';
 
 import { asJsonObject, asTerminalAssets, errorMessage } from './message-types';
@@ -430,7 +432,8 @@ export function useTerminalAgent({
       try {
         const res = await fetch('/api/terminal/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await getAuthHeaders({ 'Content-Type': 'application/json' }),
+          credentials: 'include',
           body: JSON.stringify({
             session_id: taskId,
             terminal_session_id: mode === 'agent' ? '' : (terminalSessionId ?? ''),
@@ -508,7 +511,8 @@ export function useTerminalAgent({
       try {
         const res = await fetch('/api/terminal/chat/approve', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await getAuthHeaders({ 'Content-Type': 'application/json' }),
+          credentials: 'include',
           body: JSON.stringify({
             session_id: taskId,
             tool_call_id: toolCallId,

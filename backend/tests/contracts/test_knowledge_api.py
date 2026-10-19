@@ -33,7 +33,14 @@ def _client(monkeypatch, tmp_path):
     monkeypatch.setattr(embedding_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(routes, "get_session_factory", lambda: factory)
 
-    monkeypatch.setattr(auth, "_resolve_user_from_auth_db", lambda token: ("user-1", "user", False) if token == "valid" else None)
+    def resolve_user(token):
+        if token == "valid":
+            return ("user-1", "user", False)
+        if token == "member-token":
+            return ("member-9", "user", False)
+        return None
+
+    monkeypatch.setattr(auth, "_resolve_user_from_auth_db", resolve_user)
     monkeypatch.setattr(auth, "_resolve_user_status_from_auth_db", lambda _user: "active")
 
     async def resolve_tenant(user_id=None, requested_tenant_id=None):
@@ -121,3 +128,33 @@ def test_unsupported_document_fails_visibly(monkeypatch, tmp_path):
         document = upload.json()
         assert document["index_state"] == "failed"
         assert "unsupported knowledge document extension" in document["index_error"]
+
+
+def test_member_grant_revoke_via_api(monkeypatch, tmp_path):
+    with _client(monkeypatch, tmp_path) as client:
+        _auth(client)
+        created = client.post("/api/knowledge/bases", json={"name": "team-kb"})
+        kb_id = created.json()["id"]
+        upload = client.post(
+            f"/api/knowledge/bases/{kb_id}/documents",
+            files={"file": ("shared.md", BytesIO(b"team content"), "text/markdown")},
+        )
+        assert upload.status_code == 201
+        doc_id = upload.json()["id"]
+
+        # Grant: the member sees documents; a stranger does not.
+        granted = client.post(f"/api/knowledge/bases/{kb_id}/members", json={"user_id": "member-9"})
+        assert granted.status_code == 201, granted.text
+        client.headers.update({"Authorization": "Bearer member-token"})
+        assert client.get(f"/api/knowledge/bases/{kb_id}/documents/{doc_id}").status_code == 200
+
+        # Revoke: immediate loss through the API.
+        client.headers.update({"Authorization": "Bearer valid"})
+        revoked = client.delete(f"/api/knowledge/bases/{kb_id}/members", params={"user_id": "member-9"})
+        assert revoked.status_code == 200, revoked.text
+        client.headers.update({"Authorization": "Bearer member-token"})
+        assert client.get(f"/api/knowledge/bases/{kb_id}/documents/{doc_id}").status_code == 404
+
+        # Only the owner can grant.
+        forbidden = client.post(f"/api/knowledge/bases/{kb_id}/members", json={"user_id": "friend"})
+        assert forbidden.status_code == 400

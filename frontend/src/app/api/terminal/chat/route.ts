@@ -1,8 +1,9 @@
+import { terminalGatewayHeaders } from "../gateway-headers";
+
 const gatewayUrl = process.env.GATEWAY_URL ?? 'http://localhost:8001';
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const cookieHeader = req.headers.get('cookie') ?? '';
 
   try {
     // Sanitize body: replace null/undefined with empty strings for string fields
@@ -14,10 +15,7 @@ export async function POST(req: Request) {
 
     const res = await fetch(`${gatewayUrl}/api/v1/terminal/invoke`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-      },
+      headers: terminalGatewayHeaders(req),
       body: JSON.stringify(sanitizedBody),
     });
 
@@ -29,7 +27,7 @@ export async function POST(req: Request) {
     // Proxy the SSE stream
     return new Response(res.body, {
       status: 200,
-      headers: { 'Content-Type': 'text/event-stream' }
+      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' }
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
