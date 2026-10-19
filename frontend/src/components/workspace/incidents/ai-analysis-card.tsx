@@ -199,6 +199,13 @@ export function AiAnalysisCard({
             tenant {ticketAction.tenant_id} · actor {ticketAction.actor_id} · workload {ticketAction.workload_id}<br />
             run {ticketAction.run_id} · decision {ticketAction.decision_id} · approval {ticketAction.approval_id ?? "—"}<br />
             policy {ticketAction.policy_id}@{ticketAction.policy_version} · reason {ticketAction.reason_code}
+            {ticketAction.run && (
+              <>
+                <br />
+                执行事实（刷新/重启后可恢复）：{ticketAction.run.state} · agent {ticketAction.run.snapshot.agent_name ?? ticketAction.run.snapshot.agent_id ?? "—"}
+                {ticketAction.run.snapshot.model_name ? ` · model ${ticketAction.run.snapshot.model_name}` : ""}
+              </>
+            )}
           </div>
           {ticketAction.status === "awaiting_approval" && ticketAction.approval_id && currentTenant?.role === "tenant_admin" && (
             <div className="mt-3 flex gap-2">

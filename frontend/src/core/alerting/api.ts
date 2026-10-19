@@ -89,6 +89,20 @@ export async function getIncident(incidentId: string): Promise<IncidentDetail> {
   return json as IncidentDetail;
 }
 
+export interface RunFactSnapshot {
+  agent_name?: string | null;
+  agent_id?: string | null;
+  model_name?: string | null;
+  source?: string | null;
+}
+
+export interface RunFactProjection {
+  state: "created" | "completed" | "failed";
+  started_at: string;
+  finished_at?: string | null;
+  snapshot: RunFactSnapshot;
+}
+
 export interface GovernedTicketStatus {
   enabled: boolean;
   status: "denied" | "awaiting_approval" | "approved" | "rejected" | "expired" | "submitted" | "unknown" | null;
@@ -98,6 +112,8 @@ export interface GovernedTicketStatus {
   actor_id?: string | null;
   workload_id?: string;
   run_id?: string;
+  /** Durable platform run fact (R1): refresh-safe execution state and frozen snapshot. */
+  run?: RunFactProjection | null;
   policy_id?: string;
   policy_version?: string;
   reason_code?: string;
