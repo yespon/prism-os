@@ -448,6 +448,8 @@ async def test_diagnosis_card_status_reads_persisted_action_facts(ticket_setup, 
     monkeypatch.setattr(approval_repository, "get_session_factory", lambda: state.delivery._session_factory)
     monkeypatch.setattr(policy_repository, "get_session_factory", lambda: state.delivery._session_factory)
     monkeypatch.setattr(submission_repository, "get_session_factory", lambda: state.delivery._session_factory)
+    from app.platform import runs as run_facts_module
+    monkeypatch.setattr(run_facts_module, "get_session_factory", lambda: state.delivery._session_factory)
     assert (await alerts._governed_ticket_status("incident-1", "tenant-a"))["status"] is None
     from app.alerting.governed_ticket_tool import ticket_request_id
 
