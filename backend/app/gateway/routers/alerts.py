@@ -576,6 +576,7 @@ async def _governed_ticket_status(incident_id: str, tenant_id: str, user_id: str
     from app.alerting.governed_ticket_tool import ticket_canary_enabled, ticket_policy_configuration, ticket_request_id
     from app.platform.approval.repository import ApprovalRepository
     from app.platform.policy.repository import PolicyDecisionRepository
+    from app.platform.runs import RunFactRepository
     from app.platform.submission.repository import ActionSubmissionRepository
 
     if not ticket_canary_enabled(tenant_id):
@@ -608,11 +609,23 @@ async def _governed_ticket_status(incident_id: str, tenant_id: str, user_id: str
         )
     else:
         status = "unknown"
+    run_fact = await RunFactRepository().get(tenant_id, decision.execution.run_id)
     return {
         "enabled": True, "status": status, "decision_id": decision.decision_id,
         "approval_id": approval.approval_id if approval else None,
         "tenant_id": decision.tenant_id, "actor_id": decision.execution.actor.id if decision.execution.actor else None,
         "workload_id": decision.execution.workload.id, "run_id": decision.execution.run_id,
+        "run": {
+            "state": run_fact.state,
+            "started_at": run_fact.started_at,
+            "finished_at": run_fact.finished_at,
+            "snapshot": {
+                "agent_name": run_fact.snapshot.agent_name,
+                "agent_id": run_fact.snapshot.agent_id,
+                "model_name": run_fact.snapshot.model_name,
+                "source": run_fact.snapshot.source,
+            },
+        } if run_fact else None,
         "policy_id": decision.policy_id, "policy_version": decision.policy_version,
         "reason_code": decision.reason_code, "ticket_id": submission.ticket_id if submission else None,
         "can_resume": (ticket_decision_matches_current_policy(decision, ticket_policy_configuration())

@@ -81,10 +81,10 @@ async def _record_run_fact(execution: ExecutionEnvelope, scope: dict[str, str]) 
     platform audit path but must not block the Policy/Approval chain that
     governs side effects.
     """
-    try:
-        from app.platform.contracts import ExecutionSnapshot
-        from app.platform.runs import RunFactRepository
+    from app.platform import runs as run_facts
+    from app.platform.contracts import ExecutionSnapshot
 
+    try:
         snapshot = ExecutionSnapshot(
             agent_name=scope.get("agent_name"),
             agent_id=scope.get("agent_id"),
@@ -95,7 +95,8 @@ async def _record_run_fact(execution: ExecutionEnvelope, scope: dict[str, str]) 
                 if scope.get(key) is not None
             },
         )
-        await RunFactRepository().record_from_envelope(execution, snapshot)
+        repository = run_facts.RunFactRepository()
+        await repository.record_from_envelope(execution, snapshot)
     except Exception:  # noqa: BLE001 - run facts are a projection, never a gate
         return
 

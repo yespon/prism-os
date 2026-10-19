@@ -368,6 +368,8 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
     monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_TENANT", "tenant-a")
     monkeypatch.setenv("PRISMOS_GOVERNED_TICKET_ACTION", "ticket.create")
     monkeypatch.setattr(trust, "get_session_factory", lambda: test_session_factory)
+    from app.platform import runs as run_facts_module
+    monkeypatch.setattr(run_facts_module, "get_session_factory", lambda: test_session_factory)
     decisions = PolicyDecisionRepository(test_session_factory)
     submissions = ActionSubmissionRepository(test_session_factory)
     sent = []
@@ -429,6 +431,14 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
         assert (await submissions.get("tenant-a", decision.decision_id)).status == "submitted"
         assert any(event.event_type == "action.submitted" for event in
                    await AuditEventRepository(test_session_factory).list_recent("tenant-a"))
+        # R1-A: the durable run fact survives with its frozen snapshot, tenant-scoped.
+        from app.platform.runs import RunFactRepository
+        run_fact = await RunFactRepository(test_session_factory).get("tenant-a", decision.execution.run_id)
+        assert run_fact is not None and run_fact.state == "created"
+        assert run_fact.snapshot.source == "diagnosis"
+        assert run_fact.snapshot.agent_id == "agent-shared"
+        assert run_fact.thread_id == decision.execution.attributes["thread_id"]
+        assert await RunFactRepository(test_session_factory).get("tenant-b", decision.execution.run_id) is None
     asyncio.run(verify_facts())
 
     # Real durable native decisions must survive the HTTP resume projection.
@@ -461,6 +471,19 @@ def test_authenticated_diagnosis_stream_invokes_scoped_governed_tool(
         changed = client.post("/api/incidents/incident-1/governed-ticket/resume",
             headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"})
         assert changed.status_code == 409 and len(sent) == 1
+
+    # R1-C3: the status projection surfaces the durable run fact and its
+    # frozen snapshot, so a page refresh or service restart re-reads facts
+    # instead of inferring state from chat text.
+    with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+        status = client.get("/api/incidents/incident-1/governed-ticket",
+            headers={"x-user-id": "user-a", "x-tenant-id": "tenant-a"})
+    assert status.status_code == 200
+    payload = status.json()
+    assert payload["run"] is not None
+    assert payload["run"]["snapshot"]["agent_id"] == "agent-shared"
+    assert payload["run"]["snapshot"]["source"] == "diagnosis"
+    assert payload["run"]["state"] in ("created", "completed")
 
 
 def test_diagnosis_stream_releases_preflight_resource_transaction(client, mock_langgraph, test_session_factory, monkeypatch):
