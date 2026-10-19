@@ -81,3 +81,19 @@ Provider 的最小引用注入、人工/规则兼容与旧配置默认 dry-run �
 | Security | 最小局部注入、事务明文移除、引用撤销/轮换、日志与输出边界有本地测试 | 真实环境 exporter、Secret 与跨租户/副作用演练仍待验，未退出 |
 
 隔离 PostgreSQL 证据见 [N04 JSON](../superpowers/evidence/2026-10-09-octop-n04-postgres.json)，可重复入口 `make octop-postgres`；管理员身份为受控 ASGI fixture，不能替代认证传播。临时容器和卷已清理。M1 仍未退出、M2/N08 不启动；用户选择已有测试环境，地址/配置引用尚待补充，N05–N07 独立任务继续推进。
+
+## 2026-10-18 五门重裁：M1 退出
+
+**用户已确认。** 本节为 M1 五门最终裁定记录。完整对账明细见[五门缺口对账](../../../docs/integrations/octop/2026-10-18-r0a-gate-reconciliation.md)（主仓）与[裁定建议](../../../docs/integrations/octop/2026-10-18-r0a-five-gate-verdict-recommendation.md)。
+
+| 门 | 判定 | 决定性证据 |
+| --- | --- | --- |
+| Contract | **通过** | 平台契约 130 + 相邻安全 48；唯一 head `n8h9i0j1k2l3`；严格图上下文（`required`）在目标部署真实激活 12 次，双服务配置一致性经容器环境断言（[live policy-activations](../superpowers/evidence/2026-10-16-octop-n04-live/policy-activations.jsonl)） |
+| Golden Scenario | **通过** | 真实模型 `gpt-5.6-luna` 三态矩阵（接收端 counter_version=2）：deny 零发送；allow、审批通过、重启恢复各恰好一次真实 Tool 调用；幂等回执核对（[live README](../superpowers/evidence/2026-10-16-octop-n04-live/README.md)） |
+| Quality | **通过** | 完整后端 `2453 passed, 18 skipped, 0 failed`（13,631 冻结输入逐字节核对）；前端全量 Vitest、类型、生产构建通过；失败基线未恶化（[child-user-task backend-full](../superpowers/evidence/2026-10-17-octop-child-user-task/)） |
+| Migration | **通过** | 三数据库（prismos / prismos_auth_db / checkpoints）真实 dump + SHA + 恢复库核对，head 一致；非空降级保护；镜像升级/回退/重应用循环通过（[fault-expiry final-backup](../superpowers/evidence/2026-10-16-octop-n04-fault-expiry/final-backup.json)、[runtime-cycle](../superpowers/evidence/2026-10-17-octop-child-user-task/runtime-cycle.json)） |
+| Security | **通过** | 四类安全反例全部有真实部署证据：跨租户 outsider 404；Secret 撤回/并发轮换单胜者且零发送；副作用每触发恰好一次（V2 计数）；审批 wall-clock 到期 409（真实等待 296.9 秒）、撤权阻断、Policy/关键 Audit 写故障 fail-closed（四个 SQLSTATE 55000 触发点各真实命中一次）；GovernedReadMiddleware 覆盖共享二进制读取并经读取前/后故障反例验证；公开证据凭据检查通过（[fault-expiry](../superpowers/evidence/2026-10-16-octop-n04-fault-expiry/)、[governed-readers](../superpowers/evidence/2026-10-16-octop-governed-readers/)） |
+
+**遗留边界（不阻塞 M1 退出，按原计划推进）：** 自建 HTTPS 接收端不等价企业 Jira——外部真实业务系统对接属于后续 Connector 阶段；远端 CI 未推送未运行，随分支合并执行；通用 Secret Provider（不限工单用途）、其余工具的纳管扩面按 R 轮次继续。
+
+**裁定结果：M1 正式退出。`deployment.json` 已更新 `m1_exited: true`、`real_model_verified: true`。R1 编码解禁（启动门：M1 退出 ✅ + R0 复盘完成——见下）。**
