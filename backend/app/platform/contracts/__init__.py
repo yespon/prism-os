@@ -11,6 +11,7 @@ from app.platform.contracts.policy import (
     hash_action_context,
 )
 from app.platform.contracts.resources import DefinitionRef, EnvironmentRef, IdentityRef, ResourceMetadata
+from app.platform.contracts.runs import RUN_COMPLETED, RUN_CREATED, RUN_FAILED, ExecutionSnapshot, RunFact, run_fact_from_envelope
 from app.platform.contracts.secrets import SecretRef
 from app.platform.contracts.versioning import PLATFORM_SCHEMA_V1
 
@@ -22,10 +23,16 @@ __all__ = [
     "DefinitionRef",
     "EnvironmentRef",
     "ExecutionEnvelope",
+    "ExecutionSnapshot",
     "IdentityRef",
     "PolicyDecision",
     "PolicyRequest",
     "ResourceMetadata",
+    "RUN_COMPLETED",
+    "RUN_CREATED",
+    "RUN_FAILED",
+    "RunFact",
+    "run_fact_from_envelope",
     "SecretRef",
     "hash_action_context",
     "new_platform_id",

@@ -149,3 +149,20 @@ class PlatformTicketSecretRecord(SQLModel, table=True):
     encrypted_payload: str = Field(repr=False, sa_column=Column(Text, nullable=False))
     active: bool = Field(default=True, sa_column=Column(Boolean, nullable=False))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+
+
+class PlatformRunFactRecord(SQLModel, table=True):
+    __tablename__ = "platform_run_facts"
+    __table_args__ = (Index("ix_platform_run_fact_tenant_task", "tenant_id", "task_id"),)
+
+    run_id: str = Field(sa_column=Column(String(128), primary_key=True))
+    tenant_id: str = Field(sa_column=Column(String(255), nullable=False))
+    task_id: str = Field(sa_column=Column(String(128), nullable=False))
+    correlation_id: str | None = Field(default=None, sa_column=Column(String(128), nullable=True))
+    thread_id: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    workload_id: str = Field(sa_column=Column(String(255), nullable=False))
+    actor_id: str | None = Field(default=None, sa_column=Column(String(255), nullable=True))
+    state: str = Field(default="created", nullable=False)
+    snapshot_json: str = Field(sa_column=Column(Text, nullable=False), default="{}")
+    started_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+    finished_at: datetime | None = Field(default=None, sa_column=Column(DateTime(timezone=True), nullable=True))

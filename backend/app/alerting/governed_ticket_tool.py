@@ -74,6 +74,32 @@ def ticket_execution(scope: dict[str, str]) -> ExecutionEnvelope:
     )
 
 
+async def _record_run_fact(execution: ExecutionEnvelope, scope: dict[str, str]) -> None:
+    """R1-A: persist the durable run fact before the governed action executes.
+
+    The fact is a projection, not a gate: a write failure is surfaced by the
+    platform audit path but must not block the Policy/Approval chain that
+    governs side effects.
+    """
+    try:
+        from app.platform.contracts import ExecutionSnapshot
+        from app.platform.runs import RunFactRepository
+
+        snapshot = ExecutionSnapshot(
+            agent_name=scope.get("agent_name"),
+            agent_id=scope.get("agent_id"),
+            source="diagnosis",
+            attributes={
+                key: scope[key]
+                for key in ("diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id")
+                if scope.get(key) is not None
+            },
+        )
+        await RunFactRepository().record_from_envelope(execution, snapshot)
+    except Exception:  # noqa: BLE001 - run facts are a projection, never a gate
+        return
+
+
 def execution_matches_diagnosis_scope(execution: ExecutionEnvelope, scope: dict[str, str]) -> bool:
     return (
         execution.actor is not None
@@ -94,6 +120,7 @@ async def execute_ticket_scope(scope: dict[str, str], *, adapter: TicketActionAd
     execution = existing.execution if existing else ticket_execution(scope)
     if not execution_matches_diagnosis_scope(execution, scope):
         raise PermissionError("diagnosis Action identity changed")
+    await _record_run_fact(execution, scope)
     return await (adapter or ticket_adapter(tenant_id)).execute(execution, request_id, scope["incident_id"])
 
 
