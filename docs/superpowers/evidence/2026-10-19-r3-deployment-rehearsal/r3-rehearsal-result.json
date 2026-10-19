@@ -1,0 +1,22 @@
+{
+  "steps": [
+    {
+      "step": "schedule-created",
+      "schedule_id": "sched_736bb4a8f55d44b7a273c14f116317dd"
+    },
+    {
+      "step": "run-now-collision-single-execution"
+    },
+    {
+      "step": "single-occurrence",
+      "occurrence_state": "pending"
+    },
+    {
+      "step": "cross-tenant-404"
+    },
+    {
+      "step": "disable-and-delete"
+    }
+  ],
+  "complete": true
+}
