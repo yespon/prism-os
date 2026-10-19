@@ -72,6 +72,13 @@ class ScheduleService:
             session.add(record)
         return record
 
+    async def get_definition(self, tenant_id: str, schedule_id: str) -> ScheduleDefinitionRecord | None:
+        async with self._session_factory() as session:
+            record = await session.get(ScheduleDefinitionRecord, schedule_id)
+            if record is None or record.tenant_id != tenant_id:
+                return None
+            return record
+
     async def list_definitions(self, tenant_id: str, *, enabled_only: bool = False) -> list[ScheduleDefinitionRecord]:
         async with self._session_factory() as session:
             statement = select(ScheduleDefinitionRecord).where(ScheduleDefinitionRecord.tenant_id == tenant_id)
@@ -171,6 +178,14 @@ class ScheduleService:
             return list((await session.exec(statement)).all())
 
     # ---- delivery ----
+
+    async def list_delivery_attempts(self, tenant_id: str, occurrence_id: str) -> list[DeliveryAttemptRecord]:
+        async with self._session_factory() as session:
+            statement = select(DeliveryAttemptRecord).where(
+                DeliveryAttemptRecord.tenant_id == tenant_id,
+                DeliveryAttemptRecord.occurrence_id == occurrence_id,
+            )
+            return list((await session.exec(statement)).all())
 
     async def record_delivery_attempt(self, tenant_id: str, occurrence_id: str, destination: str,
                                       *, delivered: bool, error: str | None = None,

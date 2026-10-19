@@ -22,9 +22,20 @@ logger = logging.getLogger(__name__)
 class CronWorker:
     """Owns the scheduler and the trigger-to-occurrence pipeline."""
 
-    def __init__(self, service: ScheduleService | None = None, timezone: str = "Asia/Shanghai") -> None:
+    def __init__(self, service: ScheduleService | None = None, timezone: str = "Asia/Shanghai",
+                 execute=None) -> None:
+        """``execute`` is the host-provided run entry:
+
+        async def execute(tenant_id, definition, occurrence) -> str
+        returning the run identity (stored on the occurrence). The worker
+        itself never talks to LangGraph - the host wires the trusted entry
+        (Gateway capability issuance) so scheduled runs share the same
+        governance chain as web runs. When ``execute`` is None the claim is
+        still durable and the occurrence completes without a run.
+        """
         self._service = service or ScheduleService()
         self._timezone = timezone
+        self._execute = execute
         self._scheduler = AsyncIOScheduler(timezone=timezone)
 
     async def boot(self) -> int:
@@ -70,9 +81,32 @@ class CronWorker:
             logger.info("occurrence %s already claimed; skipping duplicate trigger", occurrence.id)
             return
         logger.info("occurrence %s claimed for schedule %s", occurrence.id, schedule_id)
-        # Execution wiring (Gateway run entry) lands in week 2; for now the
-        # claim is durable evidence that the trigger fired exactly once.
-        await self._service.mark_finished(tenant_id, occurrence.id)
+        definition = await self._service.get_definition(tenant_id, schedule_id)
+        if definition is None:
+            await self._service.mark_finished(tenant_id, occurrence.id, failed=True)
+            return
+        if self._execute is None:
+            # No host run entry wired: the claim remains the durable evidence
+            # that the trigger fired exactly once.
+            await self._service.mark_finished(tenant_id, occurrence.id)
+            return
+        try:
+            run_id = await self._execute(tenant_id, definition, occurrence)
+            await self._service.mark_running(tenant_id, occurrence.id, run_id)
+            await self._service.mark_finished(tenant_id, occurrence.id)
+            await self._service.record_delivery_attempt(
+                tenant_id, occurrence.id,
+                f"{definition.delivery_channel}:{definition.delivery_target or 'default'}",
+                delivered=True, provider_message_id=run_id,
+            )
+        except Exception:
+            logger.exception("scheduled run failed for occurrence %s", occurrence.id)
+            await self._service.mark_finished(tenant_id, occurrence.id, failed=True)
+            await self._service.record_delivery_attempt(
+                tenant_id, occurrence.id,
+                f"{definition.delivery_channel}:{definition.delivery_target or 'default'}",
+                delivered=False, error="execution_failed",
+            )
 
     async def shutdown(self) -> None:
         self._scheduler.shutdown(wait=False)

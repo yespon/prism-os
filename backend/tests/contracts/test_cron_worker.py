@@ -79,3 +79,45 @@ async def test_date_trigger_registration(env):
         assert job is not None and isinstance(job.trigger, DateTrigger)
     finally:
         await worker.shutdown()
+
+
+@pytest.mark.anyio
+async def test_fire_with_execute_callback_records_run_and_delivery(env):
+    service, _factory = env
+    definition = await service.create_definition("t1", "owner-1", name="wired", trigger_kind="date",
+                                                 run_at=datetime.now(UTC), agent_name="default", prompt="once")
+    executed: list[tuple] = []
+
+    async def execute(tenant_id, definition_arg, occurrence_arg):
+        executed.append((tenant_id, definition_arg.id, occurrence_arg.id))
+        return "run_scheduled_1"
+
+    worker = CronWorker(service, execute=execute)
+    await worker._fire("t1", definition.id)
+
+    occurrences = await service.list_occurrences("t1", definition.id)
+    assert len(occurrences) == 1
+    occurrence = occurrences[0]
+    assert occurrence.state == "completed" and occurrence.run_id == "run_scheduled_1"
+    assert executed == [("t1", definition.id, occurrence.id)]
+
+    records = await service.list_delivery_attempts("t1", occurrence.id)
+    assert records and records[0].status == "delivered" and records[0].provider_message_id == "run_scheduled_1"
+
+
+@pytest.mark.anyio
+async def test_fire_execute_failure_marks_failed_and_records_delivery_error(env):
+    service, _factory = env
+    definition = await service.create_definition("t1", "owner-1", name="broken", trigger_kind="date",
+                                                 run_at=datetime.now(UTC), agent_name="default", prompt="once")
+
+    async def execute(tenant_id, definition_arg, occurrence_arg):
+        raise RuntimeError("backend down")
+
+    worker = CronWorker(service, execute=execute)
+    await worker._fire("t1", definition.id)  # must not raise
+
+    occurrences = await service.list_occurrences("t1", definition.id)
+    assert occurrences[0].state == "failed"
+    records = await service.list_delivery_attempts("t1", occurrences[0].id)
+    assert records and records[0].status == "failed" and records[0].last_error == "execution_failed"
