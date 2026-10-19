@@ -21,3 +21,15 @@
 ## 待真实桌面环境验证
 
 WSL headless 无法验证窗口渲染与拖拽（tray/GPU 警告为环境限制）。窗口内登录/会话/审批交互的端到端验证待 Windows/macOS 或带显示的 Linux 环境。
+
+## Windows 交叉编译 ✅（2026-10-19 追加）
+
+- `prismos-desktop-windows-amd64.exe`（18.3MB，PE32+ 验证通过）
+- `GOOS=windows GOARCH=amd64 CGO_ENABLED=0` 直接交叉编译成功——WebView2 纯 Go 绑定，无需 mingw
+- 运行时依赖：目标机器需 WebView2 Runtime（Win10/11 默认内置）
+- 待真机验证：窗口渲染/登录/审批交互；签名与分发渠道另计
+
+## macOS 交叉编译 ❌（差距账本确认）
+
+- Wails v3 darwin 后端依赖 Objective-C 绑定（cgo + Xcode 工具链），WSL 无法交叉编译
+- macOS 制品需真实 macOS 构建环境 + 开发者签名——维持差距账本条目，R6 前解决或明确豁免
