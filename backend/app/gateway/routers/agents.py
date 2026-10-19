@@ -88,6 +88,8 @@ class AgentCreateRequest(BaseModel):
     avatar_id: str | None = Field(default=None, max_length=100)
     # Deprecated field — accepted but mapped to system_prompt
     soul: str | None = Field(default=None, description="Deprecated — use system_prompt")
+    # Host-managed agent metadata (R2: knowledge_base_ids binds knowledge.search)
+    meta_info: dict | None = Field(default=None, description="Host-managed agent metadata")
 
 
 class AgentUpdateRequest(BaseModel):
@@ -370,6 +372,13 @@ async def create_agent_endpoint(
     from app.integrations.octop.agents import resolve_agent_prompt
 
     system_prompt, source_metadata = resolve_agent_prompt(body)
+    if body.meta_info:
+        merged = dict(source_metadata or {})
+        for key, value in body.meta_info.items():
+            if key in ("octop_source", "agent_presentation"):
+                continue  # provenance keys stay server-owned
+            merged[key] = value
+        source_metadata = merged
     if not system_prompt:
         raise HTTPException(status_code=422, detail="system_prompt is required and must not be empty")
 
