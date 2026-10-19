@@ -19,7 +19,7 @@ from app.knowledge import KnowledgeError, KnowledgeService
 from app.models.files import FileObject
 from deerflow.database.session import get_session, get_session_factory
 
-router = APIRouter(prefix="/knowledge", tags=["knowledge"])
+router = APIRouter(prefix="/api/knowledge", tags=["knowledge"])
 
 
 def _service() -> KnowledgeService:

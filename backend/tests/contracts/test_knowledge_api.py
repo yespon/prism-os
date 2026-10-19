@@ -54,7 +54,7 @@ def _client(monkeypatch, tmp_path):
 
     app = FastAPI()
     app.add_middleware(auth.AuthMiddleware)
-    app.include_router(routes.router, prefix="/api")
+    app.include_router(routes.router)
 
     async def _session_override():
         async with factory() as session:
