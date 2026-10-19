@@ -62,6 +62,9 @@ class AgentConfig(BaseModel):
     skills: list[str] | None = None
     enabled: bool = True
     tags: list[str] | None = None
+    # Host-managed metadata (R2: knowledge_base_ids); optional so file-based
+    # agents without metadata keep working.
+    meta_info: dict | None = None
 
 
 async def _query_agent_config(name: str, user_id: str, tenant_id: str | None):

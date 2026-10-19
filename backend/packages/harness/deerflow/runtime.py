@@ -227,6 +227,7 @@ def load_runtime_adapters() -> None:
 def reset_runtime_adapters() -> None:
     """Reset registrations; intended for tests and process reinitialization."""
     global _agent_loader, _agent_lister, _agent_persister, _terminal_provider, _governed_action_provider, _execution_validator, _loaded_adapter_module
+    global _agent_tool_provider
     global _skill_prompt_provider, _agent_identity_provider, _agent_context_provider, _skill_file_provider, _skill_command_provider, _file_access_provider, _execution_middleware_provider
     global _mcp_tool_authorizer
     _mcp_tool_authorizer = None
@@ -242,5 +243,6 @@ def reset_runtime_adapters() -> None:
     _agent_persister = None
     _terminal_provider = None
     _governed_action_provider = None
+    _agent_tool_provider = None
     _execution_validator = None
     _loaded_adapter_module = None
