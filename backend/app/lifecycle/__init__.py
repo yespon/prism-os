@@ -40,8 +40,14 @@ class LifecycleService:
             session.add(record)
         return record
 
-    async def start_run(self, tenant_id: str, task_id: str) -> tuple[PlatformRunAttemptRecord, PlatformTaskRecord]:
-        """Start the next attempt of a task's run; moves a pending task to running."""
+    async def start_run(self, tenant_id: str, task_id: str, *, run_id: str | None = None) -> tuple[PlatformRunAttemptRecord, PlatformTaskRecord]:
+        """Start the next attempt of a task's run; moves a pending task to running.
+
+        ``run_id`` links the attempt to an existing platform run identity
+        (e.g. the governed ExecutionEnvelope run): the attempt adopts it so
+        RunFact, lifecycle and audit share one execution identity. Without
+        one, a fresh run id is derived (R5 minimal linking).
+        """
         async with self._session_factory() as session, session.begin():
             task = await session.get(PlatformTaskRecord, task_id)
             if task is None or task.tenant_id != tenant_id:
@@ -60,7 +66,7 @@ class LifecycleService:
             session.add(task)
             attempt = PlatformRunAttemptRecord(
                 id=f"att_{uuid4().hex}", tenant_id=tenant_id, task_id=task_id,
-                run_id=f"run_{uuid4().hex}", attempt_no=attempt_no,
+                run_id=run_id or f"run_{uuid4().hex}", attempt_no=attempt_no,
                 state="started", started_at=datetime.now(UTC),
             )
             session.add(attempt)

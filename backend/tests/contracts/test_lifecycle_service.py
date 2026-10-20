@@ -90,3 +90,20 @@ async def test_cross_tenant_isolation(service):
         await service.get_task("t2", task.id)
     with pytest.raises(LifecycleError):
         await service.cancel_task("t2", task.id, cancelled_by="user-1")
+
+
+@pytest.mark.anyio
+async def test_attempt_adopts_platform_run_identity(service):
+    """R5 linking: an attempt can adopt the governed run id so RunFact and
+    lifecycle share one execution identity."""
+    from app.platform.contracts import stable_platform_id
+
+    task = await service.create_task("t1", "user-1")
+    governed_run = stable_platform_id("run", "diagnosis", "thread-42")
+    attempt, _ = await service.start_run("t1", task.id, run_id=governed_run)
+    assert attempt.run_id == governed_run
+
+    # The run id stays stable across retries (each attempt adopts it or a fresh one).
+    await service.finish_attempt("t1", attempt.id, succeeded=False)
+    second, _ = await service.start_run("t1", task.id)
+    assert second.run_id != governed_run  # retry without explicit id gets a fresh identity
