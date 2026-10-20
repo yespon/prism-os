@@ -19,10 +19,10 @@ def _evaluation():
     return EvaluationService()
 
 
-def _load_agent(session, tenant_id: str, agent_id: str):
+async def _load_agent(session, tenant_id: str, agent_id: str):
     from app.models.agents import CustomAgent
 
-    agent = session.get(CustomAgent, agent_id)
+    agent = await session.get(CustomAgent, agent_id)
     if agent is None or agent.tenant_id != tenant_id:
         raise HTTPException(404, "Agent not found")
     return agent
@@ -52,7 +52,7 @@ async def publish_version(agent_id: str, request: Request, body: dict | None = N
     from app.versioning import VersioningError
 
     async with get_session_factory()() as session:
-        agent = _load_agent(session, tenant_id, agent_id)
+        agent = await _load_agent(session, tenant_id, agent_id)
     try:
         record = await _versioning().publish(agent, notes=(body or {}).get("notes"))
     except VersioningError as error:

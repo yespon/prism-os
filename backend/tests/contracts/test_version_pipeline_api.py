@@ -75,7 +75,7 @@ def _make_loader(factory):
             self.meta_info = {}
             self.created_by = "user-1"
 
-    def load(session, tenant_id, agent_id):
+    async def load(session, tenant_id, agent_id):
         return _Agent()
 
     return load
