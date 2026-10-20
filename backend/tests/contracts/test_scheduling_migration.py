@@ -13,7 +13,7 @@ def test_scheduling_migration_single_head_and_reversible(tmp_path) -> None:
     db_path = tmp_path / "scheduling-migration.db"
     config = Config(str(Path("alembic.ini").resolve()))
     config.set_main_option("sqlalchemy.url", f"sqlite+aiosqlite:///{db_path}")
-    assert ScriptDirectory.from_config(config).get_heads() == ["s3m4n5o6p7q8"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["t4n5o6p7q8r9"]
 
     command.upgrade(config, "head")
     with sqlite3.connect(db_path) as connection:
@@ -22,7 +22,7 @@ def test_scheduling_migration_single_head_and_reversible(tmp_path) -> None:
             "schedule_definitions", "schedule_occurrences", "delivery_attempts",
             "knowledge_bases", "platform_run_facts",
         } <= tables
-        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "s3m4n5o6p7q8"
+        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "t4n5o6p7q8r9"
 
     command.downgrade(config, "p0j1k2l3m4n5")
     with sqlite3.connect(db_path) as connection:
