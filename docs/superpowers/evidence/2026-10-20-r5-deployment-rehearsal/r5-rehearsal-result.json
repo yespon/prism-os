@@ -1,0 +1,38 @@
+{
+  "steps": [
+    {
+      "step": "agent-ready",
+      "agent_id": "9a2be040-2fa1-45bd-81fa-1eeb2dee1d60"
+    },
+    {
+      "step": "gate-refuses-no-evaluation",
+      "detail": "version has no evaluation; run an evaluation before deploying"
+    },
+    {
+      "step": "gate-refuses-low-score"
+    },
+    {
+      "step": "gate-probe-deployed-after-pass"
+    },
+    {
+      "step": "v1-already-published",
+      "version_id": "av_16fe9ea8b7814414be582e5cd0e56428"
+    },
+    {
+      "step": "v2-published",
+      "version_id": "av_b3a4736baf954c0b88eab54d0b8bf8a9"
+    },
+    {
+      "step": "v2-deployed",
+      "previous": "av_16fe9ea8b7814414be582e5cd0e56428"
+    },
+    {
+      "step": "rolled-back-to-v1"
+    },
+    {
+      "step": "history-intact",
+      "count": 2
+    }
+  ],
+  "complete": true
+}
