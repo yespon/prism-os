@@ -16,6 +16,7 @@ from app.gateway.routers import (
     approvals,
     artifacts,
     channels,
+    agent_versions,
     files,
     knowledge,
     schedules,
@@ -355,6 +356,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     app.include_router(files.router)
     app.include_router(knowledge.router)
     app.include_router(schedules.router)
+    app.include_router(agent_versions.router)
 
     # Summarization settings API (tenant-admin)
     app.include_router(summarization.router)
