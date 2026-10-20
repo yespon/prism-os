@@ -13,13 +13,13 @@ def test_policy_migration_is_single_head_and_reversible(tmp_path) -> None:
     db_path = tmp_path / "governance-migration.db"
     config = Config(str(Path("alembic.ini").resolve()))
     config.set_main_option("sqlalchemy.url", f"sqlite+aiosqlite:///{db_path}")
-    assert ScriptDirectory.from_config(config).get_heads() == ["q1k2l3m4n5o6"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["s3m4n5o6p7q8"]
 
     command.upgrade(config, "head")
     with sqlite3.connect(db_path) as connection:
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         assert {"platform_audit_events", "platform_policy_decisions", "platform_approvals"} <= tables
-        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "q1k2l3m4n5o6"
+        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "s3m4n5o6p7q8"
 
     command.downgrade(config, "h2b3c4d5e6f7")
     with sqlite3.connect(db_path) as connection:
