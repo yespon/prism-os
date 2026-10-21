@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SourceSkillInstall } from "../skills/source-skill-install";
-import { useSkillImportContext } from "@/core/skills/import-context";
+
 import { Button } from "@/components/ui/button";
-import { useTenantKey } from "@/core/agents/hooks";
-import { getCurrentTenantId } from "@/core/tenants/store";
 import {
   downloadResourceArchive,
   loadResourcePreflight,
   type ResourcePreflight,
   type ResourcePreflightItem,
 } from "@/core/agents/catalog";
+import { useTenantKey } from "@/core/agents/hooks";
+import { useSkillImportContext } from "@/core/skills/import-context";
+import { getCurrentTenantId } from "@/core/tenants/store";
+
+import { SourceSkillInstall } from "../skills/source-skill-install";
 
 const labels: Record<string, [string, string]> = {
   source_match: ["内容与来源一致", "Contents match source"],

@@ -1,6 +1,7 @@
+import { useCallback, useState, useRef } from 'react';
+
 import { getAuthHeaders } from "@/core/api/auth-client";
 
-import { useCallback, useState, useRef } from 'react';
 
 import { asJsonObject, asTerminalAssets, errorMessage } from './message-types';
 import type { TerminalMessage, TerminalMessagePart } from './message-types';

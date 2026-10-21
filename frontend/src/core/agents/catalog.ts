@@ -1,6 +1,7 @@
-import type { AgentQuickPrompt } from "./types";
 import { fetchAuthApi } from "@/core/api/auth-client";
 import { readSkillImportResponse } from "@/core/skills/imports";
+
+import type { AgentQuickPrompt } from "./types";
 
 export interface AgentTemplate {
   id: string;

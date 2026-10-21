@@ -25,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { AgentWelcome } from "@/components/workspace/agent-welcome";
 import { ArtifactsProvider } from "@/components/workspace/artifacts";
 import {
   ArtifactTrigger,
@@ -36,14 +37,13 @@ import {
   useThreadChat,
 } from "@/components/workspace/chats";
 import { ContextWarningBanner } from "@/components/workspace/context-warning-banner";
-import { AgentWelcome } from "@/components/workspace/agent-welcome";
-import { useAgent } from "@/core/agents";
 import { InputBox } from "@/components/workspace/input-box";
 import { MessageList } from "@/components/workspace/messages";
 import { ThreadContext } from "@/components/workspace/messages/context";
 import { ThreadTitle } from "@/components/workspace/thread-title";
 import { TodoList } from "@/components/workspace/todo-list";
 import { TokenUsageIndicator } from "@/components/workspace/token-usage-indicator";
+import { useAgent } from "@/core/agents";
 import { useIncidentDetail, getSeverityBadgeStyles } from "@/core/alerting";
 import { useI18n } from "@/core/i18n/hooks";
 import { buildRetrySubmissionFromMessage } from "@/core/messages/utils";
@@ -78,7 +78,7 @@ interface ChatThreadContentProps {
 export function ChatThreadContent({ threadId, context: incomingContext, onContextChange, noAvailableModel, isTenantAdmin }: ChatThreadContentProps) {
   const { t } = useI18n();
   const searchParams = useSearchParams();
-  const selectedAgentName = searchParams.get("agent") || (typeof incomingContext.agent_name === "string" ? incomingContext.agent_name : undefined);
+  const selectedAgentName = searchParams.get("agent") ?? (typeof incomingContext.agent_name === "string" ? incomingContext.agent_name : undefined);
   const { agent: selectedAgent, isLoading: agentLoading } = useAgent(selectedAgentName);
   const context: ChatThreadContentProps["context"] = useMemo(() => ({ ...incomingContext, agent_name: selectedAgentName }), [incomingContext, selectedAgentName]);
   const agentUnavailable = !!selectedAgentName && (!selectedAgent || !selectedAgent.enabled || agentLoading);

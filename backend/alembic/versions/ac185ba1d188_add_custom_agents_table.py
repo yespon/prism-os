@@ -5,18 +5,18 @@ Revises: 9b5ac3b96908
 Create Date: 2026-06-01 11:03:16.893379
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
 import sqlmodel
 
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = 'ac185ba1d188'
-down_revision: Union[str, Sequence[str], None] = '9b5ac3b96908'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = '9b5ac3b96908'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

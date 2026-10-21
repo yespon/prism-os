@@ -1,12 +1,13 @@
 import { Search, Monitor, Plus, ChevronRight, ChevronDown, MoreVertical, TerminalSquare, PanelLeftCloseIcon } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { AssetOperationError, requestAssetOperation } from '@/core/terminal-agent/assets-api';
-import { useSkillQueryIdentity } from '@/core/skills/query-identity';
+
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { useSkillQueryIdentity } from '@/core/skills/query-identity';
+import { AssetOperationError, requestAssetOperation } from '@/core/terminal-agent/assets-api';
 import type { TerminalAsset, TerminalAssetGroup, TerminalAssetInput, TerminalCredential } from '@/core/terminal-agent/message-types';
 
 import { AddCredentialDialog } from './add-credential-dialog';

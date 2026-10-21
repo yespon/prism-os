@@ -3,9 +3,10 @@
 import sqlite3
 from pathlib import Path
 
-from alembic import command
 from alembic.config import Config
 from alembic.script import ScriptDirectory
+
+from alembic import command
 
 
 def test_lifecycle_migration_single_head_and_reversible(tmp_path) -> None:

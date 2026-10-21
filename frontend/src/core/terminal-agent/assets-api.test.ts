@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+
 import { AssetOperationError, requestAssetOperation } from "./assets-api";
 
 afterEach(() => vi.unstubAllGlobals());

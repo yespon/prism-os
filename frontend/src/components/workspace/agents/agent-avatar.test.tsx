@@ -1,5 +1,6 @@
 import { act, cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+
 import { AgentAvatar } from "./agent-avatar";
 
 const mock = vi.hoisted(() => ({
@@ -73,7 +74,9 @@ it("does not create an object URL after unmount while reading the blob", async (
   const blob = deferred<Blob>();
   mock.fetch.mockResolvedValue({ ok: true, blob: () => blob.promise });
   const view = render(<AgentAvatar avatarId="personas:INTJ" />);
-  await act(async () => {});
+  await act(async () => {
+    // flush microtasks
+  });
   view.unmount();
   await act(async () => blob.resolve(new Blob(["svg"])));
   expect(mock.createURL).not.toHaveBeenCalled();

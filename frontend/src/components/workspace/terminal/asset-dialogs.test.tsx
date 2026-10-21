@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 import { AssetOperationError } from "@/core/terminal-agent/assets-api";
+
 import { AddCredentialDialog } from "./add-credential-dialog";
 import { AddHostDialog } from "./add-host-dialog";
 import { PersistentTerminal } from "./persistent-terminal";

@@ -1,12 +1,13 @@
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState, useRef } from 'react';
-import { AssetOperationError } from '@/core/terminal-agent/assets-api';
+
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { AssetOperationError } from '@/core/terminal-agent/assets-api';
 import type { TerminalCredential } from '@/core/terminal-agent/message-types';
 
 export interface AddCredentialDialogProps {

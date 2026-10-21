@@ -2,12 +2,15 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { listDemoThreads, readDemoFile } from "./demo-files";
+
 import { NextRequest } from "next/server";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+
 import { GET as artifactGET } from "../app/mock/api/threads/[thread_id]/artifacts/[[...artifact_path]]/route";
 import { POST as historyPOST } from "../app/mock/api/threads/[thread_id]/history/route";
 import { POST as searchPOST } from "../app/mock/api/threads/search/route";
+
+import { listDemoThreads, readDemoFile } from "./demo-files";
 
 let directory: string;
 beforeEach(() => {

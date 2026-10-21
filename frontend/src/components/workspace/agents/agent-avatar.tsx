@@ -2,8 +2,9 @@
 
 import { BotIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchAuthApi } from "@/core/api/auth-client";
+
 import { useTenantKey } from "@/core/agents/hooks";
+import { fetchAuthApi } from "@/core/api/auth-client";
 
 export function AgentAvatar({
   avatarId,
@@ -42,7 +43,7 @@ export function AgentAvatar({
   }, [scope, avatarId]);
   return image?.scope === scope ? (
     // Local object URL comes only from the authenticated, validated SVG catalog.
-    // eslint-disable-next-line @next/next/no-img-element
+     
     <img src={image.url} alt="" className={className} />
   ) : (
     <BotIcon className={className} aria-hidden="true" />

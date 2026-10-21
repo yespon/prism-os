@@ -11,7 +11,6 @@ import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { toast } from 'sonner';
 
-import { useSkillQueryIdentity } from '@/core/skills/query-identity';
 
 import { TerminalContext } from '@/app/workspace/terminal/context';
 import { TerminalAgentUI } from '@/app/workspace/terminal/terminal-agent-ui';
@@ -26,6 +25,7 @@ import { AssetSidebar } from '@/components/workspace/terminal/asset-sidebar';
 import { WebTerminal } from '@/components/workspace/terminal/web-terminal';
 import type { WebTerminalRef } from '@/components/workspace/terminal/web-terminal';
 import { decodeContextFromURL, type IncidentContext } from '@/core/alerting/incident-context';
+import { useSkillQueryIdentity } from '@/core/skills/query-identity';
 import type { TerminalAsset, TerminalAssetGroup, TerminalCredential } from '@/core/terminal-agent/message-types';
 import {
   loadHostSidebarCollapsed,

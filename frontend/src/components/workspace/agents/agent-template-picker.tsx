@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useTenantKey } from "@/core/agents/hooks";
-import { getCurrentTenantId } from "@/core/tenants/store";
 import {
   loadAgentCatalog,
   previewAgentTemplate,
@@ -12,6 +11,8 @@ import {
   type AgentTemplate,
   type AgentTemplatePreview,
 } from "@/core/agents/catalog";
+import { useTenantKey } from "@/core/agents/hooks";
+import { getCurrentTenantId } from "@/core/tenants/store";
 
 import { AgentResourcePreflight } from "./agent-resource-preflight";
 

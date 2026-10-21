@@ -7,7 +7,9 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+
 import type { ResourcePreflight } from "@/core/agents/catalog";
+
 import { AgentResourcePreflight } from "./agent-resource-preflight";
 
 const mock = vi.hoisted(() => ({
@@ -150,7 +152,9 @@ it("downloads only after a click and releases its temporary object URL", async (
   );
   const click = vi
     .spyOn(HTMLAnchorElement.prototype, "click")
-    .mockImplementation(() => {});
+    .mockImplementation(() => {
+      // no-op: assert download intent without navigating
+    });
   render(<AgentResourcePreflight {...props} />);
   fireEvent.click(screen.getByRole("button", { name: "检查配套资源" }));
   fireEvent.click(await screen.findByRole("button", { name: "下载源包" }));

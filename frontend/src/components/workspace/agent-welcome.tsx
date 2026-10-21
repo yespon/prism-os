@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { usePromptInputController } from "@/components/ai-elements/prompt-input";
-import { AgentAvatar } from "./agents/agent-avatar";
-
+import { Button } from "@/components/ui/button";
 import { type Agent } from "@/core/agents";
 import { cn } from "@/lib/utils";
+
+import { AgentAvatar } from "./agents/agent-avatar";
 
 export function AgentWelcome({
   className,

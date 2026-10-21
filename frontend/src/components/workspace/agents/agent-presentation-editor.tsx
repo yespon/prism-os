@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useTenantKey } from "@/core/agents/hooks";
 import {
   loadAgentAvatars,
   loadPersonalityQuestions,
@@ -12,7 +12,9 @@ import {
   type PersonalityQuestion,
   type PersonalityResult,
 } from "@/core/agents/catalog";
+import { useTenantKey } from "@/core/agents/hooks";
 import type { AgentQuickPrompt } from "@/core/agents/types";
+
 import { AgentAvatar } from "./agent-avatar";
 
 interface Props {

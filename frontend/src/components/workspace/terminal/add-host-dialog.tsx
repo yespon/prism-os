@@ -1,12 +1,13 @@
 import { Loader2, CheckCircle2, XCircle, Eye, EyeOff, X } from 'lucide-react';
 import React, { useState, useRef } from 'react';
-import { AssetOperationError, requestAssetOperation } from '@/core/terminal-agent/assets-api';
-import { useSkillQueryIdentity } from '@/core/skills/query-identity';
+
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useSkillQueryIdentity } from '@/core/skills/query-identity';
+import { AssetOperationError, requestAssetOperation } from '@/core/terminal-agent/assets-api';
 import type { TerminalAsset, TerminalAssetGroup, TerminalAssetInput, TerminalCredential } from '@/core/terminal-agent/message-types';
 
 interface HostFormData {

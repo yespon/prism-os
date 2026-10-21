@@ -2,6 +2,7 @@ import asyncio
 
 from deerflow.models.factory import create_chat_model
 
+
 async def run_probe():
     llm = create_chat_model("gpt-4o")
     from app.agent.terminal_tools import terminal_tools_list

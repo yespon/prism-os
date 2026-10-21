@@ -18,6 +18,7 @@ from app.models.governance import (
 from app.platform.contracts import AuditEvent
 from deerflow.database.session import get_session_factory
 
+
 class LegacyAuditDeliveryService:
     def __init__(
         self,

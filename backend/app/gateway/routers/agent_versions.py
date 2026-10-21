@@ -47,9 +47,8 @@ async def publish_version(agent_id: str, request: Request, body: dict | None = N
                           _ctx: None = Depends(require_tenant_context)) -> dict:
     """Snapshot the agent's current configuration as an immutable version."""
     tenant_id = request.state.tenant_id
-    from deerflow.database.session import get_session_factory
-
     from app.versioning import VersioningError
+    from deerflow.database.session import get_session_factory
 
     async with get_session_factory()() as session:
         agent = await _load_agent(session, tenant_id, agent_id)
