@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_ssh_test_env.py",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-ssh-user-task/target-prepare.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-17T00:16:01.789833+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-17T00:16:03.258698+00:00"
+}

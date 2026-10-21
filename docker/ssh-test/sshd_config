@@ -1,0 +1,19 @@
+Port 2222
+ListenAddress 0.0.0.0
+HostKey /run/ssh-keys/host
+PidFile /run/sshd.pid
+PermitRootLogin no
+AllowUsers target
+AuthenticationMethods publickey
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+UsePAM no
+AuthorizedKeysFile /run/authorized_keys
+AllowTcpForwarding no
+AllowAgentForwarding no
+PermitTunnel no
+X11Forwarding no
+PermitUserEnvironment no
+PrintMotd no
+Subsystem sftp internal-sftp

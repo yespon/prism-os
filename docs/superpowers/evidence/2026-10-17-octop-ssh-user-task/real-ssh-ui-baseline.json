@@ -1,0 +1,12 @@
+{
+  "complete": false,
+  "actual_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "asset_id": "d3397d0f-36b5-4d8c-8002-f1fce7507f0a",
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/native-profile/ssh-task-ea9b9e24e6",
+  "new_model_task_submissions": 0,
+  "chat_id": "1d748bcd-885e-4a30-81a4-95e6b8657d27",
+  "entry_status": 404,
+  "failure_type": "AssertionError",
+  "failure": "('Original terminal UI entry', 404)"
+}
