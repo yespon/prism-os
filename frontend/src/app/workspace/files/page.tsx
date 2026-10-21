@@ -9,13 +9,10 @@ import {
   Download,
   ArrowLeft,
   Loader2,
-  FileIcon,
-  MoreHorizontal,
   Grid3X3,
   List,
   Filter,
   ChevronRight,
-  Home,
   HardDrive,
   X,
 } from "lucide-react";
