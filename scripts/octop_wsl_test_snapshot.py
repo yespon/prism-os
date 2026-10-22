@@ -11,7 +11,6 @@ import tarfile
 from pathlib import Path
 
 import yaml
-
 from octop_wsl_test_env import PROJECT, ROOT, STATE, owned
 from octop_wsl_test_probe import execute
 
@@ -82,11 +81,19 @@ def tree_manifest(root):
 
 
 def database_manifest(database):
-    tables = execute('postgres', ['psql', '-X', '-qAt', '-U', 'prismos', '-d', database, '-c', "SELECT quote_ident(schemaname)||'.'||quote_ident(tablename) FROM pg_tables WHERE schemaname NOT LIKE 'pg_%' AND schemaname <> 'information_schema' ORDER BY schemaname,tablename"]).decode().splitlines()
+    tables = execute('postgres', ['psql', '-X', '-qAt', '-U', 'prismos', '-d', database, '-c',
+        "SELECT quote_ident(schemaname)||'.'||quote_ident(tablename) FROM pg_tables"
+        " WHERE schemaname NOT LIKE 'pg_%' AND schemaname <> 'information_schema'"
+        " ORDER BY schemaname,tablename"]).decode().splitlines()
     queries = []
     for table in tables:
         label = table.replace("'", "''")
-        queries.append("SELECT json_build_object('table','" + label + "','rows',count(*),'sha256',encode(sha256(convert_to(COALESCE(string_agg(encode(sha256(convert_to(to_jsonb(t)::text,'UTF8')),'hex'),'' ORDER BY encode(sha256(convert_to(to_jsonb(t)::text,'UTF8')),'hex')),''),'UTF8')),'hex')) FROM " + table + ' t')
+        row_digest = "encode(sha256(convert_to(to_jsonb(t)::text,'UTF8')),'hex')"
+        queries.append(
+            "SELECT json_build_object('table','" + label + "','rows',count(*),"
+            "'sha256',encode(sha256(convert_to(COALESCE(string_agg(" + row_digest + ","
+            "'' ORDER BY " + row_digest + "),''),'UTF8')),'hex')) FROM " + table + ' t'
+        )
     if not queries:
         return []
     data = execute('postgres', ['psql', '-X', '-qAt', '-v', 'ON_ERROR_STOP=1', '-U', 'prismos', '-d', database], (';\n'.join(queries) + ';\n').encode()).decode()
@@ -138,7 +145,9 @@ def create_snapshot(path):
         finally:
             if stopped:
                 compose(['up', '-d', '--no-build', '--no-deps', '--wait', '--wait-timeout', '240', 'gateway', 'langgraph', 'ticket-receiver'])
-    return {'complete': True, 'private_snapshot_directory': str(path), 'runtime_entries': len(manifest['runtime_files']), 'databases': len(manifest['databases']), 'writers_restarted': True, 'private_material_exported': False, 'M1_exited': False}
+    return {'complete': True, 'private_snapshot_directory': str(path),
+        'runtime_entries': len(manifest['runtime_files']), 'databases': len(manifest['databases']),
+        'writers_restarted': True, 'private_material_exported': False, 'M1_exited': False}
 
 
 MODEL_RESTORE = '''import asyncio,json,logging,os,sys,tempfile
@@ -238,7 +247,12 @@ def verify_snapshot(path, model_name=None):
     finally:
         for clone in clones.values():
             execute('postgres', ['dropdb', '-U', 'prismos', clone])
-    return {'complete': True, 'private_snapshot_directory': str(path), 'private_restored_files': str(restored), 'all_file_bytes_and_modes_match': True, 'databases': checked, 'owned_clone_databases_removed': True, 'model_configuration': model, 'scope': 'Full runtime bytes/modes and all database row contents restored into owned clones; optional original model factory validates restored encrypted settings without a model request. Not an application artifact rollback or full restored user-flow claim.', 'M1_exited': False}
+    return {'complete': True, 'private_snapshot_directory': str(path), 'private_restored_files': str(restored),
+        'all_file_bytes_and_modes_match': True, 'databases': checked, 'owned_clone_databases_removed': True,
+        'model_configuration': model, 'M1_exited': False,
+        'scope': ('Full runtime bytes/modes and all database row contents restored into owned clones; '
+                  'optional original model factory validates restored encrypted settings without a model request. '
+                  'Not an application artifact rollback or full restored user-flow claim.')}
 
 
 def main():

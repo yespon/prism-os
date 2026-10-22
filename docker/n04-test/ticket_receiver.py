@@ -51,7 +51,9 @@ class ReceiptStore:
         with self.connect() as db:
             rows = db.execute('SELECT id,ticket_id,mode,received_at FROM receipts ORDER BY id').fetchall()
             historical = db.execute('SELECT value FROM counter_metadata WHERE key=?', ('historical_v1_receipts',)).fetchone()[0]
-        return {'counter_version': 2, 'historical_v1_receipts': historical, 'request_count': len(rows), 'distinct_ticket_count': len({r[1] for r in rows if r[1]}), 'receipts': [{'sequence': r[0], 'ticket_id': r[1], 'mode': r[2], 'received_at': r[3]} for r in rows]}
+        return {'counter_version': 2, 'historical_v1_receipts': historical, 'request_count': len(rows),
+            'distinct_ticket_count': len({r[1] for r in rows if r[1]}), 'receipts': [{'sequence': r[0], 'ticket_id': r[1],
+            'mode': r[2], 'received_at': r[3]} for r in rows]}
 
 
 def make_server(address, store, token, mode_path):

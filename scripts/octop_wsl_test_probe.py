@@ -12,9 +12,7 @@ import time
 from pathlib import Path
 
 import httpx
-
 from octop_wsl_test_env import PROJECT, ROOT, STATE, owned
-
 
 PROVIDER = '''import asyncio,json,sys
 from datetime import UTC,datetime
@@ -78,7 +76,9 @@ def receiver_probe():
             assert [r['mode'] for r in after['receipts'][-4:]] == ['ok', 'ok', 'fail', 'timeout']
         finally:
             (receiver / 'receiver-mode').write_text('ok\n')
-        return {'scope': 'real TLS and original Provider only; no model or governed Action', 'requests_before': before['request_count'], 'requests_after': after['request_count'], 'delta': 4, 'same_idempotency_ticket': True, 'http_failure_counted': True, 'actual_provider_timeout_counted': True, 'certificate_verification': True}
+        return {'scope': 'real TLS and original Provider only; no model or governed Action', 'requests_before': before['request_count'],
+            'requests_after': after['request_count'], 'delta': 4, 'same_idempotency_ticket': True, 'http_failure_counted': True,
+            'actual_provider_timeout_counted': True, 'certificate_verification': True}
 
 
 def backup_restore():
