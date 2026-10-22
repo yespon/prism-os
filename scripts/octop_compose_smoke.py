@@ -18,6 +18,14 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+import subprocess as _sp
+
+# The single current chain head, resolved from the repo at run time so the
+# smoke never drifts behind new migrations.
+EXPECTED_HEAD = _sp.run(
+    ["uv", "run", "--frozen", "python", "-m", "alembic", "heads"],
+    cwd=str(ROOT / "backend"), capture_output=True, text=True, check=True,
+).stdout.split()[0]
 
 
 def main():
@@ -177,14 +185,14 @@ print(json.dumps({'verified_files':len(p['imports']),'provenance_sha256':hashlib
             host_provenance = ROOT / "backend/packages/octop-capabilities/src/prismos_octop/data/provenance.json"
             assert resources["provenance_sha256"] == hashlib.sha256(host_provenance.read_bytes()).hexdigest()
             migration = execute("gateway", ["uv", "run", "--frozen", "alembic", "current"]).strip()
-            assert "n8h9i0j1k2l3" in migration
+            assert EXPECTED_HEAD in migration
             runtime = execute("gateway", ["sh", "-c", "python --version && node --version && npm --version && npx --version && uv --version"]).strip()
             image_ids = {name: run(["docker", "inspect", "--format", "{{.Image}}", f"{project}-{name}"]).decode().strip() for name in services}
             dump = run(["docker", "exec", f"{project}-postgres", "pg_dump", "-U", "prismos", "-d", "prismos", "-Fc"])
             run(["docker", "exec", f"{project}-postgres", "createdb", "-U", "prismos", "prismos_restore"])
             run(["docker", "exec", "-i", f"{project}-postgres", "pg_restore", "-U", "prismos", "-d", "prismos_restore"], data=dump)
             restored = run(["docker", "exec", f"{project}-postgres", "psql", "-U", "prismos", "-d", "prismos_restore", "-Atc", "SELECT version_num FROM alembic_version"]).decode().strip()
-            assert restored == "n8h9i0j1k2l3"
+            assert restored == EXPECTED_HEAD
             restored_agent = run(["docker", "exec", f"{project}-postgres", "psql", "-U", "prismos", "-d", "prismos_restore", "-Atc", "SELECT count(*) FROM custom_agents WHERE name='n07-container-agent'"]).decode().strip()
             assert restored_agent == "1"
             guards = {}
@@ -211,7 +219,7 @@ print(json.dumps({'verified_files':len(p['imports']),'provenance_sha256':hashlib
                     "image_ids": image_ids,
                     "resources": resources,
                     "runtime_versions": runtime,
-                    "migration_head": "n8h9i0j1k2l3",
+                    "migration_head": EXPECTED_HEAD,
                     "bootstrap_setup_login_session": True,
                     "single_bootstrap_admin_after_restart": True,
                     "tenant_context": tenant,
