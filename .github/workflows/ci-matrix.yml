@@ -34,6 +34,11 @@ jobs:
         run: uv run ruff check .
 
       - name: Run backend test suite
+        # Namespace-scoped security tests (isolation, withdrawal, revocation)
+        # skip here: container runners deny user namespaces. They execute
+        # for real wherever the capability exists - see
+        # tests/namespace_availability.py and the per-round real-deployment
+        # rehearsal evidence for their coverage.
         run: uv run pytest tests -q -rs --tb=short
 
   frontend-quality:
