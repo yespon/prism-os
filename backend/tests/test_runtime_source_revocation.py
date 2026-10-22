@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
+from namespace_availability import requires_namespaces  # noqa: F401
 from sqlalchemy import select
 from test_skill_member_tools import configured as configured_fixture
 from test_skill_member_tools import scoped_client  # noqa: F401
@@ -99,6 +100,7 @@ def alter(source_runtime, change):
 
 
 @pytest.mark.parametrize("change", ["source", "revision", "role", "severity", "deleted-incident", "missing-context", "cancel-request", "replaced-thread"])
+@requires_namespaces
 def test_selected_member_read_checks_protected_source_and_incident_at_use(source_runtime, change):
     _, _, _, calls, runtime, _ = source_runtime
     path = "/mnt/skills/custom/tenant-a/collision/authority.txt"
@@ -113,6 +115,7 @@ def test_selected_member_read_checks_protected_source_and_incident_at_use(source
 
 
 @pytest.mark.parametrize("change", ["source", "role", "severity"])
+@requires_namespaces
 def test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output(source_runtime, change):
     _, _, _, _, runtime, _ = source_runtime
     # Initial permitted execution proves these are current authorized facts.

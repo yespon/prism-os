@@ -6,6 +6,7 @@ import shlex
 from pathlib import Path
 
 import pytest
+from namespace_availability import requires_namespaces  # noqa: F401
 from sqlalchemy import select
 from test_agent_skill_references import scoped_client as reference_client
 from test_skill_member_tools import configured as member_configuration
@@ -67,6 +68,7 @@ def command(facts, text):
     return tools.bash_tool.func(facts[4], "Use explicitly selected auxiliary resource", text)
 
 
+@requires_namespaces
 def test_reference_reads_use_original_current_selection_and_reject_unselected_sources(execution_runtime):
     resource = "references/daily-learning-template.md"
     item = install_selected(execution_runtime, [("expert:clinical-learning-subscription", resource)])[resource]
@@ -79,6 +81,7 @@ def test_reference_reads_use_original_current_selection_and_reject_unselected_so
     assert execution_runtime[3] == []
 
 
+@requires_namespaces
 def test_clinical_stateful_cli_writes_only_owned_thread_state_and_stops_after_withdrawal(execution_runtime):
     resource = "scripts/clinical_profile.py"
     item = install_selected(execution_runtime, [("expert:clinical-learning-subscription", resource)])[resource]
@@ -104,6 +107,7 @@ def test_clinical_stateful_cli_writes_only_owned_thread_state_and_stops_after_wi
     assert state.read_bytes() == before
 
 
+@requires_namespaces
 def test_local_delivery_decision_simulator_runs_without_creating_real_delivery(execution_runtime):
     resource = "scripts/simulate_weixin_flow.py"
     item = install_selected(execution_runtime, [("expert:clinical-learning-subscription", resource)])[resource]
@@ -111,6 +115,7 @@ def test_local_delivery_decision_simulator_runs_without_creating_real_delivery(e
     assert '"scenario"' in result and '"ok": true' in result and '"ok": false' not in result, result
 
 
+@requires_namespaces
 def test_memory_check_reads_owned_workspace_and_reports_changes_without_modification(execution_runtime):
     resource = "scripts/check_memory_freshness.sh"
     item = install_selected(execution_runtime, [("expert:parenting-companion", resource)])[resource]
@@ -131,6 +136,7 @@ def test_memory_check_reads_owned_workspace_and_reports_changes_without_modifica
     assert index.read_text() == "Owned index" and child.read_text() == "Owned memory"
 
 
+@requires_namespaces
 def test_output_validator_requires_an_explicit_selected_policy_and_rejects_incomplete_output(execution_runtime):
     script, policy = "scripts/validate_output.py", "references/source-policy.yaml"
     packages = install_selected(execution_runtime, [("expert:clinical-learning-subscription", script), ("expert:clinical-learning-subscription", policy)])

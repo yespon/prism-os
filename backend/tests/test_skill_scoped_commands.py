@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
+from namespace_availability import requires_namespaces  # noqa: F401
 from sqlalchemy import select
 from test_skill_member_tools import configured, scoped_client  # noqa: F401
 from test_skill_member_tools import selected_runtime as member_runtime
@@ -48,6 +49,7 @@ def run(runtime, code):
     return tools.bash_tool.func(runtime, "Use selected resource", "python -c " + shlex.quote(code))
 
 
+@requires_namespaces
 def test_actual_python_reads_selected_source_and_persists_owned_output(command_runtime):
     _, root, _, _, runtime, _ = command_runtime
     result = run(runtime, "from pathlib import Path; p=Path('/mnt/skills/custom/tenant-a/user-a/collision/member.txt'); text=p.read_text(); Path('/mnt/user-data/outputs/result.txt').write_text(text); print(text)")
@@ -57,6 +59,7 @@ def test_actual_python_reads_selected_source_and_persists_owned_output(command_r
 
 
 @pytest.mark.parametrize("target", ["public", "shared", "host", "proc-root"])
+@requires_namespaces
 def test_computed_paths_cannot_access_unselected_or_host_files(command_runtime, target):
     _, root, _, _, runtime, _ = command_runtime
     secret = root.parent / "host-only.txt"
@@ -67,6 +70,7 @@ def test_computed_paths_cannot_access_unselected_or_host_files(command_runtime, 
     assert "unavailable" in result and "CONTENT" not in result and "MEMBER" not in result, result
 
 
+@requires_namespaces
 def test_selected_resources_are_readonly_and_do_not_inherit_host_environment(command_runtime, monkeypatch):
     _, root, _, _, runtime, _ = command_runtime
     monkeypatch.setenv("PRISMOS_HOST_PRIVATE_CANARY", "HOST ENVIRONMENT CANARY")
@@ -80,6 +84,7 @@ def test_selected_resources_are_readonly_and_do_not_inherit_host_environment(com
     assert (root / "custom/tenant-a/user-a/collision/member.txt").read_text() == "AUTHORIZED PERSONAL MEMBER"
 
 
+@requires_namespaces
 def test_executable_members_and_thread_virtual_environment_remain_usable(command_runtime):
     _, root, _, _, runtime, _ = command_runtime
     script = root / "custom/tenant-a/user-a/collision/run.sh"
@@ -92,6 +97,7 @@ def test_executable_members_and_thread_virtual_environment_remain_usable(command
     assert "Exit Code:" not in result
 
 
+@requires_namespaces
 def test_unregistered_nested_source_is_not_granted_by_selected_parent(command_runtime):
     _, root, _, _, runtime, _ = command_runtime
     unknown = root / "custom/tenant-a/user-a/collision/unknown"
@@ -103,6 +109,7 @@ def test_unregistered_nested_source_is_not_granted_by_selected_parent(command_ru
 
 
 @pytest.mark.parametrize("change", ["agent", "skill"])
+@requires_namespaces
 def test_committed_withdrawal_terminates_actual_namespace_and_discards_output(command_runtime, change):
     factory, _, agent_id, _, runtime, _ = command_runtime
     output = Path(runtime.state["thread_data"]["outputs_path"]) / "ticks.txt"
@@ -133,6 +140,7 @@ def test_committed_withdrawal_terminates_actual_namespace_and_discards_output(co
     assert output.read_bytes() == stopped
 
 
+@requires_namespaces
 def test_forged_state_directory_is_rejected_before_command_execution(command_runtime):
     _, root, _, _, runtime, _ = command_runtime
     runtime.state["thread_data"]["workspace_path"] = str(root)
@@ -156,6 +164,7 @@ def container_command_runtime(command_runtime, monkeypatch):
     return command_runtime
 
 
+@requires_namespaces
 def test_actual_configured_image_reads_only_current_selected_view(container_command_runtime):
     _, root, _, _, runtime, _ = container_command_runtime
     code = (
@@ -169,6 +178,7 @@ def test_actual_configured_image_reads_only_current_selected_view(container_comm
     assert (Path(runtime.state["thread_data"]["outputs_path"]) / "container.txt").read_text() == "CONTAINER OUTPUT"
 
 
+@requires_namespaces
 def test_actual_container_selected_source_is_readonly_and_host_env_is_absent(container_command_runtime, monkeypatch):
     _, root, _, _, runtime, _ = container_command_runtime
     monkeypatch.setenv("PRISMOS_HOST_PRIVATE_CANARY", "HOST-ENV CANARY")
@@ -181,10 +191,12 @@ def test_actual_container_selected_source_is_readonly_and_host_env_is_absent(con
     assert (root / "custom/tenant-a/user-a/collision/member.txt").read_text() == "AUTHORIZED PERSONAL MEMBER"
 
 
+@requires_namespaces
 def test_actual_container_withdrawal_stops_detached_children(container_command_runtime):
     test_committed_withdrawal_terminates_actual_namespace_and_discards_output(container_command_runtime, "skill")
 
 
+@requires_namespaces
 def test_real_container_create_reply_loss_is_checked_and_owned_lease_reclaimed(container_command_runtime, monkeypatch):
     import subprocess
 
@@ -210,6 +222,7 @@ def test_real_container_create_reply_loss_is_checked_and_owned_lease_reclaimed(c
     assert checked.returncode != 0 and "No such" in checked.stderr
 
 
+@requires_namespaces
 def test_missing_scoped_provider_never_launches_original_global_sandbox(command_runtime, monkeypatch):
     _, _, _, _, runtime, _ = command_runtime
     monkeypatch.setattr(tools, "get_skill_command_provider", lambda: None)
@@ -222,6 +235,7 @@ def test_missing_scoped_provider_never_launches_original_global_sandbox(command_
     assert result.startswith("Error:") and "MUST NOT START" not in result
 
 
+@requires_namespaces
 def test_javascript_runtime_reads_authorized_member_without_host_home(command_runtime):
     _, _, _, _, runtime, _ = command_runtime
     code = "console.log(require('fs').readFileSync('/mnt/skills/custom/tenant-a/user-a/collision/member.txt','utf8')); console.log('host-home-present',require('fs').existsSync('/root'));"

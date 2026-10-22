@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
+from namespace_availability import requires_namespaces  # noqa: F401
 from sqlalchemy import select
 from test_skill_reference_transactions import durable_sqlite  # noqa: F401
 from test_skill_scoped_commands import command_runtime as command_fixture  # noqa: F401
@@ -38,6 +39,7 @@ def use_default(command_runtime):
     return factory, runtime
 
 
+@requires_namespaces
 def test_default_actual_command_and_member_read_share_current_catalog(command_runtime):
     _, runtime = use_default(command_runtime)
     root = command_runtime[1]
@@ -56,6 +58,7 @@ def test_default_actual_command_and_member_read_share_current_catalog(command_ru
 
 
 @pytest.mark.parametrize("change", ["member", "owner", "agent", "unbound"])
+@requires_namespaces
 def test_default_authority_failures_never_execute_shared_sandbox(command_runtime, monkeypatch, change):
     factory, runtime = use_default(command_runtime)
     async def revoke(session):
@@ -78,6 +81,7 @@ def test_default_authority_failures_never_execute_shared_sandbox(command_runtime
     assert result.startswith("Error:") and "UNAUTHORIZED COMMAND" not in result, result
 
 
+@requires_namespaces
 def test_default_live_withdrawal_stops_actual_process_and_discards_stdout(command_runtime):
     factory, runtime = use_default(command_runtime)
     output = Path(runtime.state["thread_data"]["outputs_path"]) / "started.txt"
@@ -98,6 +102,7 @@ def test_default_live_withdrawal_stops_actual_process_and_discards_stdout(comman
     assert not (output.parent / "late.txt").exists()
 
 
+@requires_namespaces
 def test_old_named_agent_uses_concrete_selection_without_native_id(command_runtime):
     runtime = command_runtime[4]
     runtime.context.pop("agent_id")
@@ -108,6 +113,7 @@ def test_old_named_agent_uses_concrete_selection_without_native_id(command_runti
 
 
 @pytest.mark.parametrize("names", [[], ["collision"]])
+@requires_namespaces
 def test_legacy_names_require_source_choice_but_empty_agent_remains_usable(command_runtime, names):
     factory, _, agent_id, _, runtime, _ = command_runtime
     runtime.context.pop("agent_id")
@@ -124,6 +130,7 @@ def test_legacy_names_require_source_choice_but_empty_agent_remains_usable(comma
         assert "OWN THREAD USABLE" in result and "False" in result, result
 
 
+@requires_namespaces
 def test_default_prompt_uses_same_current_authorized_catalog(command_runtime):
     from app import runtime_adapters
     factory, _ = use_default(command_runtime)
@@ -139,6 +146,7 @@ def test_default_prompt_uses_same_current_authorized_catalog(command_runtime):
         runtime_adapters._current_skill_prompt(None, "tenant-a", "user-a")
 
 
+@requires_namespaces
 def test_missing_provider_for_default_host_never_falls_back(command_runtime, monkeypatch):
     _, runtime = use_default(command_runtime)
     monkeypatch.setattr(tools, "get_skill_command_provider", lambda: None)
@@ -146,6 +154,7 @@ def test_missing_provider_for_default_host_never_falls_back(command_runtime, mon
     assert result.startswith("Error:") and "UNAUTHORIZED COMMAND" not in result, result
 
 
+@requires_namespaces
 def test_empty_scope_provider_for_host_never_falls_back(command_runtime, monkeypatch):
     _, runtime = use_default(command_runtime)
     monkeypatch.setattr(tools, "get_skill_command_provider", lambda: lambda *args: None)
@@ -154,6 +163,7 @@ def test_empty_scope_provider_for_host_never_falls_back(command_runtime, monkeyp
     assert result.startswith("Error:") and "UNAUTHORIZED COMMAND" not in result, result
 
 
+@requires_namespaces
 def test_default_disabled_resource_is_absent_from_command_and_member_read(command_runtime):
     from deerflow.database.models import TenantSkill
 

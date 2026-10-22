@@ -3,6 +3,7 @@ import asyncio
 from datetime import UTC, datetime
 
 import pytest
+from namespace_availability import requires_namespaces  # noqa: F401
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
@@ -74,12 +75,14 @@ def verify(factory):
     asyncio.run(check())
 
 
+@requires_namespaces
 def test_current_active_account_and_member_are_usable(actor_databases):
     factory, _ = actor_databases
     verify(factory)
 
 
 @pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+@requires_namespaces
 def test_original_account_revocation_blocks_a_still_active_native_membership(actor_databases, change):
     factory, identity = actor_databases
     verify(factory)
@@ -94,6 +97,7 @@ def test_original_account_revocation_blocks_a_still_active_native_membership(act
         verify(factory)
 
 
+@requires_namespaces
 def test_auth_store_failure_is_not_permission_to_continue(actor_databases, monkeypatch):
     factory, _ = actor_databases
 
@@ -105,6 +109,7 @@ def test_auth_store_failure_is_not_permission_to_continue(actor_databases, monke
 
 
 @pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+@requires_namespaces
 def test_account_withdrawal_stops_actual_scoped_command(command_runtime, change):
     import shlex
     import time
@@ -135,6 +140,7 @@ def test_account_withdrawal_stops_actual_scoped_command(command_runtime, change)
     assert not late.exists()
 
 
+@requires_namespaces
 def test_account_suspension_stops_actual_connection_transport(asset_client, tmp_path, monkeypatch):
     import sys
     import time
@@ -159,6 +165,7 @@ def test_account_suspension_stops_actual_connection_transport(asset_client, tmp_
     assert not late.exists()
 
 
+@requires_namespaces
 def test_legacy_auth_schema_still_requires_an_existing_account(actor_databases):
     factory, identity = actor_databases
     with identity.begin() as connection:
@@ -173,6 +180,7 @@ def test_legacy_auth_schema_still_requires_an_existing_account(actor_databases):
 
 @pytest.mark.parametrize("entry", ["source", "capability"])
 @pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+@requires_namespaces
 def test_revoked_account_cannot_authorize_auto_source_or_mint_capability(source_runtime, entry, change):
     from app.alerting import diagnosis_authorization
     from app.runtime_adapters import verify_native_selection
@@ -196,6 +204,7 @@ def test_revoked_account_cannot_authorize_auto_source_or_mint_capability(source_
         asyncio.run(attempt())
 
 @pytest.mark.parametrize("change", ["active", "suspended", "deleted", "password-reset"])
+@requires_namespaces
 def test_default_graph_checks_current_actor_before_capability_consumption(actor_databases, monkeypatch, change):
     from app import runtime_adapters
     from app.models.governance import PlatformThreadBindingRecord
