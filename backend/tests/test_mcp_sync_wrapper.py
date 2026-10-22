@@ -1,8 +1,8 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
 import langchain_mcp_adapters.client  # noqa: F401  (resolve lazy submodule for patch targets)
+import pytest
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 

@@ -1,5 +1,5 @@
 {
-  "host_lock_sha256": "84c7f302b472eb1cf0ee96325193886eaca518a6b1fd31a70a6ad0633e293d94",
+  "host_lock_sha256": "b485ce0a39c71e27c9e3d876f6d0585c1862221d1c8569d9475fb8e9c856b9a5",
   "upstream_lock_sha256": "9dd1e05b55d10383a0cfd575d19af05c05d616ed257eb148eb59bca28b62de2e",
   "marker_environment": {
     "python_version": "3.12",
@@ -21,14 +21,14 @@
         {
           "requirement": "aiohttp>=3.9",
           "name": "aiohttp",
-          "host_locked": "3.14.3",
+          "host_locked": "3.14.5",
           "upstream_locked": "3.14.1",
           "host_check": "compatible"
         },
         {
           "requirement": "mcp<2,>=1.9",
           "name": "mcp",
-          "host_locked": "1.29.0",
+          "host_locked": "1.30.0",
           "upstream_locked": "1.28.1",
           "host_check": "compatible"
         },
@@ -123,7 +123,7 @@
         {
           "requirement": "aiohttp>=3.9",
           "name": "aiohttp",
-          "host_locked": "3.14.3",
+          "host_locked": "3.14.5",
           "upstream_locked": "3.14.1",
           "host_check": "compatible"
         },
@@ -430,7 +430,7 @@
         {
           "requirement": "mcp<3,>=1.27.1",
           "name": "mcp",
-          "host_locked": "1.29.0",
+          "host_locked": "1.30.0",
           "upstream_locked": "1.28.1",
           "host_check": "compatible"
         },
@@ -561,7 +561,7 @@
           {
             "requirement": "pillow>=10.0; extra == 'all'",
             "name": "pillow",
-            "host_locked": "12.3.0",
+            "host_locked": "13.0.0",
             "upstream_locked": "12.3.0",
             "host_check": "compatible"
           },
@@ -637,7 +637,7 @@
           {
             "requirement": "pillow>=10.0; extra == 'desktop'",
             "name": "pillow",
-            "host_locked": "12.3.0",
+            "host_locked": "13.0.0",
             "upstream_locked": "12.3.0",
             "host_check": "compatible"
           },

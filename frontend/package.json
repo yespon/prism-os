@@ -119,12 +119,8 @@
   "packageManager": "pnpm@10.26.2",
   "pnpm": {
     "overrides": {
-      "langsmith": "0.6.0",
-      "lodash-es": "4.18.0",
-      "mermaid": "11.16.1",
-      "postcss": "8.5.23",
-      "sharp": "0.35.3",
-      "uuid": "13.0.1"
+      "sharp": ">=0.35.5",
+      "source-map-js": ">=1.2.2"
     }
   }
 }
