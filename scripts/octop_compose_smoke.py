@@ -18,11 +18,9 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-import subprocess as _sp
-
 # The single current chain head, resolved from the repo at run time so the
 # smoke never drifts behind new migrations.
-EXPECTED_HEAD = _sp.run(
+EXPECTED_HEAD = subprocess.run(
     ["uv", "run", "--frozen", "python", "-m", "alembic", "heads"],
     cwd=str(ROOT / "backend"), capture_output=True, text=True, check=True,
 ).stdout.split()[0]
