@@ -1,5 +1,5 @@
 {
-  "host_lock_sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+  "host_lock_sha256": "84c7f302b472eb1cf0ee96325193886eaca518a6b1fd31a70a6ad0633e293d94",
   "upstream_lock_sha256": "9dd1e05b55d10383a0cfd575d19af05c05d616ed257eb148eb59bca28b62de2e",
   "marker_environment": {
     "python_version": "3.12",
