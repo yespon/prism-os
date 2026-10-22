@@ -4,6 +4,8 @@ import asyncio
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import langchain_mcp_adapters.client  # noqa: F401  (resolve lazy submodule for patch targets)
+
 from deerflow.config.agents_config import _db_agent_to_config
 from deerflow.config.tool_search_config import ToolSearchConfig
 from deerflow.mcp import cache
