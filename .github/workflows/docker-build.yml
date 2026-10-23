@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload frontend quality audit
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: prismos-frontend-quality-audit
           path: frontend/frontend-quality-*
@@ -107,7 +107,7 @@ jobs:
         run: docker save prismos-backend:ci | gzip > prismos-backend.tar.gz
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: prismos-backend
           path: prismos-backend.tar.gz
@@ -140,7 +140,7 @@ jobs:
         run: docker save prismos-frontend:ci | gzip > prismos-frontend.tar.gz
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: prismos-frontend
           path: prismos-frontend.tar.gz
@@ -171,7 +171,7 @@ jobs:
         run: docker save prismos-provisioner:ci | gzip > prismos-provisioner.tar.gz
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: prismos-provisioner
           path: prismos-provisioner.tar.gz

@@ -89,7 +89,7 @@ jobs:
         run: cd frontend && pnpm build
         env:
           NEXT_TELEMETRY_DISABLED: '1'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: octop-capability-distributions
           path: backend/dist/*
@@ -97,7 +97,7 @@ jobs:
         run: make octop-compose OCTOP_COMPOSE_EVIDENCE="$RUNNER_TEMP/octop-compose"
       - name: Native Skill recovery against isolated PostgreSQL
         run: make octop-skill-postgres OCTOP_SKILL_PG_DIR="$RUNNER_TEMP/octop-skill-postgres"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: octop-runtime-verification
