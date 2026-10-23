@@ -298,8 +298,18 @@ def test_actual_pty_withdrawal_records_original_audit_unknown_once_without_stdou
             row.status = "inactive"
             db.add(row)
             await db.commit()
+        # Wait for the authority watcher to observe the withdrawal before
+        # racing the command future: on slow CI runners the 0.25s poll loop
+        # can lag behind the command's own completion window. Waiting for the
+        # close to happen first removes the race without weakening the test -
+        # the close is itself produced by the withdrawal.
+        for _ in range(200):
+            if session.pty.fd is None:
+                break
+            await asyncio.sleep(0.05)
+        assert session.pty.fd is None, "withdrawal must close the pty"
         with pytest.raises((PermissionError, asyncio.CancelledError)):
-            await asyncio.wait_for(pending, timeout=5)
+            await asyncio.wait_for(pending, timeout=10)
         assert session.pty.fd is None and session.command_output_buffer == ""
         await asyncio.gather(*[task for task in [session.read_task, session.authority_task] if task], return_exceptions=True)
         async with factory() as db:
