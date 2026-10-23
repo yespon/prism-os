@@ -116,6 +116,15 @@ def scoped_client(tmp_path, monkeypatch, native_identity):
         async with engine.begin() as connection:
             await connection.run_sync(SQLModel.metadata.drop_all)
             await connection.run_sync(SQLModel.metadata.create_all)
+            # WAL keeps readers unblocked while a writer commits: the terminal
+            # PTY tests write the unknown audit from one connection while the
+            # test asserts from another, and the default rollback journal
+            # intermittently deadlocks them on slow CI runners.
+            if parsed.get_backend_name() == "sqlite":
+                from sqlalchemy import text as _text
+
+                await connection.execute(_text("PRAGMA journal_mode=WAL"))
+                await connection.execute(_text("PRAGMA busy_timeout=10000"))
 
     asyncio.run(setup())
     monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
