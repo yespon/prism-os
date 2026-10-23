@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import json
 import tempfile
+import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -22,15 +24,28 @@ def fetch(revision: str, release: str, output: Path) -> dict:
     output.parent.mkdir(parents=True, exist_ok=True)
     url = f"https://codeload.github.com/TencentCloud/Octop/tar.gz/{revision}"
     # Raw source is ephemeral and is never copied to the retained output.
+    # CI runners occasionally stall on the codeload download; retry up to
+    # three times with backoff before giving up. Digest checking below is
+    # unchanged, so a corrupted or partial retry can never pass.
     with tempfile.TemporaryDirectory(prefix="prismos-octop-fetch-") as temporary:
         archive = Path(temporary) / "original.tar.gz"
-        count = 0
-        with urllib.request.urlopen(url, timeout=60) as response, archive.open("wb") as stream:
-            while chunk := response.read(1024 * 1024):
-                count += len(chunk)
-                if count > MAX_ARCHIVE_BYTES:
-                    raise ValueError("Source archive exceeds size limit")
-                stream.write(chunk)
+        last_error: Exception | None = None
+        for attempt in range(3):
+            archive.write_bytes(b"")
+            count = 0
+            try:
+                with urllib.request.urlopen(url, timeout=120) as response, archive.open("wb") as stream:
+                    while chunk := response.read(1024 * 1024):
+                        count += len(chunk)
+                        if count > MAX_ARCHIVE_BYTES:
+                            raise ValueError("Source archive exceeds size limit")
+                        stream.write(chunk)
+                break
+            except (urllib.error.URLError, TimeoutError, OSError) as error:
+                last_error = error
+                time.sleep(2 ** attempt)
+        else:
+            raise ValueError(f"Source archive download failed after retries: {last_error}")
         if sync.digest(archive.read_bytes()) != sync.PINNED_ORIGINS[revision]:
             raise ValueError("Pinned original archive digest mismatch")
         files, hashes, original_digest, exclusions = sync.snapshot(archive, revision)
