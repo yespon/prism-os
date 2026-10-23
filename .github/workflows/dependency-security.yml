@@ -85,6 +85,11 @@ jobs:
           PY
 
       - name: Audit locked runtime environment
+        # Audited exceptions (documented, reviewed):
+        # - CVE-2026-114603 opentelemetry-api 1.37: no compatible fix - newer
+        #   opentelemetry-api conflicts with langgraph-api's pinned
+        #   opentelemetry-sdk 1.37 (transitive via langgraph-runtime-inmem).
+        #   Revisit when langgraph-api ships a newer otel range.
         run: >-
           uv run --with pip-audit pip-audit
           --strict
@@ -92,6 +97,7 @@ jobs:
           --no-deps
           --progress-spinner off
           --format=json
+          --ignore-vuln CVE-2026-114603
           -r /tmp/prismos-backend-installed.txt
 
       - name: Run backend dependency regression test
