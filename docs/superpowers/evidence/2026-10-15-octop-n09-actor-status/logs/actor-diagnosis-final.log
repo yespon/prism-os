@@ -1,0 +1,384 @@
+................................................F.FFFF.....              [100%]
+=================================== FAILURES ===================================
+_ test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding __
+
+coro = <coroutine object _consume_graph_capability at 0x75982f161a60>
+
+    def _run_async(coro):
+        """Run an async coroutine from sync code.
+    
+        Handles both the common case (no running event loop) and the edge case
+        (called from within an already-running event loop, e.g. during tests).
+        """
+        try:
+>           asyncio.get_running_loop()
+E           RuntimeError: no running event loop
+
+packages/harness/deerflow/config/agents_config.py:29: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+delegated = (<starlette.testclient.TestClient object at 0x75982fb16a50>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+configured = (<starlette.testclient.TestClient object at 0x75982fb16a50>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:a2dddd66c4aca7a5f6c835bda1fa8e0c47553436c8587d543c8de464345015cd'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75982f1c2510>
+
+    def test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding(delegated, configured, monkeypatch):
+        from test_lead_agent_model_resolution import _make_app_config, _make_model
+    
+        import deerflow.tools as tools
+        from app import runtime_adapters
+        from app.integrations import agent_skill_references as refs
+        from deerflow.agents.lead_agent import agent as graph
+        from deerflow.agents.lead_agent import prompt as template
+    
+        http, factory, config = delegated
+        _, _, root, resources = configured
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+        monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+        monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+        monkeypatch.setattr(graph, "get_agent_context_provider", lambda: runtime_adapters._load_agent_context)
+        monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+        monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("old-model", supports_thinking=False), _make_model("new-model", supports_thinking=False)]))
+        monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["old-model", "new-model"])
+        monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+        monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: kwargs)
+        monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+        groups = []
+        monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: groups.append(kwargs["groups"]) or [])
+        monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+        monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native soul fell back to name"))
+        monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+    
+        async def seed():
+            async with factory() as session:
+                row = await session.get(CustomAgent, "shared-id")
+                row.system_prompt = "OLD COHERENT SOUL"
+                row.model = "old-model"
+                row.tool_groups = ["old-group"]
+                row.skills = ["collision"]
+                row.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+                session.add(row)
+                await session.commit()
+        asyncio.run(seed())
+        original = graph._db_agent_to_config
+    
+        def edit_after_configuration_read(record):
+            result = original(record)
+            async def edit():
+                async with factory() as writer:
+                    row = await writer.get(CustomAgent, "shared-id")
+                    row.system_prompt = "NEW COHERENT SOUL"
+                    row.model = "new-model"
+                    row.tool_groups = ["new-group"]
+                    row.skills = []
+                    row.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [], "legacy_names": []}}
+                    writer.add(row)
+                    await writer.commit()
+            asyncio.run(edit())
+            return result
+        monkeypatch.setattr(graph, "_db_agent_to_config", edit_after_configuration_read)
+        token = asyncio.run(_repository(factory).issue("tenant-a", "user-a", "coherent-thread", "collision-agent", agent_id="shared-id"))
+>       built = graph.make_lead_agent({"context": {"tenant_id": "tenant-a", "user_id": "user-a", "thread_id": "coherent-thread", "agent_name": "collision-agent", "agent_id": "shared-id", "prismos_execution_capability": token}})
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_diagnosis_authorization.py:829: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/harness/deerflow/agents/lead_agent/agent.py:140: in make_lead_agent
+    trusted_execution = _validate_execution_context(config)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/agents/lead_agent/agent.py:128: in _validate_execution_context
+    result = _run_async(validator(token, tenant_id, user_id, thread_id, agent_name))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/config/agents_config.py:31: in _run_async
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/runtime_adapters.py:189: in _consume_graph_capability
+    binding = await verify_thread(session, tenant_id, user_id, thread_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.ext.asyncio.session.AsyncSession object at 0x75982fa8b3e0>
+tenant = 'tenant-a', actor = 'user-a', thread = 'coherent-thread'
+
+    async def verify_thread(session, tenant, actor, thread):
+        await verify_member(session, tenant, actor)
+        binding = await session.get(PlatformThreadBindingRecord, thread, populate_existing=True)
+        if binding is None or (binding.tenant_id, binding.user_id) != (tenant, actor):
+>           raise ExecutionTrustError("Current thread unavailable")
+E           deerflow.runtime.ExecutionTrustError: Current thread unavailable
+
+app/integrations/file_access.py:41: ExecutionTrustError
+_ test_native_context_rechecks_protected_authority_after_capability_consumption[source] _
+
+delegated = (<starlette.testclient.TestClient object at 0x75982f940830>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7598346e34d0>
+withdraw = 'source'
+
+    @pytest.mark.parametrize("withdraw", ["source", "member", "incident", "severity"])
+    def test_native_context_rechecks_protected_authority_after_capability_consumption(delegated, monkeypatch, withdraw):
+        from app import runtime_adapters
+        from app.models.alerting import Incident
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    
+        async def issue():
+            async with factory() as session:
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                session.add(source)
+                session.add(Incident(id="context-incident", tenant_id="tenant-a", incident_key="INC-CONTEXT", severity="critical"))
+                await session.commit()
+                digest = authorization.revision(source.config_json)
+            return await _repository(factory).issue("tenant-a", "user-a", "context-thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=digest, diagnosis_incident_id="context-incident")
+    
+        token = asyncio.run(issue())
+>       verified = asyncio.run(runtime_adapters._consume_graph_capability(token, "tenant-a", "user-a", "context-thread", "collision-agent"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_diagnosis_authorization.py:904: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/runtime_adapters.py:189: in _consume_graph_capability
+    binding = await verify_thread(session, tenant_id, user_id, thread_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.ext.asyncio.session.AsyncSession object at 0x75982f964a40>
+tenant = 'tenant-a', actor = 'user-a', thread = 'context-thread'
+
+    async def verify_thread(session, tenant, actor, thread):
+        await verify_member(session, tenant, actor)
+        binding = await session.get(PlatformThreadBindingRecord, thread, populate_existing=True)
+        if binding is None or (binding.tenant_id, binding.user_id) != (tenant, actor):
+>           raise ExecutionTrustError("Current thread unavailable")
+E           deerflow.runtime.ExecutionTrustError: Current thread unavailable
+
+app/integrations/file_access.py:41: ExecutionTrustError
+_ test_native_context_rechecks_protected_authority_after_capability_consumption[member] _
+
+delegated = (<starlette.testclient.TestClient object at 0x75982df051c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75982f948bf0>
+withdraw = 'member'
+
+    @pytest.mark.parametrize("withdraw", ["source", "member", "incident", "severity"])
+    def test_native_context_rechecks_protected_authority_after_capability_consumption(delegated, monkeypatch, withdraw):
+        from app import runtime_adapters
+        from app.models.alerting import Incident
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    
+        async def issue():
+            async with factory() as session:
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                session.add(source)
+                session.add(Incident(id="context-incident", tenant_id="tenant-a", incident_key="INC-CONTEXT", severity="critical"))
+                await session.commit()
+                digest = authorization.revision(source.config_json)
+            return await _repository(factory).issue("tenant-a", "user-a", "context-thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=digest, diagnosis_incident_id="context-incident")
+    
+        token = asyncio.run(issue())
+>       verified = asyncio.run(runtime_adapters._consume_graph_capability(token, "tenant-a", "user-a", "context-thread", "collision-agent"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_diagnosis_authorization.py:904: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/runtime_adapters.py:189: in _consume_graph_capability
+    binding = await verify_thread(session, tenant_id, user_id, thread_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.ext.asyncio.session.AsyncSession object at 0x75982fa1dbb0>
+tenant = 'tenant-a', actor = 'user-a', thread = 'context-thread'
+
+    async def verify_thread(session, tenant, actor, thread):
+        await verify_member(session, tenant, actor)
+        binding = await session.get(PlatformThreadBindingRecord, thread, populate_existing=True)
+        if binding is None or (binding.tenant_id, binding.user_id) != (tenant, actor):
+>           raise ExecutionTrustError("Current thread unavailable")
+E           deerflow.runtime.ExecutionTrustError: Current thread unavailable
+
+app/integrations/file_access.py:41: ExecutionTrustError
+_ test_native_context_rechecks_protected_authority_after_capability_consumption[incident] _
+
+delegated = (<starlette.testclient.TestClient object at 0x75982dea68a0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75982f9e59d0>
+withdraw = 'incident'
+
+    @pytest.mark.parametrize("withdraw", ["source", "member", "incident", "severity"])
+    def test_native_context_rechecks_protected_authority_after_capability_consumption(delegated, monkeypatch, withdraw):
+        from app import runtime_adapters
+        from app.models.alerting import Incident
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    
+        async def issue():
+            async with factory() as session:
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                session.add(source)
+                session.add(Incident(id="context-incident", tenant_id="tenant-a", incident_key="INC-CONTEXT", severity="critical"))
+                await session.commit()
+                digest = authorization.revision(source.config_json)
+            return await _repository(factory).issue("tenant-a", "user-a", "context-thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=digest, diagnosis_incident_id="context-incident")
+    
+        token = asyncio.run(issue())
+>       verified = asyncio.run(runtime_adapters._consume_graph_capability(token, "tenant-a", "user-a", "context-thread", "collision-agent"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_diagnosis_authorization.py:904: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/runtime_adapters.py:189: in _consume_graph_capability
+    binding = await verify_thread(session, tenant_id, user_id, thread_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.ext.asyncio.session.AsyncSession object at 0x75982deb7440>
+tenant = 'tenant-a', actor = 'user-a', thread = 'context-thread'
+
+    async def verify_thread(session, tenant, actor, thread):
+        await verify_member(session, tenant, actor)
+        binding = await session.get(PlatformThreadBindingRecord, thread, populate_existing=True)
+        if binding is None or (binding.tenant_id, binding.user_id) != (tenant, actor):
+>           raise ExecutionTrustError("Current thread unavailable")
+E           deerflow.runtime.ExecutionTrustError: Current thread unavailable
+
+app/integrations/file_access.py:41: ExecutionTrustError
+_ test_native_context_rechecks_protected_authority_after_capability_consumption[severity] _
+
+delegated = (<starlette.testclient.TestClient object at 0x75982df502c0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75982d4d0f80>
+withdraw = 'severity'
+
+    @pytest.mark.parametrize("withdraw", ["source", "member", "incident", "severity"])
+    def test_native_context_rechecks_protected_authority_after_capability_consumption(delegated, monkeypatch, withdraw):
+        from app import runtime_adapters
+        from app.models.alerting import Incident
+    
+        http, factory, config = delegated
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+    
+        async def issue():
+            async with factory() as session:
+                source = await session.get(AlertSource, "source-id")
+                selected = dict(source.config_json["analysis_trigger"])
+                selected.update(mode="conditional", conditions={"severity": ["critical"]})
+                source.config_json = {"analysis_trigger": selected}
+                session.add(source)
+                session.add(Incident(id="context-incident", tenant_id="tenant-a", incident_key="INC-CONTEXT", severity="critical"))
+                await session.commit()
+                digest = authorization.revision(source.config_json)
+            return await _repository(factory).issue("tenant-a", "user-a", "context-thread", "collision-agent", agent_id="shared-id", diagnosis_source_id="source-id", diagnosis_source_revision=digest, diagnosis_incident_id="context-incident")
+    
+        token = asyncio.run(issue())
+>       verified = asyncio.run(runtime_adapters._consume_graph_capability(token, "tenant-a", "user-a", "context-thread", "collision-agent"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_diagnosis_authorization.py:904: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/runtime_adapters.py:189: in _consume_graph_capability
+    binding = await verify_thread(session, tenant_id, user_id, thread_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlmodel.ext.asyncio.session.AsyncSession object at 0x75982de920f0>
+tenant = 'tenant-a', actor = 'user-a', thread = 'context-thread'
+
+    async def verify_thread(session, tenant, actor, thread):
+        await verify_member(session, tenant, actor)
+        binding = await session.get(PlatformThreadBindingRecord, thread, populate_existing=True)
+        if binding is None or (binding.tenant_id, binding.user_id) != (tenant, actor):
+>           raise ExecutionTrustError("Current thread unavailable")
+E           deerflow.runtime.ExecutionTrustError: Current thread unavailable
+
+app/integrations/file_access.py:41: ExecutionTrustError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_diagnosis_authorization.py: 59 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_diagnosis_authorization.py::test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding
+FAILED tests/test_diagnosis_authorization.py::test_native_context_rechecks_protected_authority_after_capability_consumption[source]
+FAILED tests/test_diagnosis_authorization.py::test_native_context_rechecks_protected_authority_after_capability_consumption[member]
+FAILED tests/test_diagnosis_authorization.py::test_native_context_rechecks_protected_authority_after_capability_consumption[incident]
+FAILED tests/test_diagnosis_authorization.py::test_native_context_rechecks_protected_authority_after_capability_consumption[severity]
+5 failed, 54 passed, 60 warnings in 196.77s (0:03:16)

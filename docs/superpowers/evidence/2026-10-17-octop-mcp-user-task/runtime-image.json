@@ -1,0 +1,27 @@
+{
+  "image": "sha256:4dd55511597fd236b48bc07951bc59a20447cad43199a237c9a19d31f7337f42",
+  "previous": {
+    "gateway": "sha256:2885e41b33eb0a80353b6cabaf23fa089ac282426234c9b3cd44d9d93ea17bc4",
+    "langgraph": "sha256:2885e41b33eb0a80353b6cabaf23fa089ac282426234c9b3cd44d9d93ea17bc4"
+  },
+  "files": {
+    "app/alerting/governed_native_reads.py": "355d24199de62b86eb6fce0397d0c18720c85c1844e5ee13a8b8f8938ac8a432",
+    "app/alerting/governed_read_tool.py": "a41c4a25411ff867bf8938ada97992c49c496ccdeb954d1f6f1001a57a953c70",
+    "app/integrations/file_access.py": "ffe387d1575e3ad48eaa479b66f69a706adb9fbbb5685e0758c8ef7933dbc0eb",
+    "app/runtime_adapters.py": "86fe7b5a954834a29ce2ba64781cc3a5578aa8f5f878291beafd2e1a4998d09b",
+    "packages/harness/deerflow/runtime.py": "b006f90d4f538934a5751fe2c0dbfbaa4a77187fff521422d5d04f03d57d5efa",
+    "packages/harness/deerflow/agents/lead_agent/agent.py": "ab211cf8339c7d8ab94e5dc606c4108fc38143a2b1eb76cacd091de105a80cbe",
+    "app/integrations/mcp_access.py": "949ce267bcce5eed85cb1b3023a42d3fd2b4eda19525a61ee25d6dfe1f84a649",
+    "packages/harness/deerflow/mcp/authorization.py": "0927a6c36def839e3111b3a0fb7bc4179310614887e3e0079c40a1603b8865a4",
+    "packages/harness/deerflow/mcp/tools.py": "34db0959cca3ff909356b208e1025b00ce15c48c923ed0b21a8c70a3a51efcf5",
+    "packages/harness/deerflow/mcp/cache.py": "e2a95a0827deeaa368301bbd7a5f1ef6355253f8ff0d1c4bc58845b33126337c",
+    "tests/test_mcp_runtime_access.py": "3637eba26a5e6bfef47ba2487f5d0ccc8ca5bd03d3b6c9f6dd64597958cd4e93",
+    "tests/test_office_pptx_notes.py": "2016aa8524035901ea406d80623a3f4ec80f46dc81fdf4446d9985031afcdde2",
+    "packages/harness/deerflow/tools/builtins/office_pptx.py": "b657398ce28230af10238bf4fdba4de675b63ccc30f074e05abaf7a0cd57dc38",
+    "tests/test_governed_native_reads.py": "deae3dec8927e028e04bc6382f7d401ef90ea01c3d2a5f73b91398c60d68efde",
+    "packages/harness/deerflow/subagents/executor.py": "86da9054fedf519a5334c8ca2ff5fa124c0d3657ee22a25de7c9d69b478ee30e",
+    "packages/harness/deerflow/tools/builtins/task_tool.py": "5b2af9107dde99f48b6dac3a29b30d5384848bb60ef96101f0538468d0220816"
+  },
+  "action": "off",
+  "private_original_compose": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/compose-before-mcp-task.yaml"
+}

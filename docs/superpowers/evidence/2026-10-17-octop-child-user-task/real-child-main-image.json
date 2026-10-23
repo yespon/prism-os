@@ -1,0 +1,46 @@
+{
+  "complete": true,
+  "configured_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/native-profile/child-task-7c05f3931f",
+  "phases": [
+    "native_login_agent_thread_upload",
+    "real_model_read_create_present_download_acl",
+    "fresh_session_history_artifact"
+  ],
+  "base_url": "http://127.0.0.1:18026",
+  "new_model_task_submissions": 1,
+  "agent_id": "1bf378e5-d878-46fb-b9a8-02d21cfa905b",
+  "agent_name": "child-task-7c05f3931f",
+  "thread_id": "589b8dcf-ddf6-4802-a2d6-fe4826d362ef",
+  "child_tool_names": [
+    "read_file",
+    "office_docx"
+  ],
+  "child_execution_completed": true,
+  "stream_received": true,
+  "run_status": "success",
+  "tool_names": [
+    "task",
+    "present_files"
+  ],
+  "tool_outcomes": [
+    {
+      "name": "task",
+      "status": "success",
+      "content_type": "str"
+    },
+    {
+      "name": "present_files",
+      "status": "success",
+      "content_type": "str"
+    }
+  ],
+  "artifact_url": "/api/threads/589b8dcf-ddf6-4802-a2d6-fe4826d362ef/artifacts/mnt/user-data/outputs/report-7c05f3931f.docx?download=true",
+  "artifact_sha256": "8565f33053f5888a3a5a79521b63abdbe0168404afdb39254c3f79cdc108efca",
+  "artifact_bytes": 1913,
+  "document_text_and_table_verified": true,
+  "fresh_session_history_and_download": true,
+  "cross_tenant_and_nonowner_denied": true,
+  "raw_transcript_exported": false
+}

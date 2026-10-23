@@ -1,0 +1,45 @@
+.F......                                                                 [100%]
+=================================== FAILURES ===================================
+_ test_binary_read_records_policy_and_result_and_keeps_ordinary_tasks[asyncio] _
+tests/test_governed_native_reads.py:75: in test_binary_read_records_policy_and_result_and_keeps_ordinary_tasks
+    assert sum(e.event_type == 'action.read_result' and e.outcome == 'succeeded' for e in events) == 2
+E   assert 4 == 2
+E    +  where 4 = sum(<generator object test_binary_read_records_policy_and_result_and_keeps_ordinary_tasks.<locals>.<genexpr> at 0x74ca8b45f370>)
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_governed_native_reads.py::test_critical_policy_failure_blocks_native_docx_content
+tests/test_governed_native_reads.py::test_binary_read_records_policy_and_result_and_keeps_ordinary_tasks[asyncio]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[user_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[tenant_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[thread_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[agent_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[call_id]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_governed_native_reads.py::test_binary_read_records_policy_and_result_and_keeps_ordinary_tasks[asyncio]
+1 failed, 7 passed, 8 warnings in 9.72s

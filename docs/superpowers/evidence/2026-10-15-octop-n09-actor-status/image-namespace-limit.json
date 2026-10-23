@@ -1,0 +1,10 @@
+{
+  "image": "sha256:5b59be8641e7778d48edfe0fa732b6ead846a79f3d4d707659998172f4732750",
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "bwrap: No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces. See <https://deb.li/bubblewrap> or <file:///usr/share/doc/bubblewrap/README.Debian.gz>.\n",
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true,
+  "scope": "actual nested user/pid namespace launch under default Docker restrictions; production fails closed"
+}

@@ -1,0 +1,14 @@
+{
+  "image": "sha256:f89d6f513fa05c132754fa3409ace8c30e20bab900f540eddd52e616d7c3c61a",
+  "previous": {
+    "gateway": "sha256:d92ae2ea1544e2c3371ace986bdb0f79ec8f8b859c491571a4d1693ae97ff51b",
+    "langgraph": "sha256:d92ae2ea1544e2c3371ace986bdb0f79ec8f8b859c491571a4d1693ae97ff51b"
+  },
+  "files": {
+    "app/runtime_adapters.py": "4678638f8a609910244830560f5f2eec6a239db3e517d1bfafd26b5b3de6110a",
+    "app/integrations/octop/runtime_prompts.py": "f9a4a8ac0b7e3615140e27e52248028ec4ecdfe018840c615fcbb6c70a3b5e6a",
+    "tests/test_octop_integration.py": "f83e488dd5a8f6c59a3312b2006f8f318c4d9de733856d51ddb9a7b4ed9e7785"
+  },
+  "action": "off",
+  "private_original_compose": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/compose-before-office-expert.yaml"
+}

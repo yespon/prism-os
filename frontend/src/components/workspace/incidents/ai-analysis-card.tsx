@@ -9,9 +9,13 @@ import {
   SparklesIcon,
   WrenchIcon,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { useGovernedTicketStatus, reviewGovernedTicket, resumeGovernedTicket } from "@/core/alerting";
 import type { IncidentDetail } from "@/core/alerting/types";
+import { useCurrentTenant } from "@/core/tenants/hooks";
 
 interface AiAnalysisCardProps {
   incident: IncidentDetail;
@@ -30,6 +34,36 @@ export function AiAnalysisCard({
   onAnalyze,
   onOpenDiagnosis,
 }: AiAnalysisCardProps) {
+  const { data: currentTenant } = useCurrentTenant();
+  const { data: ticketAction, refetch: refreshTicketAction } = useGovernedTicketStatus(incident.id);
+  const [ticketBusy, setTicketBusy] = useState(false);
+  const reviewTicket = async (action: "approve" | "reject") => {
+    if (!ticketAction?.approval_id) return;
+    setTicketBusy(true);
+    try {
+      await reviewGovernedTicket(ticketAction.approval_id, action);
+      await refreshTicketAction();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "审批失败");
+    } finally {
+      setTicketBusy(false);
+    }
+  };
+  const resumeTicket = async () => {
+    setTicketBusy(true);
+    try {
+      await resumeGovernedTicket(incident.id);
+      await refreshTicketAction();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "恢复建单失败");
+    } finally {
+      setTicketBusy(false);
+    }
+  };
+  const ticketLabels: Record<string, string> = {
+    denied: "策略拒绝", awaiting_approval: "等待审批", approved: "已批准，待恢复",
+    rejected: "审批拒绝", expired: "审批已过期", submitted: "已提交工单", unknown: "提交结果待核对",
+  };
   return (
     <div className="space-y-6">
 
@@ -145,6 +179,42 @@ export function AiAnalysisCard({
                 </Button>
               </div>
             </div>
+          )}
+        </div>
+      )}
+
+      {ticketAction?.enabled && ticketAction.status && (
+        <div className="rounded-xl border border-zinc-200 bg-background p-4 text-xs dark:border-zinc-800">
+          <h3 className="font-semibold">诊断 Agent 受控建单：{ticketLabels[ticketAction.status]}</h3>
+          <p className="mt-2 text-muted-foreground">
+            {ticketAction.status === "awaiting_approval" ? "等待租户管理员审批后，由请求者继续执行。" :
+             ticketAction.status === "unknown" ? "结果不确定，需人工核对；系统不会自动重发。" :
+             ticketAction.status === "expired" ? "审批已过期，不能继续提交。" :
+             ticketAction.status === "denied" ? "当前策略不允许建单。" :
+             ticketAction.status === "rejected" ? "审批已拒绝，工单未提交。" :
+             ticketAction.status === "submitted" ? `工单 ${ticketAction.ticket_id ?? "已提交"}` :
+             "审批已通过，可继续执行。"}
+          </p>
+          <div className="mt-2 break-all font-mono text-[10px] text-muted-foreground">
+            tenant {ticketAction.tenant_id} · actor {ticketAction.actor_id} · workload {ticketAction.workload_id}<br />
+            run {ticketAction.run_id} · decision {ticketAction.decision_id} · approval {ticketAction.approval_id ?? "—"}<br />
+            policy {ticketAction.policy_id}@{ticketAction.policy_version} · reason {ticketAction.reason_code}
+            {ticketAction.run && (
+              <>
+                <br />
+                执行事实（刷新/重启后可恢复）：{ticketAction.run.state} · agent {ticketAction.run.snapshot.agent_name ?? ticketAction.run.snapshot.agent_id ?? "—"}
+                {ticketAction.run.snapshot.model_name ? ` · model ${ticketAction.run.snapshot.model_name}` : ""}
+              </>
+            )}
+          </div>
+          {ticketAction.status === "awaiting_approval" && ticketAction.approval_id && currentTenant?.role === "tenant_admin" && (
+            <div className="mt-3 flex gap-2">
+              <Button size="sm" disabled={ticketBusy} onClick={() => void reviewTicket("approve")}>管理员批准</Button>
+              <Button size="sm" variant="outline" disabled={ticketBusy} onClick={() => void reviewTicket("reject")}>拒绝</Button>
+            </div>
+          )}
+          {ticketAction.can_resume && (
+            <Button className="mt-3" size="sm" disabled={ticketBusy} onClick={() => void resumeTicket()}>继续建单</Button>
           )}
         </div>
       )}

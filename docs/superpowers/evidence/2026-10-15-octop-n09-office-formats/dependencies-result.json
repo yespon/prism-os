@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/root/.local/bin/uv",
+    "sync",
+    "--locked",
+    "--offline",
+    "--project",
+    "backend"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T15:51:37.364698+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T15:51:37.783927+00:00"
+}

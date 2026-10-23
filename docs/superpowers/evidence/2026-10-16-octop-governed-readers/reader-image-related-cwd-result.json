@@ -1,0 +1,28 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "-w",
+    "/app/backend",
+    "--entrypoint",
+    "/app/backend/.venv/bin/python",
+    "prismos-governed-readers-history:test",
+    "-m",
+    "pytest",
+    "tests/test_governed_native_reads.py",
+    "tests/test_graph_execution_context.py",
+    "tests/test_governed_ticket.py",
+    "tests/test_office_docx.py",
+    "tests/test_file_access_boundaries.py",
+    "-q",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T16:18:15.277547+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T16:19:44.517266+00:00"
+}

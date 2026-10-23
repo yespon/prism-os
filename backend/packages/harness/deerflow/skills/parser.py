@@ -4,7 +4,7 @@ from pathlib import Path
 from .types import Skill
 
 
-def parse_skill_file(skill_file: Path, category: str, relative_path: Path | None = None) -> Skill | None:
+def parse_skill_file(skill_file: Path, category: str, relative_path: Path | None = None, *, secure: bool = False) -> Skill | None:
     """
     Parse a SKILL.md file and extract metadata.
 
@@ -19,7 +19,12 @@ def parse_skill_file(skill_file: Path, category: str, relative_path: Path | None
         return None
 
     try:
-        content = skill_file.read_text(encoding="utf-8")
+        if secure:
+            from deerflow.sandbox.file_access import read_owned_file
+
+            content = read_owned_file(skill_file.absolute()).decode("utf-8")
+        else:
+            content = skill_file.read_text(encoding="utf-8")
 
         # Extract YAML front matter
         # Pattern: ---\nkey: value\n---

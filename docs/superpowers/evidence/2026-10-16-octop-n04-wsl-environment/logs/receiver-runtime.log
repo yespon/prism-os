@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_wsl_test_probe.py", line 140, in <module>
+    main()
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_wsl_test_probe.py", line 133, in main
+    result = functions[args.action]()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_wsl_test_probe.py", line 68, in receiver_probe
+    assert first['status'] == 'ok' and first == repeated
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

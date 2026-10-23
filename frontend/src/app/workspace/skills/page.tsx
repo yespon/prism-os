@@ -1,8 +1,8 @@
 "use client";
 
-import { Bot, Plus, SearchIcon, Loader2, Upload, Trash2, Edit3 } from "lucide-react";
+import { Bot, Plus, SearchIcon, Loader2, Upload, Edit3 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,16 +15,25 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SkillDeleteControl } from "@/components/workspace/skills/skill-delete-control";
+import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
 import { useSession } from "@/core/auth/hooks";
 import { useI18n } from "@/core/i18n/hooks";
 import { isPlatformAdminRole } from "@/core/permissions/roles";
-import { useAvailableSkills, useCreatePersonalSkill, useImportPersonalSkill, useDeletePersonalSkill } from "@/core/skills/hooks";
+import { useAvailableSkills, useImportPersonalSkill } from "@/core/skills/hooks";
+import { useSkillImportContext } from "@/core/skills/import-context";
+import { skillImportErrorMessage } from "@/core/skills/imports";
 import type { AvailableSkillResponse } from "@/core/skills/type";
 
 export default function SkillsCenterPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const importContext = useSkillImportContext();
+  const importIdentity = useRef(importContext.key);
+  importIdentity.current = importContext.key;
+  const archiveBusy = useRef(false);
+  const archiveGeneration = useRef(0);
+  const changeArchiveOpen = (value: boolean) => { archiveGeneration.current += 1; archiveBusy.current = false; setImportOpen(value); };
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlFilter = searchParams.get("filter");
@@ -36,17 +45,14 @@ export default function SkillsCenterPage() {
   );
 
   // Create/Import Skill state
+  const [operationsOpen, setOperationsOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [archiveFile, setArchiveFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => { setImportOpen(false); setArchiveFile(null); archiveBusy.current = false; }, [importContext.key]);
 
-  const { mutateAsync: createPersonalSkill, isPending: isCreating } = useCreatePersonalSkill();
   const { mutateAsync: importPersonalSkill, isPending: isImporting } = useImportPersonalSkill();
-  const { mutateAsync: deletePersonalSkill, isPending: isDeleting } = useDeletePersonalSkill();
-
-  const [deletingSkill, setDeletingSkill] = useState<string | null>(null);
-
   const isAdmin = isPlatformAdminRole(session?.user?.role) || session?.user?.role === "tenant_admin";
 
   const filteredSkills = useMemo(() => {
@@ -89,36 +95,30 @@ export default function SkillsCenterPage() {
   };
 
   const handleImport = async () => {
+    if (!importContext.identityReady || !importContext.isCurrent() || archiveBusy.current) return;
+    const identity = importContext.key;
+    const generation = archiveGeneration.current;
+    const current = () => archiveGeneration.current === generation && importIdentity.current === identity && importContext.isCurrent();
+    archiveBusy.current = true;
     try {
       if (!archiveFile) {
         toast.error("请选择要导入的技能包文件");
         return;
       }
       await importPersonalSkill(archiveFile);
+      if (!current()) return;
       toast.success("导入成功");
       setImportOpen(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "操作失败");
+      if (current()) toast.error(skillImportErrorMessage(err, locale === "zh-CN"));
+    } finally {
+      if (current()) archiveBusy.current = false;
     }
   };
 
   const handleOpenImport = () => {
     setArchiveFile(null);
-    setImportOpen(true);
-  };
-
-  const handleDelete = async (skillName: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!confirm(`确定要删除私有 Skill "${skillName}" 吗？此操作不可恢复。`)) return;
-    setDeletingSkill(skillName);
-    try {
-      await deletePersonalSkill(skillName);
-      toast.success(`已删除 ${skillName}`);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "删除失败");
-    } finally {
-      setDeletingSkill(null);
-    }
+    changeArchiveOpen(true);
   };
 
   return (
@@ -169,6 +169,11 @@ export default function SkillsCenterPage() {
         </div>
       </div>
 
+      <details className="shrink-0" onToggle={event => setOperationsOpen(event.currentTarget.open)}>
+        <summary>{locale === "zh-CN" ? "Skill 导入记录与恢复" : "Skill import records and recovery"}</summary>
+        {operationsOpen && <SkillImportOperations scope="personal" locale={locale === "zh-CN" ? "zh" : "en"} />}
+      </details>
+
       {/* Skill Grid */}
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
@@ -188,18 +193,17 @@ export default function SkillsCenterPage() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {filteredSkills.map((skill) => (
               <SkillCard
-                key={skill.name}
+                key={skill.resource_id ?? `${skill.scope}:${skill.name}`}
                 skill={skill}
-                onClick={() => router.push(`/workspace/skills/${skill.name}`)}
-                onDelete={skill.scope === "personal" ? (e: React.MouseEvent) => handleDelete(skill.name, e) : undefined}
-                isDeleting={deletingSkill === skill.name}
+                onClick={() => router.push(`/workspace/skills/${encodeURIComponent(skill.name)}?${new URLSearchParams({scope: skill.scope, ...(skill.resource_id ? {resource_id: skill.resource_id} : {})})}`)}
+                locale={locale === "zh-CN" ? "zh" : "en"}
               />
             ))}
           </div>
         )}
       </div>
 
-      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+      <Dialog open={importOpen} onOpenChange={changeArchiveOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>导入私有 Skill</DialogTitle>
@@ -267,7 +271,7 @@ export default function SkillsCenterPage() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setImportOpen(false)}>
+            <Button variant="outline" onClick={() => changeArchiveOpen(false)}>
               {t.common.cancel}
             </Button>
             <Button 
@@ -287,13 +291,11 @@ export default function SkillsCenterPage() {
 function SkillCard({
   skill,
   onClick,
-  onDelete,
-  isDeleting,
+  locale,
 }: {
   skill: AvailableSkillResponse;
   onClick: () => void;
-  onDelete?: (e: React.MouseEvent) => void;
-  isDeleting?: boolean;
+  locale: "zh" | "en";
 }) {
   const canEdit = skill.managed_by_current_user && skill.scope !== "global";
 
@@ -312,20 +314,7 @@ function SkillCard({
             <Edit3 className="h-3.5 w-3.5" />
           </button>
         )}
-        {onDelete && (
-          <button
-            onClick={onDelete}
-            disabled={isDeleting}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
-            title="删除此 Skill"
-          >
-            {isDeleting ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Trash2 className="h-3.5 w-3.5" />
-            )}
-          </button>
-        )}
+        {skill.scope === "personal" && <SkillDeleteControl name={skill.name} resourceId={skill.resource_id} scope="personal" locale={locale} disabled={!canEdit} />}
       </div>
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">

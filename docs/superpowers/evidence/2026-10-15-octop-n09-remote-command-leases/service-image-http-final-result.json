@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-remote-command-leases/verify_service_image.py",
+    "sha256:001238399e4b026ea5cde5c4b73add460136bc76461b192c9b7ddeedbeb6201a"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T07:26:42.905725+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T07:26:44.853788+00:00"
+}

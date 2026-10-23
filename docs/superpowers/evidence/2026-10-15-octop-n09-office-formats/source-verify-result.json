@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "scripts/octop_sync.py",
+    "verify"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T15:52:10.815251+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T15:52:11.676343+00:00"
+}

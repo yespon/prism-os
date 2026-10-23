@@ -1,0 +1,12 @@
+{
+  "command": [
+    "pdftotext",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/demo-chinese.pdf",
+    "-"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T23:23:11.452543+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T23:23:11.513792+00:00"
+}

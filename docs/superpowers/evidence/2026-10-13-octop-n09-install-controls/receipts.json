@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "files": {
+    "README.md": {
+      "bytes": 2083,
+      "sha256": "119c9d3d35ec369626d5a5df3a031bf87eee086926178735341388c514232c0b"
+    },
+    "artifact-current.json": {
+      "bytes": 599,
+      "sha256": "fc9a119c0dc1419508b3620a1778a09168acd3b92222115e4fc160cf7a49a4c7"
+    },
+    "artifact-independent.json": {
+      "bytes": 92,
+      "sha256": "61164a30ad784a04f5aec2d7eb2400a3e3d8fab04620663cb836cfd53828d076"
+    },
+    "candidate.json": {
+      "bytes": 2635,
+      "sha256": "fd9614f5a4c65c4d8d8557c50d7452908a550296bf0a9e2efbc5396f8cc934b7"
+    },
+    "capability-delta.json": {
+      "bytes": 1193,
+      "sha256": "d54f0c1c94cc067a3cb36cf54ad41bcb0d82528a929693b9fdc1d3247cc046d5"
+    },
+    "independent-build-exit.json": {
+      "bytes": 245,
+      "sha256": "d8b75fcf3a64031390200cd7fb1cff7404b8b31e4581178c2cefaff876c95eb1"
+    },
+    "log-recovery.json": {
+      "bytes": 246,
+      "sha256": "98577b13d6bf5d17b62b2be98827e11ddefb99c87e9ad3f320783bfb59cdc26d"
+    },
+    "logs/backend-full.log": {
+      "bytes": 8179,
+      "sha256": "c2f925ff0937d8f5cb2f3523a4ada48b4b19e8c3910b794f357a2e5d0e95d171"
+    },
+    "logs/backend-initial-assertion-failure.log": {
+      "bytes": 10358,
+      "sha256": "a7ef754257c2a6828fc88e6c15a2034db81875a7523320c6b71a520779979868"
+    },
+    "logs/backend-lint.log": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "logs/backend-resource-interrupted.log": {
+      "bytes": 1066,
+      "sha256": "34a43af2d00e37b9fd9aa7f9ae2d1429370ab1c64427da612501338b494d22a0"
+    },
+    "logs/brand-final.log": {
+      "bytes": 72,
+      "sha256": "1e8a5a94e96200f729eaf224532a796edd0b474e75e41c981f18124bd05546e1"
+    },
+    "logs/build-current.log": {
+      "bytes": 10201,
+      "sha256": "1b1a0387628a7de7f259faf6a5d8f1799882025a742dccd7f2c3ae9dec02c7c9"
+    },
+    "logs/build-independent.log": {
+      "bytes": 10124,
+      "sha256": "8198ceace5493a4f77f042870a9587d2f5a709201ba4d230563c6ccd9ce45f3f"
+    },
+    "logs/build-initial-assertion-failure.log": {
+      "bytes": 5834,
+      "sha256": "13bdbb0271cd515af3ae35ca74e925202529b335b15cf9effaea4fab0073ac41"
+    },
+    "logs/build-turbopack-resource-interrupted.log": {
+      "bytes": 8475,
+      "sha256": "39f439468772c03724318cb3c64cfca05c1d355446f4ef8e072010f3bdba299d"
+    },
+    "logs/frontend-full.log": {
+      "bytes": 256,
+      "sha256": "154dceb479bb0be95dfcd7dce08cd5935491f4406922a2a36e6a90a7b4fee7f9"
+    },
+    "logs/frontend-independent-full.log": {
+      "bytes": 243,
+      "sha256": "bdeb06f4d8d8f3fa800456b51fb567d08ea0fa9fe2da3855a3379d337a1dfe0b"
+    },
+    "logs/frontend-lint-final.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "logs/frontend-lint-initial-failure.log": {
+      "bytes": 2717,
+      "sha256": "040f47c2d7fd11f73bfa4ab27f5bd5340825cb4859bd90c0332103beb4cbdfbe"
+    },
+    "logs/frontend-lint-verified.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "logs/independent-build-log-lost.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "logs/independent-install-backend.log": {
+      "bytes": 5341,
+      "sha256": "99778470feeb302fd6d1a28ae37de7880ffcf2e93bd62bbad1465cf406865a39"
+    },
+    "logs/independent-install-frontend.log": {
+      "bytes": 2989,
+      "sha256": "f8f3166b791543ce773ee55ecd8ab38c5d20c19dfccab75651f87df016e08dba"
+    },
+    "logs/negative-route-cleanup.log": {
+      "bytes": 59,
+      "sha256": "adba4af9194e10e47dda75ff0fd0f8c2b756474896d0eba5612799c527ff372a"
+    },
+    "logs/negative-route.log": {
+      "bytes": 842,
+      "sha256": "474fdf0f1f1c1825e1e046f9d5e7d2767082b69e69162241d1ca9d2e9f374a53"
+    },
+    "logs/phase-assertion-failure.log": {
+      "bytes": 2394,
+      "sha256": "3e7cb579a9baa9f8c67773dbad9222f86069d8ffd2c33b9cbabe1ec1fbcf5be8"
+    },
+    "logs/postgres-initial-assertion-failure.log": {
+      "bytes": 2380,
+      "sha256": "940b578d950228972184517df8a9f78dbf75ebceb25bfd92bf36fd079f451386"
+    },
+    "logs/postgres.log": {
+      "bytes": 626,
+      "sha256": "f53fd46d5572427ec6e701731b6bf33e4fc52904ab8b97b73977b674db18244a"
+    },
+    "logs/production-webpack.log": {
+      "bytes": 2264,
+      "sha256": "766e3f38329392cba7758735eeeaa97c031bd31ecaec54f3f861e7a44b65f90a"
+    },
+    "logs/reproduce.sh": {
+      "bytes": 2566,
+      "sha256": "012db317bad2ff0822fccd43e50b68cfc6678282a17bd0e2a5e907298e3fbb57"
+    },
+    "logs/serial-controlflow-before-log-verification.json": {
+      "bytes": 208,
+      "sha256": "d9311fd13cfea2160687d04c6229c1933ca9eee28d23a5146dccc08a72d35881"
+    },
+    "logs/upgrade.log": {
+      "bytes": 1195,
+      "sha256": "41c48e22349ac53ffb92f5154945d63361c1f66ffb3b2523922602854c270ed3"
+    },
+    "logs/uv-build-index.sh": {
+      "bytes": 198,
+      "sha256": "134e1fb226d097debbb71741ffc7d32ff3ec479897611d3f15e345053bf7cf44"
+    },
+    "postgres.json": {
+      "bytes": 529,
+      "sha256": "03413894acb1612abe932a8436e54d22f45d611156dd159b2d237e7546789a86"
+    },
+    "previous-source-receipt.json": {
+      "bytes": 1306239,
+      "sha256": "52ebf9db32bf50dbf7e5e25c9d1926ddc69a722d311c0448944b016a1ee69068"
+    },
+    "serial-complete.json": {
+      "bytes": 244,
+      "sha256": "b2fa163523b249f8f546c448ac71ba9e93f9dfc4919cc5843d9997c3ebd21822"
+    },
+    "source-index.json": {
+      "bytes": 78,
+      "sha256": "4e24217bdb8d4f5458d8d17d9b31e4fa27784d3b40d1036e7cb21f25acfa1158"
+    },
+    "type-guard.json": {
+      "bytes": 116,
+      "sha256": "1f1e9948ea0459799fda41ee64cb392a5126d5ff99206c88d105a211fb40ee51"
+    },
+    "upgrade.json": {
+      "bytes": 86371,
+      "sha256": "0c2cd1ee2e8356e8e8097c644838fced4b1ca3b13d94c083f5d6d7f09e41a7a5"
+    },
+    "validation.json": {
+      "bytes": 3253,
+      "sha256": "eb8d5497a3dfb76bb72ac9a077a6e2b67b231b8931cd1d486a1335e3ca4c6589"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/reproduce_skill_lock.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T08:07:57.883866+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T08:09:21.833745+00:00"
+}

@@ -65,3 +65,38 @@ def read_audit_events(
     if limit <= 0:
         return []
     return rows[-limit:][::-1]
+
+
+def record_platform_audit_event(event: dict[str, Any]) -> None:
+    """Append a sanitized platform projection once, including after replay or a crash."""
+    import fcntl
+
+    event_id = event["event_id"]
+    row = {
+        "ts": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "event_type": event["event_type"],
+        "severity": event["severity"],
+        "actor_id": event["actor_id"],
+        "target_user_id": None,
+        "tenant_id": event["tenant_id"],
+        "scope": event["scope"],
+        "metadata": {**event["metadata"], "platform_event_id": event_id},
+    }
+    with _audit_file().open("a+", encoding="utf-8") as handle:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            handle.seek(0)
+            for line in handle:
+                try:
+                    existing = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if existing.get("metadata", {}).get("platform_event_id") == event_id:
+                    if existing.get("tenant_id") != event["tenant_id"]:
+                        raise ValueError("platform audit event identity conflict")
+                    return
+            handle.seek(0, 2)
+            handle.write(json.dumps(row, ensure_ascii=True) + "\n")
+            handle.flush()
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)

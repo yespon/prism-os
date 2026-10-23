@@ -1,0 +1,14 @@
+{"completed": "approve", "requests_delta": 1}
+{"completed": "reject", "requests_delta": 0}
+{"completed": "revoke_agent", "requests_delta": 0}
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_approval_matrix.py", line 88, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_approval_matrix.py", line 47, in main
+    disabled=expect(owner,'/api/alert-sources/'+source['id']+'/ticket-secret',method='DELETE');assert disabled['active'] is False
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/live_common.py", line 43, in expect
+    assert response.status_code==status,(path,response.status_code,response.text[:300])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('/api/alert-sources/bf542b09-ca81-40b8-ae1c-dbb9b1720451/ticket-secret', 422, '{"detail":[{"type":"missing","loc":["query","expected_ref_id"],"msg":"Field required","input":null}]}')

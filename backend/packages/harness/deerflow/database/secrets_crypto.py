@@ -98,6 +98,27 @@ def decrypt_text_with_key(value: str, raw_key: str | None) -> str:
         return value
 
 
+def encrypt_text_strict(value: str, raw_key: str | None) -> str:
+    """Encrypt all input, including prefix-shaped plaintext; require a key."""
+    fernet = _fernet_from_raw_key(raw_key)
+    if fernet is None:
+        raise ValueError("secret encryption key required")
+    return _ENC_PREFIX + fernet.encrypt(value.encode("utf-8")).decode("ascii")
+
+
+def decrypt_text_strict(value: str, raw_key: str | None) -> str:
+    """Reject plaintext and invalid ciphertext instead of returning either."""
+    fernet = _fernet_from_raw_key(raw_key)
+    if fernet is None:
+        raise ValueError("secret encryption key required")
+    try:
+        if not _is_encrypted_text(value):
+            raise ValueError
+        return fernet.decrypt(value[len(_ENC_PREFIX):].encode("ascii")).decode("utf-8")
+    except (InvalidToken, ValueError, UnicodeError):
+        raise ValueError("secret decryption failed") from None
+
+
 def _map_string_values(value: Any, mapper) -> Any:
     if isinstance(value, dict):
         return {k: _map_string_values(v, mapper) for k, v in value.items()}

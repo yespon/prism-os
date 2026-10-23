@@ -1,0 +1,7 @@
+Resolved 211 packages in 2ms
+   Building deerflow-harness @ file:///root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness
+      Built deerflow-harness @ file:///root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness
+Prepared 1 package in 305ms
+Uninstalled 1 package in 1ms
+Installed 1 package in 0.68ms
+ ~ deerflow-harness==0.1.0 (from file:///root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness)

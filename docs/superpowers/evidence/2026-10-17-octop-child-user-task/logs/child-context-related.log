@@ -1,0 +1,83 @@
+..FF.................................................F                   [100%]
+=================================== FAILURES ===================================
+___ test_child_model_uses_parent_tenant_and_current_allowlist[asyncio-True] ____
+tests/test_child_execution_context.py:133: in test_child_model_uses_parent_tenant_and_current_allowlist
+    with tenant_context(tenant_id="outer"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:301: in helper
+    return _GeneratorContextManager(func, args, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:105: in __init__
+    self.gen = func(*args, **kwds)
+               ^^^^^^^^^^^^^^^^^^^
+E   TypeError: tenant_context() missing 1 required positional argument: 'user_id'
+___ test_child_model_uses_parent_tenant_and_current_allowlist[asyncio-False] ___
+tests/test_child_execution_context.py:133: in test_child_model_uses_parent_tenant_and_current_allowlist
+    with tenant_context(tenant_id="outer"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:301: in helper
+    return _GeneratorContextManager(func, args, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:105: in __init__
+    self.gen = func(*args, **kwds)
+               ^^^^^^^^^^^^^^^^^^^
+E   TypeError: tenant_context() missing 1 required positional argument: 'user_id'
+_ test_sdk_read_factory_preserves_pending_task_topology_without_model_request __
+tests/test_graph_execution_context.py:144: in test_sdk_read_factory_preserves_pending_task_topology_without_model_request
+    executed = lead_agent.make_lead_agent({'configurable': {}})
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/agents/lead_agent/agent.py:307: in make_lead_agent
+    middleware=_build_middlewares(config, model_name=model_name, agent_name=agent_name) + execution_middlewares,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/agents/lead_agent/agent.py:61: in _build_middlewares
+    middlewares = list(build_lead_runtime_middlewares(lazy_init=True))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py:142: in build_lead_runtime_middlewares
+    return _build_runtime_middlewares(
+packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py:84: in _build_runtime_middlewares
+    from deerflow.agents.middlewares.uploads_middleware import UploadsMiddleware
+E   ModuleNotFoundError: No module named 'deerflow.agents.middlewares.uploads_middleware'; 'deerflow.agents.middlewares' is not a package
+------------------------------ Captured log call -------------------------------
+WARNING  deerflow.agents.lead_agent.agent:agent.py:235 Thinking mode is enabled but model 'unit-model' does not support it; fallback to non-thinking mode.
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_child_execution_context.py::test_child_native_context_writes_owned_docx_without_weakening_file_guard[asyncio-False]
+tests/test_child_execution_context.py::test_child_native_context_writes_owned_docx_without_weakening_file_guard[asyncio-True]
+tests/test_governed_native_reads.py::test_critical_policy_failure_blocks_native_docx_content
+tests/test_governed_native_reads.py::test_binary_read_records_policy_and_result_and_keeps_ordinary_tasks[asyncio]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[user_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[tenant_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[thread_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[agent_id]
+tests/test_governed_native_reads.py::test_reader_scope_rejects_identity_mismatch_and_resets_after_error[call_id]
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_child_execution_context.py::test_child_model_uses_parent_tenant_and_current_allowlist[asyncio-True]
+FAILED tests/test_child_execution_context.py::test_child_model_uses_parent_tenant_and_current_allowlist[asyncio-False]
+FAILED tests/test_graph_execution_context.py::test_sdk_read_factory_preserves_pending_task_topology_without_model_request
+3 failed, 51 passed, 10 warnings in 13.96s

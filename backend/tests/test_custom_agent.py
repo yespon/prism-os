@@ -43,14 +43,18 @@ async def _drop_tables(engine: AsyncEngine) -> None:
 
 
 @pytest.fixture()
-def test_session_factory():
+def test_session_factory(monkeypatch, native_identity):
+    native_identity("user-a")
     """Fixture providing an async session factory connected to in-memory SQLite."""
+    from deerflow.database import user_config_service
+
     engine = _make_test_engine()
     asyncio.run(_create_tables(engine))
 
     from sqlalchemy.ext.asyncio import async_sessionmaker
 
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
 
     yield factory
 
@@ -84,6 +88,27 @@ def _make_test_app(session_factory, default_user_id: str | None = "user-a"):
         request.state.user_id = header_user_id if header_user_id is not None else default_user_id
         request.state.tenant_id = request.headers.get("x-tenant-id", "tenant-a")
         request.state.tenant_role = request.headers.get("x-tenant-role", "tenant_member")
+        # This isolated CRUD test authenticator switches principals/roles per
+        # request. Persist those explicit fixture facts before exercising the
+        # real current-member/role guard; revocation tests use a separate app.
+        if request.state.user_id:
+            from native_auth_test_identity import declare_actor
+
+            declare_actor(request.state.user_id)
+            from sqlalchemy import select
+
+            from deerflow.database.models import Tenant, TenantMembership
+            async with session_factory() as db:
+                tenant = request.state.tenant_id
+                if await db.get(Tenant, tenant) is None:
+                    db.add(Tenant(id=tenant, name=tenant, slug=tenant))
+                    await db.flush()
+                member = (await db.exec(select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == request.state.user_id))).scalars().first()
+                if member is None:
+                    member = TenantMembership(tenant_id=tenant, user_id=request.state.user_id)
+                member.role = request.state.tenant_role
+                db.add(member)
+                await db.commit()
         return await call_next(request)
 
     # Override get_session to use test DB

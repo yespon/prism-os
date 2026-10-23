@@ -1,0 +1,17 @@
+{
+  "steps": [
+    {
+      "step": "kb-and-runbook-ready"
+    },
+    {
+      "step": "kb-bound-agent-created",
+      "agent_id": "5feeea24-bb9e-4cb9-befc-a9e0cc5664fd"
+    },
+    {
+      "step": "real-model-answer",
+      "citations_in_stream": true,
+      "mentions_rotation": true
+    }
+  ],
+  "complete": true
+}

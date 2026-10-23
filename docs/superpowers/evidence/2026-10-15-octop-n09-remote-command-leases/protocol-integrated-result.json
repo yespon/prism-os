@@ -1,0 +1,16 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_remote_scoped_commands.py",
+    "tests/test_provisioner_kubeconfig.py",
+    "tests/test_aio_sandbox_isolation.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T07:10:49.724825+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T07:11:07.316427+00:00"
+}

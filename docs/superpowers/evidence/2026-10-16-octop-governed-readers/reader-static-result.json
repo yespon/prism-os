@@ -1,0 +1,20 @@
+{
+  "command": [
+    ".venv/bin/ruff",
+    "check",
+    "app/alerting/governed_native_reads.py",
+    "app/alerting/governed_read_tool.py",
+    "app/integrations/file_access.py",
+    "app/runtime_adapters.py",
+    "packages/harness/deerflow/runtime.py",
+    "packages/harness/deerflow/agents/lead_agent/agent.py",
+    "tests/test_governed_native_reads.py",
+    "tests/test_graph_execution_context.py",
+    "../scripts/octop_upgrade_probe.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T16:25:43.632182+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T16:25:43.663040+00:00"
+}

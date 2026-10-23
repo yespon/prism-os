@@ -1,0 +1,36 @@
+{
+  "complete": false,
+  "configured_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/auxiliary-task-8d8c09db8b",
+  "template_id": "expert:parenting-companion",
+  "agent_id": "f0cb691f-2317-4cd1-8e9b-6f3e47c8a353",
+  "agent_name": "parenting-task-8d8c09db8b",
+  "thread_id": "09177f70-5095-4ce7-b344-1e5d0bda4949",
+  "selected_resource": {
+    "name": "octop-parenting-companion-script-00a57acd66b9",
+    "scope": "personal",
+    "resource_id": "skill:3:85edc25e69a6864b4e2d843a8835d720f2b9e5c5db9c8065a18263a3e2b50930"
+  },
+  "source_revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "bundle_sha256": "977a025f352236aed16e21b4bf5b6e4060c5d2fad8025db3e04863bf521e52ac",
+  "stored_prompt_sha256": "348bc29404c3b574842a3b42cb808b04b492cf000a27fcd2d85fc2c5d3c973ed",
+  "output_path": "/mnt/user-data/outputs/memory-check-8d8c09db8b.md",
+  "run_id": "01a1458d-d439-7222-8be8-02da836a6a6f",
+  "run_status": "success",
+  "tool_names": [
+    "write_file",
+    "write_file",
+    "bash",
+    "bash",
+    "read_file",
+    "read_file",
+    "read_file",
+    "write_file",
+    "present_files",
+    "write_todos"
+  ],
+  "actual_script_tool_calls": 2,
+  "observed_fresh_checks": 0,
+  "observed_stale_checks": 0
+}

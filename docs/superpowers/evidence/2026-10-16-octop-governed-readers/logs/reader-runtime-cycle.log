@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-governed-readers/runtime_cycle.py", line 24, in <module>
+    compose(['restart','gateway','langgraph']);compose(['up','-d','--no-build','--pull','never','--no-deps','--wait','--wait-timeout','240','gateway','langgraph']);verify('restart')
+                                                                                                                                                                    ^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-governed-readers/runtime_cycle.py", line 19, in verify
+    graph='/api/langgraph/threads/'+accepted['thread_id'];r=owner.post(graph+'/history',json={'limit':20});assert r.status_code==200 and url.split('/artifacts')[1].split('?')[0] in json.dumps(r.json())
+                                    ~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'thread_id'

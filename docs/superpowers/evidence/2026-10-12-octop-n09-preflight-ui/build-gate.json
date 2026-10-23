@@ -1,0 +1,11 @@
+{
+  "generated_invalid_route_rejected": true,
+  "compiler_not_started_on_type_failure": true,
+  "exit_code": 2,
+  "temporary_route_removed": true,
+  "checks": [
+    "next typegen",
+    "tsc --noEmit"
+  ],
+  "production_typecheck_worker_skipped_only_after_strict_checks": true
+}

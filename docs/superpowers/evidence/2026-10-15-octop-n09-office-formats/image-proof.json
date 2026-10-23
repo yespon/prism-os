@@ -1,0 +1,48 @@
+{
+  "backend_image": "sha256:6b8cc19e343d8b3b9227a1b4b8fdb76588a665426bb7716d76c98af83e22c262",
+  "files": {
+    "backend/packages/harness/deerflow/tools/builtins/office_common.py": {
+      "sha256": "17b16ccf755048a5020ce6f4d3125ece977f33f6a6892e5036d721c1e789b161",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_xlsx.py": {
+      "sha256": "5c9d5c02da20fda06bf7654326076c995e501d3c0bd50ed84b518c05649bee96",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_pptx.py": {
+      "sha256": "6de86da3b88b83e0d4f9a5504b8b83c98ec1bda2abebd5df81e6119d59d9b88a",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/builtins/office_pdf.py": {
+      "sha256": "a8e1227c9d5e99329abcc61cc1eee7633f2477d3c7001b69572cad3f2858219d",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/tools/tools.py": {
+      "sha256": "b065fee7d0be6ceec72d0a28ebaf4df25941bc81381c6247f1579d1f88eaec3e",
+      "matches": true
+    },
+    "backend/packages/harness/pyproject.toml": {
+      "sha256": "4802e3a62995b0036f837e264117c0315f558432802b2576320bbc599ded4070",
+      "matches": true
+    },
+    "backend/uv.lock": {
+      "sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+      "matches": true
+    },
+    "backend/tests/test_office_xlsx.py": {
+      "sha256": "5d1a4109f97615ac41c9047dc5c9935d99765658606979986cc1a07c6dfb2d89",
+      "matches": true
+    },
+    "backend/tests/test_office_formats.py": {
+      "sha256": "d6f61dc18630c5f41bafc0b317c3d6f75487d95554113fb521e519240f87c5d0",
+      "matches": true
+    },
+    "backend/tests/test_office_docx.py": {
+      "sha256": "d334bb4c9e90a0af982d48e40142cfa14588d9a9b3023a93fcfd3ecabff5d43f",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true
+}

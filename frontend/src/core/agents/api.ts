@@ -1,6 +1,7 @@
-import { fetchAuthApi } from "@/core/api/auth-client";
+import { fetchAuthApi, getAuthHeaders } from "@/core/api/auth-client";
+import { getBackendBaseURL } from "@/core/config";
 
-import type { Agent, CreateAgentRequest, UpdateAgentRequest, Skill } from "./types";
+import type { Agent, CreateAgentRequest, UpdateAgentRequest, CopyAgentRequest, Skill } from "./types";
 
 export async function listAgents(): Promise<Agent[]> {
   const res = await fetchAuthApi("/api/agents");
@@ -9,39 +10,36 @@ export async function listAgents(): Promise<Agent[]> {
   return data.agents;
 }
 
+export class AgentReadError extends Error {
+  constructor(public status: number) { super(`Agent read failed (${status})`); }
+}
+
 export async function getAgent(name: string): Promise<Agent> {
   const res = await fetchAuthApi(`/api/agents/${name}`);
-  if (!res.ok) throw new Error(`Agent '${name}' not found`);
+  if (!res.ok) throw new AgentReadError(res.status);
   return res.json() as Promise<Agent>;
 }
 
-export async function createAgent(request: CreateAgentRequest): Promise<Agent> {
-  const res = await fetchAuthApi("/api/agents", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
-  });
-  if (!res.ok) {
-    const err = (await res.json().catch(() => ({}))) as { detail?: string };
-    throw new Error(err.detail ?? `Failed to create agent: ${res.statusText}`);
-  }
-  return res.json() as Promise<Agent>;
+export class AgentMutationError extends Error {
+  constructor(public status: number, public inspectionRequired = false, message?: string) { super(message ?? `Agent save failed (${status})`); }
 }
-
-export async function updateAgent(
-  name: string,
-  request: UpdateAgentRequest,
-): Promise<Agent> {
-  const res = await fetchAuthApi(`/api/agents/${name}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
-  });
-  if (!res.ok) {
-    const err = (await res.json().catch(() => ({}))) as { detail?: string };
-    throw new Error(err.detail ?? `Failed to update agent: ${res.statusText}`);
-  }
-  return res.json() as Promise<Agent>;
+async function saveAgent(path: string, method: string, request: CreateAgentRequest | UpdateAgentRequest | CopyAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
+  const current = () => !options.isCurrent || options.isCurrent();
+  const headers = await getAuthHeaders({"Content-Type":"application/json"});
+  if (!current()) throw new AgentMutationError(401, false, "Agent draft identity changed");
+  const response = await fetch(`${getBackendBaseURL()}${path}`, {method, headers, credentials:"include",body:JSON.stringify(request)});
+  if (!current()) throw new AgentMutationError(401, false, "Agent draft identity changed");
+  const body = await response.json().catch(() => null) as (Agent & {detail?: unknown}) | null;
+  if (!current()) throw new AgentMutationError(401, false, "Agent draft identity changed");
+  if (!response.ok) throw new AgentMutationError(response.status, response.status >= 500, typeof body?.detail === "string" ? body.detail : undefined);
+  if (!body || typeof body.id !== "string") throw new AgentMutationError(503,true);
+  return body;
+}
+export async function createAgent(request: CreateAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
+  return saveAgent("/api/agents","POST",request,options);
+}
+export async function updateAgent(name: string, request: UpdateAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
+  return saveAgent(`/api/agents/${encodeURIComponent(name)}`,"PUT",request,options);
 }
 
 export async function deleteAgent(name: string): Promise<void> {
@@ -72,9 +70,18 @@ export async function checkAgentName(
 }
 
 
-export async function listSkills(): Promise<Skill[]> {
-  const res = await fetchAuthApi("/api/skills");
+export async function listSkills(signal?: AbortSignal): Promise<Skill[]> {
+  const res = await fetchAuthApi("/api/skills", {signal});
   if (!res.ok) throw new Error(`Failed to load skills: ${res.statusText}`);
   const data = (await res.json()) as { skills: Skill[] };
   return data.skills;
+}
+
+export async function copyAgent(name: string, request: CopyAgentRequest, options: {isCurrent?: () => boolean} = {}): Promise<Agent> {
+  try {
+    return await saveAgent(`/api/agents/${encodeURIComponent(name)}/copy`, "POST", request, options);
+  } catch (error) {
+    if (error instanceof AgentMutationError) throw error;
+    throw new AgentMutationError(503, true, "复制结果未确认，请先检查目标 Agent");
+  }
 }

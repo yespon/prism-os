@@ -1,0 +1,23 @@
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx
+    3:1   error    `lucide-react` import should occur after import of `@tanstack/react-query`                                              import/order
+    4:1   error    `react` import should occur after import of `@tanstack/react-query`                                                     import/order
+    5:1   error    `sonner` import should occur after import of `@tanstack/react-query`                                                    import/order
+    8:1   error    `@/core/skills/mutations` import should occur after import of `@/core/skills/hooks`                                     import/order
+    9:1   error    `@/components/workspace/skills/skill-import-operations` import should occur after import of `@/components/ui/textarea`  import/order
+   10:1   error    `@/core/skills/imports` import should occur after import of `@/core/skills/hooks`                                       import/order
+   11:1   error    `@/core/skills/import-context` import should occur after import of `@/core/skills/hooks`                                import/order
+  550:14  warning  'locale' is assigned a value but never used                                                                             @typescript-eslint/no-unused-vars
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/workspace/settings/skill-settings-page.tsx
+  3:1  error  `sonner` import should occur after import of `react`                                      import/order
+  5:1  error  `@/core/skills/import-context` import should occur after import of `@/core/skills/hooks`  import/order
+  6:1  error  `@/core/skills/mutations` import should occur after import of `@/core/skills/hooks`       import/order
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/core/skills/api.ts
+  1:1  error  `./mutations` import should occur after import of `@/core/config`  import/order
+  2:1  error  `./imports` import should occur after import of `@/core/config`    import/order
+
+✖ 13 problems (12 errors, 1 warning)
+  12 errors and 0 warnings potentially fixable with the `--fix` option.
+

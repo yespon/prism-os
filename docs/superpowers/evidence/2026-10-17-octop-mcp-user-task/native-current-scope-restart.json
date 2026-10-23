@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "main_compose_unchanged": true,
+  "only_owned_native_processes_restarted": true,
+  "busy_runs": 0,
+  "processes": {
+    "langgraph": {
+      "pid": 3130642,
+      "starttime": "14976392",
+      "cmdline_sha256": "61885a57f7160be2a0c648e92b0c369fe3135290cfbc9f0f2d71a9859af212cf"
+    },
+    "gateway": {
+      "pid": 3130651,
+      "starttime": "14976394",
+      "cmdline_sha256": "e9043da4b80c2fd021b1116429939b83060215b2ec6b643834bc54cd631f2e6c"
+    },
+    "frontend": {
+      "pid": 2559525,
+      "starttime": "12452121",
+      "cmdline_sha256": "bfe22ab180842eaba419ca3cedea87d543be13f0a79008f174c5e6e1f5e75961"
+    },
+    "proxy": {
+      "pid": 3000998,
+      "starttime": "14456387",
+      "cmdline_sha256": "a0e33d12170a54fa05477845562787d3a577a7e0cc3b6f6f01f01f8d3e16a5af"
+    }
+  }
+}

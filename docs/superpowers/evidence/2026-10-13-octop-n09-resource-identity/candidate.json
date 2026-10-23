@@ -1,0 +1,27 @@
+{
+  "baseline": "006c0db88a5ec1beb6b88206ce35ba4bc239c4da",
+  "root": "/tmp/prismos-n09f-clean-avbdexy7/src",
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "d7e120567ad4cadb72ccca3f84f4818dcef70796bea7c62c89bb7e7779ac5e30",
+    "Makefile": "28c35c564eb7cb99c3dc0d1190e3ce010b3dfaae6780fa16338fccd699e229b4",
+    "backend/app/gateway/routers/skills.py": "d18192755433a3003f8b8b953530d3ff976a8166ae3d91930861539a18323ef0",
+    "backend/packages/harness/deerflow/database/user_config_service.py": "ad841e83439b1da22dbadd7cfc015e767de5f38316ef23b87b4b17325168fa08",
+    "backend/packages/harness/deerflow/skills/loader.py": "fc36da03625385ccc6cd865e4bce6327fdae4198939d21d8f4fc964242d00c47",
+    "frontend/src/app/workspace/skills/[name]/page.tsx": "6fd0256098b71b6728048807b346af9d280895cd8f5d306b2d9c4aceec087b60",
+    "frontend/src/app/workspace/skills/page.tsx": "c8d644e0280e9973fd0978fd7e770b0d8b7c0e9e66dc17a483def47bbe6d7024",
+    "frontend/src/core/agents/api.ts": "7a8187369a59a3bf0a4f3290490c6ea3deb39c1d2edd2a7bba0bac4c10b93e03",
+    "frontend/src/core/agents/hooks.ts": "575cc09ce048794457166049469040d2eef7a727d3e2447643f5900f2ae07e51",
+    "frontend/src/core/skills/api.ts": "90351f92eb7bc5cb7ea589f269e0a7e7261e06b6049dc80dba6c034b47dfc038",
+    "frontend/src/core/skills/hooks.ts": "09941aa6c8090bcef21aa2ba7a42724376096ca2113c8d2ab1bb5be9e7d23f92",
+    "frontend/src/core/skills/imports.test.ts": "77810dd5229d66ca43020bd08c8f94c00b9f8d8c27e799dbfd099f2b0603b05f",
+    "frontend/src/core/skills/type.ts": "b74d49f0052cadd50502a9758213bf02f677633fbfbd9cf00b6915dd2b4570ff",
+    "scripts/octop_gateway_smoke.py": "a8666721ad710a89d1728bacc3fcf960e0429711e66cd5b7c465d674f3d83939",
+    "scripts/octop_skill_postgres.py": "43e3e5907e946a059ae065a9d40a4bc58215bf7b1f39177f9000904ffadce598",
+    "scripts/octop_upgrade_probe.py": "b5f8c3d3363b658f52de4af210009fa0c65ae135c15c8799dd5215d41d900d55",
+    "backend/packages/harness/deerflow/skills/resource_identity.py": "406856e713bb41a2b624cdd77c49b950105ef6f288c6d69946e4da2713147db6",
+    "backend/tests/test_skill_resource_identity.py": "b1949cf7901641ead60ceacda36bcd38d2fb531f19140cc1bd231a439dbc8ed8",
+    "frontend/src/app/workspace/skills/[name]/page.test.tsx": "1aab1fbef075bf00905f19ca4d94c782e70f7a91bba7acef83f254491b55b40c",
+    "frontend/src/core/skills/hooks.test.tsx": "f6fb56c5516c37151feb6a968840e345b28d17021af86db1fb809d1d940c14b2",
+    "frontend/src/core/skills/query-identity.ts": "1c7943b9b1a7034e2ae3b4e0b2196d88c7ca1fd22bc5522b993398879678e629"
+  }
+}

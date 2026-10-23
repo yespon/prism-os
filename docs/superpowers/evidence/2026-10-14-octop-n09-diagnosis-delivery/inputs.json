@@ -1,0 +1,14 @@
+{
+  "base_commit": "b1fec9b",
+  "current_code_inputs": {
+    ".github/workflows/octop-integration.yml": "d691bd282456499010d708cd55928efd68f923db5f50782608faf1455a2526b6",
+    "backend/app/alerting/diagnosis_delivery.py": "5934fa4a295bbde5858873a06a859be238d28eef1bcb56f62a522cb9b839978c",
+    "backend/app/gateway/routers/alerts.py": "2d69df0609a66bb03c83ff2122f3bef4144d57d150f5e76ba17922ae9453fe88",
+    "backend/tests/test_diagnosis_authorization.py": "b8ea0c6b21d3d26a40f7880a45d479e1fb289caff21663058bf7cd00f4cbff0b",
+    "backend/tests/test_diagnosis_delivery.py": "8e5c9d1706203a0a9db33137d4310a4b63d7d7c62311e615287987547f7b5556",
+    "backend/tests/test_incident_diagnosis.py": "b540a68294327f3cefbff173205e3d8daeb6988a328082bc021e4ec022ec84e6",
+    "scripts/octop_upgrade_probe.py": "44d2db06cf7c96b61fd2333b37e0e0d15b541574e477312b791b4147d9aab8a8"
+  },
+  "unchanged_frontend_files": 499,
+  "new_frontend_compile": false
+}

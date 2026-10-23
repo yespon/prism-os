@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "returncodes": [
+    0,
+    0
+  ],
+  "source_inputs_unchanged": true,
+  "backend_image": "sha256:f8a4a61c80eaec775732cb2412e0a3993082cd087f7af35cbfe0f14fbb417860",
+  "provisioner_image": "sha256:001238399e4b026ea5cde5c4b73add460136bc76461b192c9b7ddeedbeb6201a"
+}

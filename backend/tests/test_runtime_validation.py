@@ -1,9 +1,6 @@
 import importlib.util
-import socket
 import sys
 from pathlib import Path
-
-import pytest
 
 
 def _load_validator():
@@ -20,10 +17,12 @@ def _load_validator():
 validator = _load_validator()
 
 
-def test_current_config_passes_runtime_validation():
+def test_available_config_passes_runtime_validation():
     project_root = Path(__file__).resolve().parents[2]
+    local_config = project_root / "config.yaml"
+    config = local_config if local_config.exists() else project_root / "config.example.yaml"
 
-    result = validator.validate_config(project_root / "config.yaml")
+    result = validator.validate_config(config)
 
     assert result.errors == []
 

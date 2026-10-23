@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_n04_ticket_receiver.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T05:24:26.275600+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T05:24:34.502996+00:00"
+}

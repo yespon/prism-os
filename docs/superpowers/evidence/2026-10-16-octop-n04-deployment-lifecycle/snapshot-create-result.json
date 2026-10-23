@@ -1,0 +1,16 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_snapshot.py",
+    "create",
+    "--snapshot-dir",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-deployment-snapshot-20261016",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/snapshot-create.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T08:39:40.071740+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T08:40:04.445347+00:00"
+}

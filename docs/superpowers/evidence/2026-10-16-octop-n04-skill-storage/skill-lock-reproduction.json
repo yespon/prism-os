@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "M1_exited": false,
+  "expected_bug": "SSE preflight retains selected Skill row lock while background diagnosis waits for that row",
+  "blocking_samples": [
+    {
+      "pid": 36109,
+      "wait_event_type": "Lock",
+      "wait_event": "transactionid",
+      "blockers": [
+        36094
+      ]
+    }
+  ],
+  "stream_result": "ReadTimeout",
+  "requests_before": 25,
+  "requests_after": 25,
+  "canary_restored_off": true
+}

@@ -1,0 +1,79 @@
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+_________ test_stale_personal_delete_must_not_remove_current_instance __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x73889f1a7500>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-207/test_stale_personal_delete_mus0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73889f2a8950>
+
+    def test_stale_personal_delete_must_not_remove_current_instance(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        target = root / "custom/tenant-a/user-a/collision"
+        before = (target / "SKILL.md").read_bytes()
+        response = http.delete("/api/skills/personal/collision", params={"expected_resource_id": "skill:withdrawn"})
+        print({"case": "stale_instance_delete", "status": response.status_code, "directory_retained": target.exists(), "native_rows_after": len(native_rows(factory))})
+>       assert response.status_code == 409
+E       assert 204 == 409
+E        +  where 204 = <Response [204 No Content]>.status_code
+
+../docs/superpowers/evidence/2026-10-13-octop-n09-concrete-enablement/logs/delete-pending-probe.py:16: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{'case': 'stale_instance_delete', 'status': 204, 'directory_retained': False, 'native_rows_after': 1}
+_____ test_personal_delete_must_not_reclaim_unregistered_directory_by_name _____
+
+scoped_client = (<starlette.testclient.TestClient object at 0x73889df57050>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-207/test_personal_delete_must_not_0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73889f169970>
+
+    def test_personal_delete_must_not_reclaim_unregistered_directory_by_name(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        target = root / "custom/tenant-a/user-a/unregistered"
+        archive = root.parent / "unknown-published.zip"
+        archive.write_bytes(archive_bytes("unregistered"))
+        with installer.prepare_skill_installation_from_archive(archive, skills_root=root, target_relative_path="tenant-a/user-a") as prepared:
+            published = prepared.publish()
+        operation_url = "/api/skills/personal/imports/" + published["operation_id"]
+        inspection = http.get(operation_url)
+        assert inspection.status_code == 200 and not inspection.json()["registered"]
+        before = (target / "SKILL.md").read_bytes()
+        response = http.delete("/api/skills/personal/unregistered")
+        print({"case": "unregistered_directory_delete", "status": response.status_code, "directory_retained": target.exists(), "native_rows_after": len(native_rows(factory)), "actual_native_publication": True, "registered_before_delete": inspection.json()["registered"]})
+>       assert response.status_code == 404
+E       assert 204 == 404
+E        +  where 204 = <Response [204 No Content]>.status_code
+
+../docs/superpowers/evidence/2026-10-13-octop-n09-concrete-enablement/logs/delete-pending-probe.py:34: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{'case': 'unregistered_directory_delete', 'status': 204, 'directory_retained': False, 'native_rows_after': 2, 'actual_native_publication': True, 'registered_before_delete': False}
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+docs/superpowers/evidence/2026-10-13-octop-n09-concrete-enablement/logs/delete-pending-probe.py::test_stale_personal_delete_must_not_remove_current_instance
+docs/superpowers/evidence/2026-10-13-octop-n09-concrete-enablement/logs/delete-pending-probe.py::test_personal_delete_must_not_reclaim_unregistered_directory_by_name
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:2011: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../docs/superpowers/evidence/2026-10-13-octop-n09-concrete-enablement/logs/delete-pending-probe.py::test_stale_personal_delete_must_not_remove_current_instance
+FAILED ../docs/superpowers/evidence/2026-10-13-octop-n09-concrete-enablement/logs/delete-pending-probe.py::test_personal_delete_must_not_reclaim_unregistered_directory_by_name
+2 failed, 1 passed, 3 warnings in 5.83s

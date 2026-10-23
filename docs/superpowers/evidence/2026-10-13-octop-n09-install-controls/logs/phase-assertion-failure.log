@@ -1,0 +1,39 @@
+............F
+=================================== FAILURES ===================================
+__________ test_observed_registration_does_not_enable_disabled_skill ___________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7cc395c1f290>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-132/test_observed_registration_doe0/skills'))
+
+    def test_observed_registration_does_not_enable_disabled_skill(scoped_client):
+        http, factory, _ = scoped_client
+        assert http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes())}).status_code == 201
+        operation = http.get("/api/skills/personal/imports").json()["operations"][0]["operation_id"]
+    
+        async def disable():
+            async with factory() as session:
+                result = await session.exec(select(TenantSkill).where(TenantSkill.name == "demo-skill"))
+                row = result.scalars().one()
+                row.enabled = False
+                session.add(row)
+                await session.commit()
+    
+        asyncio.run(disable())
+        body = http.post(f"/api/skills/personal/imports/{operation}/recover").json()
+        assert body["registered"] and not body["enabled"] and not body["execution_ready"]
+>       assert body["phase"] == "registered"
+E       AssertionError: assert 'registration_observed' == 'registered'
+E         
+E         - registered
+E         + registration_observed
+
+tests/test_skill_import_recovery.py:289: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_import_recovery.py::test_observed_registration_does_not_enable_disabled_skill
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 12 passed, 1 warning in 6.45s

@@ -1,0 +1,290 @@
+[
+  {
+    "id": "F01",
+    "official_direction_at_review": "共享资源池：已完成",
+    "code_release_evidence_at_review": "Skill/子Agent共享池；O07/O08",
+    "prismos_relationship": "M4版本引用、M7私有分发方向一致，租户边界更严格",
+    "delivery_mapping": "复用原阶段；补全创建专家时取用/来源/撤回/复制权限",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F02",
+    "official_direction_at_review": "专家共享：已完成",
+    "code_release_evidence_at_review": "O05；普通共享专家可成为Team成员",
+    "prismos_relationship": "与Agent资产和企业复用一致，当前PrismOS不等价已交付",
+    "delivery_mapping": "M4资产权限、M7分发；共享使用不自动共享全部会话与凭据",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F03",
+    "official_direction_at_review": "PC客户端：已完成",
+    "code_release_evidence_at_review": "跨平台制品存在；O34",
+    "prismos_relationship": "符合白皮书体验层，批准路线未承诺原生客户端",
+    "delivery_mapping": "明确客户端配套工作包，不替换Web/CLI或新增Runtime",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F04",
+    "official_direction_at_review": "AgentTeams：进行中/Beta",
+    "code_release_evidence_at_review": "有主持人派工、成员/IM回传；E5",
+    "prismos_relationship": "协作目标一致；自主协调与确定性Workflow语义不同",
+    "delivery_mapping": "M4成员/版本、M5治理编排；自主派工也是有权限/预算/失败状态的Action",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F05",
+    "official_direction_at_review": "原生移动客户端：内测",
+    "code_release_evidence_at_review": "PWA/Remote Phone不证明原生App完成",
+    "prismos_relationship": "体验层一致；具体产品新增",
+    "delivery_mapping": "与O35同一客户端包，保留原生App独立验收",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F06",
+    "official_direction_at_review": "浏览器与终端补全：规划中",
+    "code_release_evidence_at_review": "浏览器录制/回放/技能草稿接口已有；完整体验未运行验证",
+    "prismos_relationship": "原有Skill/Terminal/Sandbox基础可复用；通用RPA仍非目标",
+    "delivery_mapping": "O29–O33配套，复用M3契约、M4版本、M5执行与M7分发",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F07",
+    "official_direction_at_review": "自进化：规划中",
+    "code_release_evidence_at_review": "本次未确认“日常对话自动沉淀→评价→正式发布”全链；录制/摘要不等价",
+    "prismos_relationship": "M3 Evaluation、M4Version提供条件，但自动学习产品未被原路线承诺",
+    "delivery_mapping": "增量技能候选管线：来源/授权→草稿→评测→审阅→发布→回滚；不能自动改变生产权限/Policy",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F08",
+    "official_direction_at_review": "Managed Agents：规划中",
+    "code_release_evidence_at_review": "CRUD/本机start-stop不证明平台开通、弹性与代运维已交付",
+    "prismos_relationship": "M2运行、M4Deployment是基础；托管服务与弹性运维新增",
+    "delivery_mapping": "增量托管Provider：开通、隔离、配额、扩缩容、暂停、销毁、观测；部署资产与服务托管分责",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F09",
+    "official_direction_at_review": "Project：规划中",
+    "code_release_evidence_at_review": "工作区、团队房间与Project一等资源并不等价",
+    "prismos_relationship": "白皮书§8.2Workspace与M2执行/M4资产/M6数据目标相交；Project聚合未单独冻结",
+    "delivery_mapping": "M2关联视图可预研；正式Project拥有稳定资源引用、成员ACL和生命周期，完整切片依赖M4/M6",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F10",
+    "official_direction_at_review": "云边端一体：规划中",
+    "code_release_evidence_at_review": "b5 Bridge已可远程专家聊天；文档明确跨实例ask_agent/Team不在该桥范围",
+    "prismos_relationship": "分布式部署可复用；任务选择/路由/离线/驻留和配额新增；不必自研Runtime",
+    "delivery_mapping": "先受控remoteAdapter/Bridge等价，再冻结本地/远程执行路由、数据驻留、费用和失联语义；跨独立组织才评估C2",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F11",
+    "official_direction_at_review": "插件市场：规划中",
+    "code_release_evidence_at_review": "b1与当前代码有in-tree发现/安装；远程公共目录不等价已完成",
+    "prismos_relationship": "M7私有目录一致；公共生态超出原默认范围",
+    "delivery_mapping": "私有目录、公共发现分发分别验收；公共渠道也须走M7签名/权限/兼容/回滚，交易分成不因“市场”名称自动引入",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  },
+  {
+    "id": "F12",
+    "official_direction_at_review": "对话式控制面：规划中",
+    "code_release_evidence_at_review": "内置产品问答不等价管理所有资源；O42",
+    "prismos_relationship": "与统一治理和控制面API一致；覆盖所有管理入口是新增体验范围",
+    "delivery_mapping": "对现有API做受治理管理Action，分别覆盖专家、通道、知识库和插件；模型不能绕过PDP直接写DB",
+    "status": "remaining",
+    "full_parity": false,
+    "source": "docs/strategy/2026-10-08-octop-full-capability-roadmap-review.md",
+    "source_sha256": "701a8a3278b0531e4873c3a5e7eb5e70e0e26b35aa64c9a2fa2ffc583fa870b8",
+    "state_basis": "prior fixed review; not a new live roadmap claim",
+    "owner_role": "platform/product integration; role only",
+    "permissions": [
+      "same PrismOS tenant/resource/Action governance"
+    ],
+    "dependencies": [
+      "N15",
+      "corresponding original M2-M7 exit gates"
+    ],
+    "remaining": [
+      "published-source availability",
+      "individual host implementation and acceptance"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-15-octop-n09-actor-status/check_static.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T09:36:29.471711+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-15T09:36:29.710370+00:00"
+}

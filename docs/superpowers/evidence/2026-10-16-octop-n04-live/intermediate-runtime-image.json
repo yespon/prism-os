@@ -1,0 +1,10 @@
+{
+  "image": "sha256:40b015234f55e3c75b3a013eceb0bb835ab2cd02be77ab1fcdb7a0e57c974891",
+  "files": {
+    "packages/harness/deerflow/database/session.py": "34faa2ab9868773c0426c9a6b9cf6f64a80b99bca2413a4256b5362092587d95",
+    "app/services/terminal/credential_access.py": "27e64254b11120bbaa1a5c40411644f3beead0739f4c5ceebb8235c441322692",
+    "packages/harness/deerflow/tools/builtins/office_pptx.py": "21223fc80c19ca93b1b342b9f1787c694ad8636b845c581639f742a21a30790f",
+    "uv.lock": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2"
+  },
+  "scope": "current runtime application code; fresh-worker test fixture corrected after image capture, final image pending"
+}

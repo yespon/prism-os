@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "scripts/octop_worker_probe.py",
+    "--image",
+    "sha256:5eabc29cdcda254348c6b769cfb2bcfca0aa6847222f5315cc4d4263fb43a249",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/mcp-compat.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T22:45:03.671187+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T22:45:10.487792+00:00"
+}

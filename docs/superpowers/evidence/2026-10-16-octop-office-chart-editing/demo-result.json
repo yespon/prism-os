@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/generate_demo.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T02:03:33.792788+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T02:03:38.342558+00:00"
+}

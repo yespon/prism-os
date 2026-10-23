@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 NGINX_CONFIG = (
     Path(__file__).resolve().parents[2] / "docker" / "nginx" / "nginx.conf"
 )

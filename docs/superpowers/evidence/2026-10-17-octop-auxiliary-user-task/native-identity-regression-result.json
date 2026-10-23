@@ -1,0 +1,15 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_wsl_native_profile.py",
+    "-q",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T22:26:40.252115+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T22:26:42.643747+00:00"
+}

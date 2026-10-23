@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "checkpoint": {
+    "checkpoint_id": "1f1c96b3-6087-6a6a-803e-783fa492f026",
+    "thread_id": "9ddb8681-488d-46c7-9a98-768de17f6ede",
+    "checkpoint_ns": ""
+  },
+  "already_completed_docx_inspection_repeated": false,
+  "run_status": "success",
+  "previous_messages_preserved": true,
+  "original_docx_inspection_call_ids": [
+    "call_UUeJWTI9PTf9c5lJ3PJ8JHGW",
+    "call_bLKaKiVu0yELeNfdPv5UtIPj"
+  ],
+  "three_creations_resumed_after_confirming_no_outputs": true,
+  "new_agent_task_submission": false,
+  "checkpoint_continuation_submissions": 1
+}

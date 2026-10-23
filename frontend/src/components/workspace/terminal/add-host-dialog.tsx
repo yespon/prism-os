@@ -1,10 +1,13 @@
 import { Loader2, CheckCircle2, XCircle, Eye, EyeOff, X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useSkillQueryIdentity } from '@/core/skills/query-identity';
+import { AssetOperationError, requestAssetOperation } from '@/core/terminal-agent/assets-api';
 import type { TerminalAsset, TerminalAssetGroup, TerminalAssetInput, TerminalCredential } from '@/core/terminal-agent/message-types';
 
 interface HostFormData {
@@ -20,8 +23,8 @@ interface HostFormData {
 export interface AddHostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddHost?: (host: TerminalAssetInput) => void;
-  onEditHost?: (id: string, host: TerminalAssetInput) => void;
+  onAddHost?: (host: TerminalAssetInput) => void | Promise<void>;
+  onEditHost?: (id: string, host: TerminalAssetInput) => void | Promise<void>;
   editAsset?: TerminalAsset | null;
   credentials?: TerminalCredential[];
   groups?: TerminalAssetGroup[];
@@ -29,6 +32,7 @@ export interface AddHostDialogProps {
 }
 
 export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editAsset, credentials = [], groups = [], onAddCredentialClick }: AddHostDialogProps) {
+  const identity = useSkillQueryIdentity();
   const [formData, setFormData] = useState<HostFormData>({
     name: '',
     ip: '',
@@ -45,6 +49,11 @@ export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editA
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [testLog, setTestLog] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveUnknown, setSaveUnknown] = useState(false);
+  const [testUnknown, setTestUnknown] = useState(false);
+  const submitting = useRef(false);
+  const testing = useRef(false);
 
   React.useEffect(() => {
     if (open) {
@@ -77,85 +86,52 @@ export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editA
   }, [open, editAsset]);
 
   const handleTestConnection = async () => {
+    if (testing.current || testUnknown) return;
+    testing.current = true;
     setTestStatus('testing');
     try {
-      const res = await fetch('/api/v1/assets/test-connection', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          port: parseInt(formData.port, 10) || 22
-        })
-      });
-      
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        setTestStatus('error');
-        setTestLog(`Invalid response (${res.status}): ${text.substring(0, 100)}...`);
-        return;
-      }
-
-      if (!res.ok) {
-        setTestStatus('error');
-        const errDetail = data.detail ? (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)) : null;
-        setTestLog(data.message ?? errDetail ?? `HTTP Error ${res.status}: ${JSON.stringify(data)}`);
-        return;
-      }
-
-      if (data.status === 'ok') {
-        setTestStatus('success');
-        setTestLog(data.message ?? '连接测试成功');
-      } else {
-        setTestStatus('error');
-        setTestLog(data.message ?? JSON.stringify(data) ?? '连接测试失败');
-      }
-      } catch (e: unknown) {
-        setTestStatus('error');
-        setTestLog(e instanceof Error ? e.message : '网络请求失败');
+      const data = await requestAssetOperation<{ status: string; message?: string }>(
+        '/api/v1/assets/test-connection', 'POST', { ...formData, port: parseInt(formData.port, 10) || 22 }, identity.isCurrent,
+      );
+      setTestStatus(data.status === 'ok' ? 'success' : 'error');
+      setTestLog(data.message ?? (data.status === 'ok' ? '连接测试成功' : '连接测试失败'));
+    } catch (error) {
+      setTestStatus('error');
+      setTestUnknown(!(error instanceof AssetOperationError) || error.inspectionRequired);
+      setTestLog(error instanceof AssetOperationError ? error.message : '连接结果未确认，请先核对。');
+    } finally {
+      testing.current = false;
     }
   };
 
   const handleSubmit = async () => {
-    let finalGroupId = formData.group_id;
-    
-    if (isCreatingGroup && newGroupName.trim()) {
-      try {
-        const res = await fetch('/api/v1/assets/groups', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: newGroupName.trim() })
-        });
-        if (res.ok) {
-          const newGroup = await res.json();
-          finalGroupId = newGroup.id;
-        } else {
-          const err = await res.json().catch(() => ({}));
-          setTestStatus('error');
-          setTestLog(`新建分组失败: ${err.message ?? res.statusText}`);
-          return;
-        }
-      } catch (e: unknown) {
-        setTestStatus('error');
-        setTestLog(`新建分组失败: ${e instanceof Error ? e.message : String(e)}`);
-        return;
+    if (submitting.current || saveUnknown || !identity.isCurrent()) return;
+    submitting.current = true;
+    setSaving(true);
+    try {
+      let finalGroupId = formData.group_id;
+      if (isCreatingGroup && newGroupName.trim()) {
+        const group = await requestAssetOperation<{ id: string }>('/api/v1/assets/groups', 'POST', { name: newGroupName.trim() }, identity.isCurrent);
+        if (!group.id) throw new AssetOperationError('分组结果未确认，请先刷新列表核对。', true);
+        finalGroupId = group.id;
+        setFormData(current => ({ ...current, group_id: group.id }));
+        setIsCreatingGroup(false);
+        setNewGroupName('');
       }
+      const payload: TerminalAssetInput = { ...formData, port: parseInt(formData.port, 10) || 22, group_id: finalGroupId ?? null };
+      if (!identity.isCurrent()) throw new AssetOperationError("身份已变化，请核对原操作结果。", true);
+      if (editAsset && onEditHost) await onEditHost(editAsset.id, payload);
+      else if (onAddHost) await onAddHost(payload);
+      else return;
+      onOpenChange(false);
+    } catch (error) {
+      setSaveUnknown(!(error instanceof AssetOperationError) || error.inspectionRequired);
+      setTestStatus('error');
+      setTestLog(error instanceof AssetOperationError ? error.message : '保存结果未确认，请先刷新列表核对。');
+    } finally {
+      submitting.current = false;
+      setSaving(false);
     }
-
-    const payload: TerminalAssetInput = {
-      ...formData,
-      port: parseInt(formData.port, 10) || 22,
-      group_id: finalGroupId ?? null
-    };
-
-    if (editAsset && onEditHost) {
-      onEditHost(editAsset.id, payload);
-    } else if (onAddHost) {
-      onAddHost(payload);
-    }
-    onOpenChange(false);
   };
 
   return (
@@ -281,13 +257,13 @@ export function AddHostDialog({ open, onOpenChange, onAddHost, onEditHost, editA
               variant="outline" 
               className="text-blue-600 border-blue-200 hover:bg-blue-50"
               onClick={handleTestConnection}
-              disabled={!formData.ip || !formData.username || !formData.password || testStatus === 'testing'}
+              disabled={!formData.ip || !formData.username || (!formData.password && !formData.keychain_id) || testStatus === 'testing' || testUnknown}
             >
               测试连接
             </Button>
             <div className="flex items-center gap-2">
               <Button variant="ghost" onClick={() => onOpenChange(false)}>取消</Button>
-              <Button onClick={handleSubmit} disabled={!formData.name || !formData.ip || !formData.password}>确定</Button>
+              <Button onClick={() => void handleSubmit()} disabled={!formData.name || !formData.ip || saving || saveUnknown || (!onAddHost && !onEditHost)}>确定</Button>
           </div>
         </DialogFooter>
       </DialogContent>

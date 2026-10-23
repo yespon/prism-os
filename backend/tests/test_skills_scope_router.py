@@ -1,7 +1,31 @@
+import asyncio
+
+import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+from resource_test_identity import persist_fixture_identity
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.routers import skills
+from deerflow.database import user_config_service
+
+
+@pytest.fixture(autouse=True)
+def current_identity_database(tmp_path, monkeypatch, native_identity):
+    native_identity("user-a")
+    engine = create_async_engine("sqlite+aiosqlite:///" + str(tmp_path / "identity.db"))
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+    async def initialize():
+        async with engine.begin() as connection:
+            await connection.run_sync(SQLModel.metadata.create_all)
+
+    asyncio.run(initialize())
+    monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
+    yield
+    asyncio.run(engine.dispose())
 
 
 def _create_app() -> FastAPI:
@@ -20,6 +44,7 @@ def _create_app() -> FastAPI:
         tenant_id = request.headers.get("x-tenant-id")
         if tenant_id is not None:
             request.state.tenant_id = tenant_id
+        await persist_fixture_identity(request, user_config_service.get_session_factory())
         return await call_next(request)
 
     app.include_router(skills.router)
@@ -115,24 +140,18 @@ def test_tenant_shared_skills_reject_platform_admin_without_membership() -> None
 def test_tenant_shared_skill_update_succeeds_for_tenant_admin(monkeypatch) -> None:
     app = _create_app()
 
-    class _Row:
-        name = "tenant-skill"
-        category = "custom"
-        enabled = False
+    async def toggle(root, tenant_id, actor, name, enabled, expected_resource_id):
+        assert tenant_id == "tenant-a" and actor == "u-1"
+        assert name == "tenant-skill" and enabled is False
+        assert expected_resource_id is None
+        return "tenant", "skill:fixture"
 
-    class _Skill:
-        name = "tenant-skill"
-        description = "tenant skill"
-        license = None
+    async def detail(name, request, *, scope, resource_id):
+        assert scope == "tenant" and resource_id == "skill:fixture"
+        return skills.SkillDetailResponse(name=name, description="tenant skill", category="custom", enabled=False, scope=scope, resource_id=resource_id, managed_by_current_user=True)
 
-    async def _fake_set_tenant_shared_skill_enabled(tenant_id: str, skill_name: str, enabled: bool):
-        assert tenant_id == "tenant-a"
-        assert skill_name == "tenant-skill"
-        assert enabled is False
-        return _Row()
-
-    monkeypatch.setattr(skills, "set_tenant_shared_skill_enabled", _fake_set_tenant_shared_skill_enabled)
-    monkeypatch.setattr(skills, "load_skills", lambda enabled_only=False: [_Skill()])
+    monkeypatch.setattr(skills.skill_mutations, "set_shared_enablement", toggle)
+    monkeypatch.setattr(skills, "get_skill_detail", detail)
 
     with TestClient(app) as client:
         response = client.put(
@@ -189,12 +208,12 @@ def test_tenant_shared_skill_delete_rejects_non_tenant_admin() -> None:
 def test_tenant_shared_skill_delete_returns_404_when_missing(monkeypatch) -> None:
     app = _create_app()
 
-    async def _fake_delete_tenant_shared_skill(tenant_id: str, skill_name: str) -> None:
-        assert tenant_id == "tenant-a"
-        assert skill_name == "missing-skill"
-        raise ValueError("Skill 'missing-skill' not found")
+    async def missing(root, tenant_id, actor, shared, name, **kwargs):
+        assert tenant_id == "tenant-a" and actor == "u-1" and shared
+        assert name == "missing-skill"
+        raise skills.skill_mutations.SkillMutationRejected(404, "Current registered resource not found")
 
-    monkeypatch.setattr(skills, "delete_tenant_shared_skill", _fake_delete_tenant_shared_skill)
+    monkeypatch.setattr(skills.skill_deletions, "delete_owned", missing)
 
     with TestClient(app) as client:
         response = client.delete(
@@ -218,46 +237,46 @@ def test_user_skill_update_route_is_removed() -> None:
     assert response.status_code == 405
 
 
-def test_install_skill_registers_tenant_scoped_path(monkeypatch) -> None:
+def test_install_skill_registers_tenant_scoped_path(monkeypatch, tmp_path) -> None:
+    import zipfile
+    from types import SimpleNamespace
+
+    from app.integrations import skill_imports
+    from deerflow.database import user_config_service
+
     app = _create_app()
     calls: dict[str, object] = {}
+    archive = tmp_path / "source.skill"
+    root = tmp_path / "skills"
+    with zipfile.ZipFile(archive, "w") as file:
+        file.writestr("tenant-skill/SKILL.md", "---\nname: tenant-skill\ndescription: Scope fixture\n---\n# Skill")
+    monkeypatch.setattr(skills, "get_skills_root_path", lambda: root)
+    monkeypatch.setattr(skills, "resolve_thread_virtual_path", lambda *args, **kwargs: archive)
 
-    monkeypatch.setattr(skills, "resolve_thread_virtual_path", lambda *args, **kwargs: __import__("pathlib").Path("/tmp/demo.skill"))
-
-    def _fake_install_skill_from_archive(path, *, skills_root=None, target_relative_path=None):
-        calls["install_path"] = str(path)
-        calls["target_relative_path"] = target_relative_path
-        return {
-            "success": True,
-            "skill_name": "tenant-skill",
-            "category": "custom",
-            "relative_path": "tenant-a/tenant-skill",
-            "install_dir": "/tmp/skills/custom/tenant-a/tenant-skill",
-            "message": "ok",
-        }
-
-    async def _fake_create_tenant_shared_skill(tenant_id: str, **kwargs):
-        calls["tenant_id"] = tenant_id
-        calls["payload"] = kwargs
+    async def no_row(*args, **kwargs):
         return None
 
-    monkeypatch.setattr(skills, "install_skill_from_archive", _fake_install_skill_from_archive)
-    monkeypatch.setattr(skills, "create_tenant_shared_skill", _fake_create_tenant_shared_skill)
+    async def create(tenant_id, **kwargs):
+        calls["tenant_id"] = tenant_id
+        calls["payload"] = kwargs
+        return SimpleNamespace(id=1)
 
+    monkeypatch.setattr(skill_imports, "current_row", no_row)
+    monkeypatch.setattr(user_config_service, "create_tenant_shared_skill", create)
     with TestClient(app) as client:
         response = client.post(
             "/api/skills/install",
             headers={"x-tenant-id": "tenant-a", "x-tenant-role": "tenant_admin"},
             json={"thread_id": "t-1", "path": "artifacts/demo.skill"},
         )
-
     assert response.status_code == 200
-    assert calls["target_relative_path"] == "tenant-a"
+    assert response.json()["operation_id"]
+    assert (root / "custom/tenant-a/tenant-skill/SKILL.md").is_file()
     assert calls["tenant_id"] == "tenant-a"
     assert calls["payload"] == {
         "enabled": True,
         "skill_name": "tenant-skill",
         "category": "custom",
         "relative_path": "tenant-a/tenant-skill",
-        "install_dir": "/tmp/skills/custom/tenant-a/tenant-skill",
+        "install_dir": str(root / "custom/tenant-a/tenant-skill"),
     }

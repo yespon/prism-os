@@ -1,0 +1,10 @@
+{
+  "files": {
+    "demo-source.png": "8b7d9402b7a22b404c4f05409fd4d5037e30e60b8fa4b718cc4c8b8954822ff7",
+    "demo-pictured.pptx": "e363bbcf623704e416728af1af271e02f7e5f45e0ca7add08070d75fee600b43",
+    "demo-source.pptx": "c4c95196cfcf0d15aefafb9f35cecfd893c649eef27a28169d3fd03f706d1784",
+    "demo-result.json": "142386ec9622e5aad233ec9d5a42a4f03960f4cb0b1325380a00608e0a0454db"
+  },
+  "actual_picture_verified": true,
+  "desktop_rendered": false
+}

@@ -66,6 +66,8 @@ class RemoteSandboxBackend(SandboxBackend):
         Calls ``POST /api/sandboxes`` which creates a dedicated Pod +
         NodePort Service in k3s.
         """
+        if extra_mounts:
+            raise PermissionError("Legacy remote provisioning cannot enforce scoped mounts; use command leases")
         return self._provisioner_create(thread_id, sandbox_id, extra_mounts)
 
     def destroy(self, info: SandboxInfo) -> None:

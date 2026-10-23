@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_incident_diagnosis.py::test_diagnosis_stream_releases_preflight_resource_transaction",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T08:10:24.535195+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T08:10:33.216595+00:00"
+}

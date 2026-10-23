@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-10",
+  "scope": "four exact external packages core dependencies; retain host registry lock constraints",
+  "command": "uv pip compile core.in --constraint host.txt --index-url https://pypi.org/simple --python-version 3.12 --only-binary :all: --output-file core.txt",
+  "exit_code": 1,
+  "status": "unsatisfiable",
+  "conflict": {
+    "package": "octop-harness==1.0.1",
+    "requires": "langchain-mcp-adapters>=0.3.0",
+    "host": "langchain-mcp-adapters==0.2.1"
+  },
+  "host_lock_sha256": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+  "core_input_sha256": "68c0c364ec24bc12d610facaa1c85376e820c9bbb911f352f150afd1ee71f55b",
+  "constraints_sha256": "8e2952229a11d00ebcbdce31071ee5775dec46f518524a8c78c8f0554e6f3889",
+  "installed": false,
+  "host_lock_modified": false,
+  "runtime_compatibility_verified": false,
+  "all_extra": "core constraint remains unsatisfied; no all-extra installation attempted"
+}

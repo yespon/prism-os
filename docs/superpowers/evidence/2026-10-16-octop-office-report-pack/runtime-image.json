@@ -1,0 +1,12 @@
+{
+  "image": "sha256:3c0dcb8778d3370243d61cd92aa75a729617f6f6d021cd59303053ef0b4fc2bc",
+  "previous": {
+    "gateway": "sha256:f89d6f513fa05c132754fa3409ace8c30e20bab900f540eddd52e616d7c3c61a",
+    "langgraph": "sha256:f89d6f513fa05c132754fa3409ace8c30e20bab900f540eddd52e616d7c3c61a"
+  },
+  "files": {
+    "packages/harness/deerflow/tools/builtins/office_pdf.py": "ed23f2abcc7e8d377e5d86368370e176de155855e8d12fb2890ef5ce57b8b963"
+  },
+  "action": "off",
+  "private_original_compose": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/compose-before-office-report-pack.yaml"
+}

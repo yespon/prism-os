@@ -8,8 +8,9 @@ import {
   Palette
 } from 'lucide-react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { toast } from 'sonner';
+
 
 import { TerminalContext } from '@/app/workspace/terminal/context';
 import { TerminalAgentUI } from '@/app/workspace/terminal/terminal-agent-ui';
@@ -24,6 +25,7 @@ import { AssetSidebar } from '@/components/workspace/terminal/asset-sidebar';
 import { WebTerminal } from '@/components/workspace/terminal/web-terminal';
 import type { WebTerminalRef } from '@/components/workspace/terminal/web-terminal';
 import { decodeContextFromURL, type IncidentContext } from '@/core/alerting/incident-context';
+import { useSkillQueryIdentity } from '@/core/skills/query-identity';
 import type { TerminalAsset, TerminalAssetGroup, TerminalCredential } from '@/core/terminal-agent/message-types';
 import {
   loadHostSidebarCollapsed,
@@ -57,6 +59,11 @@ function tryMatchAsset(ctx: IncidentContext, assets: TerminalAsset[]): TerminalA
 }
 
 export function PersistentTerminal() {
+  const identity = useSkillQueryIdentity();
+  const identityRef = useRef(identity);
+  identityRef.current = identity;
+  const requestGeneration = useRef(0);
+  const [loadedIdentity, setLoadedIdentity] = useState<string | null>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -74,22 +81,42 @@ export function PersistentTerminal() {
 
   // Track the last consumed context to avoid duplicate processing
   const lastConsumedCtxRef = useRef<string | null>(null);
+  const visibleSessions = loadedIdentity === identity.key && identity.identityReady ? openSessions : [];
 
   // Centralized data fetching — shared with AssetSidebar
-  const fetchAssets = async () => {
+  const fetchAssets = useCallback(async () => {
+    const scope = identityRef.current;
+    const generation = ++requestGeneration.current;
+    const current = () => generation === requestGeneration.current && scope.key === identityRef.current.key && scope.isCurrent();
+    if (!scope.identityReady) return;
     try {
-      const [assetsRes, credsRes, groupsRes] = await Promise.all([
-        fetch('/api/v1/assets/local'),
-        fetch('/api/v1/assets/keychains'),
-        fetch('/api/v1/assets/groups')
+      const responses = await Promise.all([
+        fetch('/api/v1/assets/local', { cache: 'no-store' }),
+        fetch('/api/v1/assets/keychains', { cache: 'no-store' }),
+        fetch('/api/v1/assets/groups', { cache: 'no-store' }),
       ]);
-      if (assetsRes.ok) setAssets(await assetsRes.json());
-      if (credsRes.ok) setCredentials(await credsRes.json());
-      if (groupsRes.ok) setGroups(await groupsRes.json());
-    } catch (e) {
-      console.error('Failed to fetch assets', e);
+      if (!current()) return;
+      if (responses.some(response => !response.ok)) throw new Error('Current asset scope unavailable');
+      const values = await Promise.all(responses.map(response => response.json()));
+      if (!current()) return;
+      if (values.some(value => !Array.isArray(value))) throw new Error("Invalid current asset list");
+      setAssets(values[0] as TerminalAsset[]);
+      setCredentials(values[1] as TerminalCredential[]);
+      setGroups(values[2] as TerminalAssetGroup[]);
+      setLoadedIdentity(scope.key);
+    } catch {
+      if (!current()) return;
+      setAssets([]); setCredentials([]); setGroups([]); setLoadedIdentity(null);
+      setOpenSessions([]); setActiveSessionId(null);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setAssets([]); setCredentials([]); setGroups([]); setLoadedIdentity(null);
+    setOpenSessions([]); setActiveSessionId(null); setIncidentContext(null);
+    void fetchAssets();
+    return () => { requestGeneration.current += 1; };
+  }, [identity.key, identity.identityReady, fetchAssets]);
 
   // Load saved preferences
   useEffect(() => {
@@ -103,7 +130,6 @@ export function PersistentTerminal() {
       setTerminalTheme(savedTheme);
     }
 
-    void fetchAssets();
   }, []);
 
   // Handle incoming incident context from URL
@@ -161,6 +187,7 @@ export function PersistentTerminal() {
   const sendMessageRef = useRef<((text: string) => void) | null>(null);
 
   const handleSelectAsset = (asset: TerminalAsset) => {
+    if (loadedIdentity !== identity.key || !identity.isCurrent()) return;
     const sessionId = 'sess_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9);
     setOpenSessions((prev) => {
       const existingCount = prev.filter((s) => s.asset.id === asset.id).length;
@@ -220,13 +247,14 @@ export function PersistentTerminal() {
       <div className={`${isTerminalPage ? 'flex size-full bg-white text-zinc-800 overflow-hidden text-[13px]' : 'hidden'}`}>
         
         {/* 1. Left Panel: Asset Management */}
-        <AssetSidebar 
+        <AssetSidebar
+            key={identity.key}
           onSelectAsset={handleSelectAsset} 
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={handleToggleSidebar}
-          assets={assets}
-          credentials={credentials}
-          groups={groups}
+          assets={loadedIdentity === identity.key && identity.identityReady ? assets : []}
+          credentials={loadedIdentity === identity.key && identity.identityReady ? credentials : []}
+          groups={loadedIdentity === identity.key && identity.identityReady ? groups : []}
           onDataChanged={fetchAssets}
         />
 
@@ -244,7 +272,7 @@ export function PersistentTerminal() {
                   <PanelLeftOpenIcon className="w-4 h-4" />
                 </button>
               )}
-              {openSessions.map((session) => (
+              {visibleSessions.map((session) => (
                 <div 
                   key={session.sessionId}
                   onClick={() => setActiveSessionId(session.sessionId)}
@@ -316,8 +344,8 @@ export function PersistentTerminal() {
           
           {/* Terminal Content Area */}
           <div className={`flex-1 p-2 relative ${terminalTheme === 'light' ? 'bg-[#ffffff]' : terminalTheme === 'hacker' ? 'bg-[#0a0a0a]' : 'bg-[#0d1117]'}`}>
-            {openSessions.length > 0 ? (
-              openSessions.map((session) => (
+            {visibleSessions.length > 0 ? (
+              visibleSessions.map((session) => (
                 <div 
                   key={`term-${session.sessionId}`} 
                   className={`absolute inset-2 ${activeSessionId === session.sessionId ? 'block' : 'hidden'}`}

@@ -1,20 +1,15 @@
-import fs from "fs";
-import path from "path";
-
 import type { NextRequest } from "next/server";
 
+import { readDemoFile } from "@/server/demo-files";
+
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ thread_id: string }> },
 ) {
-  const threadId = (await params).thread_id;
-  const jsonString = fs.readFileSync(
-    path.resolve(process.cwd(), `public/demo/threads/${threadId}/thread.json`),
-    "utf8",
-  );
-  const json = JSON.parse(jsonString);
-  if (Array.isArray(json.history)) {
-    return Response.json(json);
-  }
-  return Response.json([json]);
+  const { thread_id: threadId } = await params;
+  const data = readDemoFile(threadId, ["thread.json"]);
+  if (data === null)
+    return Response.json({ detail: "Thread not found" }, { status: 404 });
+  const json = JSON.parse(data.toString("utf8"));
+  return Response.json(Array.isArray(json.history) ? json : [json]);
 }

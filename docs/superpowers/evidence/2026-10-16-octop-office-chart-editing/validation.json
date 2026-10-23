@@ -1,0 +1,41 @@
+{
+  "complete": true,
+  "base_commit": "630a5f1",
+  "frozen_inputs": 2045,
+  "historical_unchanged_inputs": 2041,
+  "host_lock_sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+  "image": "sha256:b0f0b8db1bba39e62db48f972ea42c8614bb50d7379e31fb2ba200abafe2dd9f",
+  "upgrade_inputs": 165,
+  "M1_exited": false,
+  "N08_started": false,
+  "remote_ci_executed": false,
+  "results": {
+    "related": "58 passed, 17 warnings in 24.88s",
+    "backend-full": "2389 passed, 18 skipped, 762 warnings in 1307.91s (0:21:47)",
+    "image-runtime": "137 passed, 67 warnings in 181.12s (0:03:01)",
+    "postgres": "137 passed, 67 warnings in 173.98s (0:02:53)",
+    "upgrade": [
+      "137 passed, 67 warnings in 183.63s (0:03:03)",
+      "137 passed, 67 warnings in 133.57s (0:02:13)",
+      "137 passed, 67 warnings in 200.02s (0:03:20)"
+    ]
+  },
+  "raw_log_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/backend-full.log": "a333f1b09ea7bc585c573c41ac8fd728bd15e698ae9d70530b71df55b6b3684b",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/backend-image-build.log": "fad3d0993444e94c37c35a5503acc98b98c67b4dff0e6553eac3743af7ddce7a",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/brand-staged.log": "b24366b80aaad01f0de3b0c13adaff0549e43555d4e99823cbaf413db24b756c",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/demo.log": "eb1f535cd77cdbd54fb8b8ad3d70ffb5dfd86ca1f1db39b181f610ad61e4c4e5",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/image-runtime.log": "0486e50eee45a454864dc0f196f730c37974d9a20f51fa9975c97453bf6b063a",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/postgres.log": "7a062ed1825936d63977dedeaf2c3e3707fffeb0b26edea0bd204a2006c5e998",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/related.log": "f2a35d066ea27b9c6283b3b5f1b567accccbe888c5816566b2b79738c964ee87",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chart-editing/logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  },
+  "additional_raw_sha256": {
+    "postgres-runtime.log": "09cae81bbf3968c036b54ea49f128dee49a249be888e769039d0dde3b36b29ab"
+  },
+  "demo_sha256": {
+    "demo-edited.pptx": "914bc057fd8541f1e5a593973fb25a9240c60fd8c42d7b3353731e5e965f3049",
+    "demo-original.pptx": "046613465c01a3cc65feabddb8acbcc4b167efc4a559676e75fcbcb62e10b79e"
+  }
+}

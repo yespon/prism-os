@@ -1,0 +1,65 @@
+{
+  "complete": true,
+  "simulated_model": false,
+  "configured_model": "gpt-5.6-luna",
+  "cases": [
+    {
+      "incident_id": "68c40041-c591-46c3-9826-3e0177217a60",
+      "agent_id": "0ef4631c-f3ce-4c60-8501-c354b3562c58",
+      "source_id": "58b8a35f-6957-4ee5-8f40-feb56429cc43",
+      "fault_event": "action.policy_evaluated",
+      "complete": true,
+      "stream_events": 36,
+      "thread_id": "01a14582-6e36-7b10-938a-8c07cd56d26a",
+      "run_id": "01a14582-6fa1-7ab3-9fe1-f357ba646a42",
+      "run_status": "success",
+      "actual_trigger_hits": 1,
+      "tool_status": "unavailable",
+      "binary_marker_not_returned": true,
+      "durable_facts": {
+        "decisions": [],
+        "audits": []
+      },
+      "receiver_before": 26,
+      "receiver_after": 26
+    },
+    {
+      "incident_id": "03fbc53b-d013-4f9b-a8a0-2da0649c5fe5",
+      "agent_id": "736cbbd5-217a-4ae2-acfb-5f930f3856e1",
+      "source_id": "3456a322-ae05-4bd6-9e25-e7a21bc89866",
+      "fault_event": "action.read_result",
+      "complete": true,
+      "stream_events": 46,
+      "thread_id": "01a14582-c31d-7f52-ab42-8a11d66f5643",
+      "run_id": "01a14582-c45a-7361-abe2-b634ffd5c47d",
+      "run_status": "success",
+      "actual_trigger_hits": 1,
+      "tool_status": "unavailable",
+      "binary_marker_not_returned": true,
+      "durable_facts": {
+        "decisions": [
+          {
+            "id": "decision_9f65973512ef8718fa579e830bc71e47",
+            "verdict": "allow",
+            "action": "read_file",
+            "risk_class": "read_only",
+            "resource_id": "03fbc53b-d013-4f9b-a8a0-2da0649c5fe5"
+          }
+        ],
+        "audits": [
+          {
+            "event_id": "event_5ddff7e2dcddd89c8a84c98cf9e9e366",
+            "event_type": "action.policy_evaluated",
+            "action": "read_file",
+            "outcome": "pending",
+            "policy_decision_id": "decision_9f65973512ef8718fa579e830bc71e47"
+          }
+        ]
+      },
+      "receiver_before": 26,
+      "receiver_after": 26
+    }
+  ],
+  "trigger_and_schema_removed": true,
+  "canary_restored_off": true
+}

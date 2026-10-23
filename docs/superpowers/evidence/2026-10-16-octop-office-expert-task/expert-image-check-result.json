@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-office-expert-check",
+    "sha256:f89d6f513fa05c132754fa3409ace8c30e20bab900f540eddd52e616d7c3c61a",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_octop_integration.py -k 'office_expert or office_runtime' -q --tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T12:35:15.484204+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T13:54:53.392076+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "scope": "Actual independent DOCX package and mammoth reader, not desktop rendering or model call",
+  "files": {
+    "demo-source.docx": {
+      "sha256": "f77552aa3aa4644cfe84f3a556d7f2667c5e527591a2cc6045110738e009e485",
+      "bytes": 2534
+    },
+    "demo-pictured.docx": {
+      "sha256": "e852a9be8ef542936fe0a46fae87cc7f24c039668b2fb4da2d8dc7b8acc26265",
+      "bytes": 4370
+    },
+    "demo-source.png": {
+      "sha256": "c1427d3ff681e5e7a2b95e0f6b67498e8775a6c0217161a74fdb8c6d2914b697",
+      "bytes": 2223
+    }
+  }
+}

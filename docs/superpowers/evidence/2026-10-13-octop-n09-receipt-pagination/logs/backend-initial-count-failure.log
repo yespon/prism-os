@@ -1,0 +1,46 @@
+...........................F................                             [100%]
+=================================== FAILURES ===================================
+_______ test_pagination_reaches_an_old_pending_import_beyond_one_hundred _______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7a0e186cf8f0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-144/test_pagination_reaches_an_old0/skills'))
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-144/test_pagination_reaches_an_old0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a0e184fb8c0>
+
+    def test_pagination_reaches_an_old_pending_import_beyond_one_hundred(scoped_client, tmp_path, monkeypatch):
+        http, factory, root = scoped_client
+        oldest = install_pending(root, tmp_path, monkeypatch, 1)
+        for number in range(2, 127):
+            with monkeypatch.context() as patch:
+                patch.setattr(install_receipts.uuid, "uuid4", lambda: uuid.UUID(int=number))
+                response = http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes(f"registered-{number}"))})
+                assert response.status_code == 201, response.text
+        parent = root / "custom/tenant-a/user-a"
+        receipt = install_receipts.receipt_path(parent, oldest)
+        os.utime(receipt, (1, 1))
+        before = {p.name: p.read_bytes() for p in parent.glob(".prismos-import-*.json")}
+        first = http.get("/api/skills/personal/imports").json()
+        assert len(first["operations"]) == 50 and first["total"] == 126 and first["next_cursor"]
+        assert first["retention"] == {"mode": "retain_all", "automatic_deletion": False, "maintenance": "owned_stage_abort_only"}
+        entries = pages(http)
+        ids = [item["operation_id"] for item in entries]
+        assert len(ids) == len(set(ids)) == 126 and ids[-1] == oldest
+        assert entries[-1]["state"] == "registration_pending"
+        assert before == {p.name: p.read_bytes() for p in parent.glob(".prismos-import-*.json")}
+        assert http.post(f"/api/skills/personal/imports/{oldest}/recover").json()["registered"]
+>       assert len(asyncio.run(all_rows(factory))) == 126
+E       AssertionError: assert 0 == 126
+E        +  where 0 = len([])
+E        +    where [] = <function run at 0x7a0e1e567f60>(<coroutine object all_rows at 0x7a0e1c0b74c0>)
+E        +      where <function run at 0x7a0e1e567f60> = asyncio.run
+E        +      and   <coroutine object all_rows at 0x7a0e1c0b74c0> = all_rows(async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7a0e1849e690>, autoflush=True, expire_on_commit=False))
+
+tests/test_skill_import_recovery.py:580: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_import_recovery.py::test_pagination_reaches_an_old_pending_import_beyond_one_hundred
+1 failed, 43 passed, 1 warning in 17.99s

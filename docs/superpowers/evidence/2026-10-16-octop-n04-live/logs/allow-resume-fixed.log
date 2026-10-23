@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py", line 71, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/run_case.py", line 45, in main
+    repeated=expect(requester,'/api/incidents/'+incident+'/governed-ticket/resume',{})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-n04-live/live_common.py", line 43, in expect
+    assert response.status_code==status,(path,response.status_code,response.text[:300])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('/api/incidents/1cccbb1f-8204-4807-a413-d87320ba2081/governed-ticket/resume', 409, '{"detail":"request_id reused for a different Action context"}')

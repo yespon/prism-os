@@ -1,0 +1,87 @@
+.FFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_ test_original_account_revocation_blocks_a_still_active_native_membership[suspended] _
+
+actor_databases = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x73ca36076310>, ...on_commit=False), Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-50/test_original_account_revocati0/auth.sqlite))
+change = 'suspended'
+
+    @pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+    def test_original_account_revocation_blocks_a_still_active_native_membership(actor_databases, change):
+        factory, identity = actor_databases
+        verify(factory)
+        with identity.begin() as conn:
+            if change == "suspended":
+                conn.execute(text('UPDATE "user" SET status=:status WHERE id=:id'), {"status": "suspended", "id": "actor-a"})
+            elif change == "deleted":
+                conn.execute(text('DELETE FROM "user" WHERE id=:id'), {"id": "actor-a"})
+            else:
+                conn.execute(text('UPDATE "user" SET "mustChangePassword"=:change WHERE id=:id'), {"change": True, "id": "actor-a"})
+>       with pytest.raises(ExecutionTrustError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ExecutionTrustError
+
+tests/test_runtime_actor_status.py:64: Failed
+_ test_original_account_revocation_blocks_a_still_active_native_membership[deleted] _
+
+actor_databases = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x73ca3a559f90>, ...on_commit=False), Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-50/test_original_account_revocati1/auth.sqlite))
+change = 'deleted'
+
+    @pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+    def test_original_account_revocation_blocks_a_still_active_native_membership(actor_databases, change):
+        factory, identity = actor_databases
+        verify(factory)
+        with identity.begin() as conn:
+            if change == "suspended":
+                conn.execute(text('UPDATE "user" SET status=:status WHERE id=:id'), {"status": "suspended", "id": "actor-a"})
+            elif change == "deleted":
+                conn.execute(text('DELETE FROM "user" WHERE id=:id'), {"id": "actor-a"})
+            else:
+                conn.execute(text('UPDATE "user" SET "mustChangePassword"=:change WHERE id=:id'), {"change": True, "id": "actor-a"})
+>       with pytest.raises(ExecutionTrustError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ExecutionTrustError
+
+tests/test_runtime_actor_status.py:64: Failed
+_ test_original_account_revocation_blocks_a_still_active_native_membership[password-reset] _
+
+actor_databases = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x73ca35f17710>, ...on_commit=False), Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-50/test_original_account_revocati2/auth.sqlite))
+change = 'password-reset'
+
+    @pytest.mark.parametrize("change", ["suspended", "deleted", "password-reset"])
+    def test_original_account_revocation_blocks_a_still_active_native_membership(actor_databases, change):
+        factory, identity = actor_databases
+        verify(factory)
+        with identity.begin() as conn:
+            if change == "suspended":
+                conn.execute(text('UPDATE "user" SET status=:status WHERE id=:id'), {"status": "suspended", "id": "actor-a"})
+            elif change == "deleted":
+                conn.execute(text('DELETE FROM "user" WHERE id=:id'), {"id": "actor-a"})
+            else:
+                conn.execute(text('UPDATE "user" SET "mustChangePassword"=:change WHERE id=:id'), {"change": True, "id": "actor-a"})
+>       with pytest.raises(ExecutionTrustError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ExecutionTrustError
+
+tests/test_runtime_actor_status.py:64: Failed
+____________ test_auth_store_failure_is_not_permission_to_continue _____________
+
+actor_databases = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x73ca35f16750>, ...on_commit=False), Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-50/test_auth_store_failure_is_not0/auth.sqlite))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73ca35f02d80>
+
+    def test_auth_store_failure_is_not_permission_to_continue(actor_databases, monkeypatch):
+        factory, _ = actor_databases
+    
+        def unavailable():
+            raise RuntimeError("synthetic unavailable auth store")
+        monkeypatch.setattr(auth_db, "get_auth_engine", unavailable)
+>       with pytest.raises(ExecutionTrustError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ExecutionTrustError
+
+tests/test_runtime_actor_status.py:74: Failed
+=========================== short test summary info ============================
+FAILED tests/test_runtime_actor_status.py::test_original_account_revocation_blocks_a_still_active_native_membership[suspended]
+FAILED tests/test_runtime_actor_status.py::test_original_account_revocation_blocks_a_still_active_native_membership[deleted]
+FAILED tests/test_runtime_actor_status.py::test_original_account_revocation_blocks_a_still_active_native_membership[password-reset]
+FAILED tests/test_runtime_actor_status.py::test_auth_store_failure_is_not_permission_to_continue
+4 failed, 1 passed in 6.53s

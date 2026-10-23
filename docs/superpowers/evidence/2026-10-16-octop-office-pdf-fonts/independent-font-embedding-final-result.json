@@ -1,0 +1,11 @@
+{
+  "command": [
+    "pdffonts",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/demo-chinese-final.pdf"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T01:31:16.375699+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:31:16.390834+00:00"
+}

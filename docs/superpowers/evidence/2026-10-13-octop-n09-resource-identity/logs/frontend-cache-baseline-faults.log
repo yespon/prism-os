@@ -1,0 +1,39 @@
+
+ RUN  v4.1.2 /root/.codex/worktrees/octop-integration/prism-os/frontend
+
+ ❯ src/core/skills/hooks.test.tsx (2 tests | 2 failed) 141ms
+   × never displays cached available resources after tenant/user identity change 81ms
+   × never displays cached tenant resources after tenant/user identity change 57ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/core/skills/hooks.test.tsx > never displays cached available resources after tenant/user identity change
+ FAIL  src/core/skills/hooks.test.tsx > never displays cached tenant resources after tenant/user identity change
+AssertionError: expected [ { name: 'private-old' } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "name": "private-old",
++   },
++ ]
+
+ ❯ src/core/skills/hooks.test.tsx:24:38
+     22|   mock.key = "tenant-b/user-b/session-b";
+     23|   view.rerender();
+     24|   expect(view.result.current.skills).toEqual([]);
+       |                                      ^
+     25|   await act(async () => resolve([{name: "new-only"}]));
+     26|   await waitFor(() => expect(view.result.current.skills[0]?.name).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  03:01:23
+   Duration  1.42s (transform 76ms, setup 92ms, import 189ms, tests 141ms, environment 745ms)
+

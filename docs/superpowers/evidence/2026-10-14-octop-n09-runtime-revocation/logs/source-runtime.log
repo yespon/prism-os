@@ -1,0 +1,278 @@
+EEEEEEEEE..........................................                      [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_selected_member_read_checks_protected_source_and_incident_at_use[source] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e79cea50>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e669bd10>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e7880e00>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:332a3313b6d35fc69c94cc7f5ba96bc5287fdf0b0492236a7a31d387be1419be'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_selected_member_read_checks_protected_source_and_incident_at_use[revision] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e793e3d0>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e65da3f0>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e652b380>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:00127e8e556a91f0e24803283a5445e3e6014fa38474e5d2129865f3251a6545'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_selected_member_read_checks_protected_source_and_incident_at_use[role] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e6585090>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e64635c0>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e648a5a0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:4d0685eff3d6e907b071a0c65475b55b774e7a77c7e2229a3ad870fad708ee79'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_selected_member_read_checks_protected_source_and_incident_at_use[severity] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e64d2910>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e648a120>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e64899a0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:fa7f9155b8741926c349c4a0d901f6bdc86e6ca0a07a6152e9b49c23f0c19a24'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_selected_member_read_checks_protected_source_and_incident_at_use[deleted-incident] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e63ba4d0>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e625e510>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e625e630>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:3f29cba10049f6ff2a6e5ac7b16b130330aa81e607ab7d14151277f4f555ba5c'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_selected_member_read_checks_protected_source_and_incident_at_use[missing-context] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e6483010>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e61b6b10>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e616a120>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:25b847fcb877b1ace2ccd8a32352f48452a94af7d884b5c42d4fbcb7deb45e2c'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output[source] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e63c0c90>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e6181ac0>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e6044ad0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:20628495a0394782de2f8a218b65eb4684b6e09a41f11a55621432ac99841264'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output[role] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e61eb210>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e63cc920>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e6046cc0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:4bfd37d4abe60fbf491cd361fa2bb302ebeee58e1412ac7dd01754b4d2145e12'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+_ ERROR at setup of test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output[severity] _
+
+command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x72c7e628a250>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x72c7e65da240>)
+configured = (<starlette.testclient.TestClient object at 0x72c7e633b230>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:cec6a106e1776abc52951ae2daef91f63a2a1919db63dd74307c3d71369ae9fa'}})
+
+    @pytest.fixture
+    def source_runtime(command_runtime, configured):
+        factory, root, agent, calls, runtime, sandbox = command_runtime
+        http, _, _, resources = configured
+        current = http.get("/api/agents/member-agent").json()
+        changed = http.put(
+            "/api/agents/member-agent",
+            json={
+                "is_shared": True,
+                "skill_binding_mode": "selected",
+                "skill_resources": [resources["tenant"]],
+                "expected_agent_id": agent,
+                "expected_revision": current["revision"],
+            },
+        )
+>       assert changed.status_code == 200, changed.text
+E       AssertionError: {"detail":"Only tenant admins can share or unshare agents"}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_runtime_source_revocation.py:38: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_runtime_source_revocation.py: 9 warnings
+tests/test_skill_member_tools.py: 27 warnings
+tests/test_file_access_boundaries.py: 15 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/test_runtime_source_revocation.py::test_selected_member_read_checks_protected_source_and_incident_at_use[source]
+ERROR tests/test_runtime_source_revocation.py::test_selected_member_read_checks_protected_source_and_incident_at_use[revision]
+ERROR tests/test_runtime_source_revocation.py::test_selected_member_read_checks_protected_source_and_incident_at_use[role]
+ERROR tests/test_runtime_source_revocation.py::test_selected_member_read_checks_protected_source_and_incident_at_use[severity]
+ERROR tests/test_runtime_source_revocation.py::test_selected_member_read_checks_protected_source_and_incident_at_use[deleted-incident]
+ERROR tests/test_runtime_source_revocation.py::test_selected_member_read_checks_protected_source_and_incident_at_use[missing-context]
+ERROR tests/test_runtime_source_revocation.py::test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output[source]
+ERROR tests/test_runtime_source_revocation.py::test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output[role]
+ERROR tests/test_runtime_source_revocation.py::test_source_condition_change_stops_actual_command_and_discards_unconfirmed_output[severity]
+42 passed, 52 warnings, 9 errors in 59.34s

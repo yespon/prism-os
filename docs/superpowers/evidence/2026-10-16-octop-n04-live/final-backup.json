@@ -1,0 +1,24 @@
+{
+  "private_backup_directory": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/backup-e8f8e6bc2be8",
+  "databases": {
+    "prismos": {
+      "dump_sha256": "f64287883aea78f8c43c1418b1096ab113b361343fbb5432c04d80c4065d6592",
+      "table_count": 38,
+      "restored_database": "prismos_restore_244e81",
+      "migration_head": "n8h9i0j1k2l3"
+    },
+    "prismos_auth_db": {
+      "dump_sha256": "5c2ebd87e1f05669a3e1b4fb98443409de252cc73b219020d24dac95cc288ea1",
+      "table_count": 5,
+      "restored_database": "prismos_auth_db_restore_3a0b47"
+    },
+    "prismos_checkpoints": {
+      "dump_sha256": "6c7a2bcf4ff77714cb47ddfef8b0a1699b230a253fe0135ed9c843689e4a1ca0",
+      "table_count": 4,
+      "restored_database": "prismos_checkpoints_restore_019447"
+    }
+  },
+  "scope": "independent PostgreSQL dump/restore; no golden model run or deployment rollback claim",
+  "real_model_verified": false,
+  "M1_exited": false
+}

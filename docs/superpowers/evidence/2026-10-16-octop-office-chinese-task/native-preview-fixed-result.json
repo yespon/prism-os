@@ -1,0 +1,17 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-office-chinese-task/native_preview.py",
+    "--case",
+    "real-chinese-fixed.json",
+    "--result",
+    "native-preview-fixed.json",
+    "--png",
+    "chinese-report-preview-fixed.png"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T15:28:55.725354+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T15:29:18.244897+00:00"
+}

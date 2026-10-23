@@ -1,0 +1,29 @@
+{
+  "base_commit": "3b493cb6bd22b3402fe68ea94080e92b041672a2",
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "444e3b71610fa435b1cc3cb877dee9337dfc2af4c1233cd0cc3a9b9b5728433f",
+    "Makefile": "02ef80c26accd4b49f8eb9f2f32a4701b97d78c664a1f724c997611bd106183b",
+    "backend/app/alerting/diagnosis_helper.py": "8f85abeb7d0f92548e46bac7bbe51c68d6341c84b2637273a9e5dcd3943ae50d",
+    "backend/app/alerting/ingest.py": "6c53a46520dab11a79694b84e7c35321dfe33aad2ee6eb079a672d9cb0cee3d1",
+    "backend/app/gateway/routers/langgraph_proxy.py": "e435b9c417398f193d06b4bf6eb5b89819618f37edbda4f85741dcaa82a07fbf",
+    "backend/app/platform/execution/trust.py": "44b623ddd416e126714de6fd871454cfa6f9b693a8615fe076d380ada0c051a6",
+    "backend/app/runtime_adapters.py": "e8a41ebcc2cd3c064324a2eadbe0f34c37f4a9848c15338995826df67c66507b",
+    "backend/tests/test_diagnosis_authorization.py": "c6286295c3cc916d035863ce5a783eeadd63f8c18b722be97a4181c827456fe4",
+    "backend/tests/test_langgraph_proxy.py": "33b8c834edf249ec85f5a33ac408231fc82e78d4366efd637a87a2d6cd5c509e",
+    "scripts/octop_gateway_smoke.py": "11e4b71bb386f3822e69b7e82303bad6526ed5aa481b1796ea5ebf7b23a19255",
+    "scripts/octop_upgrade_probe.py": "84331b444fbb60cda347f07e985e40c017d4393394f180e8d7787c3c0af7dc3f"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "link_sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3",
+      "reason": "absolute host tool metadata; target not read"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "link_sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db",
+      "reason": "absolute host tool metadata; target not read"
+    }
+  ],
+  "independent_directory": "/tmp/prismos-n09n-independent"
+}

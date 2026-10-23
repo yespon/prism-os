@@ -365,6 +365,9 @@ export interface Translations {
     noExecutionRecords: string;
     startNewTask: string;
     startNewTaskDesc: string;
+    noModelMemberHint: string;
+    noModelAdminHint: string;
+    manageModels: string;
     clickToRename: string;
     loadingThread: string;
   };
@@ -1427,6 +1430,15 @@ export interface Translations {
       noRisks: string;
       riskSingleAdmin: string;
       riskNoModels: string;
+      firstRunTitle: string;
+      firstRunDescription: string;
+      firstRunLoading: string;
+      firstRunUnknown: string;
+      firstRunReady: string;
+      firstRunNoModel: string;
+      firstRunModelsLink: string;
+      firstRunAgentsLink: string;
+      firstRunWorkspaceLink: string;
       riskNoTools: string;
     };
     agents: {

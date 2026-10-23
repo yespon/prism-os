@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/read_audit_faults.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T08:19:17.526556+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T08:21:24.600860+00:00"
+}

@@ -1,0 +1,158 @@
+{
+  "schema_version": "octop.resources.v1",
+  "template_id": "expert:parenting-companion",
+  "locale": "zh",
+  "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "source_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+  "template_source": {
+    "source": "src/octop/infra/agents/experts/library/parenting-companion/manifest.json",
+    "target": "data/experts/parenting-companion/manifest.json",
+    "sha256": "35cfd55043d592481c7e841ddd3f92dde402d3e48e719e9e61db843690dce197"
+  },
+  "prompt_sha256": "348bc29404c3b574842a3b42cb808b04b492cf000a27fcd2d85fc2c5d3c973ed",
+  "source_verified": true,
+  "declaration_sha256": "8149c89d9631711187a5a885fc662f0140a7b077f201bee37693e545cd1bbbd2",
+  "resources": [
+    {
+      "id": "resource:3710af9f1a0cf2737a4dcf8ecb32937174ae3370418e2a5890ffdcc19ac5e074",
+      "kind": "reference_asset",
+      "root": "AGENTS.md",
+      "bundle_sha256": "a5ae64784ce64a53d964993bad5cea65b379d854097415008161c5aa05cb7ebe",
+      "members": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "4da36ffd516ab8c6818e6d7eadfe8b356c5916fdb4e28bebf7ef97b7a404a12b",
+          "source_path": "src/octop/infra/agents/experts/library/parenting-companion/AGENTS.md"
+        }
+      ],
+      "installation_status": "not_checked",
+      "execution_ready": false,
+      "host_format": {
+        "status": "binding_required"
+      },
+      "remaining_checks": [
+        "current_resource_acl",
+        "runtime_dependencies",
+        "tool_or_delegation_binding",
+        "execution_pep_and_isolation"
+      ],
+      "host_adaptation": {
+        "status": "ready",
+        "name": "octop-parenting-companion-reference-385136e4382b",
+        "adapted": true,
+        "adapter_version": 1
+      },
+      "installation": {
+        "status": "not_installed",
+        "candidates": []
+      }
+    },
+    {
+      "id": "resource:903ae2b3953a32be78d413b116ccba60bebb692943787a1e66a638a38b4467ba",
+      "kind": "reference_asset",
+      "root": "USER.md",
+      "bundle_sha256": "be1a4c409247dd79c59c9a89a95bce8bd177536e4e8244d85f1c1a412f0e952a",
+      "members": [
+        {
+          "path": "USER.md",
+          "sha256": "57371a8272ee104be339f259e19ece1dc18754f3fc11c61dffbe9e5be929f3ef",
+          "source_path": "src/octop/infra/agents/experts/library/parenting-companion/USER.md"
+        }
+      ],
+      "installation_status": "not_checked",
+      "execution_ready": false,
+      "host_format": {
+        "status": "binding_required"
+      },
+      "remaining_checks": [
+        "current_resource_acl",
+        "runtime_dependencies",
+        "tool_or_delegation_binding",
+        "execution_pep_and_isolation"
+      ],
+      "host_adaptation": {
+        "status": "ready",
+        "name": "octop-parenting-companion-reference-2634a9f31376",
+        "adapted": true,
+        "adapter_version": 1
+      },
+      "installation": {
+        "status": "not_installed",
+        "candidates": []
+      }
+    },
+    {
+      "id": "resource:8c4fb9608263f1ea43c42e2902383276d8dc941182a2bc430fdb2681db3c7118",
+      "kind": "script",
+      "root": "scripts/check_memory_freshness.sh",
+      "bundle_sha256": "977a025f352236aed16e21b4bf5b6e4060c5d2fad8025db3e04863bf521e52ac",
+      "members": [
+        {
+          "path": "scripts/check_memory_freshness.sh",
+          "sha256": "b67bb80f7d43556cc20034b6e372c6f3f9317e97f7e67c41da31faedc6b7810c",
+          "source_path": "src/octop/infra/agents/experts/library/parenting-companion/scripts/check_memory_freshness.sh"
+        }
+      ],
+      "installation_status": "not_checked",
+      "execution_ready": false,
+      "host_format": {
+        "status": "binding_required"
+      },
+      "remaining_checks": [
+        "current_resource_acl",
+        "runtime_dependencies",
+        "tool_or_delegation_binding",
+        "execution_pep_and_isolation"
+      ],
+      "host_adaptation": {
+        "status": "ready",
+        "name": "octop-parenting-companion-script-00a57acd66b9",
+        "adapted": true,
+        "adapter_version": 1
+      },
+      "installation": {
+        "status": "not_installed",
+        "candidates": []
+      }
+    }
+  ],
+  "member_count": 3,
+  "legacy_bundle_member_count": 1,
+  "additional_member_count": 2,
+  "template_members": [
+    {
+      "path": "BOOTSTRAP.md",
+      "sha256": "d0d3b87484658d9065b2570f6450e34ff2f9621f7bebf3f02b58e7f16535bf20",
+      "source_path": "src/octop/infra/agents/experts/library/parenting-companion/BOOTSTRAP.md"
+    },
+    {
+      "path": "HEARTBEAT.md",
+      "sha256": "3a8406812b547990f3df7a4b410b6f2b392ebdbe253a39768f77fb73ae60dbf7",
+      "source_path": "src/octop/infra/agents/experts/library/parenting-companion/HEARTBEAT.md"
+    },
+    {
+      "path": "IDENTITY.md",
+      "sha256": "57371a8272ee104be339f259e19ece1dc18754f3fc11c61dffbe9e5be929f3ef",
+      "source_path": "src/octop/infra/agents/experts/library/parenting-companion/IDENTITY.md"
+    },
+    {
+      "path": "SOUL.md",
+      "sha256": "400338535dc6e24410899b92f67e25b33a1a818edc419bb39e2d8886c1958fba",
+      "source_path": "src/octop/infra/agents/experts/library/parenting-companion/SOUL.md"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "35cfd55043d592481c7e841ddd3f92dde402d3e48e719e9e61db843690dce197",
+      "source_path": "src/octop/infra/agents/experts/library/parenting-companion/manifest.json"
+    }
+  ],
+  "verified_source_member_count": 8,
+  "excluded_resources": [],
+  "excluded_resources_status": "independent implementation pending",
+  "installation_checked": true,
+  "execution_ready": false,
+  "preflight_scope": "pinned source and native Skill frontmatter format only",
+  "runtime_dependencies_checked": false,
+  "permission_grants": false,
+  "installation_scope": "current tenant shared/personal rows and public roots; exact source/host-package bytes"
+}

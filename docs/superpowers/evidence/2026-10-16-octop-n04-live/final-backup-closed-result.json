@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_probe.py",
+    "backup",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-live/final-backup-closed.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T05:07:45.817265+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T05:07:49.809353+00:00"
+}

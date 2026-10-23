@@ -1,0 +1,15 @@
+I001 [*] Import block is un-sorted or un-formatted
+   --> tests/test_runtime_source_revocation.py:161:17
+    |
+159 |               decision = await policy.evaluate_and_record(*args, **kwargs)
+160 |               if withdrawal == "account":
+161 | /                 from sqlalchemy import text
+162 | |                 from app.gateway.auth_db import get_auth_engine
+    | |_______________________________________________________________^
+163 |
+164 |                   with get_auth_engine().begin() as connection:
+    |
+help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

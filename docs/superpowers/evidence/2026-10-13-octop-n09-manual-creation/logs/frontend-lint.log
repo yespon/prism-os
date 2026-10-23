@@ -1,0 +1,15 @@
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/app/workspace/skills/[name]/page.tsx
+   65:10  warning  'generating' is assigned a value but never used                                                              @typescript-eslint/no-unused-vars
+   65:22  warning  'setGenerating' is assigned a value but never used                                                           @typescript-eslint/no-unused-vars
+   91:5   warning  'handleSubmit' is assigned a value but never used                                                            @typescript-eslint/no-unused-vars
+  151:6   warning  React Hook useEffect has a missing dependency: 'identity'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/workspace/incidents/save-as-skill-dialog.tsx
+  20:10  warning  'Textarea' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.codex/worktrees/octop-integration/prism-os/frontend/src/components/workspace/skills/skill-creation-inspection.test.tsx
+  8:91  warning  `import()` type annotations are forbidden  @typescript-eslint/consistent-type-imports
+
+✖ 6 problems (0 errors, 6 warnings)
+

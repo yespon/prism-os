@@ -1,0 +1,45 @@
+{
+  "task": "N03",
+  "date": "2026-10-09",
+  "status": "local migration verified",
+  "default": "dry-run",
+  "atomic_scope": "one explicitly selected tenant batch",
+  "limit": {
+    "default": 100,
+    "maximum": 1000
+  },
+  "unknown_commit": "unknown status; migrated=null; reconcile by dry-run",
+  "new_tests": 23,
+  "targeted_passed": 57,
+  "backend": {
+    "passed": 1478,
+    "skipped": 18,
+    "warnings": 30
+  },
+  "frontend": {
+    "files": 40,
+    "passed": 94,
+    "max_workers": 2
+  },
+  "platform_contracts": 130,
+  "adjacent_platform_checks": 48,
+  "head": "n8h9i0j1k2l3",
+  "octop_build": {
+    "status": "passed",
+    "backend_checks": 115,
+    "frontend_checks": 3,
+    "wheel_verified_files": 1035,
+    "gateway": "real uvicorn/auth/create/reload; temporary SQLite",
+    "production_build": "passed"
+  },
+  "m1_exit": false,
+  "deployment_apply": "not run",
+  "provider_transport": "actual HTTPX with MockTransport",
+  "pending": [
+    "N04 isolated PostgreSQL final evidence",
+    "target deployment and feature-switch rollback",
+    "real model and webhook",
+    "deployment tracing privacy",
+    "remote CI"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "complete": false,
+  "M1_exited": false,
+  "N08_started": false,
+  "project": "prismos-n04-restored-66fbf7fa4d",
+  "private_runtime": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/prismos-n04-restored-66fbf7fa4d",
+  "phases": [],
+  "original_receiver_before": 26,
+  "phase": "snapshot rows/files restored; starting independent services with Action off",
+  "owned_services_removed": true,
+  "owned_network_removed": true,
+  "owned_clone_databases_removed": true,
+  "original_receiver_after": 26,
+  "original_compose_unchanged": true
+}

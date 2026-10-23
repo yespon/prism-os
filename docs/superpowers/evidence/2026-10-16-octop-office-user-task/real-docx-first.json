@@ -1,0 +1,38 @@
+{
+  "complete": false,
+  "configured_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/office-task-23c427485d",
+  "phases": [
+    "native_login_agent_thread_upload"
+  ],
+  "agent_id": "52269fe3-fd06-4955-97d3-7217b045a21b",
+  "agent_name": "office-task-23c427485d",
+  "thread_id": "a3c7c34d-5af0-4ccf-8e65-5fb3a492fc67",
+  "stream_received": true,
+  "tool_names": [
+    "read_file",
+    "office_docx",
+    "ls",
+    "office_docx"
+  ],
+  "tool_outcomes": [
+    {
+      "name": "read_file",
+      "status": "success",
+      "content_type": "str"
+    },
+    {
+      "name": "office_docx",
+      "status": "success",
+      "content_type": "str"
+    },
+    {
+      "name": "ls",
+      "status": "success",
+      "content_type": "str"
+    }
+  ],
+  "failure_type": "AssertionError",
+  "failure": "Required actual model tools missing"
+}

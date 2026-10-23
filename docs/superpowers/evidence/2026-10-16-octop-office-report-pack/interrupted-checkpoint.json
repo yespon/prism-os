@@ -1,0 +1,23 @@
+{
+  "next": [],
+  "tasks": [
+    {
+      "name": "LoopDetectionMiddleware.after_model",
+      "error": null
+    }
+  ],
+  "last_tool_calls": [
+    {
+      "name": "office_xlsx",
+      "id": "call_F1KGH3j8YttNVzX3EZUZsEAd"
+    },
+    {
+      "name": "office_pptx",
+      "id": "call_S8I66U6TY53Ebv5aJscgfK7t"
+    },
+    {
+      "name": "office_pdf",
+      "id": "call_hByxPvsoH2XFLIJvpiBT4BhK"
+    }
+  ]
+}

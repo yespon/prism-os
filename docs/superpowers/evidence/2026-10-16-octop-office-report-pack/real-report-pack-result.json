@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_office_report_probe.py",
+    "--source",
+    "docs/superpowers/evidence/2026-10-16-octop-office-expert-task/real-expert-task.json",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/real-report-pack.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T14:09:04.987581+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T14:10:08.203668+00:00"
+}

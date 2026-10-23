@@ -1,0 +1,20 @@
+{
+  "complete": true,
+  "container": "prismos-native-ssh-2bf97919",
+  "container_id": "5b711bccdcd81ef90326999d452582227e8f715d045753d759f3ab611a492f43",
+  "image": "sha256:2f15eb179155165c1e5a9bc5f9f7f8bcb7640a687971e389c380cae338fd3df3",
+  "asset_id": "d3397d0f-36b5-4d8c-8002-f1fce7507f0a",
+  "keychain_id": "c42e3b4c-1522-4d73-a487-1491640f96ca",
+  "expected_marker": "SSH_TASK_16c3ea9808569e48ed8d5914814aaa6b",
+  "direct_ssh_marker_and_kernel_verified": true,
+  "loopback_only": true,
+  "rootfs_read_only": true,
+  "default_caps_no_extra_privileges_or_socket": true,
+  "private_key_exported": false,
+  "model_tasks_submitted": 0,
+  "source_sha256": {
+    "docker/ssh-test/Dockerfile": "7068c80c5e7476728def80140cf1ccfa8c1d7cd43b339543568c5ec57ad227b6",
+    "docker/ssh-test/entry.sh": "5d1ba2793000ccbffb009521acc8814fe57370dd81d19b1a33daa945eac3eb7f",
+    "docker/ssh-test/sshd_config": "82e765ffd5239653797f2cb49c4d4e1c4aceac9bfa0375ad16f95ce14d729091"
+  }
+}

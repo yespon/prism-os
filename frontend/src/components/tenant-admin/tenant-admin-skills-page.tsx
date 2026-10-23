@@ -1,7 +1,8 @@
 "use client";
 
-import { Pencil, Plus, Trash2, Upload, SearchIcon } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Pencil, Plus, Upload, SearchIcon } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -10,27 +11,43 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { SkillCreationInspection } from "@/components/workspace/skills/skill-creation-inspection";
+import { SkillDeleteControl } from "@/components/workspace/skills/skill-delete-control";
+import { SkillImportOperations } from "@/components/workspace/skills/skill-import-operations";
 import { useI18n } from "@/core/i18n/hooks";
 import {
   useAvailableSkills,
   useCreateTenantSkill,
-  useDeleteTenantSkill,
   useImportTenantSkill,
   usePatchTenantSkill,
   useUpdateTenantSkill,
 } from "@/core/skills/hooks";
+import { useSkillImportContext } from "@/core/skills/import-context";
+import { skillImportErrorMessage } from "@/core/skills/imports";
+import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
 import type { AvailableSkillResponse } from "@/core/skills/type";
 
 export function TenantAdminSkillsPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const queryClient = useQueryClient();
+  const [editNeedsInspection, setEditNeedsInspection] = useState(false);
+  const [creationOperation, setCreationOperation] = useState<string | undefined>();
+  const importContext = useSkillImportContext();
+  const importIdentity = useRef(importContext.key);
+  importIdentity.current = importContext.key;
+  const archiveBusy = useRef(false);
+  const archiveGeneration = useRef(0);
+  const changeArchiveOpen = (value: boolean) => { archiveGeneration.current += 1; archiveBusy.current = false; setOpen(value); };
+  const [operationsOpen, setOperationsOpen] = useState(false);
   const { skills, isLoading, error } = useAvailableSkills();
-  const { mutateAsync: updateTenantSkill } = useUpdateTenantSkill();
-  const { mutateAsync: deleteTenantSkill } = useDeleteTenantSkill();
+  const { mutateAsync: updateTenantSkill, canToggleResource, enablementNeedsInspection, inspectEnablement } = useUpdateTenantSkill();
   const { mutateAsync: createTenantSkill } = useCreateTenantSkill();
   const { mutateAsync: importTenantSkill, isPending: isImportingSkill } = useImportTenantSkill();
   const { mutateAsync: patchTenantSkill } = usePatchTenantSkill();
   const [open, setOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"manual" | "import">("manual");
+  const [editingFileSha, setEditingFileSha] = useState<string | undefined>();
+  const [editingResourceId, setEditingResourceId] = useState<string | undefined>();
   const [editingName, setEditingName] = useState<string | null>(null);
   const [skillName, setSkillName] = useState("");
   const [skillDescription, setSkillDescription] = useState("");
@@ -44,6 +61,17 @@ export function TenantAdminSkillsPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "enabled" | "disabled">("all");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => { setOpen(false); setImportError(null); setArchiveFile(null); archiveBusy.current = false; }, [importContext.key]);
+
+  const toggleSkill = async (skill: AvailableSkillResponse, enabled: boolean) => {
+    const owner = importContext.key;
+    if (!importContext.isCurrent() || !skill.resource_id) return;
+    try {
+      await updateTenantSkill({skillName: skill.name, enabled, expectedResourceId: skill.resource_id});
+    } catch (error) {
+      if (importIdentity.current === owner && importContext.isCurrent()) toast.error(skillMutationMessage(error, locale === "zh-CN"));
+    }
+  };
 
   const builtInSkills = useMemo(() => skills.filter((item) => item.scope === "global"), [skills]);
   const customSkills = useMemo(() => skills.filter((item) => item.scope === "tenant"), [skills]);
@@ -84,6 +112,8 @@ export function TenantAdminSkillsPage() {
 
   const openCreate = () => {
     setDialogMode("manual");
+    setEditNeedsInspection(false);
+    setCreationOperation(undefined);
     setEditingName(null);
     setSkillName("");
     setSkillDescription("");
@@ -93,11 +123,13 @@ export function TenantAdminSkillsPage() {
     setStrategy("default");
     setArchiveFile(null);
     setImportError(null);
-    setOpen(true);
+    changeArchiveOpen(true);
   };
 
   const openEdit = (skill: {
     name: string;
+    resource_id?: string | null;
+    file_sha256?: string | null;
     description?: string;
     instructions?: string | null;
     bound_tools?: string[];
@@ -105,7 +137,11 @@ export function TenantAdminSkillsPage() {
     strategy?: string | null;
   }) => {
     setDialogMode("manual");
+    setEditNeedsInspection(false);
+    setCreationOperation(undefined);
     setEditingName(skill.name);
+    setEditingResourceId(skill.resource_id ?? undefined);
+    setEditingFileSha(skill.file_sha256 ?? undefined);
     setSkillName(skill.name);
     setSkillDescription(skill.description ?? "");
     setInstructions(skill.instructions ?? "");
@@ -114,7 +150,7 @@ export function TenantAdminSkillsPage() {
     setStrategy(skill.strategy ?? "default");
     setArchiveFile(null);
     setImportError(null);
-    setOpen(true);
+    changeArchiveOpen(true);
   };
 
   const parseBoundTools = () =>
@@ -148,6 +184,13 @@ export function TenantAdminSkillsPage() {
   };
 
   const save = async () => {
+    if (editNeedsInspection || !importContext.canShare || !importContext.isCurrent()) return;
+    const importing = dialogMode === "import" && !editingName;
+    if (importing && (!importContext.canShare || !importContext.isCurrent() || archiveBusy.current)) return;
+    const identity = importContext.key;
+    const generation = archiveGeneration.current;
+    const current = () => archiveGeneration.current === generation && importIdentity.current === identity && importContext.isCurrent();
+    if (importing) archiveBusy.current = true;
     try {
       setImportError(null);
       if (dialogMode === "import" && !editingName) {
@@ -156,6 +199,7 @@ export function TenantAdminSkillsPage() {
           return;
         }
         await importTenantSkill(archiveFile);
+        if (!current()) return;
         toast.success(t.tenantAdmin.skills.importSuccess);
         setOpen(false);
         return;
@@ -173,12 +217,15 @@ export function TenantAdminSkillsPage() {
       if (editingName) {
         await patchTenantSkill({
           skillName: editingName,
+          expected_resource_id: editingResourceId,
+          expected_file_sha256: editingFileSha,
           description: skillDescription.trim(),
           instructions: instructions.trim() || null,
           bound_tools: parseBoundTools(),
           prompt_template: promptTemplate || null,
           strategy,
         });
+        if (!current()) return;
         toast.success(t.tenantAdmin.skills.updateSuccess);
       } else {
         await createTenantSkill({
@@ -190,15 +237,21 @@ export function TenantAdminSkillsPage() {
           prompt_template: promptTemplate || null,
           strategy,
         });
+        if (!current()) return;
         toast.success(t.tenantAdmin.skills.createSuccess);
       }
       setOpen(false);
     } catch (err) {
-      const message = err instanceof Error ? err.message : t.tenantAdmin.skills.importError;
+      if (!current()) return;
+      if (!editingName && err instanceof SkillMutationError) setCreationOperation(err.operationId);
+      if (!importing && (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409)))) setEditNeedsInspection(true);
+      const message = importing ? skillImportErrorMessage(err, locale === "zh-CN") : skillMutationMessage(err, locale === "zh-CN");
       if (dialogMode === "import" && !editingName) {
         setImportError(message);
       }
       toast.error(message);
+    } finally {
+      if (importing && current()) archiveBusy.current = false;
     }
   };
 
@@ -213,6 +266,14 @@ export function TenantAdminSkillsPage() {
         </div>
       </div>
 
+      <details onToggle={event => setOperationsOpen(event.currentTarget.open)}>
+        <summary>{locale === "zh-CN" ? "共享 Skill 导入记录与恢复" : "Shared Skill import records and recovery"}</summary>
+        {operationsOpen && <SkillImportOperations scope="tenant" locale={locale === "zh-CN" ? "zh" : "en"} />}
+      </details>
+      {enablementNeedsInspection && <div role="alert" className="flex items-center gap-3 text-sm">
+        <span>{locale === "zh-CN" ? "启停结果需要重新检查，请勿重复操作。" : "Inspect enablement before another change."}</span>
+        <Button variant="outline" onClick={() => { const owner = importContext.key; void inspectEnablement().catch(error => { if (importIdentity.current === owner && importContext.isCurrent()) toast.error(skillMutationMessage(error, locale === "zh-CN")); }); }}>{locale === "zh-CN" ? "重新检查启停状态" : "Inspect enablement"}</Button>
+      </div>}
       <Tabs defaultValue="builtin" className="space-y-2">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-1 items-center gap-3">
@@ -257,7 +318,8 @@ export function TenantAdminSkillsPage() {
             skills={filteredBuiltInSkills}
             isLoading={isLoading}
             error={error}
-            onToggle={(skillName, enabled) => void updateTenantSkill({ skillName, enabled })}
+            onToggle={(skill, enabled) => void toggleSkill(skill, enabled)}
+            canToggleResource={canToggleResource}
           />
         </TabsContent>
 
@@ -269,19 +331,15 @@ export function TenantAdminSkillsPage() {
             isLoading={isLoading}
             error={error}
             allowEditing
-            onToggle={(skillName, enabled) => void updateTenantSkill({ skillName, enabled })}
+            onToggle={(skill, enabled) => void toggleSkill(skill, enabled)}
+            canToggleResource={canToggleResource}
             onEdit={openEdit}
-            onDelete={(skillName) => {
-              if (!confirm(`${t.tenantAdmin.skills.deleteConfirm} ${skillName}?`)) return;
-              void deleteTenantSkill(skillName)
-                .then(() => toast.success(t.tenantAdmin.skills.deleteSuccess))
-                .catch((err) => toast.error(err instanceof Error ? err.message : t.tenantAdmin.skills.importError));
-            }}
+
           />
         </TabsContent>
       </Tabs>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={changeArchiveOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>{editingName ? t.tenantAdmin.skills.editTitle : dialogMode === "import" ? t.tenantAdmin.skills.importTitle : t.tenantAdmin.skills.createTitle}</DialogTitle>
@@ -441,13 +499,15 @@ export function TenantAdminSkillsPage() {
           </Tabs>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+{editNeedsInspection && !editingName && <SkillCreationInspection scope="tenant" operationId={creationOperation} locale={locale === "zh-CN" ? "zh" : "en"} />}
+{editNeedsInspection && editingName && <Button variant="outline" onClick={() => { void queryClient.invalidateQueries({queryKey: ["availableSkills"]}); changeArchiveOpen(false); setEditNeedsInspection(false); }}>重新检查资源列表</Button>}
+            <Button type="button" variant="outline" onClick={() => changeArchiveOpen(false)}>
               {t.common.cancel}
             </Button>
             <Button
               type="button"
               onClick={() => void save()}
-              disabled={isImportingSkill || (dialogMode === "import" && !editingName && !archiveFile)}
+              disabled={editNeedsInspection || isImportingSkill || (dialogMode === "import" && !editingName && !archiveFile)}
             >
               {dialogMode === "import" && !editingName
                 ? isImportingSkill
@@ -473,8 +533,8 @@ function SkillSection({
   error,
   allowEditing = false,
   onToggle,
+  canToggleResource,
   onEdit,
-  onDelete,
 }: {
   title: string;
   description: string;
@@ -482,11 +542,11 @@ function SkillSection({
   isLoading: boolean;
   error: Error | null;
   allowEditing?: boolean;
-  onToggle: (skillName: string, enabled: boolean) => void;
+  onToggle: (skill: AvailableSkillResponse, enabled: boolean) => void;
+  canToggleResource?: (id?: string | null) => boolean;
   onEdit?: (skill: AvailableSkillResponse) => void;
-  onDelete?: (skillName: string) => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const rows = skills.length;
   const hasOperations = allowEditing;
 
@@ -535,15 +595,15 @@ function SkillSection({
                 const strategyText = skill.strategy ?? "default";
 
                 return (
-                  <tr key={skill.name} className="transition-colors hover:bg-muted/30">
+                  <tr key={skill.resource_id ?? `${skill.scope}:${skill.name}`} className="transition-colors hover:bg-muted/30">
                     <td className="px-4 py-3 align-top">
                       <a
-                        href={`/workspace/skills/${skill.name}`}
+                        href={`/workspace/skills/${skill.name}?scope=${skill.scope}&resource_id=${encodeURIComponent(skill.resource_id ?? "")}`}
                         className="truncate font-medium text-foreground hover:text-primary transition-colors"
                         title={skill.name}
                         onClick={(e) => {
                           e.preventDefault();
-                          window.open(`/workspace/skills/${skill.name}`, "_blank");
+                          window.open(`/workspace/skills/${skill.name}?scope=${skill.scope}&resource_id=${encodeURIComponent(skill.resource_id ?? "")}`, "_blank");
                         }}
                       >
                         {skill.name}
@@ -567,8 +627,8 @@ function SkillSection({
                     <td className="px-4 py-3 align-top">
                       <Switch
                         checked={skill.enabled}
-                        disabled={!canManage}
-                        onCheckedChange={(checked) => onToggle(skill.name, checked)}
+                        disabled={!canManage || !skill.resource_id || (canToggleResource && !canToggleResource(skill.resource_id))}
+                        onCheckedChange={(checked) => onToggle(skill, checked)}
                       />
                     </td>
                     {hasOperations && (
@@ -578,16 +638,7 @@ function SkillSection({
                             <Pencil className="mr-1.5 h-3.5 w-3.5" />
                             {t.tenantAdmin.skills.edit}
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive hover:bg-destructive/10"
-                            disabled={!canManage}
-                            aria-label={`${t.tenantAdmin.skills.delete} ${skill.name}`}
-                            onClick={() => onDelete?.(skill.name)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <SkillDeleteControl name={skill.name} resourceId={skill.resource_id} scope="tenant" locale={locale === "zh-CN" ? "zh" : "en"} disabled={!canManage} />
                         </div>
                       </td>
                     )}

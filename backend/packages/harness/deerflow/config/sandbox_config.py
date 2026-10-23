@@ -58,4 +58,8 @@ class SandboxConfig(BaseModel):
         description="Environment variables to inject into the sandbox container. Values starting with $ will be resolved from host environment variables.",
     )
 
+    provisioner_url: str | None = Field(default=None, description="Authenticated remote command provisioner; HTTPS required except loopback")
+    provisioner_token_env: str | None = Field(default=None, description="Environment variable containing the provisioner service credential")
+    provisioner_shared_root: str | None = Field(default=None, description="Absolute backend data root shared with the configured provisioner node")
+
     model_config = ConfigDict(extra="allow")

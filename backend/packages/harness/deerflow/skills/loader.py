@@ -21,20 +21,20 @@ def get_skills_root_path() -> Path:
     return skills_dir
 
 
-def _load_public_skills(skills_path: Path) -> list[Skill]:
+def _load_public_skills(skills_path: Path, *, secure: bool = False) -> list[Skill]:
     skills: list[Skill] = []
     category_path = skills_path / "public"
     if not category_path.exists() or not category_path.is_dir():
         return skills
 
-    for current_root, dir_names, file_names in os.walk(category_path, followlinks=True):
+    for current_root, dir_names, file_names in os.walk(category_path, followlinks=not secure):
         dir_names[:] = sorted(name for name in dir_names if not name.startswith("."))
         if "SKILL.md" not in file_names:
             continue
 
         skill_file = Path(current_root) / "SKILL.md"
         relative_path = skill_file.parent.relative_to(category_path)
-        skill = parse_skill_file(skill_file, category="public", relative_path=relative_path)
+        skill = parse_skill_file(skill_file, category="public", relative_path=relative_path, secure=secure)
         if skill:
             skills.append(skill)
     return skills
@@ -122,6 +122,11 @@ def load_skills(skills_path: Path | None = None, use_config: bool = True, enable
                 continue
 
             existing = skills_by_name.get(name)
+            if existing is not None and existing.category == "public" and category != "public":
+                # Unqualified legacy names retain the public default. A custom
+                # same-name registration is a different resource, not a toggle.
+                continue
+
             if existing is not None:
                 existing.enabled = bool(record.get("enabled", True))
                 continue

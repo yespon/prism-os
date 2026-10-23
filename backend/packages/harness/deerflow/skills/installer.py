@@ -5,12 +5,12 @@ Both Gateway and Client delegate to these functions.
 """
 
 import logging
-import shutil
 import stat
 import tempfile
 import zipfile
 from pathlib import Path
 
+from deerflow.skills.install_receipts import PreparedSkill
 from deerflow.skills.loader import get_skills_root_path
 from deerflow.skills.validation import _validate_skill_frontmatter
 
@@ -107,13 +107,13 @@ def safe_extract_skill_archive(
                 dst.write(chunk)
 
 
-def install_skill_from_archive(
+def prepare_skill_installation_from_archive(
     zip_path: str | Path,
     *,
     skills_root: Path | None = None,
     target_relative_path: str | Path | None = None,
-) -> dict:
-    """Install a skill from a .skill or .zip archive.
+) -> PreparedSkill:
+    """Prepare a skill from a .skill or .zip archive.
 
     Args:
         zip_path: Path to the archive file.
@@ -142,8 +142,6 @@ def install_skill_from_archive(
 
     if skills_root is None:
         skills_root = get_skills_root_path()
-    custom_dir = skills_root / "custom"
-    custom_dir.mkdir(parents=True, exist_ok=True)
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
@@ -166,24 +164,21 @@ def install_skill_from_archive(
         if not skill_name or "/" in skill_name or "\\" in skill_name or ".." in skill_name:
             raise ValueError(f"Invalid skill name: {skill_name}")
 
-        relative_base = Path(target_relative_path) if target_relative_path is not None else Path()
-        if relative_base.is_absolute() or ".." in relative_base.parts:
-            raise ValueError("Skill install target must be a safe relative path")
+        try:
+            return PreparedSkill(skills_root, target_relative_path, skill_name, skill_dir, path)
+        except FileExistsError:
+            raise SkillAlreadyExistsError(f"Skill '{skill_name}' already exists") from None
 
-        relative_target = relative_base / skill_name
-        target = custom_dir / relative_target
-        if target.exists():
-            raise SkillAlreadyExistsError(f"Skill '{skill_name}' already exists")
 
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(skill_dir, target)
-        logger.info("Skill %r installed to %s", skill_name, target)
-
-    return {
-        "success": True,
-        "skill_name": skill_name,
-        "category": "custom",
-        "relative_path": relative_target.as_posix(),
-        "install_dir": str(target),
-        "message": f"Skill '{skill_name}' installed successfully",
-    }
+def install_skill_from_archive(
+    zip_path: str | Path,
+    *,
+    skills_root: Path | None = None,
+    target_relative_path: str | Path | None = None,
+) -> dict:
+    """Install complete files by exclusive publication; retains the original contract."""
+    with prepare_skill_installation_from_archive(zip_path, skills_root=skills_root, target_relative_path=target_relative_path) as prepared:
+        try:
+            return prepared.publish()
+        except FileExistsError:
+            raise SkillAlreadyExistsError(f"Skill '{prepared.result['skill_name']}' already exists") from None

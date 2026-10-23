@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-external-worker-compat/resolve_online.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T22:41:40.375860+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T22:41:44.449133+00:00"
+}

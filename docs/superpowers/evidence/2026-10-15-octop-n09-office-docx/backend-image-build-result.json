@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "-f",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/Dockerfile",
+    "-t",
+    "prismos-office-docx:test",
+    "/root/.codex/worktrees/octop-integration/prism-os"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T14:55:24.445561+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T14:55:49.587070+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-actor-image-accepted-37d5aec54ec6",
+    "sha256:5b59be8641e7778d48edfe0fa732b6ead846a79f3d4d707659998172f4732750",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_runtime_actor_status.py tests/test_file_access_http.py tests/test_diagnosis_delivery.py tests/test_langgraph_proxy.py -q -k \"not account_withdrawal_stops_actual_scoped_command\""
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T09:52:18.161955+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T09:55:01.171497+00:00"
+}

@@ -1,6 +1,7 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import langchain_mcp_adapters.client  # noqa: F401  (resolve lazy submodule for patch targets)
 import pytest
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
@@ -29,7 +30,8 @@ def test_mcp_tool_sync_wrapper_generation():
     # Use AsyncMock for get_tools as it's awaited (Fix for Comment 5)
     mock_client_instance.get_tools = AsyncMock(return_value=[mock_tool])
 
-    with patch("langchain_mcp_adapters.client.MultiServerMCPClient", return_value=mock_client_instance), \
+    with patch("deerflow.runtime.get_mcp_tool_authorizer", return_value=None), \
+         patch("langchain_mcp_adapters.client.MultiServerMCPClient", return_value=mock_client_instance), \
          patch("deerflow.mcp.tools.get_current_user_id", return_value="test-user"), \
          patch("deerflow.mcp.tools.get_current_tenant_id", return_value="test-tenant"), \
          patch("deerflow.mcp.tools.load_user_config_payload", return_value=({}, {"mcpServers": {"test-server": {"enabled": True, "transport": "stdio", "command": "echo"}}})), \

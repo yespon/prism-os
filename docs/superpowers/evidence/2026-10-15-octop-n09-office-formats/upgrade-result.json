@@ -1,0 +1,31 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_SCOPED_TEST_IMAGE=sha256:6b8cc19e343d8b3b9227a1b4b8fdb76588a665426bb7716d76c98af83e22c262",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-office-formats/upgrade.json",
+    "--test-file",
+    "tests/test_office_docx.py",
+    "--test-file",
+    "tests/test_office_xlsx.py",
+    "--test-file",
+    "tests/test_office_formats.py",
+    "--test-file",
+    "tests/test_file_access_http.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T16:00:22.492897+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T16:05:17.452175+00:00"
+}

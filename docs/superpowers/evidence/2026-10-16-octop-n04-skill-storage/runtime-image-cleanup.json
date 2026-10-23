@@ -1,0 +1,10 @@
+{
+  "removed": true,
+  "image": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1",
+  "readonly_host_inputs": [
+    "scripts/octop_wsl_test_env.py",
+    "docker/n04-test/ticket_receiver.py"
+  ],
+  "network": "none",
+  "default_privileges": true
+}

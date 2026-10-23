@@ -1,0 +1,9 @@
+..................                                                       [100%]
+=============================== warnings summary ===============================
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_disables_thinking_when_model_does_not_support_it
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_uses_tenant_allowlist_default
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/agents/memory/updater.py:59: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "lastUpdated": datetime.utcnow().isoformat() + "Z",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+18 passed, 2 warnings in 1.93s

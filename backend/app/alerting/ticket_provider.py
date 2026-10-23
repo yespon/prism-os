@@ -6,11 +6,14 @@ Supports:
 """
 
 import logging
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any
 
 import httpx
 
+from app.alerting.ticket_http_privacy import private_ticket_http
+from app.alerting.ticket_secrets import resolve_ticket_material
 from app.models.alerting import Incident
 
 logger = logging.getLogger(__name__)
@@ -27,6 +30,10 @@ async def create_ticket(
     incident: Incident,
     ticket_config: dict[str, Any],
     signals_data: list[dict] | None = None,
+    *,
+    idempotency_key: str | None = None,
+    source_id: str | None = None,
+    before_send: Callable[[], Awaitable[None]] | None = None,
 ) -> TicketResult:
     """Create an external ticket for an incident.
 
@@ -48,42 +55,55 @@ async def create_ticket(
     provider = ticket_config.get("provider", "webhook")
 
     if provider == "webhook":
-        return await _create_webhook_ticket(incident, ticket_config, signals_data)
+        return await _create_webhook_ticket(incident, ticket_config, signals_data, idempotency_key=idempotency_key, source_id=source_id, before_send=before_send)
     else:
         raise ValueError(f"Unsupported ticket provider: {provider}")
+
+
+def render_ticket_payload(
+    incident: Incident,
+    ticket_config: dict[str, Any],
+    signals_data: list[dict] | None = None,
+) -> dict[str, Any]:
+    template = ticket_config.get("template")
+    return (
+        _render_template(template, incident, signals_data)
+        if template else _default_ticket_payload(incident, signals_data)
+    )
 
 
 async def _create_webhook_ticket(
     incident: Incident,
     ticket_config: dict[str, Any],
     signals_data: list[dict] | None = None,
+    *,
+    idempotency_key: str | None = None,
+    source_id: str | None = None,
+    before_send: Callable[[], Awaitable[None]] | None = None,
 ) -> TicketResult:
     """Create a ticket via generic webhook (POST JSON)."""
-    webhook_url = ticket_config.get("webhook_url", "")
-    if not webhook_url:
-        raise ValueError("ticket.webhook_url is required for webhook provider")
-
-    headers = ticket_config.get("headers", {})
-    template = ticket_config.get("template")
-
-    if template:
-        # Use the user-provided template with variable substitution
-        payload = _render_template(template, incident, signals_data)
-    else:
-        # Default payload format
-        payload = _default_ticket_payload(incident, signals_data)
-
+    payload = render_ticket_payload(incident, ticket_config, signals_data)
+    material = None
     async with httpx.AsyncClient(timeout=30) as client:
+        if before_send is not None:
+            await before_send()
+        # Resolve after client setup and the last policy/identity recheck.
+        material = await resolve_ticket_material(incident.tenant_id, source_id, ticket_config)
+        webhook_url = material.webhook_url if material else ticket_config.get("webhook_url", "")
+        if not webhook_url:
+            raise ValueError("ticket.webhook_url is required for webhook provider")
+        headers = {"Content-Type": "application/json", **(material.headers if material else ticket_config.get("headers", {}))}
+        if idempotency_key is not None:
+            headers = {name: value for name, value in headers.items() if name.lower() != "idempotency-key"}
+            headers["Idempotency-Key"] = idempotency_key
         try:
-            response = await client.post(
-                webhook_url,
-                json=payload,
-                headers={"Content-Type": "application/json", **headers},
-            )
-            response.raise_for_status()
-        except httpx.HTTPError as e:
-            logger.error("ticket: webhook request failed: %s", e)
-            raise RuntimeError(f"Ticket creation failed: {e}") from e
+            with private_ticket_http():
+                response = await client.post(webhook_url, json=payload, headers=headers)
+                response.raise_for_status()
+        except httpx.HTTPError as exc:
+            logger.error("ticket: webhook request failed (%s)", type(exc).__name__)
+            # HTTP errors contain the credential-bearing request URL.
+            raise RuntimeError("Ticket creation failed") from None
 
     # Try to extract ticket_id and URL from response
     ticket_id = ""
@@ -96,12 +116,31 @@ async def _create_webhook_ticket(
         # If response is not JSON or doesn't have expected fields, use empty strings
         pass
 
+    if material is not None:
+        # A provider may echo request credentials in returned IDs or URLs.
+        # Discard such values before they reach incident/audit persistence.
+        from urllib.parse import parse_qsl, unquote, urlsplit
+
+        url = urlsplit(material.webhook_url)
+        protected = [material.webhook_url, unquote(url.path)]
+        protected.extend(part for part in unquote(url.path).split("/") if part)
+        protected.extend(value for _, value in parse_qsl(url.query))
+        for name, value in material.headers.items():
+            protected.append(value)
+            if name.lower() in {"authorization", "proxy-authorization"}:
+                protected.append(value.split(" ", 1)[-1])
+        protected = [value for value in protected if value and value != "/"]
+        if any(value in unquote(ticket_id) for value in protected):
+            ticket_id = ""
+        if any(value in unquote(ticket_url) for value in protected):
+            ticket_url = ""
+
     if not ticket_id:
         ticket_id = f"inc-{incident.incident_key}"
 
     logger.info(
-        "ticket: created for incident=%s via webhook: ticket_id=%s url=%s",
-        incident.incident_key, ticket_id, ticket_url,
+        "ticket: created for incident=%s via webhook: ticket_id=%s",
+        incident.incident_key, ticket_id,
     )
     return TicketResult(ticket_id=ticket_id, ticket_url=ticket_url or None, provider="webhook")
 
@@ -172,3 +211,23 @@ def _render_template(
         return value
 
     return _substitute(template)
+
+
+async def create_ticket_webhook(*, incident: Incident, session) -> dict | None:
+    """Compatibility entry for rule auto_ticket; caller owns the transaction."""
+    from uuid import uuid4
+
+    from app.alerting.governed_ticket import resolve_ticket_target
+    from app.models.alerting import IncidentAction
+
+    if incident.ticket_id:
+        return None
+    target = await resolve_ticket_target(incident.tenant_id, incident.id, session=session)
+    result = await create_ticket(incident, target.config, target.signals, source_id=target.source_id)
+    incident.ticket_id, incident.ticket_url, incident.ticket_provider = result.ticket_id, result.ticket_url, result.provider
+    session.add(incident)
+    session.add(IncidentAction(id=str(uuid4()), tenant_id=incident.tenant_id, incident_id=incident.id,
+                              actor_id="system", action_type="ticket_created", action_payload={
+                                  "ticket_id": result.ticket_id, "ticket_url": result.ticket_url,
+                                  "provider": result.provider, "origin": "auto_ticket"}))
+    return {"ticket_id": result.ticket_id, "ticket_url": result.ticket_url, "provider": result.provider}

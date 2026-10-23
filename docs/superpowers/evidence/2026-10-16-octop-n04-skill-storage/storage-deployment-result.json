@@ -1,0 +1,12 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_env.py",
+    "skills-storage"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T05:25:04.139332+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T05:25:25.776121+00:00"
+}

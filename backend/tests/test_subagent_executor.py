@@ -31,11 +31,11 @@ _MOCKED_MODULE_NAMES = [
 ]
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def _setup_executor_classes():
     """Set up mocked modules and import real executor classes.
 
-    This fixture runs once per session and yields the executor classes.
+    This fixture runs once per module and yields the executor classes.
     It handles module cleanup to avoid affecting other test files.
     """
     # Save original modules

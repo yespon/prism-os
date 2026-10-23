@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-10T15:15:04Z",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/octop-integration",
+  "baseline_commit": "f1e7b6fab5881a1b36bfceca5fdc0fcd794e06ea",
+  "status": "N06 complete local validation; N07 and N04 target acceptance pending",
+  "scope": "bounded CustomAgent creation/edit/reopen and chat welcome; full Octop parity not claimed",
+  "source": {
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "original_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+    "retained_archive_sha256": "5af171afd215f4b8199d7b5644218d25353c3275617fc336acdf54a04e582cdf",
+    "imported_files": 902,
+    "added_data_files": 53,
+    "main_exclusions": 186,
+    "external_exclusions": 51,
+    "source_manifest_sha256": "d7fdd49296758eecff9577e63bce5e72347b20f60c3d00dcce0c2b189891e8c0",
+    "package_provenance_sha256": "e0385e5a62ab1e9c14b30260d47e178768170266afa9b9629880bdbed9893f44",
+    "git_byte_preservation": "scoped .gitattributes for raw imports; staged blobs verified against original digests"
+  },
+  "dependencies": {
+    "uv": "0.8.17",
+    "python": "3.12",
+    "node": "24.11.1",
+    "pnpm": "10.26.2",
+    "backend_uv_lock_sha256": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend_pnpm_lock_sha256": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+    "external_runtime_installed": false
+  },
+  "checks": {
+    "backend_full": {
+      "command": "uv run --no-sync pytest tests -q",
+      "exit_code": 0,
+      "result": {
+        "passed": 1545,
+        "skipped": 18,
+        "warnings": 30
+      },
+      "log": "logs/backend_full.log",
+      "log_sha256": "e4f3d8852654bc73d3b0d7e3f4ef845aee601939368a2e61664b594a6a7cf6f4"
+    },
+    "frontend_full": {
+      "command": "pnpm exec vitest run --maxWorkers=2",
+      "exit_code": 0,
+      "result": {
+        "files": 42,
+        "passed": 114
+      },
+      "log": "logs/frontend_full.log",
+      "log_sha256": "9eb59f6e07227c31c5ac6509fd4c89a3541b83f1383365441bab0c0ee42d3a10"
+    },
+    "migration_build": {
+      "command": "make octop-build UV=/root/.local/bin/uv",
+      "exit_code": 0,
+      "result": {
+        "backend_passed": 182,
+        "frontend_files": 3,
+        "frontend_passed": 23,
+        "typecheck": true,
+        "gateway": true,
+        "wheel_sdist": true,
+        "next_production_build": true
+      },
+      "log": "logs/migration_build.log",
+      "log_sha256": "fa3cbdc163bf5f589dd5bab5358e4c785a0829c98847770064ddf1676ebaa1a3"
+    },
+    "final_source_tests": {
+      "command": "uv run --no-sync pytest tests/test_octop_inventory.py tests/test_octop_source_curation.py tests/test_octop_catalog_integrity.py -q",
+      "exit_code": 0,
+      "result": {
+        "passed": 25
+      },
+      "log": "logs/final_source_tests.log",
+      "log_sha256": "d7f90c72c4ccf5c86d00ef8354b2c4890c31ca5d3fb06da9ee232cf6a379da04"
+    },
+    "source": {
+      "command": "python3 scripts/octop_sync.py verify",
+      "exit_code": 0,
+      "result": {
+        "verified": true,
+        "imported_files": 902
+      },
+      "log": "logs/source.log",
+      "log_sha256": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03"
+    },
+    "inventory": {
+      "command": "backend/.venv/bin/python scripts/octop_inventory.py verify",
+      "exit_code": 0,
+      "result": {
+        "verified": true
+      },
+      "log": "logs/inventory.log",
+      "log_sha256": "528b0949e856809fa6a7d57313fa0b24c280be4dac8cc1240d26fe32952a64f8"
+    },
+    "typecheck": {
+      "command": "pnpm exec tsc --noEmit",
+      "exit_code": 0,
+      "result": {
+        "passed": true
+      },
+      "log": "logs/typecheck.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "gateway": {
+      "command": "uv run --no-sync python ../scripts/octop_gateway_smoke.py",
+      "exit_code": 0,
+      "result": {
+        "passed": true,
+        "database": "temporary SQLite",
+        "auth": "real Better Auth session/tenant",
+        "model_execution": false
+      },
+      "log": "logs/gateway.log",
+      "log_sha256": "091065e7ba663e55ca739dd247b578efe8b4734558c0d1db003f85c122198641"
+    },
+    "upgrade": {
+      "command": "uv run --no-sync python ../scripts/octop_upgrade_probe.py --previous-archive /tmp/prismos-upstreams/octop-b5.tar.gz --previous-revision e473dd3c4a4741618ffde1a42a3492341a189e8e --previous-release b5 --output ../docs/superpowers/evidence/2026-10-10-octop-n06-presentation/upgrade-probe.json",
+      "exit_code": 0,
+      "result": {
+        "versions": [
+          "b5",
+          "b6",
+          "b5"
+        ],
+        "passed_each": 53
+      },
+      "log": "logs/upgrade.log",
+      "log_sha256": "6abce1404cbd7eb502c72ce96d51a4b97b2bc33002869930063f6e358f3c41c2"
+    },
+    "ruff": {
+      "command": "backend cwd: uv run --no-sync ruff check N06 adapters/tests and Octop scripts",
+      "exit_code": 0,
+      "result": {
+        "passed": true
+      },
+      "log": "logs/ruff.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "brand": {
+      "command": "python3 scripts/check_brand_identity.py",
+      "exit_code": 0,
+      "result": {
+        "passed": true
+      },
+      "log": "logs/brand.log",
+      "log_sha256": "dbd164c1be1446abbd4f55b8762594b6c7ee18d004c1ea3d425b17900429a084"
+    },
+    "diff": {
+      "command": "git diff --cached --check",
+      "exit_code": 0,
+      "result": {
+        "passed": true
+      },
+      "log": "logs/diff.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "code_sha256s": {
+    ".github/workflows/octop-integration.yml": "525df7fca7f8061198e26f9afb5293f144d98a947a29c1baff9923d2b0be87b5",
+    "Makefile": "02685bf29b112ab8ae1c7b27edb189b8acd34533c44f1607efbbdd430cac26e3",
+    "backend/app/gateway/routers/agent_catalog.py": "9c06f09d31ccd25f2778639c84beba04245247a9672cfe7218c9559a0b2685ea",
+    "backend/app/gateway/routers/agents.py": "880670787b022d463513f35866364f46e0eb4f80026c566205641fa6b0e80cbb",
+    "backend/app/integrations/octop/agents.py": "91c69783c0e8e61a79d31d003a33bf08b795e261f99ec76a59a879cf8173d7b3",
+    "backend/packages/octop-capabilities/src/prismos_octop/catalog.py": "fad319a9ef40cde937301bd854df5db4b62504bc79d03584a1820790e76d5f84",
+    "backend/tests/test_octop_inventory.py": "2fbac8ab041fc22dd7072178df36713b48bda8cbc4ae5c0d4aaa17f2cd31116a",
+    "backend/tests/test_octop_source_curation.py": "33b72282c1deecdac458b4723bdc210245891a7741a62956d60408c47d02e2ba",
+    "frontend/src/app/workspace/chats/[thread_id]/chat-thread-content.tsx": "372afc4162ec4357c1cd36f83bff083b92451e08360f10608ea69aa2045b5322",
+    "frontend/src/components/workspace/agent-welcome.tsx": "91c5ab59be50e8aa67d36929840cddea0f898d08c58bfdce44ecec3bef942dad",
+    "frontend/src/components/workspace/agents/agent-card.tsx": "6b132db2fb65f7512e20e65316f0cadd23e81ebc6b28fbb2cab27affbbd88a85",
+    "frontend/src/components/workspace/agents/agent-template-picker.tsx": "b718206549fa9dd214de4af0ac1f8170f8e13252da8015db14b0f9b9f5c90ff8",
+    "frontend/src/components/workspace/agents/create-agent-dialog.tsx": "6dc808e2439d901ff708348b6610c7529e3dbbd49deb514255386b3a4d0b5e4c",
+    "frontend/src/components/workspace/agents/edit-agent-dialog.tsx": "0add94745ceb3c140d365513731a050fc31c3c4087e4316001d4e3873bf49cfc",
+    "frontend/src/core/agents/catalog.test.ts": "f62a0b277a91e7f51db88684c186599b7d1b05475903a4d1a7744a3403f2f1e3",
+    "frontend/src/core/agents/catalog.ts": "58d86910772aa7e3ab45e727645d9548ba6cb3d8b3bfdc1148e0b935409f45aa",
+    "frontend/src/core/agents/hooks.ts": "f6c894c73e1c5cb1e74e03313f68531a8fd4321a98c2df64f8da2329412b5702",
+    "frontend/src/core/agents/types.ts": "e75e09c9ca1198e61f38b4ccfb4b5c8771f9d10d749e4c8d4c370a5645c8c34c",
+    "scripts/octop_gateway_smoke.py": "b9871fed431763554e59dff5ae9f8ff24c0187e42dd868dfa2ce0ebdd9a764a3",
+    "scripts/octop_inventory.py": "6a804eb988b3da65e9938a99e58a53a1735f001b710973299ac11b3d5bf340af",
+    "scripts/octop_sync.py": "4c9c8245982cdcd63a493def33ade01e17c725234c2f65c5a6fcc91780d1821c",
+    "scripts/octop_upgrade_probe.py": "a8c8568d76d5b095b8f2ba329eb78a5f4e8e97156397f836fc1c52d50efbad72",
+    "scripts/octop_wheel_verify.py": "99e9e8ab5c272115a90f95084ed7691575859c11a453a81414462ce3bd77c190",
+    "backend/packages/octop-capabilities/src/prismos_octop/presentation.py": "bc183cccd99d019bb4b144b7a87a0eb9f5bb7210c1cbd9430f8b091e21b410ae",
+    "backend/tests/test_octop_presentation.py": "2afa91b22b725200474c1797fab46a9a97549fe1f8f005d7cd74ec9cb4f28b7b",
+    "frontend/src/components/workspace/agents/agent-avatar.tsx": "48a1712aae198b0a208f8c2a4fd154a36a4fae332f0dc2e2469d8c0bcbf4569b",
+    "frontend/src/components/workspace/agents/agent-avatar.test.tsx": "fca12666bb9248a535aa4d80cc4ebebbb69770100ea98605423838f0f687dabe",
+    "frontend/src/components/workspace/agents/agent-presentation-editor.tsx": "9b1169962b4d60bcb886f4ff596ea345c009cdd6d104c19001898d26903a7201",
+    "frontend/src/components/workspace/agents/agent-presentation.test.tsx": "29a999cd9f034033a4a60ebb831b5ead0719718d24f680823921ca6295f53a1c",
+    "frontend/src/core/agents/draft-scope.ts": "d7258a4928bcfe74d178c50321fb5525b4e82d14bcfb82757b8594d1c27e629e",
+    ".gitattributes": "7f5f73d71db859c3536f00b004c88b559357a0e9474b1952d666fb0a7f429622"
+  },
+  "artifacts": {
+    "prismos_octop_capabilities-0.1.0-py3-none-any.whl": {
+      "path": "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl",
+      "sha256": "285a902dc80d75a94c0a486c7f6e0283d1effcfd48c7c0a9a2dd84365ea46203",
+      "bytes": 4012161
+    },
+    "prismos_octop_capabilities-0.1.0.tar.gz": {
+      "path": "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz",
+      "sha256": "0a5b4c918e671ed1befaad2903a3fed70715092fb3bb5bb50c34a0c1fde52f11",
+      "bytes": 3269985
+    }
+  },
+  "inventory_sha256s": {
+    "future-ledger.json": "e12f06572cb494dc0846f58c02449f578d734b6931525251e77dcc5cd8ca3ade",
+    "dependencies.json": "fbc3f0b4ba9801d9f54b87e1b4a0c1c60854b30cd23e21ee29b9ffebb6e9e476",
+    "capability-ledger.json": "c6d3a1fbd08ed5b576fc5dd69a91cc621e63fa87bdc9d3a41a721fdf6e518984",
+    "source-index.json": "eee6aaef28b77e4c01b896ca114be12bb318976fdaa831a166f5faac6790118c",
+    "excluded-resources.json": "f1c9a95815ea63b9935925976801f9e8a2120e7d3407cf28819cfe6d5d99dcd3",
+    "coupling-edges.json": "e951979fd359fde986e655e57b294d3a82375c35caae98cb824be7cd90465115",
+    "capability-items.json": "a4222db9a0a47d42ba566c2ec0056b44e1ada7b707575514f4a7a65ec88edf13",
+    "summary.json": "fef582b857bc033467626c81373dcdcbebfcf5b22a64373a84dabd0127c182a2"
+  },
+  "upgrade_probe_sha256": "f9481a0932a5191c9f49f95d1cdebaf1090373ca9415160ee3ce8374699d27c0",
+  "n06_locally_verified_items": 105,
+  "current_capabilities": 42,
+  "future_capabilities": 12,
+  "full_parity": false,
+  "remaining": {
+    "n04_environment": "User selected existing environment; location/config/model/test receiver references still missing",
+    "m1_exited": false,
+    "n08_started": false,
+    "remote_ci_executed": false,
+    "clean_checkout_reproducibility": false,
+    "frontend_node_modules": "linked to original workspace; N07 pending",
+    "upgrade_previous_source": "explicit cached b5 archive; reproducible clean acquisition pending N07",
+    "next_build_warnings": [
+      "workspace root inference under symlinked dependencies",
+      "unexpected next.config.js in NFT trace; full deployment artifact contents pending N07"
+    ],
+    "resource_installation": "not automatic; N09 authorized resource paths pending",
+    "office_resources": "237 exclusions preserved with independent implementation goals"
+  },
+  "completion_local_date": "2026-10-11",
+  "git_blob_sources_sha256": "d4131ed1f85944bed31c2871ee23c4ada6288d08846e126d3dc7e0566a0d135d",
+  "git_source_blobs_verified": 902
+}

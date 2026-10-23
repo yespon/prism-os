@@ -5,6 +5,8 @@ from enum import Enum
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
+import pytest
+
 from deerflow.subagents.config import SubagentConfig
 
 # Use module import so tests can patch the exact symbols referenced inside task_tool().
@@ -122,7 +124,7 @@ def test_task_tool_emits_running_and_completed_events(monkeypatch):
         max_turns=7,
     )
 
-    assert output == "Task Succeeded. Result: all done"
+    assert output == "Task execution completed. Verify the returned outcome and required artifacts before reporting success. Result: all done"
     assert captured["prompt"] == "collect diagnostics"
     assert captured["task_id"] == "tc-123"
     assert captured["executor_kwargs"]["thread_id"] == "thread-1"
@@ -277,7 +279,7 @@ def test_cleanup_called_on_completed(monkeypatch):
         tool_call_id="tc-cleanup-completed",
     )
 
-    assert output == "Task Succeeded. Result: done"
+    assert output == "Task execution completed. Verify the returned outcome and required artifacts before reporting success. Result: done"
     assert cleanup_calls == ["tc-cleanup-completed"]
 
 
@@ -407,3 +409,54 @@ def test_cleanup_not_called_on_polling_safety_timeout(monkeypatch):
     assert output.startswith("Task polling timed out after 0 minutes")
     # cleanup should NOT be called because the task is still RUNNING
     assert cleanup_calls == []
+
+
+@pytest.mark.parametrize("native_snapshot", [False, True])
+def test_task_inherits_selected_native_context_without_forwarding_execution_token(monkeypatch, native_snapshot):
+    runtime = _make_runtime()
+    runtime.context.update({"tenant_id": "tenant-a", "user_id": "user-a", "agent_name": "named", "agent_id": "native-a", "prismos_execution_capability": "ONE_USE_TOKEN", "referenced_attachments": [{"attachment_id": "att-a"}]})
+    captured = {}
+
+    class Executor:
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+
+        def execute_async(self, *args, **kwargs):
+            return "child"
+
+    def selected(*args):
+        captured["skill_args"] = args
+        return "SELECTED_NATIVE_ONLY"
+
+    monkeypatch.setattr("deerflow.runtime.get_skill_prompt_provider", lambda: selected)
+
+    def native(*args, **kwargs):
+        captured["native_args"] = args
+        return SimpleNamespace(skill_section="SELECTED_NATIVE_ONLY", record=SimpleNamespace(tool_groups=["office"]))
+
+    monkeypatch.setattr("deerflow.runtime.get_agent_context_provider", lambda: native if native_snapshot else None)
+    monkeypatch.setattr(task_tool_module, "get_skills_prompt_section", lambda: (_ for _ in ()).throw(AssertionError("Global Skills leaked")))
+    monkeypatch.setattr(task_tool_module, "get_subagent_config", lambda _: _make_subagent_config())
+    monkeypatch.setattr(task_tool_module, "SubagentExecutor", Executor)
+    monkeypatch.setattr(task_tool_module, "SubagentStatus", FakeSubagentStatus)
+    monkeypatch.setattr(task_tool_module, "get_background_task_result", lambda _: _make_result(FakeSubagentStatus.COMPLETED, result="finished"))
+    monkeypatch.setattr(task_tool_module, "get_stream_writer", lambda: lambda _: None)
+    monkeypatch.setattr(task_tool_module, "cleanup_background_task", lambda _: None)
+
+    def available(**kwargs):
+        captured["tool_options"] = kwargs
+        return []
+
+    monkeypatch.setattr("deerflow.tools.get_available_tools", available)
+    task_tool_module.task_tool.func(runtime, "child", "task", "general-purpose", "parent-call")
+    if native_snapshot:
+        assert "skill_args" not in captured
+        assert captured["tool_options"]["groups"] == ["office"]
+        assert captured["native_args"][:4] == ("named", "user-a", "tenant-a", "native-a")
+    else:
+        assert captured["skill_args"] == ("named", "tenant-a", "user-a", None, None, "native-a")
+    assert "SELECTED_NATIVE_ONLY" in captured["config"].system_prompt
+    assert captured["execution_context"]["agent_id"] == "native-a"
+    assert "prismos_execution_capability" not in captured["execution_context"]
+    runtime.context["referenced_attachments"][0]["attachment_id"] = "changed"
+    assert captured["execution_context"]["referenced_attachments"] == [{"attachment_id": "att-a"}]

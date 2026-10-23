@@ -1,0 +1,9 @@
+
+ RUN  v4.1.2 /tmp/prismos-n09g-clean-z89et7xv/src/frontend
+
+
+ Test Files  50 passed (50)
+      Tests  202 passed (202)
+   Start at  04:35:21
+   Duration  53.01s (transform 3.79s, setup 3.60s, import 19.53s, tests 19.75s, environment 51.25s)
+

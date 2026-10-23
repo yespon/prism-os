@@ -1,0 +1,12 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_env.py",
+    "init"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:02:37.596692+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T03:02:37.811032+00:00"
+}

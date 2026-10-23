@@ -1,0 +1,26 @@
+{
+  "complete": false,
+  "configured_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/native-profile/child-task-db09c10e4b",
+  "phases": [
+    "native_login_agent_thread_upload"
+  ],
+  "agent_id": "2b9d82d9-752a-447f-a26d-4e1e0a8b4da7",
+  "agent_name": "child-task-db09c10e4b",
+  "thread_id": "3bc0ec49-ad91-41fc-b5b7-bae979db4398",
+  "stream_received": true,
+  "run_status": "success",
+  "tool_names": [
+    "task"
+  ],
+  "tool_outcomes": [
+    {
+      "name": "task",
+      "status": "success",
+      "content_type": "str"
+    }
+  ],
+  "failure_type": "AssertionError",
+  "failure": "Required actual delegated task/presentation missing"
+}

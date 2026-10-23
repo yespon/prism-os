@@ -1,0 +1,3 @@
+./archives/octop_browser-1.0.0-py3-none-any.whl --hash=sha256:9856d0a3449ff8fb63dc86acb6cf51e492e3d70d77f7f9a35c1802c99566a174
+./archives/octop_gateway-1.0.0-py3-none-any.whl --hash=sha256:bb4aeee8b8bbf683f15d29f8adcff9f5c4963544276c56dca858b01eed78ecaa
+./archives/octop_memory-1.0.0-py3-none-any.whl --hash=sha256:518d1033d679be00e32d91ad80cf2378a6b7086824fa23927577d316b27e72ce

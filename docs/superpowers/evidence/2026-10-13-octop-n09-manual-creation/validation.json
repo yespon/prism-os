@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-13",
+  "baseline": "38c0c75b8d9540acf6dbb6005b7c780951ecf940",
+  "scope": "C2 original manual creation using native publication and original configuration transaction",
+  "local_verified": true,
+  "full_n09_c2_complete": false,
+  "full_n09_complete": false,
+  "n09_c1_service_regression_preserved": true,
+  "n09_c1_all_management_entry_preservation_proven": false,
+  "m1_exit": false,
+  "remote_ci_verified": false,
+  "live_model_tool_webhook_verified": false,
+  "m2_persistent_implementation_started": false,
+  "current_batch_compose_verified": false,
+  "backend_full": {
+    "passed": 1723,
+    "skipped": 18,
+    "warnings": 132
+  },
+  "frontend_full": {
+    "files": 53,
+    "passed": 227,
+    "current_and_independent": true
+  },
+  "octop_build": {
+    "backend": 394,
+    "frontend": 140,
+    "current_make_exit": 0,
+    "independent_make_exit": 0,
+    "logs_verified": true,
+    "real_gateway_auth_manual_creation_inspection_and_explicit_enablement": true,
+    "migration_head": "n8h9i0j1k2l3",
+    "compiler": "webpack"
+  },
+  "fault_acceptance": {
+    "original_creation_faults": 4,
+    "sqlite_cases": 105,
+    "postgres_cases": 105,
+    "manual_creation_matrix_cases": 17,
+    "old_same_name_bindings_replaced": true,
+    "shared_member_public_category_and_no_actor_denied_before_writes": true,
+    "disabled_registration_until_configuration_transaction": true,
+    "current_instance_configuration_initialization": true,
+    "actual_configuration_commit_then_timeout_preserved": true,
+    "configuration_before_commit_rollback_keeps_registered_disabled": true,
+    "real_process_exit_after_publication": true,
+    "recovery_new_registration_disabled": true,
+    "recovery_does_not_repeat_configuration": true,
+    "no_secret_config_values_in_receipt": true,
+    "bad_manual_intent_isolated": true,
+    "target_conflicts_preserved": true,
+    "all_four_creation_views_unknown_inspection_and_late_effect_guards": true
+  },
+  "semantics": {
+    "original_tables_and_encryption_convention": true,
+    "row_and_configuration_lock": true,
+    "initial_configuration_and_requested_enablement_same_db_transaction": true,
+    "distributed_transaction_claimed": false,
+    "automatic_compensation": false,
+    "manual_metadata_native_validated": true,
+    "legacy_flat_metadata_reading_preserved": true
+  },
+  "upgrade": {
+    "host_inputs": 29,
+    "passed_each": 226,
+    "stages": [
+      "0.3.0b5",
+      "b6",
+      "0.3.0b5"
+    ],
+    "rollback_verified": true,
+    "host_changed": false
+  },
+  "candidate": {
+    "code_inputs": 26,
+    "current_independent_index_hashes_match": true,
+    "original_source_members": 902,
+    "excluded_host_metadata_links": [
+      {
+        "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+        "type": "host-only metadata absolute symlink",
+        "sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3"
+      },
+      {
+        "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+        "type": "host-only metadata absolute symlink",
+        "sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db"
+      }
+    ]
+  },
+  "artifacts": {
+    "current": {
+      "trace_files": 50,
+      "references": 15715,
+      "outside_frontend": 0,
+      "sha256": {
+        "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+        "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+        "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+        "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+      },
+      "verified": true
+    },
+    "independent": {
+      "trace_files": 50,
+      "references": 15629,
+      "outside_frontend": 0,
+      "sha256": {
+        "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+        "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+        "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+        "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+      },
+      "verified": true
+    }
+  },
+  "new_schema": false,
+  "new_registry": false,
+  "execution_permission_grants": false,
+  "copy_share_implemented": false,
+  "delete_implemented_in_this_batch": false,
+  "legacy_lifecycle_reaudit": {
+    "passed": 1,
+    "failed": 2,
+    "manual_overwrite_fixed": true,
+    "remaining_delete_faults": 2
+  },
+  "static_checks": {
+    "backend_ruff": true,
+    "frontend_modified_files_eslint_errors": 0,
+    "strict_typecheck": true,
+    "brand": true,
+    "git_diff_check": true
+  },
+  "remaining": [
+    "DELETE current instance and file/unknown import ownership, references, physical reclamation and recovery",
+    "copy/share complete source bytes and target reauthorization",
+    "old Agent name references and revoke/use authorization",
+    "C3-C5 full N09 and original PrismOS roadmap",
+    "N04/M1 and remote CI"
+  ]
+}

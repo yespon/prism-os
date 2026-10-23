@@ -1,0 +1,18 @@
+{
+  "command": [
+    "--cwd",
+    "backend",
+    "--",
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_governed_native_reads.py",
+    "-q",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T16:01:29.304218+00:00",
+  "complete": true,
+  "returncode": null,
+  "launch_error": "Argument order: argparse REMAINDER treated --cwd as executable; no test started"
+}

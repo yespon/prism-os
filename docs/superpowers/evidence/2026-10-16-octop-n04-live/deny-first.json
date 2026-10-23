@@ -1,0 +1,9 @@
+{
+  "case": "deny-first",
+  "verdict": "deny",
+  "complete": false,
+  "actual_model": true,
+  "M1_exited": false,
+  "actual_logins": 3,
+  "canary_restored_off": true
+}

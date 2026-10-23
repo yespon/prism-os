@@ -1,0 +1,134 @@
+{
+  "processed": 659,
+  "collected": 2113,
+  "failed": [
+    {
+      "index": 170,
+      "node": "tests/test_agent_copy_share_boundaries.py::test_copy_to_shared_cannot_inherit_private_resource_but_can_explicitly_choose_target"
+    },
+    {
+      "index": 177,
+      "node": "tests/test_agent_copy_share_boundaries.py::test_actual_discovery_hides_foreign_configuration_and_cached_admin_cannot_share"
+    },
+    {
+      "index": 629,
+      "node": "tests/test_diagnosis_authorization.py::test_configuration_uses_confirming_admin_not_client_or_creator"
+    },
+    {
+      "index": 630,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[member]"
+    },
+    {
+      "index": 631,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[role]"
+    },
+    {
+      "index": 632,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[disabled]"
+    },
+    {
+      "index": 633,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[unshared]"
+    },
+    {
+      "index": 634,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[source]"
+    },
+    {
+      "index": 635,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[binding]"
+    },
+    {
+      "index": 636,
+      "node": "tests/test_diagnosis_authorization.py::test_dispatch_rejects_withdrawn_or_changed_current_authority[revision]"
+    },
+    {
+      "index": 637,
+      "node": "tests/test_diagnosis_authorization.py::test_native_capability_cannot_be_retargeted_and_is_single_use"
+    },
+    {
+      "index": 638,
+      "node": "tests/test_diagnosis_authorization.py::test_capability_rechecks_source_after_issue_and_does_not_consume_rejected_claim"
+    },
+    {
+      "index": 639,
+      "node": "tests/test_diagnosis_authorization.py::test_native_loader_uses_protected_shared_id_despite_personal_same_name"
+    },
+    {
+      "index": 640,
+      "node": "tests/test_diagnosis_authorization.py::test_current_authorization_reloads_cached_records_in_the_same_session"
+    },
+    {
+      "index": 641,
+      "node": "tests/test_diagnosis_authorization.py::test_actual_auto_dispatch_uses_real_admin_and_stops_after_async_authority_changes[None]"
+    },
+    {
+      "index": 642,
+      "node": "tests/test_diagnosis_authorization.py::test_actual_auto_dispatch_uses_real_admin_and_stops_after_async_authority_changes[source]"
+    },
+    {
+      "index": 643,
+      "node": "tests/test_diagnosis_authorization.py::test_actual_auto_dispatch_uses_real_admin_and_stops_after_async_authority_changes[role]"
+    },
+    {
+      "index": 644,
+      "node": "tests/test_diagnosis_authorization.py::test_actual_auto_dispatch_uses_real_admin_and_stops_after_async_authority_changes[severity]"
+    },
+    {
+      "index": 645,
+      "node": "tests/test_diagnosis_authorization.py::test_actual_auto_dispatch_uses_real_admin_and_stops_after_async_authority_changes[revision]"
+    },
+    {
+      "index": 646,
+      "node": "tests/test_diagnosis_authorization.py::test_actual_source_api_rejects_forged_actor_and_retains_authority_on_unrelated_updates"
+    },
+    {
+      "index": 647,
+      "node": "tests/test_diagnosis_authorization.py::test_unrelated_source_update_can_disable_a_source_with_an_unavailable_agent"
+    },
+    {
+      "index": 648,
+      "node": "tests/test_diagnosis_authorization.py::test_original_graph_uses_protected_shared_config_and_soul_not_personal_same_name"
+    },
+    {
+      "index": 649,
+      "node": "tests/test_diagnosis_authorization.py::test_native_capability_cannot_be_used_for_bootstrap_or_forged_selection"
+    },
+    {
+      "index": 650,
+      "node": "tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[agent]"
+    },
+    {
+      "index": 651,
+      "node": "tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[skill]"
+    },
+    {
+      "index": 652,
+      "node": "tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[incident]"
+    },
+    {
+      "index": 653,
+      "node": "tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[disabled_skill]"
+    },
+    {
+      "index": 654,
+      "node": "tests/test_diagnosis_authorization.py::test_auto_diagnosis_keeps_configuration_in_current_graph_and_refreshes_incident[consume_severity]"
+    },
+    {
+      "index": 655,
+      "node": "tests/test_diagnosis_authorization.py::test_source_incident_capability_rechecks_current_incident_and_keeps_action_authority_separate[removed]"
+    },
+    {
+      "index": 656,
+      "node": "tests/test_diagnosis_authorization.py::test_source_incident_capability_rechecks_current_incident_and_keeps_action_authority_separate[tenant]"
+    },
+    {
+      "index": 657,
+      "node": "tests/test_diagnosis_authorization.py::test_source_incident_capability_rechecks_current_incident_and_keeps_action_authority_separate[severity]"
+    },
+    {
+      "index": 658,
+      "node": "tests/test_diagnosis_authorization.py::test_source_incident_capability_rechecks_current_incident_and_keeps_action_authority_separate[retargeted_token]"
+    }
+  ]
+}

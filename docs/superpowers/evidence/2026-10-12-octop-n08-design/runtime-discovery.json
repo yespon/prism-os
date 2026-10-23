@@ -1,0 +1,163 @@
+{
+  "baseline": "fddc307",
+  "discovery": "local pinned public SDK signatures plus N07 actual PostgreSQL checkpointer warnings; no new model run",
+  "versions": {
+    "langgraph-sdk": "0.4.2",
+    "langgraph-api": "0.12.2",
+    "langgraph-checkpoint-postgres": "3.1.2",
+    "langgraph-checkpoint-sqlite": "3.1.1"
+  },
+  "methods": {
+    "RunsClient.create": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "assistant_id",
+        "input",
+        "command",
+        "stream_mode",
+        "stream_subgraphs",
+        "stream_resumable",
+        "metadata",
+        "config",
+        "context",
+        "checkpoint",
+        "checkpoint_id",
+        "checkpoint_during",
+        "interrupt_before",
+        "interrupt_after",
+        "webhook",
+        "multitask_strategy",
+        "if_not_exists",
+        "on_completion",
+        "after_seconds",
+        "langsmith_tracing",
+        "headers",
+        "params",
+        "on_run_created",
+        "durability"
+      ],
+      "run_id_parameter": false
+    },
+    "RunsClient.stream": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "assistant_id",
+        "input",
+        "command",
+        "stream_mode",
+        "stream_subgraphs",
+        "stream_resumable",
+        "metadata",
+        "config",
+        "context",
+        "checkpoint",
+        "checkpoint_id",
+        "checkpoint_during",
+        "interrupt_before",
+        "interrupt_after",
+        "feedback_keys",
+        "on_disconnect",
+        "on_completion",
+        "webhook",
+        "multitask_strategy",
+        "if_not_exists",
+        "after_seconds",
+        "langsmith_tracing",
+        "headers",
+        "params",
+        "on_run_created",
+        "durability",
+        "version"
+      ],
+      "run_id_parameter": false
+    },
+    "RunsClient.wait": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "assistant_id",
+        "input",
+        "command",
+        "metadata",
+        "config",
+        "context",
+        "checkpoint",
+        "checkpoint_id",
+        "checkpoint_during",
+        "interrupt_before",
+        "interrupt_after",
+        "webhook",
+        "on_disconnect",
+        "on_completion",
+        "multitask_strategy",
+        "if_not_exists",
+        "after_seconds",
+        "langsmith_tracing",
+        "raise_error",
+        "headers",
+        "params",
+        "on_run_created",
+        "durability"
+      ],
+      "run_id_parameter": false
+    },
+    "RunsClient.cancel": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "run_id",
+        "wait",
+        "action",
+        "headers",
+        "params"
+      ],
+      "run_id_parameter": true
+    },
+    "RunsClient.get": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "run_id",
+        "headers",
+        "params"
+      ],
+      "run_id_parameter": true
+    },
+    "RunsClient.list": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "limit",
+        "offset",
+        "status",
+        "select",
+        "headers",
+        "params"
+      ],
+      "run_id_parameter": false
+    },
+    "ThreadsClient.get_state": {
+      "parameters": [
+        "self",
+        "thread_id",
+        "checkpoint",
+        "checkpoint_id",
+        "subgraphs",
+        "headers",
+        "params"
+      ],
+      "run_id_parameter": false
+    }
+  },
+  "arbitrary_active_pause_rpc": false,
+  "create_accepts_caller_run_id": false,
+  "n07_observed_limitations": [
+    "adelete_for_runs missing",
+    "aprune missing",
+    "dev/no-reload runtime with allow-blocking"
+  ],
+  "m1_exit": false,
+  "persistent_m2_implementation_started": false
+}

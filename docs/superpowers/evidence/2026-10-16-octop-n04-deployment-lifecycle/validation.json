@@ -1,0 +1,53 @@
+{
+  "complete_local_snapshot_rollback_block": true,
+  "base_commit": "faa28b6",
+  "M1_exited": false,
+  "N08_started": false,
+  "frozen_inputs": 2060,
+  "unchanged_inputs_reused": 2056,
+  "application_image": "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1",
+  "application_rebuilt": false,
+  "results": {
+    "snapshot-tests-current": "8 passed in 1.62s",
+    "snapshot-image": "8 passed in 3.75s"
+  },
+  "source_upgrade": [
+    "8 passed in 2.75s",
+    "8 passed in 1.87s",
+    "8 passed in 2.73s"
+  ],
+  "host_contracts": 183,
+  "full_snapshot_clone_rows_match": true,
+  "restored_model_credential_checked_without_request": true,
+  "off_state_artifact_rollback": true,
+  "jsonl_replay_processes": 2,
+  "jsonl_replay_calls": 8,
+  "actual_jsonl_event_count": 1,
+  "actual_ticket_requests": 26,
+  "remaining": [
+    "Full service deployment and original user flows from restored snapshot",
+    "Full other file/tool entry review",
+    "Original five-gate final judgment",
+    "Remote CI and all original capability targets"
+  ],
+  "raw_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/artifact-rollback.log": "c6c79c14834d3a38191887e38603a2f43fdba0463ecf8dad600693ba7b11463b",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/brand-staged.log": "b3d7cfa85a6140b1ea497f69acf9af19952cf834dd90924b5165b34a796e74c9",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/final-runtime.log": "eef324782c5ea795da26fabb643030ddbf3e60a43761e4d75bae7097ad9dfc72",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/jsonl-failure-replay.log": "966af9aae7eb079c8f31fba73a153ca25c5d4f9ec154e5b202c1edf818aa8ee9",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/protected-downgrade-current.log": "98d32514976961a008b3a62ad7a69a79f55725defcc1c9a906a8c3b62e07ede6",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/protected-downgrade-final.log": "91ca5747d8dbe76759c3b7a53ec0865b56ebdf1e8a33790f756bfbfd3648c910",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/protected-downgrade.log": "98d32514976961a008b3a62ad7a69a79f55725defcc1c9a906a8c3b62e07ede6",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/public-secrets.log": "d27869369f0281d301d2b5f19aa4f6124059cab14d87d164b2739b17684e2e82",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-create.log": "35f072c9a7ea59cec296e0b2f5965a55716dff68ce6b05c237663ce1ceece367",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-final-static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-image.log": "8f729f9868de01b7e6f2859d8d629ed76df16c646eb320ff43c45a77c68798a7",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-restore-verify.log": "2f730adcc914bd6651926a915cb7170354d8435eee307d36edcb8b0856800fff",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-static-current.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-tests-current.log": "63d536fb8bbe6ed3941b2a01f97c528d3a23d7792458dd58e67835d63c18a51f",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-tests.log": "cd560979b3265e19e7c83b4aeed00131b807be6db05ed8ba89b0957d145dd632",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/logs/snapshot-upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-deployment-lifecycle/policy-activations.jsonl": "9d2cff6c7c9fdf3bedddfe050694d3bf04dfbef6c5d0ab799ac35b1e2526e61c"
+  }
+}

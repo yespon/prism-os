@@ -1,0 +1,73 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+________ test_manual_creation_cannot_overwrite_native_published_unknown ________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x754fbfa6ddf0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-197/test_manual_creation_cannot_ov0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x754fc032f080>
+
+    def test_manual_creation_cannot_overwrite_native_published_unknown(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        result = published_unknown(root)
+        file = root / "custom/tenant-a/user-a/manual-created/SKILL.md"
+        before = file.read_bytes()
+        response = http.post("/api/skills/personal", json={"name": "manual-created", "description": "New description", "instructions": "OVERWRITE"})
+>       assert response.status_code == 409
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_skill_manual_creation.py:28: AssertionError
+_________ test_shared_manual_creation_rejects_member_before_any_write __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x754fbf1bc140>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-197/test_shared_manual_creation_re0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x754fbfa2a870>
+
+    def test_shared_manual_creation_rejects_member_before_any_write(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.post("/api/tenants/skills", json={"name": "manual-created", "description": "Shared description"})
+>       assert response.status_code == 403
+E       assert 201 == 403
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_skill_manual_creation.py:37: AssertionError
+_________ test_shared_manual_creation_cannot_create_a_public_override __________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x754fbf00afc0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-197/test_shared_manual_creation_ca0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x754fbfa6f3e0>
+
+    def test_shared_manual_creation_cannot_create_a_public_override(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.post("/api/tenants/skills", headers=ADMIN, json={"name": "manual-created", "description": "Shared description", "category": "public"})
+>       assert response.status_code == 403
+E       assert 201 == 403
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_skill_manual_creation.py:45: AssertionError
+______ test_new_personal_creation_does_not_inherit_old_same_name_settings ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x754fbf0ac680>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-197/test_new_personal_creation_doe0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x754fc03b5fd0>
+
+    def test_new_personal_creation_does_not_inherit_old_same_name_settings(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        asyncio.run(service.update_tenant_personal_skill_settings("tenant-a", "user-a", "manual-created", bound_tools=["old-binding"], prompt_template="OLD TEMPLATE", strategy="old-strategy"))
+        response = http.post("/api/skills/personal", json={"name": "manual-created", "description": "Own description", "instructions": "OWN BODY"})
+        assert response.status_code == 201, response.text
+>       assert response.json()["bound_tools"] == []
+E       AssertionError: assert ['old-binding'] == []
+E         
+E         Left contains one more item: 'old-binding'
+E         Use -v to get more diff
+
+tests/test_skill_manual_creation.py:55: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_manual_creation.py::test_manual_creation_cannot_overwrite_native_published_unknown
+FAILED tests/test_skill_manual_creation.py::test_shared_manual_creation_rejects_member_before_any_write
+FAILED tests/test_skill_manual_creation.py::test_shared_manual_creation_cannot_create_a_public_override
+FAILED tests/test_skill_manual_creation.py::test_new_personal_creation_does_not_inherit_old_same_name_settings
+4 failed, 1 warning in 31.53s

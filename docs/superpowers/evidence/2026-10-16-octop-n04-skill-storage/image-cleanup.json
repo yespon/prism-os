@@ -1,0 +1,10 @@
+{
+  "removed": true,
+  "image": "sha256:04eef0d269316cf578b963d7535612ea9ec7557761a2839fd5d04e37d4eda01b",
+  "source_mounts_readonly": [
+    "scripts/octop_wsl_test_env.py",
+    "backend/tests/test_n04_ticket_receiver.py"
+  ],
+  "network": "none",
+  "default_privileges": true
+}

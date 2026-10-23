@@ -1,0 +1,96 @@
+ [alembic] INFO  [alembic.runtime.migration] Running upgrade 9d1a6b2f4c33 -> e4a1b7c9d210, tenant_scope_user_configs
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade e4a1b7c9d210 -> b1c2d3e4f5a6, add_platform_announcements
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade b1c2d3e4f5a6 -> d4f5e6a7b8c9, cleanup_legacy_structured_fields
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade d4f5e6a7b8c9 -> e5f6a7b8c9d0, add_mcp_health_status
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade e5f6a7b8c9d0 -> bb06333b4752, add_alerting_tables
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade bb06333b4752 -> 81da5159a35c, add_alerting_settings_table
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 81da5159a35c -> a5b0975bf204, add_change_events_table
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade a5b0975bf204 -> 9b5ac3b96908, add_notification_config_to_alerting_settings
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 9b5ac3b96908 -> ac185ba1d188, add_custom_agents_table
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade ac185ba1d188 -> 79e8f9c6ad70, add_diagnosis_status_to_incidents
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 79e8f9c6ad70 -> ef71a511e35d, add_diagnosis_result_and_error_to_incidents
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade ef71a511e35d -> 1c580d08896f, add supports_text2image to models
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 1c580d08896f -> 2d6f7a8b9c0e, add max_input_tokens to tenant_model_configs
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 2d6f7a8b9c0e -> 3e7f8a9b0c1d, add model_type to tenant_model_configs
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 3e7f8a9b0c1d -> a200fb1c0c23, add_subagent_runs_table
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade a200fb1c0c23 -> 09288bb10181, Add asset management models
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 09288bb10181 -> 9ee4fc2c2a44, add terminal models
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 9ee4fc2c2a44 -> 0620c841335c, add_terminal_security_settings
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 0620c841335c -> 3efa3d189b85, add_incident_ticket_and_owner_fields
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade 3efa3d189b85 -> a7b8c9d0e1f2, add_tenant_type_column
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade a7b8c9d0e1f2 -> f1a2b3c4d5e6, Add File Center models (file_folders, file_objects)
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade f1a2b3c4d5e6 -> g1a2b3c4d5e6, add_general_tenant_type — add 'general' as valid tenant_type value.
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade g1a2b3c4d5e6 -> h2b3c4d5e6f7, add platform audit events
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade h2b3c4d5e6f7 -> i3c4d5e6f7g8, add M1 Policy Decision and Approval facts
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade i3c4d5e6f7g8 -> j4d5e6f7g8h9, add M1 Action submission facts
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade j4d5e6f7g8h9 -> k5e6f7g8h9i0, add replayable M1 legacy audit deliveries
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade k5e6f7g8h9i0 -> l6f7g8h9i0j1, add M1 trusted thread bindings and one-use execution capabilities
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade l6f7g8h9i0j1 -> m7g8h9i0j1k2, Bind diagnosis Action scope to the one-use execution capability.
+2026-10-12 22:32:45 - app.gateway.app - WARNING - [alembic] INFO  [alembic.runtime.migration] Running upgrade m7g8h9i0j1k2 -> n8h9i0j1k2l3, Add encrypted, source-scoped ticket secret records.
+2026-10-12 22:32:45 - app.gateway.app - INFO - Database migrations completed successfully
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO - ========================================================================
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO -   Bootstrap admin user created (uninitialized)
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO -   Username: admin
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO -   No password has been set.
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO -   Visit the web UI to complete the initial setup wizard,
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO -   where you will set your email and password.
+2026-10-12 22:32:46 - app.gateway.bootstrap_admin - INFO - ========================================================================
+2026-10-12 22:32:46 - app.channels.manager - INFO - ChannelManager started (max_concurrency=5)
+2026-10-12 22:32:46 - app.channels.service - INFO - ChannelService started with channels: []
+2026-10-12 22:32:46 - app.gateway.app - INFO - Channel service started: {'service_running': True, 'channels': {'feishu': {'enabled': False, 'running': False}, 'slack': {'enabled': False, 'running': False}, 'telegram': {'enabled': False, 'running': False}}}
+2026-10-12 22:32:46 - app.channels.manager - INFO - [Manager] dispatch loop started, waiting for inbound messages
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:41671 (Press CTRL+C to quit)
+INFO:     127.0.0.1:45332 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45348 - "GET /api/agent-catalog/templates HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:45354 - "GET /api/agent-catalog/status HTTP/1.1" 200 OK
+2026-10-12 22:32:47 - app.gateway.routers.agents - INFO - Created agent 'catalog-smoke' (id=7ac0548f-0c90-4c26-8337-29872648aaa2) by user catalog-smoke-user
+INFO:     127.0.0.1:45358 - "POST /api/agents HTTP/1.1" 201 Created
+INFO:     127.0.0.1:45362 - "GET /api/agents/catalog-smoke HTTP/1.1" 200 OK
+2026-10-12 22:32:47 - app.gateway.routers.agents - INFO - Updated agent 'catalog-smoke' (id=7ac0548f-0c90-4c26-8337-29872648aaa2) by user catalog-smoke-user
+INFO:     127.0.0.1:45364 - "PUT /api/agents/catalog-smoke HTTP/1.1" 200 OK
+2026-10-12 22:32:48 - app.gateway.routers.agents - INFO - Updated agent 'catalog-smoke' (id=7ac0548f-0c90-4c26-8337-29872648aaa2) by user catalog-smoke-user
+INFO:     127.0.0.1:45376 - "PUT /api/agents/catalog-smoke HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45386 - "GET /api/agents/catalog-smoke HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45390 - "GET /api/agent-catalog/personality-test?locale=en HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45402 - "POST /api/agent-catalog/personality-test HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45406 - "GET /api/agents/catalog-smoke HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45422 - "GET /api/agent-catalog/avatars HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:45436 - "GET /api/agent-catalog/avatars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45438 - "GET /api/agent-catalog/avatars/personas%3AENFP HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45440 - "GET /api/agent-catalog/templates/expert%3Acvm-ai-doctor/resources HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:45448 - "GET /api/agent-catalog/templates?kind=expert HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45452 - "GET /api/agent-catalog/templates/expert%3Aai-coding-coach/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45466 - "GET /api/agent-catalog/templates/expert%3Aai-safety-guardian/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45482 - "GET /api/agent-catalog/templates/expert%3Aclinical-learning-subscription/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45492 - "GET /api/agent-catalog/templates/expert%3Acvm-ai-doctor/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45498 - "GET /api/agent-catalog/templates/expert%3Acvm-cluster-doctor/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45502 - "GET /api/agent-catalog/templates/expert%3Adefault/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45508 - "GET /api/agent-catalog/templates/expert%3Ageneral-assistant/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45516 - "GET /api/agent-catalog/templates/expert%3Akarpathy-knowledge-base/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45518 - "GET /api/agent-catalog/templates/expert%3Ameituan-living-assistant/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45522 - "GET /api/agent-catalog/templates/expert%3Amulti-agent-orchestrator/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45534 - "GET /api/agent-catalog/templates/expert%3Anews-trend/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45550 - "GET /api/agent-catalog/templates/expert%3Aoffice-automation/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45560 - "GET /api/agent-catalog/templates/expert%3Aops-engineer/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45562 - "GET /api/agent-catalog/templates/expert%3Aparenting-companion/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45576 - "GET /api/agent-catalog/templates/expert%3Astock-assistant/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45586 - "GET /api/agent-catalog/templates/expert%3Asuperpowers-methodology/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45594 - "GET /api/agent-catalog/templates/expert%3Atencentcloud-api/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45600 - "GET /api/agent-catalog/templates/expert%3Awechat-ops/resources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45604 - "GET /api/agent-catalog/templates/expert%3Aai-coding-coach/resources?check_installation=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45616 - "GET /api/agent-catalog/templates/expert%3Aai-coding-coach/resources/resource%3Adc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab/archive HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:45632 - "GET /api/agent-catalog/templates/expert%3Aai-coding-coach/resources/resource%3Adc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab/archive HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45642 - "POST /api/agent-catalog/templates/expert%3Aai-coding-coach/resources/resource%3Adc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab/install HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:45654 - "POST /api/agent-catalog/templates/expert%3Aai-coding-coach/resources/resource%3Adc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab/install HTTP/1.1" 403 Forbidden
+2026-10-12 22:32:49 - deerflow.skills.installer - INFO - Installing skill from /tmp/prismos-source-import-cy9lsivb/source.zip
+INFO:     127.0.0.1:45658 - "POST /api/agent-catalog/templates/expert%3Aai-coding-coach/resources/resource%3Adc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab/install HTTP/1.1" 201 Created
+INFO:     127.0.0.1:45670 - "GET /api/skills/personal/imports/da90afa92bab40cf9ae209e45ed317a5 HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:45678 - "GET /api/skills/personal/imports/da90afa92bab40cf9ae209e45ed317a5 HTTP/1.1" 404 Not Found
+
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/../scripts/octop_gateway_smoke.py", line 294, in <module>
+    main()
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/../scripts/octop_gateway_smoke.py", line 233, in main
+    raise AssertionError({"operation_response": operation_status, "probe_rows": rows, "probe_receipts": receipts})
+AssertionError: {'operation_response': (404, {'detail': 'Skill import operation not found'}), 'probe_rows': [('t-893a7704e5c643a2', 'catalog-smoke-user', 'cheatsheet', '/tmp/prismos-octop-smoke-_we03d6h/skills/custom/t-893a7704e5c643a2/catalog-smoke-user/cheatsheet')], 'probe_receipts': ['skills/custom/t-893a7704e5c643a2/catalog-smoke-user/.prismos-import-da90afa92bab40cf9ae209e45ed317a5.json']}

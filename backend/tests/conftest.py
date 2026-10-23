@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import pytest
+
 # Make 'app' and 'deerflow' importable from any working directory
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -31,3 +33,21 @@ _executor_mock.MAX_CONCURRENT_SUBAGENTS = 3
 _executor_mock.get_background_task_result = MagicMock()
 
 sys.modules["deerflow.subagents.executor"] = _executor_mock
+
+
+@pytest.fixture(autouse=True)
+def protect_native_actor_test_storage(monkeypatch):
+    """Unconfigured tests must never open the developer's actual Auth database."""
+    from app.integrations import actor_authorization
+
+    def undeclared_storage():
+        raise RuntimeError("Native actor reads require an isolated identity fixture")
+    monkeypatch.setattr(actor_authorization, "auth_connection", undeclared_storage)
+
+
+@pytest.fixture
+def native_identity(tmp_path, protect_native_actor_test_storage):
+    from native_auth_test_identity import isolated_identity
+
+    with isolated_identity(tmp_path) as declare:
+        yield declare

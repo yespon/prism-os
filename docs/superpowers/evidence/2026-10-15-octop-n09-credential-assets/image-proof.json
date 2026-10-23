@@ -1,0 +1,57 @@
+{
+  "backend_image": "sha256:3aab8ec073dba150addc1807e152b24685d2ca9798c7a63a19a4d4e983e98aa5",
+  "provisioner_image": "sha256:906a3160c276f564306bdf709fa07c4c24bd9c218227556184e439b528f7e37c",
+  "files": {
+    "backend/app/gateway/routers/assets.py": {
+      "sha256": "7fa8b97b542e957fe59f47564fb731361938847ae8bea47f57c87e91fc10a642",
+      "matches": true
+    },
+    "backend/app/services/terminal/credential_access.py": {
+      "sha256": "0abdb7f26b133a3e83fd17eca114f4bf89d81d6b3bd2eee79a13e6b01ff107b8",
+      "matches": true
+    },
+    "backend/app/services/terminal/session.py": {
+      "sha256": "994a1251edcaddea004ea6b88783d2cb20044d1b6b51af596f3329f700ac6db2",
+      "matches": true
+    },
+    "backend/scripts/rotate_encrypted_secrets.py": {
+      "sha256": "b944cc0e537353fd319847498f633228b9d3ecd93a9fa57e42f69a34a93bdb34",
+      "matches": true
+    },
+    "backend/tests/test_credential_asset_access.py": {
+      "sha256": "7db5a089df6f789a4a75d19dc1ec3f835a0f9223fbddceb44a76f45871bcc693",
+      "matches": true
+    },
+    "backend/tests/test_remote_scoped_commands.py": {
+      "sha256": "26cae74a3ae7c4f26d3a8906f615735e6fc095089f11bf5dad8731b44e07ba58",
+      "matches": true
+    },
+    "backend/tests/test_provisioner_kubeconfig.py": {
+      "sha256": "d79148fb4cd692fc7b6cd465053fdf33d0c7a52a7ea163e462a3e98401131ff5",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/community/aio_sandbox/remote_command.py": {
+      "sha256": "5348368585b079e9502595e6dea482d60aa27b425dd34331bd10c3bcda84a2e1",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py": {
+      "sha256": "f90e8fa203b9d703ba0bbac646451bbd0d7cecf32247df7d3a9cf930644720b9",
+      "matches": true
+    },
+    "docker/provisioner/app.py": {
+      "sha256": "3b0b12b1a3a98fd06fe6b787f4c215efdbcda1958b45539b86acd0b8cf9e1886",
+      "matches": true
+    },
+    "docker/provisioner/scoped_commands.py": {
+      "sha256": "bd3012b66af0fca07042672c95be8e59c375d1c11b175113f99e3d4dde6fbd43",
+      "matches": true
+    },
+    "docker/provisioner/requirements.lock": {
+      "sha256": "f5a1ead303778795e0d28ca63b28858aaa1f15322e46bd5ad1597b9ca459cee3",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true
+}

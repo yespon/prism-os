@@ -1,0 +1,76 @@
+{
+  "complete": true,
+  "actual_model": "gpt-5.6-luna",
+  "simulated_model": false,
+  "server_name": "owned_analytics_d162d469",
+  "private_diagnostics": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/native-profile/mcp-task-953612af87",
+  "new_model_task_submissions": 0,
+  "agent_id": "e6196f20-25c9-4cff-b3b7-df9a82283d99",
+  "agent_name": "mcp-task-99a48b0165",
+  "thread_id": "263197ab-adcc-4150-9cd2-c277dd42afe2",
+  "marker": "MCP_TASK_b9276b5fe7044688aaa06a52",
+  "output_path": "/mnt/user-data/outputs/mcp-revenue-99a48b0165.md",
+  "receiver_before": 2,
+  "actual_tool_calls": [
+    {
+      "id": "call_huIbAZgCXTUdiylJ1Q2OI00F",
+      "name": "write_todos",
+      "action": null
+    },
+    {
+      "id": "call_E68fYEwZL4BFJ6xcdVF80QNF",
+      "name": "owned_analytics_d162d469_analyze_revenue",
+      "action": null
+    },
+    {
+      "id": "call_tWtVDaRsuFmoFX02OCTieMKL",
+      "name": "read_file",
+      "action": null
+    },
+    {
+      "id": "call_jNZlSRpdcTPev77gW9UaI3kQ",
+      "name": "write_todos",
+      "action": null
+    },
+    {
+      "id": "call_W3haDsgRiYIIVSYoPMvaTi6Y",
+      "name": "read_file",
+      "action": null
+    },
+    {
+      "id": "call_P25yW1tJaHxi9ygok0ak3DxM",
+      "name": "owned_analytics_d162d469_analyze_revenue",
+      "action": null
+    },
+    {
+      "id": "call_Md3mZzyk4DCXXRU5XvUSu8Dv",
+      "name": "write_todos",
+      "action": null
+    },
+    {
+      "id": "call_BdpNjoyzStvLJgdRpMuHKtZG",
+      "name": "write_file",
+      "action": null
+    },
+    {
+      "id": "call_za77U1rIZqb97XU3WEvhJ0aG",
+      "name": "present_files",
+      "action": null
+    },
+    {
+      "id": "call_DH60u6Bcw2JCm10L0yGoT9eh",
+      "name": "write_todos",
+      "action": null
+    }
+  ],
+  "previous_receipt": "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/real-mcp-current-recovered.json",
+  "run_id": "01a1471e-4cc6-7970-a94f-629c35e9d119",
+  "run_status": "success",
+  "artifact_url": "/api/threads/263197ab-adcc-4150-9cd2-c277dd42afe2/artifacts/mnt/user-data/outputs/mcp-revenue-99a48b0165.md?download=true",
+  "artifact_sha256": "37bd4910c4a8a478c83c32725c5f1ff0ca5a9ec351f4b4de7a9129b4f7f4f7de",
+  "artifact_bytes": 549,
+  "receiver_after": 4,
+  "actual_matching_mcp_calls": 1,
+  "real_sqlite_result_verified": true,
+  "fresh_login_history_and_current_acl": true
+}

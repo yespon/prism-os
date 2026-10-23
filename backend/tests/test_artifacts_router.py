@@ -1,9 +1,18 @@
 import asyncio
 from pathlib import Path
 
+import pytest
 from starlette.requests import Request
 
 import app.gateway.routers.artifacts as artifacts_router
+
+
+@pytest.fixture(autouse=True)
+def isolated_artifact_contract(monkeypatch):
+    async def authorized(*args, **kwargs):
+        return None
+    monkeypatch.setattr(artifacts_router, "require_thread_access", authorized)
+
 
 
 def test_get_artifact_reads_utf8_text_file_on_windows_locale(tmp_path, monkeypatch) -> None:
@@ -18,7 +27,9 @@ def test_get_artifact_reads_utf8_text_file_on_windows_locale(tmp_path, monkeypat
         return original_read_text(self, *args, **kwargs)
 
     monkeypatch.setattr(Path, "read_text", read_text_with_gbk_default)
-    monkeypatch.setattr(artifacts_router, "resolve_thread_virtual_path", lambda *args, **kwargs: artifact_path)
+    async def snapshot(*args, **kwargs):
+        return artifact_path, artifact_path.read_bytes()
+    monkeypatch.setattr(artifacts_router, "_read_artifact", snapshot)
 
     request = Request(
         {
@@ -41,7 +52,9 @@ def test_get_pptx_preview(tmp_path, monkeypatch) -> None:
     artifact_path.write_bytes(b"dummy zip content")
 
     # Mock resolve_thread_virtual_path
-    monkeypatch.setattr(artifacts_router, "resolve_thread_virtual_path", lambda *args, **kwargs: artifact_path)
+    async def snapshot(*args, **kwargs):
+        return artifact_path, artifact_path.read_bytes()
+    monkeypatch.setattr(artifacts_router, "_read_artifact", snapshot)
 
     # Mock convert_pptx_to_svg
     class DummySlide:

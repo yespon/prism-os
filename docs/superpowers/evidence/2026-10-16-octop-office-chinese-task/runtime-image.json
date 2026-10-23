@@ -1,0 +1,14 @@
+{
+  "image": "sha256:890f108e69c1af8a52ae0e8df440a0895d7e1ecdb90cd5c03f2c6342d4042ff6",
+  "previous": {
+    "gateway": "sha256:3c0dcb8778d3370243d61cd92aa75a729617f6f6d021cd59303053ef0b4fc2bc",
+    "langgraph": "sha256:3c0dcb8778d3370243d61cd92aa75a729617f6f6d021cd59303053ef0b4fc2bc"
+  },
+  "files": {
+    "packages/harness/deerflow/tools/builtins/office_pdf.py": "d65e9e5603c32d52449a48dc2677d9fe0f6bdec3da46c0933d488f81c34b7d98",
+    "packages/harness/deerflow/tools/builtins/office_fonts.py": "06bc593dd85b1b3761d60c4a8bde8b6247235a0b197cb2f9e3a6f238765c46db",
+    "tests/test_office_pdf_fonts.py": "a14a0fb74ebd0391e463278dee0367b9b8d422a96b1bf9be6df0e47fda0dd264"
+  },
+  "action": "off",
+  "private_original_compose": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/compose-before-office-chinese.yaml"
+}

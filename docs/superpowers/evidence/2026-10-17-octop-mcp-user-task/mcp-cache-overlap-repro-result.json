@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/cache_concurrency.py",
+    "--expect-failure",
+    "--output",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/cache-overlap-before.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:39:18.515959+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:39:22.507120+00:00"
+}

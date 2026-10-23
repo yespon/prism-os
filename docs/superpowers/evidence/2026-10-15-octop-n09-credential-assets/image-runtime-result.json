@@ -1,0 +1,28 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-credential-runtime-edac67a55cdb",
+    "--mount",
+    "type=bind,source=/root/.codex/worktrees/octop-integration/prism-os/docker/provisioner,target=/app/docker/provisioner,readonly",
+    "sha256:3aab8ec073dba150addc1807e152b24685d2ca9798c7a63a19a4d4e983e98aa5",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_credential_asset_access.py tests/test_terminal_access_boundaries.py tests/test_terminal_security.py tests/test_terminal_multihost.py tests/test_remote_scoped_commands.py tests/test_provisioner_kubeconfig.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T08:25:36.547754+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T08:26:34.118839+00:00"
+}

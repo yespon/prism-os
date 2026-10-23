@@ -1,9 +1,13 @@
 import { Search, Monitor, Plus, ChevronRight, ChevronDown, MoreVertical, TerminalSquare, PanelLeftCloseIcon } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { useSkillQueryIdentity } from '@/core/skills/query-identity';
+import { AssetOperationError, requestAssetOperation } from '@/core/terminal-agent/assets-api';
 import type { TerminalAsset, TerminalAssetGroup, TerminalAssetInput, TerminalCredential } from '@/core/terminal-agent/message-types';
 
 import { AddCredentialDialog } from './add-credential-dialog';
@@ -26,6 +30,15 @@ export function AssetSidebar({
   groups?: TerminalAssetGroup[];
   onDataChanged?: () => void;
 }) {
+  const identity = useSkillQueryIdentity();
+  const pendingDeletion = React.useRef(new Set<string>());
+  const perform = async (path: string, method: 'POST' | 'PUT' | 'DELETE', body?: unknown) => {
+    if (!identity.isCurrent()) throw new AssetOperationError('身份已变化，请重新打开当前资产列表。');
+    const result = await requestAssetOperation(path, method, body);
+    if (!identity.isCurrent()) throw new AssetOperationError('身份已变化，请核对原操作结果。', true);
+    return result;
+  };
+
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
   const [showAddHost, setShowAddHost] = useState(false);
@@ -44,55 +57,30 @@ export function AssetSidebar({
   }, [groups]);
 
   const handleAddHost = async (host: TerminalAssetInput) => {
-    try {
-      await fetch('/api/v1/assets/local', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(host)
-      });
-      onDataChanged?.();
-    } catch (e) {
-      console.error(e);
-    }
+    await perform('/api/v1/assets/local', 'POST', host);
+    onDataChanged?.();
   };
 
   const handleEditHost = async (id: string, host: TerminalAssetInput) => {
-    try {
-      await fetch(`/api/v1/assets/local/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(host)
-      });
-      onDataChanged?.();
-      setEditAsset(null);
-    } catch (e) {
-      console.error(e);
-    }
+    await perform(`/api/v1/assets/local/${encodeURIComponent(id)}`, 'PUT', host);
+    onDataChanged?.();
+    setEditAsset(null);
   };
 
   const handleDeleteAsset = async (id: string) => {
-    if (!confirm('确定要删除该主机吗？')) return;
+    if (pendingDeletion.current.has(id) || !confirm('确定要删除该主机吗？')) return;
     try {
-      await fetch(`/api/v1/assets/local/${id}`, {
-        method: 'DELETE'
-      });
+      await perform(`/api/v1/assets/local/${encodeURIComponent(id)}`, 'DELETE');
       onDataChanged?.();
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      if (error instanceof AssetOperationError && error.inspectionRequired) pendingDeletion.current.add(id);
+      toast.error(error instanceof Error ? error.message : '删除结果未确认，请刷新列表核对。');
     }
   };
 
-  const handleAddCredential = async (cred: Omit<TerminalCredential, 'id'> & { value: string }) => {
-    try {
-      await fetch('/api/v1/assets/keychains', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cred)
-      });
-      onDataChanged?.();
-    } catch (e) {
-      console.error(e);
-    }
+  const handleAddCredential = async (credential: Omit<TerminalCredential, 'id'> & { value: string }) => {
+    await perform('/api/v1/assets/keychains', 'POST', credential);
+    onDataChanged?.();
   };
 
   const filteredAssets = assets.filter(a => (a.name ?? '').includes(search) || a.ip.includes(search));

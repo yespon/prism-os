@@ -1,0 +1,34 @@
+{
+  "steps": [
+    {
+      "step": "pre-health",
+      "ok": true
+    },
+    {
+      "step": "policy-allow",
+      "version": "r1-allow-1792381562"
+    },
+    {
+      "step": "run-fact-recorded",
+      "incident_id": "9cdf08ae-22e9-45f5-bbb5-e489094eead3",
+      "run_state": "created",
+      "snapshot_keys": [
+        "agent_id",
+        "agent_name",
+        "model_name",
+        "source"
+      ],
+      "agent_id": "ad4d0b7f-d26a-4ff2-aab2-91913315c9ad"
+    },
+    {
+      "step": "restart-preserved",
+      "run_state": "created",
+      "snapshot_identical": true
+    },
+    {
+      "step": "rollback-off",
+      "ok": true
+    }
+  ],
+  "complete": true
+}

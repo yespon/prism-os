@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_auxiliary_task_probe.py", line 119, in <module>
+    execute(options.output)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_auxiliary_task_probe.py", line 90, in execute
+    assert result['observed_fresh_checks'] >= 2 and result['observed_stale_checks'] >= 1, 'Actual script outputs did not demonstrate fresh/stale/recovered states'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Actual script outputs did not demonstrate fresh/stale/recovered states

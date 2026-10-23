@@ -1,0 +1,97 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+____________ test_stale_instance_toggle_cannot_update_same_name_row ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7a2c07d65d60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-182/test_stale_instance_toggle_can0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2c0862f1a0>
+
+    def test_stale_instance_toggle_cannot_update_same_name_row(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False, "expected_resource_id": "skill:withdrawn"})
+>       assert response.status_code == 409
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_skill_enablement_boundaries.py:22: AssertionError
+_____ test_selected_public_toggle_cannot_modify_same_name_shared_resource ______
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7a2c074cfbc0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-182/test_selected_public_toggle_ca0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2c07d23920>
+
+    def test_selected_public_toggle_cannot_modify_same_name_shared_resource(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        before = {p: p.read_bytes() for p in root.rglob("SKILL.md")}
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False, "expected_resource_id": resources(http)["global"]["resource_id"]})
+>       assert response.status_code == 409
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_skill_enablement_boundaries.py:30: AssertionError
+________ test_unknown_name_toggle_cannot_create_an_unowned_registration ________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7a2c0c1d1a90>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-182/test_unknown_name_toggle_canno0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2c07d644a0>
+
+    def test_unknown_name_toggle_cannot_create_an_unowned_registration(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        response = http.put("/api/tenants/skills/absent", headers=ADMIN, json={"enabled": False})
+>       assert response.status_code == 404
+E       assert 200 == 404
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_skill_enablement_boundaries.py:38: AssertionError
+___________ test_foreign_location_toggle_cannot_change_native_state ____________
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7a2c0732e450>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-182/test_foreign_location_toggle_c0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2c07d21c10>
+
+    def test_foreign_location_toggle_cannot_change_native_state(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        async def replace():
+            async with factory() as session:
+                row = (await session.exec(select(TenantSkill).where(TenantSkill.user_id != "user-a"))).scalars().one()
+                row.install_dir = str(root / "custom/tenant-b/collision")
+                session.add(row)
+                await session.commit()
+        asyncio.run(replace())
+        response = http.put("/api/tenants/skills/collision", headers=ADMIN, json={"enabled": False})
+>       assert response.status_code == 409
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_skill_enablement_boundaries.py:53: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_enablement_boundaries.py::test_selected_public_toggle_cannot_modify_same_name_shared_resource
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1691: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_enablement_boundaries.py::test_stale_instance_toggle_cannot_update_same_name_row
+FAILED tests/test_skill_enablement_boundaries.py::test_selected_public_toggle_cannot_modify_same_name_shared_resource
+FAILED tests/test_skill_enablement_boundaries.py::test_unknown_name_toggle_cannot_create_an_unowned_registration
+FAILED tests/test_skill_enablement_boundaries.py::test_foreign_location_toggle_cannot_change_native_state
+4 failed, 2 warnings in 8.24s

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_ssh_task_probe.py",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-ssh-user-task/real-ssh-ui-baseline.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-17T00:20:22.547412+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-17T00:20:23.445077+00:00"
+}

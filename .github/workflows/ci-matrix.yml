@@ -1,0 +1,156 @@
+name: PrismOS CI Matrix
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-tests:
+    name: Backend pytest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.26
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Run backend test suite
+        # Namespace-scoped security tests (isolation, withdrawal, revocation)
+        # skip here: container runners deny user namespaces. They execute
+        # for real wherever the capability exists - see
+        # tests/namespace_availability.py and the per-round real-deployment
+        # rehearsal evidence for their coverage.
+        run: uv run pytest tests -q -rs --tb=short
+
+  frontend-quality:
+    name: Frontend lint/typecheck/test/build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        working-directory: frontend
+        run: pnpm run lint
+
+      - name: Typecheck
+        working-directory: frontend
+        run: pnpm exec tsc --noEmit
+
+      - name: Unit tests
+        working-directory: frontend
+        run: pnpm run test:unit
+
+      - name: Production build
+        working-directory: frontend
+        run: npx next build
+        env:
+          SKIP_ENV_VALIDATION: 1
+
+  migration-regression:
+    name: Alembic upgrade/downgrade/re-upgrade
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.26
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Verify single Alembic head
+        working-directory: backend
+        run: |
+          heads=$(uv run python -m alembic heads)
+          echo "$heads"
+          count=$(printf '%s\n' "$heads" | awk '/\(head\)$/ {count++} END {print count + 0}')
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Expected exactly 1 Alembic head, found $count"
+            exit 1
+          fi
+
+      - name: Run migration upgrade/downgrade/re-upgrade tests
+        working-directory: backend
+        run: uv run pytest tests/contracts -q -k "migration"
+
+      - name: Smoke-test downgrade path on scratch SQLite DB
+        working-directory: backend
+        run: |
+          # env.py resolves the URL from AppConfig first; in CI (no config.yaml)
+          # it falls back to alembic.ini. Point a scratch copy at an isolated DB
+          # so we never touch a real .prismos database.
+          sed 's|^sqlalchemy.url = .*|sqlalchemy.url = sqlite+aiosqlite:///.prismos/_ci_migration_scratch.db|' \
+            alembic.ini > _ci_alembic_scratch.ini
+          uv run python -m alembic -c _ci_alembic_scratch.ini upgrade head
+          uv run python -m alembic -c _ci_alembic_scratch.ini downgrade -3
+          uv run python -m alembic -c _ci_alembic_scratch.ini upgrade head
+          rm -f _ci_alembic_scratch.ini .prismos/_ci_migration_scratch.db
+
+  platform-contracts:
+    name: Platform contract gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.26
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Enforce PrismOS brand identity
+        run: python scripts/check_brand_identity.py
+
+      - name: Check PrismOS environment compatibility
+        run: bash scripts/test-prismos-env.sh
+
+      - name: Run platform contract gate
+        run: bash scripts/test-platform-contracts.sh
+        env:
+          UV_BIN: uv
+
+      - name: Validate Compose configurations
+        run: |
+          docker compose config --quiet
+          docker compose -f docker/docker-compose.yaml config --quiet

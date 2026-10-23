@@ -32,7 +32,7 @@ services:
       dockerfile: backend/Dockerfile
     image: prismos-db-init:latest
     container_name: prismos-db-init
-    command: sh -c "cd backend && PYTHONPATH=. uv run alembic upgrade head"
+    command: sh -c "cd backend && PYTHONPATH=. uv run --frozen alembic upgrade head"
     volumes:
       - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/backend/config.yaml:ro
       - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
@@ -120,6 +120,7 @@ services:
       - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
     environment:
       SERVER_BACKEND_URL: http://gateway:8001
+      GATEWAY_URL: http://gateway:8001
     networks:
       - prismos
     restart: unless-stopped
@@ -141,7 +142,7 @@ services:
       dockerfile: backend/Dockerfile
     image: prismos-gateway:latest
     container_name: prismos-gateway
-    command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
+    command: sh -c "cd backend && PYTHONPATH=. uv run --frozen uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes:
       - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/backend/config.yaml:ro
       - ../skills:/app/skills:ro
@@ -150,6 +151,13 @@ services:
     working_dir: /app
     environment:
       - CI=true
+      - PRISMOS_TRUSTED_GRAPH_CONTEXT=${PRISMOS_TRUSTED_GRAPH_CONTEXT:-off}
+      - PRISMOS_TICKET_SECRET_ADMIN_TENANT=${PRISMOS_TICKET_SECRET_ADMIN_TENANT:-}
+      - PRISMOS_GOVERNED_TICKET_TENANT=${PRISMOS_GOVERNED_TICKET_TENANT:-}
+      - PRISMOS_GOVERNED_TICKET_ACTION=${PRISMOS_GOVERNED_TICKET_ACTION:-off}
+      - PRISMOS_GOVERNED_TICKET_VERDICT=${PRISMOS_GOVERNED_TICKET_VERDICT:-deny}
+      - PRISMOS_GOVERNED_TICKET_POLICY_VERSION=${PRISMOS_GOVERNED_TICKET_POLICY_VERSION:-v1}
+      - DEERFLOW_SECRETS_ENCRYPTION_KEY=${DEERFLOW_SECRETS_ENCRYPTION_KEY:-}
       - PRISMOS_HOME=/app/backend/.prismos
       - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-${OPSINTECH_HOME:-../backend/.prismos}}
       - PRISMOS_HOST_SKILLS_PATH=${PRISMOS_REPO_ROOT:-${OPSINTECH_REPO_ROOT:-..}}/skills
@@ -188,7 +196,7 @@ services:
       dockerfile: backend/Dockerfile
     image: prismos-langgraph:latest
     container_name: prismos-langgraph
-    command: sh -c "cd /app/backend && uv run langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
+    command: sh -c "cd /app/backend && uv run --frozen langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024"
     volumes:
       - ${PRISMOS_CONFIG_PATH:-../config.yaml}:/app/config.yaml:ro
       - ${PRISMOS_HOME:-../backend/.prismos}:/app/backend/.prismos
@@ -197,6 +205,12 @@ services:
       - ${PRISMOS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
     environment:
       - CI=true
+      - PRISMOS_TRUSTED_GRAPH_CONTEXT=${PRISMOS_TRUSTED_GRAPH_CONTEXT:-off}
+      - PRISMOS_GOVERNED_TICKET_TENANT=${PRISMOS_GOVERNED_TICKET_TENANT:-}
+      - PRISMOS_GOVERNED_TICKET_ACTION=${PRISMOS_GOVERNED_TICKET_ACTION:-off}
+      - PRISMOS_GOVERNED_TICKET_VERDICT=${PRISMOS_GOVERNED_TICKET_VERDICT:-deny}
+      - PRISMOS_GOVERNED_TICKET_POLICY_VERSION=${PRISMOS_GOVERNED_TICKET_POLICY_VERSION:-v1}
+      - DEERFLOW_SECRETS_ENCRYPTION_KEY=${DEERFLOW_SECRETS_ENCRYPTION_KEY:-}
       - PRISMOS_HOME=/app/backend/.prismos
       - PRISMOS_CONFIG_PATH=/app/config.yaml
       - PRISMOS_HOST_BASE_DIR=${PRISMOS_HOME:-../backend/.prismos}

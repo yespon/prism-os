@@ -1,0 +1,40 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 492B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 20.36kB done
+#5 DONE 0.0s
+
+#6 [2/6] RUN apt-get update && apt-get install -y --no-install-recommends     curl     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [3/6] COPY requirements.lock /tmp/requirements.lock
+#7 CACHED
+
+#8 [4/6] RUN pip install --no-cache-dir -r /tmp/requirements.lock
+#8 CACHED
+
+#9 [5/6] WORKDIR /app
+#9 CACHED
+
+#10 [6/6] COPY app.py scoped_commands.py ./
+#10 DONE 0.1s
+
+#11 exporting to image
+#11 exporting layers 0.0s done
+#11 writing image sha256:906a3160c276f564306bdf709fa07c4c24bd9c218227556184e439b528f7e37c done
+#11 naming to docker.io/library/prismos-credential-provisioner:test done
+#11 DONE 0.0s

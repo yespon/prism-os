@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/cached_tool_revoke.py", line 13, in <module>
+    from octop_wsl_native_env import NATIVE, _runtime_environment
+ImportError: cannot import name '_runtime_environment' from 'octop_wsl_native_env' (/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_wsl_native_env.py). Did you mean: 'runtime_environment'?

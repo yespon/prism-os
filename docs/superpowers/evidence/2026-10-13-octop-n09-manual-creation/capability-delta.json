@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-13",
+  "baseline": "38c0c75b8d9540acf6dbb6005b7c780951ecf940",
+  "scope": "C2 original manual creation using native publication and original configuration transaction",
+  "delivered": [
+    "all manual POST publication uses original C1 validator and exclusive publication",
+    "current shared tenant-admin and actor required",
+    "disabled registration until original instance/configuration DB transaction",
+    "same-name old configuration not inherited",
+    "manual nonsecret intent and historical configuration phase in original receipts",
+    "unknown preservation with original inspection/recovery, no auto activation",
+    "four actual create views with current identity and late response guards",
+    "explicit current-instance enablement after inspection"
+  ],
+  "complete": false,
+  "new_schema": false,
+  "new_registry": false,
+  "remaining": [
+    "DELETE current instance and file/unknown import ownership, references, physical reclamation and recovery",
+    "copy/share complete source bytes and target reauthorization",
+    "old Agent name references and revoke/use authorization",
+    "C3-C5 full N09 and original PrismOS roadmap",
+    "N04/M1 and remote CI"
+  ],
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

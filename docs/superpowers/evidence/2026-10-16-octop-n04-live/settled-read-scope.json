@@ -1,0 +1,14 @@
+{
+  "backend/app/gateway/routers/alerts.py": {
+    "only_changed_function": "resume_governed_incident_ticket",
+    "previous_sha256": "a8f6a3b95db8084933c84bc91538dbbb31ab97aaa054931089d6d1d5878010d0",
+    "current_sha256": "282019f361ed7e77c51be50a31d0e4fb2be13f9470e654ce8bce05d5cade86cd",
+    "other_AST_unchanged": true
+  },
+  "backend/tests/test_incident_diagnosis.py": {
+    "only_changed_function": "test_authenticated_diagnosis_stream_invokes_scoped_governed_tool",
+    "previous_sha256": "33cf81e3dd06552a3aa880bc915fb15aa7ec64e98c781e4276209fb795743216",
+    "current_sha256": "398a2ed3cfa73af9122d16b927252d52c2516ec55ba0a05ccbfcffa9c1191d37",
+    "other_AST_unchanged": true
+  }
+}

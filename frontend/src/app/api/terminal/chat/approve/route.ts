@@ -1,16 +1,14 @@
+import { terminalGatewayHeaders } from "../../gateway-headers";
+
 const gatewayUrl = process.env.GATEWAY_URL ?? 'http://localhost:8001';
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const cookieHeader = req.headers.get('cookie') ?? '';
 
   try {
     const res = await fetch(`${gatewayUrl}/api/v1/terminal/approve`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-      },
+      headers: terminalGatewayHeaders(req),
       body: JSON.stringify(body),
     });
 
@@ -21,7 +19,7 @@ export async function POST(req: Request) {
 
     return new Response(res.body, {
       status: 200,
-      headers: { 'Content-Type': 'text/event-stream' }
+      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' }
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);

@@ -10,6 +10,13 @@ from deerflow.config.model_config import ModelConfig
 from deerflow.config.sandbox_config import SandboxConfig
 
 
+@pytest.fixture(autouse=True)
+def isolate_resource_provider(monkeypatch):
+    # These unit tests fabricate model/tenant context without membership or
+    # thread facts. Actual current resource access has separate integration tests.
+    monkeypatch.setattr(lead_agent_module, "get_skill_prompt_provider", lambda: None)
+
+
 def _make_app_config(models: list[ModelConfig]) -> AppConfig:
     return AppConfig(
         models=models,
@@ -319,3 +326,11 @@ def test_make_lead_agent_applies_tenant_context_to_prompt_building(monkeypatch):
     )
 
     assert captured == {"tenant_id": "tenant-a", "user_id": "user-a"}
+
+
+def test_named_disabled_agent_does_not_fall_back_to_default(monkeypatch):
+    monkeypatch.setattr(lead_agent_module, "load_agent_config", lambda *args, **kwargs: None)
+    monkeypatch.setattr(lead_agent_module, "load_runtime_adapters", lambda: None)
+
+    with pytest.raises(ValueError, match="unavailable or disabled"):
+        lead_agent_module.make_lead_agent({"context": {"agent_name": "disabled-agent"}})

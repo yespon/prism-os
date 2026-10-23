@@ -1,0 +1,36 @@
+{
+  "baseline": "52e3cf3472ac9d889f560a5fcffd75d113c7c211",
+  "root": "/tmp/prismos-n09h-clean-v_rutjiw/src",
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "3228feb939d717ef9fa42b81accf0ade2143d173201e7faffb86636a019f41ca",
+    "Makefile": "69733638ff8032a1d1e0d349ad05f52990939f9582364709001ec1217a44c745",
+    "backend/app/gateway/routers/skills.py": "d441864af1720f391f9ebca4e3881f72f67440612f1f44a476fd326f7a307e18",
+    "backend/app/integrations/skill_mutations.py": "2a635b95076631d5876a6b5e5e76199d61237d5cad20026477309cf787d6eb6a",
+    "backend/tests/test_skill_enablement_boundaries.py": "3a90784a54eeee24fa06d68ab8fc590bc305e33dd4179b3612425b60744d2f3c",
+    "backend/tests/test_skills_scope_router.py": "f28527b3c88ace8cf60fdecd337e133f08d186a0e74aa7bbbf233bd1a4947cb8",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.test.tsx": "3dffef225ba94ee1fe96ec7f4e26ae8681354f319087a393808328713c16c325",
+    "frontend/src/components/tenant-admin/tenant-admin-skills-page.tsx": "6e50baeb41c0d7d5fc51f575f79c17744dd0dcbf33ad0fbcd106d7a83d3af0c0",
+    "frontend/src/components/workspace/settings/skill-settings-page.test.tsx": "3e4ab08ed816ed86b30eede2a5740b61558e01717e218083c61fc4728d22789f",
+    "frontend/src/components/workspace/settings/skill-settings-page.tsx": "26f72b28715b29f6bbc0345c0c770df36305762a1c4dca3430eae1cc3547f243",
+    "frontend/src/core/skills/api.ts": "636d405aa33da779f681015adce8c515d23db6f1fc419102ea469ca752d4ae9a",
+    "frontend/src/core/skills/hooks.test.tsx": "72f2204850e14f62cc3b43a144c8a824bda7034f72f8a58f2613ae052309dd47",
+    "frontend/src/core/skills/hooks.ts": "2f9b840f2643cb980c78ae37bed1b4db2656fd12bdbe3dfabccf9b4fff994900",
+    "frontend/src/core/skills/mutations.test.ts": "8004b5a56a90ef2d1e9ca5cba66bdfaf4becc6ee226fb956e8387a358372b598",
+    "scripts/octop_gateway_smoke.py": "9176bfc3875ac17e4171ae3859e821b13085fe47e834d45891cdeb20197fd5ac",
+    "scripts/octop_skill_postgres.py": "d5e4a43a2f35e8baafcaf03d937005bcfb3025aa0d7a62e697b2405f1a2019c1",
+    "scripts/octop_upgrade_probe.py": "21b2f763bd859609ddedafdd5b401bcbcbdfc4b339ccb42203dfc47456c066e4"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "type": "host-only metadata absolute symlink",
+      "sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "type": "host-only metadata absolute symlink",
+      "sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db"
+    }
+  ],
+  "original_source_members_verified": 902
+}

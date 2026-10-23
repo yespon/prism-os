@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-skill-storage/live_skill_read.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T05:27:02.457082+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T05:30:51.312116+00:00"
+}

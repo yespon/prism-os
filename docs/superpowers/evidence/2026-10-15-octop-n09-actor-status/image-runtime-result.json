@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-actor-runtime-ee64d711d9ee",
+    "sha256:0adcaaafe1276c03545ca5bfb0a7b0193c96475de74017eb7c2160bf50bd50e1",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_runtime_actor_status.py tests/test_file_access_http.py tests/test_diagnosis_delivery.py tests/test_langgraph_proxy.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T09:45:20.061132+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-15T09:48:39.687330+00:00"
+}

@@ -1,0 +1,147 @@
+{
+  "complete": true,
+  "base_commit": "b6b886c",
+  "frozen_inputs": 2044,
+  "historical_unchanged_inputs": 2034,
+  "host_lock_sha256": "9749f6d96c566bb28a68e9ccb0e69051ed7ef9b663d345df79c83c96072338f2",
+  "image": "sha256:9001a645fee15ecabae01f213a0efdd2478112b496724fd146c757fe9211c703",
+  "image_file_matches": 15,
+  "upgrade_inputs": 164,
+  "M1_exited": false,
+  "N08_started": false,
+  "real_external_calls": false,
+  "results": {
+    "related-final": "21 passed, 7 warnings in 13.94s",
+    "backend-full-before-table-budget": "2368 passed, 18 skipped, 759 warnings in 2459.78s (0:40:59)",
+    "backend-composite": "2348 unchanged non-font passed + 21 current font passed = 2369 passed, 18 skipped; composite, not one new whole-suite run",
+    "image-runtime-final": "21 passed, 7 warnings in 13.64s",
+    "upgrade-final": [
+      "21 passed, 7 warnings in 12.42s",
+      "21 passed, 7 warnings in 13.05s",
+      "21 passed, 7 warnings in 13.24s"
+    ],
+    "postgres-final": "21 passed, 7 warnings in 17.60s"
+  },
+  "composite": {
+    "unchanged_non_font_passed": 2348,
+    "current_font_passed": 21,
+    "passed": 2369,
+    "skipped": 18,
+    "collected_current_nodes": 2386,
+    "collection_module_skips": 1,
+    "current_font_nodes": [
+      "tests/test_office_pdf_fonts.py::test_original_test_font_identity_and_actual_unicode_pdf",
+      "tests/test_office_pdf_fonts.py::test_missing_glyphs_and_unimplemented_shaping_are_explicitly_rejected[\\u4e2d\\u6587\\u7f3a\\u5b57]",
+      "tests/test_office_pdf_fonts.py::test_missing_glyphs_and_unimplemented_shaping_are_explicitly_rejected[\\U0001f600]",
+      "tests/test_office_pdf_fonts.py::test_missing_glyphs_and_unimplemented_shaping_are_explicitly_rejected[\\u05e2\\u05d1\\u05e8\\u05d9\\u05ea]",
+      "tests/test_office_pdf_fonts.py::test_missing_glyphs_and_unimplemented_shaping_are_explicitly_rejected[\\u0627\\u0644\\u0639\\u0631\\u0628\\u064a\\u0629]",
+      "tests/test_office_pdf_fonts.py::test_missing_glyphs_and_unimplemented_shaping_are_explicitly_rejected[e\\u0301]",
+      "tests/test_office_pdf_fonts.py::test_missing_glyphs_and_unimplemented_shaping_are_explicitly_rejected[hidden\\u200djoiner]",
+      "tests/test_office_pdf_fonts.py::test_malformed_or_embedding_restricted_fonts_fail_before_native_parse[truncated]",
+      "tests/test_office_pdf_fonts.py::test_malformed_or_embedding_restricted_fonts_fail_before_native_parse[offset]",
+      "tests/test_office_pdf_fonts.py::test_malformed_or_embedding_restricted_fonts_fail_before_native_parse[restricted]",
+      "tests/test_office_pdf_fonts.py::test_malformed_or_embedding_restricted_fonts_fail_before_native_parse[bitmap]",
+      "tests/test_office_pdf_fonts.py::test_malformed_or_embedding_restricted_fonts_fail_before_native_parse[missing-cmap]",
+      "tests/test_office_pdf_fonts.py::test_malformed_or_embedding_restricted_fonts_fail_before_native_parse[collection]",
+      "tests/test_office_pdf_fonts.py::test_authorized_uploaded_font_native_download_and_foreign_font_denial",
+      "tests/test_office_pdf_fonts.py::test_font_member_withdrawal_cannot_publish[before]",
+      "tests/test_office_pdf_fonts.py::test_font_member_withdrawal_cannot_publish[during]",
+      "tests/test_office_pdf_fonts.py::test_selected_fixture_font_supports_actual_native_text_and_visible_pixels",
+      "tests/test_office_pdf_fonts.py::test_font_path_schema_and_action_are_explicit",
+      "tests/test_office_pdf_fonts.py::test_combined_character_maps_have_one_total_budget_before_native_parse",
+      "tests/test_office_pdf_fonts.py::test_http_font_upload_to_native_generation_and_current_download",
+      "tests/test_office_pdf_fonts.py::test_aliased_font_table_payloads_cannot_amplify_copy_budget_before_native_parse"
+    ]
+  },
+  "raw_log_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/backend-full-bounded.log": "93415df3a9689c9da7ee053b25e8dbf8afdd6660e6790a803f9c58644c8c9901",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/backend-full.log": "cfd178227dacf33b9b37940a976be06ea1a5d3fcfcf13c95f1e7a90eb7eae929",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/backend-image-build-bounded.log": "f14d85920c9a840ed2e34732199db65eff048ba0812d62ae8862042958b24e97",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/backend-image-build-final.log": "4f5ff98bfa461b5369142100ccb20d7966d3009b771c110d3a98483a7d98ce36",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/backend-image-build.log": "8e23fc664cba6b9d8b8b99a66b943e542ebec65b6b9f426ca7cfbcb810239823",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/brand-staged.log": "e4cbd2fc830784620c33da033cd907cda079497c28dda5099fbc8d057d3626d6",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/collect-final.log": "3856dea631c69519d67cacea8d4b5209a3ba7e029b3164817f38ee46b28d29a5",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/collect-full-scope.log": "7910d790167d6a91df00f6dc05ae10118550ecbe902a5ff48409d19f086312b2",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/collect-scope-records.log": "7b8549cd96ee274272258e86e5b3530557c5efad0bb0b435b045c399fffd8529",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/demo-bounded.log": "daf362614af599204bff38620df77aeb869baba6ce486f3d931ff0933a1d5bea",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/demo-final.log": "5895fae0bc48ab799f61a667012180c3a8afb6b31e6c955bb8cceecde444d090",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/demo.log": "75dbf11bda4b19e5276d36f6d47bf1e905bbfe133682bce3b43b11c8dfa3a5ca",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/image-runtime-bounded.log": "268e56337e86d9695a38928516166c76925ee4e61975aaab9f4e94ba0ce4545c",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/image-runtime-final.log": "1708827669fe94b2919c21cbaf59f201df8b6c84d51c857c0b7d390106f9647d",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/image-runtime.log": "4d5b3b793a2f1bb794f22d9f0c1b3e26a4fbfdd18d343e0a7ed99c0f1597c51a",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-font-embedding-bounded.log": "993be2684e64cbe2303962feb52fb72a651ad8e71dc8bf645d76983d95b86d2c",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-font-embedding-final.log": "993be2684e64cbe2303962feb52fb72a651ad8e71dc8bf645d76983d95b86d2c",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-font-embedding.log": "993be2684e64cbe2303962feb52fb72a651ad8e71dc8bf645d76983d95b86d2c",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-pdf-reader-bounded.log": "a01b38a53b3acfd95e5b5280ff13c51b47954751ca6313c541c7894683574a70",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-pdf-reader-final.log": "a01b38a53b3acfd95e5b5280ff13c51b47954751ca6313c541c7894683574a70",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-pdf-reader.log": "a01b38a53b3acfd95e5b5280ff13c51b47954751ca6313c541c7894683574a70",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-pdf-render-bounded.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-pdf-render-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/independent-pdf-render.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/map-budget-reproduction.log": "e6558a1c52d4f452a6a3de7c695c766ff626fc06f4fbb67a93ca56244c354db5",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/map-budget-snapshot-replay.log": "4bed4130082fcc551bbd785d06f9b7bc468597fdb2482fcd65f567e513faf1b3",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/postgres-bounded.log": "968859d3a2092653069ab81e349b74790121d2a4ceb31454a0174a270383ebe2",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/postgres-final.log": "bc42e49e0cb24592ce36527bac4c8355ae2b93073ad64992d9caf73154c50ef9",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/postgres.log": "7638b913083c9b0c4bb414262d510785a63c6a4a1f383ed4833019f747e51071",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/related-bounded.log": "7b54c4970f67bde6cd8260e7e839f4e1614e6edc4440214e772e3f247ebd260a",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/related-final.log": "7e684f7b588d4db3e9a98b1f2442e2ae4f4949601deb2e237816ebedc26add31",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/related.log": "1b7d942b3f52ec3540ef55376dc5278684b715a0de4e2aede6fcc0d60e0a53fe",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/static-bounded.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/static-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/table-budget-reproduction.log": "04fbf1954bf3358c5229d42a7fd6b8041d7ae15cc6a362005645a60b0723724f",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/table-budget-snapshot-replay.log": "2c665262e1bb0cae55136a5d7f312380516508944e548bfae5aeb74426eacccc",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/upgrade-bounded.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/upgrade-final.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "docs/superpowers/evidence/2026-10-16-octop-office-pdf-fonts/logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133"
+  },
+  "additional_raw_sha256": {
+    "postgres-runtime-bounded.log": "da85114e9b6ccd11044f1f62b0affcb91a151ecc679bdf6ca4ea5ccaa25aeefe",
+    "postgres-runtime.log": "054c621549544457e3e08f551571bc7e1f43ddd73c44dcbf69834d0bc6b4f923",
+    "postgres-runtime-final.log": "815120ca7dc0994795a1f2efd6765913f9e05ad4cb53dfb09fef379570e346f2"
+  },
+  "demo_sha256": {
+    "demo-chinese-final.pdf": "3ce7a1de040d7b8208e3f7be744f2ed1908e9650933f45ae27df889dc0eabfd3",
+    "demo-poppler-final.png": "a98a75738a06e5c1a7d4ed893fe6120c3052ecfda5416a36198d3bc7fd19a1f7",
+    "demo-chinese-bounded.pdf": "2e252828e2011ed0b5506dfd89d60f96e1f92f0650f8bd0766f6f35f831a3273",
+    "demo-poppler-bounded.png": "a98a75738a06e5c1a7d4ed893fe6120c3052ecfda5416a36198d3bc7fd19a1f7",
+    "demo-chinese-bounded.png": "38155edcb9a253837552905879fcf9281170b26cbdd3a14d7e2ac5183fe68d13",
+    "demo-chinese-final.png": "38155edcb9a253837552905879fcf9281170b26cbdd3a14d7e2ac5183fe68d13",
+    "demo-chinese.png": "38155edcb9a253837552905879fcf9281170b26cbdd3a14d7e2ac5183fe68d13",
+    "demo-poppler.png": "a98a75738a06e5c1a7d4ed893fe6120c3052ecfda5416a36198d3bc7fd19a1f7",
+    "demo-chinese.pdf": "cfc31b66b56ef1c9aef51bc4c38fffe16d1890d35500b691734e8061e1ef8160"
+  },
+  "source_asset_sha256": {
+    "backend/tests/fixtures/pdf-fonts/provenance.json": "31f76e83bd163474cec04faf7fe0dcee86f055d6327fc11b8d6db519b6501eb4",
+    "backend/tests/fixtures/pdf-fonts/copyright.txt": "075f91382875da1c4b491f1facf2586f55448705133264d98ce15cab6211b125",
+    "backend/tests/fixtures/pdf-fonts/NotoMono-Regular.ttf": "41fd7ccc82375e2a1e47f0cc2c941c14d7c99ba2f57cf69c9f738d07fb257686"
+  },
+  "preserved_archive_sha256": {
+    "source-before-table-budget.tar.gz": "0306297037462b48322ddcb07e308998f67ce51eb45c50fd0afb7250e0dd0539",
+    "source-initial.tar.gz": "551f111f10b18edc6e7e5ccca6931f3cd313e2d81924e4392581a0a16b8b955c"
+  },
+  "backend_full_faulthandler_notices": 1,
+  "final_demo": {
+    "scope": "Actual font engine bytes/text/pixels; native authorization/download/revocation separately tested, not OCR or complex shaping",
+    "font": {
+      "source": "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+      "sha256": "79c18ebe7b811951e8311bad7103ebeae8c337ed9988ea69e8a78a66cfe029b9",
+      "bytes": 16791251,
+      "package": "0.9.45-8",
+      "declared_license": "GPL-2 with Font embedding exception and M+ FONTS License; original source-package notice retained",
+      "implicit_runtime_font_lookup": false
+    },
+    "extracted_text": "PrismOS 独立 PDF 中文字体\r\n季度预算：研发 120，验证 80\r\n使用当前有权读取的字体文件生成\r\n缺字与复杂文字整形会明确拒绝",
+    "files": {
+      "demo-chinese-final.pdf": {
+        "sha256": "3ce7a1de040d7b8208e3f7be744f2ed1908e9650933f45ae27df889dc0eabfd3",
+        "bytes": 9503890
+      },
+      "demo-chinese-final.png": {
+        "sha256": "38155edcb9a253837552905879fcf9281170b26cbdd3a14d7e2ac5183fe68d13",
+        "bytes": 27868
+      }
+    }
+  },
+  "final_native_and_poppler_pixels_equal_viewed_initial": true
+}

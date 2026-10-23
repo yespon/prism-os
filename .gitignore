@@ -67,3 +67,15 @@ data/
 config.postgres.yaml
 website/
 solutions/
+
+# Pinned Octop library resources are source content, not deployment data.
+!backend/packages/octop-capabilities/src/prismos_octop/data/
+!backend/packages/octop-capabilities/src/prismos_octop/data/**
+backend/packages/octop-capabilities/src/prismos_octop/data/**/__pycache__/
+backend/packages/octop-capabilities/src/prismos_octop/data/**/*.pyc
+
+# Local owned compatibility contexts and validation artifacts
+backend/tmp/
+
+# Desktop shell fork (R4): Wails binary build outputs stay out of git
+desktop-shell-fork/src/build/bin/

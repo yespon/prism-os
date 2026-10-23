@@ -1,0 +1,1 @@
+{"scope": "Synthetic valid-range cmap metadata; no native font parse, memory exhaustion or external operation attempted", "entries_in_two_maps": 120000, "initial_validator_accepted": true, "current_implementation_rejected": "PDF font total character map limit exceeded", "font_bytes": 1547900}

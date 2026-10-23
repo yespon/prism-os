@@ -1,0 +1,17 @@
+{
+  "complete": false,
+  "M1_exited": false,
+  "N08_started": false,
+  "skill_name": "n04-read-b7f9751353",
+  "resource_id": "skill:1:8796791ed9f55bcef28a1839b35b927203282bd078235a2c707c8786cf2d8019",
+  "create_http_status": 201,
+  "edit_and_duplicate_protection": true,
+  "owned_storage_sha256": "439215843259828c8d897e242ef6fffe2bac189973334e433ce10cf74aad5234",
+  "source_checkout_unchanged": true,
+  "survives_gateway_langgraph_recreation": true,
+  "incident_id": "33532ff3-1875-44db-984d-869e98865934",
+  "agent_id": "4307a1ec-eca9-48b0-91ca-3deb0538ac1e",
+  "source_id": "6293bb1e-cff6-4eb5-ba3c-c874a223f50b",
+  "requests_before": 25,
+  "canary_restored_off": true
+}

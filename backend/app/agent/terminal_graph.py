@@ -15,7 +15,13 @@ import shlex
 import uuid
 from typing import Annotated, Any, Literal, TypedDict
 
-from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolMessage
+from langchain_core.messages import (
+    AIMessage,
+    AnyMessage,
+    HumanMessage,
+    SystemMessage,
+    ToolMessage,
+)
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
@@ -27,9 +33,7 @@ from app.agent.terminal_tools import (
     _build_write_file_command,
     terminal_tools_list,
 )
-from app.models.assets import Keychain, LocalAsset
 from app.services.terminal.security import security_service
-from app.services.terminal.session import build_ssh_command, session_manager
 from deerflow.database.session import get_session_factory
 from deerflow.models.factory import create_chat_model
 
@@ -374,7 +378,10 @@ class TerminalAgentNodes:
 
         # Load user security settings from database
         from app.models.terminal import TerminalSecuritySettings
-        from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG
+        from app.services.terminal.security import (
+            DEFAULT_AUTO_APPROVAL,
+            DEFAULT_SECURITY_CONFIG,
+        )
 
         security_config = DEFAULT_SECURITY_CONFIG
         auto_approval = DEFAULT_AUTO_APPROVAL
@@ -609,33 +616,23 @@ class TerminalAgentNodes:
                     target_id = target.get("id", "")
                     target_name = target.get("name", "") or target.get("ip") or target_id
                     
-                    # 1. Get or create session for this target
-                    session = session_manager.get_or_create_session(term_session_id, target_id)
-                    
-                    # 2. Ensure PTY is started
-                    if session.pty.fd is None:
-                        logger.info(f"[execute_node] Starting PTY session {term_session_id} for asset {target_id}")
-                        try:
-                            session_factory = get_session_factory()
-                            async with session_factory() as db:
-                                asset_obj = (
-                                    await db.execute(sa_select(LocalAsset).where(LocalAsset.id == target_id))
-                                ).scalars().first()
-                                if asset_obj:
-                                    keychain = None
-                                    if asset_obj.keychain_id:
-                                        keychain = (
-                                            await db.execute(
-                                                sa_select(Keychain).where(Keychain.id == asset_obj.keychain_id)
-                                            )
-                                        ).scalars().first()
-                                    cmd_arr, env_updates, temp_files = build_ssh_command(asset_obj, keychain)
-                                    session.start(cmd=cmd_arr, env_updates=env_updates, temp_files=temp_files)
-                                    await asyncio.sleep(1.0)
-                        except Exception as pty_err:
-                            logger.error(f"[execute_node] Failed to start PTY session for {target_id}: {pty_err}")
-                            host_results.append((target_name, f"Error starting session: {pty_err}"))
-                            continue
+                    from app.agent.terminal_tools import (
+                        _ensure_session,
+                        get_terminal_context,
+                        set_terminal_context,
+                    )
+
+                    context = {
+                        "tenant_id": state.get("tenant_id"), "user_id": state.get("user_id"),
+                        "chat_session_id": state.get("session_id"), "terminal_session_id": term_session_id,
+                        "selected_assets": selected_assets, "asset_id": asset_id, "mode": mode,
+                    }
+                    previous_context = get_terminal_context()
+                    try:
+                        set_terminal_context(context)
+                        session = await _ensure_session(target_id)
+                    finally:
+                        set_terminal_context(previous_context)
 
                     # 3. Execute remote command
                     if tool_name == "execute_command":

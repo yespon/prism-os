@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_child_task_probe.py",
+    "--resume",
+    "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-loop-fixed.json",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-child-user-task/real-child-after-native-restart.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T22:51:33.146502+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T22:51:41.577250+00:00"
+}

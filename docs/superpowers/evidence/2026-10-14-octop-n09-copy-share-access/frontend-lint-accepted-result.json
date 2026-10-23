@@ -1,0 +1,19 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "eslint",
+    "src/components/workspace/agents/agent-card.tsx",
+    "src/components/workspace/agents/agent-gallery.tsx",
+    "src/components/workspace/agents/copy-agent-dialog.tsx",
+    "src/components/workspace/agents/copy-agent-dialog.test.tsx",
+    "src/core/agents/api.ts",
+    "src/core/agents/api.test.ts",
+    "src/core/agents/types.ts"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/frontend",
+  "started_at": "2026-10-15T02:33:11.105142+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T02:33:47.918197+00:00"
+}

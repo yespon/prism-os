@@ -1,0 +1,40 @@
+
+ RUN  v4.1.2 /root/.codex/worktrees/octop-integration/prism-os/frontend
+
+ ❯ src/components/workspace/agents/agent-presentation.test.tsx (18 tests | 1 failed) 5451ms
+   × keeps an existing concrete choice and its revision on ordinary edits 62ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/workspace/agents/agent-presentation.test.tsx > keeps an existing concrete choice and its revision on ordinary edits
+AssertionError: expected { system_prompt: 'Agent', …(13) } to match object { …(3) }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "expected_agent_id": "current-agent",
+    "expected_revision": "current-revision",
+-   "skills": [
+-     "collision",
+-   ],
++   "skills": [],
+  }
+
+ ❯ src/components/workspace/agents/agent-presentation.test.tsx:550:50
+    548|   fireEvent.click(screen.getByRole("button",{name:"保存配置"}));
+    549|   await waitFor(() => expect(mock.update).toHaveBeenCalled());
+    550|   expect(mock.update.mock.calls[0]?.[0].request).toMatchObject({expect…
+       |                                                  ^
+    551|   expect(mock.update.mock.calls[0]?.[0].request.skill_resources).toBeU…
+    552| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 56 passed (57)
+      Tests  1 failed | 248 passed (249)
+   Start at  00:05:46
+   Duration  42.72s (transform 2.19s, setup 3.86s, import 14.00s, tests 18.63s, environment 40.65s)
+

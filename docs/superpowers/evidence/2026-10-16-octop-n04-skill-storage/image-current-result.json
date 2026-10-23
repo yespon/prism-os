@@ -1,0 +1,30 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-n04-skill-current-d7c712d3",
+    "-v",
+    "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_wsl_test_env.py:/app/scripts/octop_wsl_test_env.py:ro",
+    "-v",
+    "/root/.codex/worktrees/octop-integration/prism-os/docker/n04-test/ticket_receiver.py:/app/docker/n04-test/ticket_receiver.py:ro",
+    "sha256:b0ee063a4f8ac9dee234de15d0b20423c64569430e20ceaa538d2bfd96c89bd1",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_incident_diagnosis.py tests/test_n04_ticket_receiver.py tests/test_diagnosis_authorization.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T08:23:50.608353+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T08:26:03.024763+00:00"
+}

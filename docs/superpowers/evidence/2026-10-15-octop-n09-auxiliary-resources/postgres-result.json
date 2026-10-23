@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_skill_postgres.py",
+    "--output-dir",
+    "/tmp/prismos-auxiliary-postgres",
+    "--test-file",
+    "tests/test_resource_catalog_access.py",
+    "--test-file",
+    "tests/test_octop_resource_installations.py",
+    "--test-file",
+    "tests/test_skill_import_recovery.py",
+    "--test-file",
+    "tests/test_skill_manual_creation.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T04:42:23.818229+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T04:48:07.488842+00:00"
+}

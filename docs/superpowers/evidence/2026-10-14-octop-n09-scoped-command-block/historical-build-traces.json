@@ -1,0 +1,10 @@
+{
+  "current": {
+    "trace_files": 50,
+    "paths_outside_frontend": []
+  },
+  "independent": {
+    "trace_files": 50,
+    "paths_outside_frontend": []
+  }
+}

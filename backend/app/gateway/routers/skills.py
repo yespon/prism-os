@@ -1,35 +1,37 @@
+import hashlib
 import logging
 import re
-import shutil
 import tempfile
+import zipfile
 from pathlib import Path
+from typing import Literal
 
 import yaml
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 from pydantic import BaseModel, Field
 
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.gateway.path_utils import resolve_thread_virtual_path
+from app.gateway.resource_authorization import CurrentResourceRoute, resource_operation_guard
+from app.integrations import skill_deletions, skill_imports, skill_mutations
 from deerflow.database.user_config_service import (
-    create_tenant_personal_skill,
-    create_tenant_shared_skill,
-    delete_tenant_personal_skill,
-    delete_tenant_shared_skill,
     get_available_skills,
     get_tenant_shared_skill_settings,
+    initialize_owned_skill_configuration,
     list_tenant_shared_skills,
-    set_tenant_shared_skill_enabled,
-    update_tenant_personal_skill,
-    update_tenant_personal_skill_settings,
-    update_tenant_shared_skill,
-    update_tenant_shared_skill_settings,
 )
-from deerflow.skills import Skill, get_skills_root_path, load_skills
-from deerflow.skills.installer import SkillAlreadyExistsError, install_skill_from_archive
+from deerflow.sandbox.file_access import read_owned_file
+from deerflow.skills import (
+    Skill,
+    get_skills_root_path,
+    load_skills,  # noqa: F401 - compatibility export; HTTP paths use current native facts
+)
+from deerflow.skills.installer import SkillAlreadyExistsError
+from deerflow.skills.resource_identity import registered_resource_id, resource_directory
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api", tags=["skills"])
+router = APIRouter(prefix="/api", tags=["skills"], route_class=CurrentResourceRoute)
 _SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9-]+$")
 
 
@@ -59,6 +61,10 @@ class SkillsListResponse(BaseModel):
 
 
 class AvailableSkillResponse(SkillResponse):
+    file_sha256: str | None = None
+    resource_id: str | None = None
+    owner_kind: str | None = None
+    files_status: str | None = None
     scope: str = Field(..., description="Resource scope: global or tenant")
     source: str = Field(..., description="Skill source classification")
     managed_by_current_user: bool = Field(..., description="Whether current user can manage this skill")
@@ -72,6 +78,7 @@ class AvailableSkillsListResponse(BaseModel):
 class SkillUpdateRequest(BaseModel):
     """Request model for updating a skill."""
 
+    expected_resource_id: str | None = Field(default=None, max_length=128)
     enabled: bool = Field(..., description="Whether to enable or disable the skill")
 
 
@@ -88,6 +95,8 @@ class TenantSkillCreateRequest(BaseModel):
 
 
 class TenantSkillPatchRequest(BaseModel):
+    expected_file_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    expected_resource_id: str | None = Field(default=None, max_length=128)
     description: str | None = Field(default=None, description="Skill description")
     instructions: str | None = Field(default=None, description="Skill instructions")
     enabled: bool | None = Field(default=None, description="Whether skill is enabled")
@@ -110,10 +119,20 @@ class GenerateInstructionsResponse(BaseModel):
 
 
 class SkillDetailResponse(SkillResponse):
+    file_sha256: str | None = None
+    resource_id: str | None = None
+    owner_kind: str | None = None
+    files_status: str | None = None
     """Extended response for skill detail view."""
     references: dict[str, str] | None = Field(None, description="Reference documents (Tier 3)")
     scope: str = Field(..., description="Scope of the skill (global, tenant, personal)")
     managed_by_current_user: bool = Field(..., description="Whether current user can manage this skill")
+
+
+class SkillCreationResponse(SkillDetailResponse):
+    operation_id: str
+    recovery_available: bool = True
+    configuration_phase: str = "confirmed"
 
 
 class ToolCallSummary(BaseModel):
@@ -167,6 +186,7 @@ class SkillInstallResponse(BaseModel):
     success: bool = Field(..., description="Whether the installation was successful")
     skill_name: str = Field(..., description="Name of the installed skill")
     message: str = Field(..., description="Installation result message")
+    operation_id: str | None = Field(default=None, description="Owned Skill import operation for reconciliation")
 
 
 def _skill_to_response(skill: Skill) -> SkillResponse:
@@ -233,14 +253,26 @@ def _split_skill_markdown(content: str) -> tuple[dict[str, object], str]:
         frontmatter = {}
     if not isinstance(frontmatter, dict):
         frontmatter = {}
+    metadata = frontmatter.get("metadata")
+    if isinstance(metadata, dict):
+        for key in ("created_by", "changelog", "usage_count"):
+            if key not in frontmatter and key in metadata:
+                frontmatter[key] = metadata[key]
     return frontmatter, match.group(2).strip()
+
+
+def _read_skill_bytes(path):
+    try:
+        return read_owned_file(path)
+    except OSError:
+        raise HTTPException(409, "Skill member file cannot be verified; contents were preserved") from None
 
 
 def _read_skill_file_payload(skill_dir: Path) -> tuple[str | None, str | None]:
     skill_file = skill_dir / "SKILL.md"
     if not skill_file.exists():
         return None, None
-    frontmatter, instructions = _split_skill_markdown(skill_file.read_text(encoding="utf-8"))
+    frontmatter, instructions = _split_skill_markdown(_read_skill_bytes(skill_file).decode("utf-8"))
     description = frontmatter.get("description")
     if description is not None:
         description_text = str(description).strip()
@@ -331,15 +363,14 @@ def _build_skill_response(
     install_dir: str | None = None,
     relative_path: str | None = None,
 ) -> SkillResponse:
-    resolved = next((s for s in load_skills(enabled_only=False) if s.name == row_name), None)
     skill_dir = _resolve_skill_runtime_dir(tenant_id, row_name, install_dir, relative_path)
     skill_file = skill_dir / "SKILL.md"
     file_description: str | None = None
     if skill_file.exists():
-        raw = skill_file.read_text(encoding="utf-8")
+        raw = _read_skill_bytes(skill_file).decode("utf-8")
         fm, instructions = _split_skill_markdown(raw)
-        # _read_skill_file_payload safely casts description to str
-        file_description, _ = _read_skill_file_payload(skill_dir)
+        description_value = fm.get("description")
+        file_description = str(description_value).strip() if description_value is not None else None
     else:
         fm = {}
         instructions = ""
@@ -348,8 +379,8 @@ def _build_skill_response(
 
     return SkillResponse(
         name=row_name,
-        description=(resolved.description if resolved is not None else file_description) or "",
-        license=resolved.license if resolved is not None else None,
+        description=file_description or "",
+        license=fm.get("license"),
         category=category,
         enabled=enabled,
         bound_tools=settings.get("bound_tools") or [],
@@ -373,8 +404,8 @@ def _build_skill_response(
 async def list_skills(request: Request) -> SkillsListResponse:
     require_tenant_context(request)
     try:
-        skills = load_skills(enabled_only=False)
-        return SkillsListResponse(skills=[_skill_to_response(skill) for skill in skills])
+        available = await list_available_skills(request)
+        return SkillsListResponse(skills=[SkillResponse.model_validate(item.model_dump()) for item in available.skills])
     except Exception as e:
         logger.error(f"Failed to load skills: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to load skills: {str(e)}")
@@ -397,20 +428,19 @@ async def list_available_skills(request: Request) -> AvailableSkillsListResponse
         )
         enriched_rows = []
         for row in rows:
-            if row.get("scope") == "tenant":
-                description, instructions = _read_skill_file_payload(
-                    _resolve_skill_runtime_dir(
-                        tenant_id,
-                        str(row.get("name") or ""),
-                        row.get("install_dir"),
-                        row.get("relative_path"),
-                    )
-                )
-                if description:
-                    row["description"] = description
+            if row.get("scope") in {"tenant", "personal"} and row.get("files_status") == "verified":
+                directory = resource_directory(get_skills_root_path(), tenant_id, request.state.user_id, row)
+                raw_bytes = _read_skill_bytes(directory / "SKILL.md")
+                frontmatter, instructions = _split_skill_markdown(raw_bytes.decode("utf-8"))
+                description = frontmatter.get("description")
+                if description is not None and str(description).strip():
+                    row["description"] = str(description).strip()
                 row["instructions"] = instructions
+                row["file_sha256"] = hashlib.sha256(raw_bytes).hexdigest()
             enriched_rows.append(row)
         return AvailableSkillsListResponse(skills=[AvailableSkillResponse.model_validate(row) for row in enriched_rows])
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to load available skills: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to load available skills: {str(e)}")
@@ -443,331 +473,269 @@ async def list_tenant_skills(request: Request) -> SkillsListResponse:
     return SkillsListResponse(skills=skills)
 
 
+async def _create_owned_skill(request: Request, body: TenantSkillCreateRequest, shared: bool) -> SkillCreationResponse:
+    tenant, actor = _import_identity(request)
+    name = _validate_manual_skill_name(body.name)
+    description = _normalize_skill_description(body.description)
+    category = (body.category or "custom").strip() or "custom" if shared else "personal"
+    if category.lower() == "public":
+        raise HTTPException(403, "Public source overrides use the original tenant enablement control")
+    frontmatter = {"name": name, "description": description, "version": 1, "metadata": {"created_by": actor, "changelog": body.changelog or "Initial creation", "usage_count": 0}}
+    markdown = "---\n" + yaml.safe_dump(frontmatter, sort_keys=False, allow_unicode=True) + "---\n\n" + ((body.instructions or "").strip() or f"# {name}") + "\n"
+    root = get_skills_root_path()
+    result = None
+    resource_id = None
+    try:
+        with tempfile.TemporaryDirectory(prefix="prismos-manual-skill-") as directory:
+            archive = Path(directory) / "manual.zip"
+            with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as package:
+                package.writestr(name + "/SKILL.md", markdown)
+            result, row = await skill_imports.import_archive(
+                archive, tenant, actor, shared, root=root,
+                manual_creation={"enabled": body.enabled, "category": category, "configuration_phase": "pending"},
+                authorize=resource_operation_guard(request, shared),
+            )
+        resource_id = registered_resource_id(row)
+        await initialize_owned_skill_configuration(tenant, actor, name, shared=shared, expected_resource_id=resource_id, enabled=body.enabled, bound_tools=body.bound_tools, prompt_template=body.prompt_template, strategy=body.strategy)
+        await skill_imports.mark_manual_configuration(result, tenant, actor, shared, "confirmed", root=root)
+        detail = await get_skill_detail(name, request, scope="tenant" if shared else "personal", resource_id=resource_id)
+        return SkillCreationResponse(**detail.model_dump(), operation_id=result["operation_id"])
+    except Exception as error:
+        operation_id = getattr(error, "skill_operation_id", None) or (result or {}).get("operation_id")
+        if operation_id:
+            if result is not None:
+                try:
+                    await skill_imports.mark_manual_configuration(result, tenant, actor, shared, "unknown", root=root)
+                except (OSError, ValueError):
+                    pass
+            raise HTTPException(503, {
+                "message": "Creation outcome requires inspection; published content and native facts were preserved",
+                "operation_id": operation_id, "resource_id": resource_id,
+                "recovery_available": True, "inspection_required": True,
+            }) from None
+        if isinstance(error, (SkillAlreadyExistsError, FileExistsError, RuntimeError)):
+            raise HTTPException(409, str(error)) from None
+        if isinstance(error, ValueError):
+            raise HTTPException(400, str(error)) from None
+        raise HTTPException(503, "Skill creation unavailable; inspect current resources") from None
+
+
 @router.post(
     "/tenants/skills",
-    response_model=SkillResponse,
+    response_model=SkillCreationResponse,
     status_code=201,
     summary="Create Tenant Shared Skill",
+    dependencies=[Depends(require_tenant_admin)],
 )
-async def create_tenant_skill(request: Request, body: TenantSkillCreateRequest) -> SkillResponse:
-    tenant_id = require_tenant_context(request)
-    user_id: str = getattr(request.state, "user_id", "")
-    normalized_name = _validate_manual_skill_name(body.name)
-    normalized_description = _normalize_skill_description(body.description)
-    relative_path = _tenant_skill_relative_path(tenant_id, normalized_name)
-    install_dir = str(_tenant_skill_dir(tenant_id, normalized_name))
-    try:
-        row = await create_tenant_shared_skill(
-            tenant_id,
-            skill_name=normalized_name,
-            enabled=body.enabled,
-            category=body.category,
-            relative_path=relative_path,
-            install_dir=install_dir,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
-    except RuntimeError as exc:
-        raise HTTPException(status_code=409, detail=str(exc))
-
-    try:
-        _write_skill_markdown(
-            _tenant_skill_dir(tenant_id, row.name),
-            name=row.name,
-            description=normalized_description,
-            instructions=body.instructions,
-            created_by=user_id,
-            version=1,
-            changelog=body.changelog or "Initial creation",
-        )
-        settings = await update_tenant_shared_skill_settings(
-            tenant_id,
-            row.name,
-            bound_tools=body.bound_tools,
-            prompt_template=body.prompt_template,
-            strategy=body.strategy,
-        )
-    except Exception:
-        await delete_tenant_shared_skill(tenant_id, row.name)
-        raise
-
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
+async def create_tenant_skill(request: Request, body: TenantSkillCreateRequest) -> SkillCreationResponse:
+    require_tenant_admin(request)
+    return await _create_owned_skill(request, body, True)
 
 
 @router.put(
     "/tenants/skills/{skill_name}",
-    response_model=SkillResponse,
+    response_model=SkillDetailResponse,
     summary="Update Tenant Shared Skill",
     dependencies=[Depends(require_tenant_admin)],
 )
-async def update_tenant_skill(skill_name: str, request: SkillUpdateRequest, api_request: Request) -> SkillResponse:
-    tenant_id = require_tenant_context(api_request)
-    row = await set_tenant_shared_skill_enabled(tenant_id, skill_name, request.enabled)
-    settings_by_name = await get_tenant_shared_skill_settings(tenant_id)
-    settings = settings_by_name.get(row.name) or {}
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
+async def update_tenant_skill(skill_name: str, request: SkillUpdateRequest, api_request: Request) -> SkillDetailResponse:
+    require_tenant_admin(api_request)
+    tenant, actor = _import_identity(api_request)
+    try:
+        scope, resource_id = await skill_mutations.set_shared_enablement(get_skills_root_path(), tenant, actor, skill_name, request.enabled, request.expected_resource_id)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except skill_mutations.SkillMutationUnknown as error:
+        raise HTTPException(503, {"message": str(error), "resource_id": error.resource_id, "inspection_required": True}) from None
+    except Exception:
+        logger.exception("Skill enablement did not complete")
+        raise HTTPException(503, "Skill enablement unavailable; inspect current resources") from None
+    try:
+        return await get_skill_detail(skill_name, api_request, scope=scope, resource_id=resource_id)
+    except Exception:
+        raise HTTPException(503, {"message": "Skill enablement response could not be confirmed; inspect current state", "resource_id": resource_id, "inspection_required": True}) from None
+
+
+async def _patch_owned_response(name: str, body: TenantSkillPatchRequest, request: Request, shared: bool):
+    tenant, actor = _import_identity(request)
+    try:
+        resource_id = await skill_mutations.patch_owned_skill(get_skills_root_path(), tenant, actor, shared, name, body, split=_split_skill_markdown, render=_render_skill_markdown, normalize=_normalize_skill_description)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except skill_mutations.SkillMutationUnknown as error:
+        raise HTTPException(503, {"message": str(error), "resource_id": error.resource_id, "inspection_required": True}) from None
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Owned Skill edit did not complete")
+        raise HTTPException(503, "Skill edit unavailable; inspect the current resource before retrying") from None
+    try:
+        return await get_skill_detail(name, request, scope="tenant" if shared else "personal", resource_id=resource_id)
+    except Exception:
+        raise HTTPException(503, {"message": "Skill edit response could not be confirmed; inspect current state", "resource_id": resource_id, "inspection_required": True}) from None
 
 
 @router.patch(
     "/tenants/skills/{skill_name}",
-    response_model=SkillResponse,
+    response_model=SkillDetailResponse,
     summary="Patch Tenant Shared Skill",
-)
-async def patch_tenant_skill(skill_name: str, request: TenantSkillPatchRequest, api_request: Request) -> SkillResponse:
-    tenant_id = require_tenant_context(api_request)
-    user_id: str = getattr(api_request.state, "user_id", "")
-    is_admin = _is_tenant_admin(api_request)
-
-    try:
-        row = await update_tenant_shared_skill(
-            tenant_id,
-            skill_name,
-            enabled=request.enabled,
-            category=request.category,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
-
-    skill_dir = _resolve_skill_runtime_dir(
-        tenant_id,
-        row.name,
-        getattr(row, "install_dir", None),
-        getattr(row, "relative_path", None),
-    )
-    frontmatter, current_instructions = _read_skill_file_payload(skill_dir)
-    creator = frontmatter.get("created_by")
-    if not is_admin and creator and creator != user_id:
-        raise HTTPException(status_code=403, detail="You can only edit skills you created")
-
-    settings = await update_tenant_shared_skill_settings(
-        tenant_id,
-        row.name,
-        bound_tools=request.bound_tools,
-        prompt_template=request.prompt_template,
-        strategy=request.strategy,
-    )
-
-    if request.description is not None or request.instructions is not None:
-        current_description = frontmatter.get("description") or row.name
-        description_to_write = (
-            _normalize_skill_description(request.description)
-            if request.description is not None
-            else (current_description if isinstance(current_description, str) and current_description.strip() else row.name)
-        )
-        instructions_to_write = request.instructions if request.instructions is not None else current_instructions
-        new_version = int(frontmatter.get("version", 1)) + 1
-        _write_skill_markdown(
-            skill_dir,
-            name=row.name,
-            description=description_to_write,
-            instructions=instructions_to_write,
-            created_by=creator,
-            version=new_version,
-            changelog=request.changelog or f"Updated (v{new_version})",
-            usage_count=int(frontmatter.get("usage_count", 0)),
-            references=frontmatter.get("references"),
-        )
-
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
-
-
-@router.delete(
-    "/tenants/skills/{skill_name}",
-    status_code=204,
-    summary="Delete Tenant Shared Skill",
     dependencies=[Depends(require_tenant_admin)],
 )
-async def delete_tenant_skill(skill_name: str, request: Request):
-    tenant_id = require_tenant_context(request)
-    skill_dir = _tenant_skill_dir(tenant_id, skill_name)
+async def patch_tenant_skill(skill_name: str, request: TenantSkillPatchRequest, api_request: Request) -> SkillResponse:
+    require_tenant_admin(api_request)
+    return await _patch_owned_response(skill_name, request, api_request, True)
+
+
+async def _deletion_preflight(name: str, request: Request, shared: bool, expected_resource_id: str | None = None):
+    if shared:
+        require_tenant_admin(request)
+    tenant, actor = _import_identity(request)
     try:
-        await delete_tenant_shared_skill(tenant_id, skill_name)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    if skill_dir.exists():
-        shutil.rmtree(skill_dir, ignore_errors=True)
+        return await skill_deletions.preflight(get_skills_root_path(), tenant, actor, shared, name, expected_resource_id)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except (ValueError, OSError):
+        raise HTTPException(409, "Deletion ownership or references cannot be verified; contents were preserved") from None
+
+
+async def _delete_owned_response(name: str, request: Request, shared: bool, expected_resource_id=None, expected_tree_sha256=None, expected_file_sha256=None):
+    if shared:
+        require_tenant_admin(request)
+    tenant, actor = _import_identity(request)
+    try:
+        await skill_deletions.delete_owned(get_skills_root_path(), tenant, actor, shared, name, expected_resource_id=expected_resource_id, expected_tree_sha256=expected_tree_sha256, expected_file_sha256=expected_file_sha256)
+    except skill_mutations.SkillMutationRejected as error:
+        raise HTTPException(error.status, str(error)) from None
+    except skill_deletions.SkillDeletionUnknown as error:
+        raise HTTPException(503, {"message": str(error), "operation_id": error.operation_id, "resource_id": error.resource_id, "inspection_required": True, "recovery_available": True}) from None
+    except (ValueError, OSError):
+        raise HTTPException(409, "Deletion ownership or references cannot be verified; contents were preserved") from None
+    except Exception:
+        logger.exception("Resource deletion did not complete")
+        raise HTTPException(503, "Deletion unavailable; inspect current resource and operation records") from None
+
+
+@router.get("/tenants/skills/{skill_name}/deletion-preflight", dependencies=[Depends(require_tenant_admin)])
+async def tenant_deletion_preflight(skill_name: str, request: Request, expected_resource_id: str | None = None):
+    return await _deletion_preflight(skill_name, request, True, expected_resource_id)
+
+
+@router.get("/skills/personal/{skill_name}/deletion-preflight")
+async def personal_deletion_preflight(skill_name: str, request: Request, expected_resource_id: str | None = None):
+    return await _deletion_preflight(skill_name, request, False, expected_resource_id)
+
+
+@router.delete("/tenants/skills/{skill_name}", status_code=204, summary="Delete Tenant Shared Skill", dependencies=[Depends(require_tenant_admin)])
+async def delete_tenant_skill(skill_name: str, request: Request, expected_resource_id: str | None = None, expected_tree_sha256: str | None = None, expected_file_sha256: str | None = None):
+    return await _delete_owned_response(skill_name, request, True, expected_resource_id, expected_tree_sha256, expected_file_sha256)
 
 
 @router.post(
     "/skills/personal",
-    response_model=SkillResponse,
+    response_model=SkillCreationResponse,
     status_code=201,
     summary="Create Personal Skill",
 )
-async def create_personal_skill(request: Request, body: TenantSkillCreateRequest) -> SkillResponse:
-    tenant_id = require_tenant_context(request)
-    user_id: str = getattr(request.state, "user_id", "")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="User ID is required for personal skills")
-
-    normalized_name = _validate_manual_skill_name(body.name)
-    normalized_description = _normalize_skill_description(body.description)
-    relative_path = f"{user_id}/{normalized_name}"
-    install_dir = str(get_skills_root_path() / "custom" / tenant_id / user_id / normalized_name)
-
-    try:
-        row = await create_tenant_personal_skill(
-            tenant_id,
-            user_id,
-            skill_name=normalized_name,
-            enabled=body.enabled,
-            category="personal",
-            relative_path=relative_path,
-            install_dir=install_dir,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
-    except RuntimeError as exc:
-        raise HTTPException(status_code=409, detail=str(exc))
-
-    try:
-        _write_skill_markdown(
-            Path(install_dir),
-            name=row.name,
-            description=normalized_description,
-            instructions=body.instructions,
-            created_by=user_id,
-            version=1,
-            changelog=body.changelog or "Initial creation",
-        )
-        settings = await update_tenant_personal_skill_settings(
-            tenant_id,
-            user_id,
-            row.name,
-            bound_tools=body.bound_tools,
-            prompt_template=body.prompt_template,
-            strategy=body.strategy,
-        )
-    except Exception:
-        await delete_tenant_personal_skill(tenant_id, user_id, row.name)
-        raise
-
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=install_dir,
-        relative_path=relative_path,
-    )
+async def create_personal_skill(request: Request, body: TenantSkillCreateRequest) -> SkillCreationResponse:
+    return await _create_owned_skill(request, body, False)
 
 
 @router.patch(
     "/skills/personal/{skill_name}",
-    response_model=SkillResponse,
+    response_model=SkillDetailResponse,
     summary="Patch Personal Skill",
 )
 async def patch_personal_skill(skill_name: str, request: TenantSkillPatchRequest, api_request: Request) -> SkillResponse:
-    tenant_id = require_tenant_context(api_request)
-    user_id: str = getattr(api_request.state, "user_id", "")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="User ID is required")
+    return await _patch_owned_response(skill_name, request, api_request, False)
 
+
+@router.delete("/skills/personal/{skill_name}", status_code=204, summary="Delete Personal Skill")
+async def delete_personal_skill(skill_name: str, request: Request, expected_resource_id: str | None = None, expected_tree_sha256: str | None = None, expected_file_sha256: str | None = None):
+    return await _delete_owned_response(skill_name, request, False, expected_resource_id, expected_tree_sha256, expected_file_sha256)
+
+
+def _import_error_detail(error: Exception, result: dict | None = None):
+    operation_id = getattr(error, "skill_operation_id", None) or (result or {}).get("operation_id")
+    if operation_id:
+        return {"message": "Import outcome requires reconciliation; published files were preserved", "operation_id": operation_id, "recovery_available": True}
+    return str(error)
+
+
+def _import_identity(request: Request) -> tuple[str, str]:
+    tenant = require_tenant_context(request)
+    user = getattr(request.state, "user_id", "")
+    if not user:
+        raise HTTPException(401, "User ID is required")
+    return tenant, user
+
+
+async def _import_operations(request: Request, shared: bool, cursor: str | None, page_size: int):
+    tenant, user = _import_identity(request)
     try:
-        row = await update_tenant_personal_skill(
-            tenant_id,
-            user_id,
-            skill_name,
-            enabled=request.enabled,
-            category=request.category,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
-
-    skill_dir = _resolve_skill_runtime_dir(
-        tenant_id,
-        row.name,
-        getattr(row, "install_dir", None),
-        getattr(row, "relative_path", None),
-    )
-    skill_file = skill_dir / "SKILL.md"
-    if skill_file.exists():
-        frontmatter, current_instructions = _split_skill_markdown(skill_file.read_text(encoding="utf-8"))
-    else:
-        frontmatter = {}
-        current_instructions = ""
-
-    settings = await update_tenant_personal_skill_settings(
-        tenant_id,
-        user_id,
-        row.name,
-        bound_tools=request.bound_tools,
-        prompt_template=request.prompt_template,
-        strategy=request.strategy,
-    )
-
-    if request.description is not None or request.instructions is not None:
-        current_description = frontmatter.get("description") or row.name
-        description_to_write = (
-            _normalize_skill_description(request.description)
-            if request.description is not None
-            else (current_description if isinstance(current_description, str) and current_description.strip() else row.name)
-        )
-        instructions_to_write = request.instructions if request.instructions is not None else current_instructions
-        new_version = int(frontmatter.get("version", 1)) + 1
-        _write_skill_markdown(
-            skill_dir,
-            name=row.name,
-            description=description_to_write,
-            instructions=instructions_to_write,
-            created_by=user_id,
-            version=new_version,
-            changelog=request.changelog or f"Updated (v{new_version})",
-            usage_count=int(frontmatter.get("usage_count", 0)),
-            references=frontmatter.get("references"),
-        )
-
-    return _build_skill_response(
-        tenant_id=tenant_id,
-        row_name=row.name,
-        category=row.category,
-        enabled=row.enabled,
-        settings=settings,
-        install_dir=getattr(row, "install_dir", None),
-        relative_path=getattr(row, "relative_path", None),
-    )
+        return await skill_imports.list_operation_page(tenant, user, shared, root=get_skills_root_path(), cursor=cursor, page_size=page_size)
+    except skill_imports.InvalidImportCursor as error:
+        raise HTTPException(400, str(error)) from None
+    except ValueError:
+        raise HTTPException(409, "Skill import scope cannot be verified; contents were preserved") from None
+    except Exception:
+        logger.exception("Skill import inspection did not complete")
+        raise HTTPException(503, "Import records unavailable; inspect again before taking action") from None
 
 
-@router.delete(
-    "/skills/personal/{skill_name}",
-    status_code=204,
-    summary="Delete Personal Skill",
-)
-async def delete_personal_skill(skill_name: str, request: Request):
-    tenant_id = require_tenant_context(request)
-    user_id: str = getattr(request.state, "user_id", "")
-    skill_dir = get_skills_root_path() / "custom" / tenant_id / user_id / skill_name
+async def _import_operation(request: Request, operation_id: str, shared: bool, recover: bool = False, abort: bool = False):
+    if shared:
+        require_tenant_admin(request)
+    tenant, user = _import_identity(request)
     try:
-        await delete_tenant_personal_skill(tenant_id, user_id, skill_name)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    if skill_dir.exists():
-        shutil.rmtree(skill_dir, ignore_errors=True)
+        callback = skill_imports.abort_operation if abort else skill_imports.recover_operation if recover else skill_imports.observe_operation
+        options = {"authorize": resource_operation_guard(request, shared)} if recover else {}
+        return await callback(operation_id, tenant, user, shared, root=get_skills_root_path(), **options)
+    except FileNotFoundError:
+        raise HTTPException(404, "Skill import operation not found") from None
+    except (ValueError, RuntimeError):
+        raise HTTPException(409, "Skill import state or contents conflict; files were preserved") from None
+    except Exception:
+        logger.exception("Skill import reconciliation did not complete")
+        raise HTTPException(503, "Registration outcome is uncertain; inspect current import state before retrying") from None
+
+
+@router.get("/skills/personal/imports")
+async def personal_import_operations(request: Request, cursor: str | None = Query(default=None, max_length=512), page_size: int = Query(default=100, ge=1, le=100)):
+    return await _import_operations(request, False, cursor, page_size)
+
+
+@router.get("/skills/personal/imports/{operation_id}")
+async def personal_import_operation(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, False)
+
+
+@router.post("/skills/personal/imports/{operation_id}/recover")
+async def recover_personal_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, False, True)
+
+
+@router.post("/skills/personal/imports/{operation_id}/abort")
+async def abort_personal_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, False, abort=True)
+
+
+@router.get("/tenants/skills/imports", dependencies=[Depends(require_tenant_admin)])
+async def tenant_import_operations(request: Request, cursor: str | None = Query(default=None, max_length=512), page_size: int = Query(default=100, ge=1, le=100)):
+    return await _import_operations(request, True, cursor, page_size)
+
+
+@router.get("/tenants/skills/imports/{operation_id}", dependencies=[Depends(require_tenant_admin)])
+async def tenant_import_operation(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, True)
+
+
+@router.post("/tenants/skills/imports/{operation_id}/recover", dependencies=[Depends(require_tenant_admin)])
+async def recover_tenant_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, True, True)
+
+@router.post("/tenants/skills/imports/{operation_id}/abort", dependencies=[Depends(require_tenant_admin)])
+async def abort_tenant_import(request: Request, operation_id: str):
+    return await _import_operation(request, operation_id, True, abort=True)
 
 
 @router.post(
@@ -788,31 +756,14 @@ async def import_personal_skill(request: Request, archive: UploadFile = File(...
         raise HTTPException(status_code=400, detail="File must have .skill or .zip extension")
 
     temp_path: Path | None = None
-    installed_dir: Path | None = None
+    result: dict | None = None
     try:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
             temp_path = Path(temp_file.name)
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        target_rel = f"{user_id}"
-        result = install_skill_from_archive(
-            temp_path,
-            target_relative_path=target_rel,
-            is_custom=True,
-            tenant_id=tenant_id,
-        )
-        skill_name = str(result.get("skill_name") or "").strip()
-        installed_dir = Path(str(result.get("install_dir") or str(get_skills_root_path() / "custom" / tenant_id / user_id / skill_name)))
-        row = await create_tenant_personal_skill(
-            tenant_id,
-            user_id,
-            enabled=True,
-            skill_name=skill_name,
-            category=str(result.get("category") or "personal"),
-            relative_path=str(result.get("relative_path") or f"{user_id}/{skill_name}"),
-            install_dir=str(installed_dir),
-        )
+        result, row = await skill_imports.import_archive(temp_path, tenant_id, user_id, False, root=get_skills_root_path(), authorize=resource_operation_guard(request))
         return _build_skill_response(
             tenant_id=tenant_id,
             row_name=row.name,
@@ -825,20 +776,14 @@ async def import_personal_skill(request: Request, archive: UploadFile = File(...
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except SkillAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except RuntimeError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except ValueError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=_import_error_detail(e, result))
     except Exception as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
         logger.error("Failed to import personal skill: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to import skill: {str(e)}")
+        raise HTTPException(status_code=500, detail=_import_error_detail(e, result))
     finally:
         await archive.close()
         if temp_path is not None:
@@ -860,27 +805,14 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
         raise HTTPException(status_code=400, detail="File must have .skill or .zip extension")
 
     temp_path: Path | None = None
-    installed_dir: Path | None = None
+    result: dict | None = None
     try:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
             temp_path = Path(temp_file.name)
             while chunk := await archive.read(1024 * 1024):
                 temp_file.write(chunk)
 
-        result = install_skill_from_archive(
-            temp_path,
-            target_relative_path=tenant_id,
-        )
-        skill_name = str(result.get("skill_name") or "").strip()
-        installed_dir = Path(str(result.get("install_dir") or _tenant_skill_dir(tenant_id, skill_name)))
-        row = await create_tenant_shared_skill(
-            tenant_id,
-            enabled=True,
-            skill_name=skill_name,
-            category=str(result.get("category") or "custom"),
-            relative_path=str(result.get("relative_path") or _tenant_skill_relative_path(tenant_id, skill_name)),
-            install_dir=str(installed_dir),
-        )
+        result, row = await skill_imports.import_archive(temp_path, tenant_id, getattr(request.state, "user_id", ""), True, root=get_skills_root_path(), authorize=resource_operation_guard(request, True))
         settings = await get_tenant_shared_skill_settings(tenant_id)
         return _build_skill_response(
             tenant_id=tenant_id,
@@ -894,20 +826,14 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except SkillAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except RuntimeError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except ValueError as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=_import_error_detail(e, result))
     except Exception as e:
-        if installed_dir is not None:
-            shutil.rmtree(installed_dir, ignore_errors=True)
         logger.error("Failed to import tenant skill: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to import skill: {str(e)}")
+        raise HTTPException(status_code=500, detail=_import_error_detail(e, result))
     finally:
         await archive.close()
         if temp_path is not None:
@@ -923,13 +849,8 @@ async def import_tenant_skill(request: Request, archive: UploadFile = File(...))
 async def get_skill(skill_name: str, request: Request) -> SkillResponse:
     require_tenant_context(request)
     try:
-        skills = load_skills(enabled_only=False)
-        skill = next((s for s in skills if s.name == skill_name), None)
-
-        if skill is None:
-            raise HTTPException(status_code=404, detail=f"Skill '{skill_name}' not found")
-
-        return _skill_to_response(skill)
+        detail = await get_skill_detail(skill_name, request, scope=None, resource_id=None)
+        return SkillResponse.model_validate(detail.model_dump())
     except HTTPException:
         raise
     except Exception as e:
@@ -946,6 +867,7 @@ async def get_skill(skill_name: str, request: Request) -> SkillResponse:
 )
 async def install_skill(request: SkillInstallRequest, api_request: Request) -> SkillInstallResponse:
     tenant_id = require_tenant_context(api_request)
+    result = None
     try:
         skill_file_path = resolve_thread_virtual_path(
             api_request.state.user_id,
@@ -953,35 +875,21 @@ async def install_skill(request: SkillInstallRequest, api_request: Request) -> S
             request.path,
             tenant_id=getattr(api_request.state, "tenant_id", None),
         )
-        target_relative_path = tenant_id
-        result = install_skill_from_archive(
-            skill_file_path,
-            target_relative_path=target_relative_path,
-        )
-        skill_name = result.get("skill_name")
-        if isinstance(skill_name, str) and skill_name:
-            await create_tenant_shared_skill(
-                tenant_id,
-                enabled=True,
-                skill_name=skill_name,
-                category=str(result.get("category") or "custom"),
-                relative_path=str(result.get("relative_path") or target_relative_path),
-                install_dir=str(result.get("install_dir") or ""),
-            )
+        result, _ = await skill_imports.import_archive(skill_file_path, tenant_id, api_request.state.user_id, True, root=get_skills_root_path(), authorize=resource_operation_guard(api_request, True))
         return SkillInstallResponse(**result)
     except FileNotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=_import_error_detail(e, result))
     except SkillAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except RuntimeError as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=_import_error_detail(e, result))
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=_import_error_detail(e, result))
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Failed to install skill: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to install skill: {str(e)}")
+        raise HTTPException(status_code=500, detail=_import_error_detail(e, result))
 
 
 @router.get(
@@ -990,7 +898,7 @@ async def install_skill(request: SkillInstallRequest, api_request: Request) -> S
     summary="Get Skill Detail",
     description="Return full detail for any available skill (global, tenant, or personal).",
 )
-async def get_skill_detail(skill_name: str, request: Request) -> SkillDetailResponse:
+async def get_skill_detail(skill_name: str, request: Request, scope: Literal["global", "tenant", "personal"] | None = None, resource_id: str | None = Query(default=None, max_length=128)) -> SkillDetailResponse:
     tenant_id = require_tenant_context(request)
     user_id = request.state.user_id
     
@@ -1001,30 +909,35 @@ async def get_skill_detail(skill_name: str, request: Request) -> SkillDetailResp
         is_platform_admin=_is_platform_admin(request),
     )
     
-    row = next((r for r in rows if r.get("name") == skill_name), None)
+    row = next((r for r in rows if r.get("name") == skill_name and (scope is None or r.get("scope") == scope) and (resource_id is None or r.get("resource_id") == resource_id)), None)
     if row is None:
         raise HTTPException(status_code=404, detail=f"Skill '{skill_name}' not found or you don't have access")
 
-    skill_dir = _resolve_skill_runtime_dir(
-        tenant_id, 
-        skill_name,
-        row.get("install_dir"),
-        row.get("relative_path"),
-    )
+    try:
+        skill_dir = resource_directory(get_skills_root_path(), tenant_id, user_id, row)
+    except ValueError:
+        raise HTTPException(409, "Skill resource location cannot be verified; contents were preserved") from None
     skill_file = skill_dir / "SKILL.md"
     file_description: str | None = None
+    file_sha256 = None
     if skill_file.exists():
-        raw = skill_file.read_text(encoding="utf-8")
+        raw_bytes = _read_skill_bytes(skill_file)
+        file_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+        raw = raw_bytes.decode("utf-8")
         fm, instructions = _split_skill_markdown(raw)
-        # _read_skill_file_payload safely casts description to str
-        file_description, _ = _read_skill_file_payload(skill_dir)
+        description_value = fm.get("description")
+        file_description = str(description_value).strip() if description_value is not None else None
     else:
         fm = {}
         instructions = ""
 
     return SkillDetailResponse(
+        file_sha256=file_sha256,
+        resource_id=row.get("resource_id"),
+        owner_kind=row.get("owner_kind"),
+        files_status=row.get("files_status"),
         name=row.get("name") or skill_name,
-        description=row.get("description") or file_description or "",
+        description=file_description or row.get("description") or "",
         license=row.get("license"),
         category=row.get("category"),
         enabled=row.get("enabled", True),

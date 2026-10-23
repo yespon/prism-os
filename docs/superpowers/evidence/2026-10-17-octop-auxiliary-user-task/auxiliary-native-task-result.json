@@ -1,0 +1,17 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_auxiliary_task_probe.py",
+    "--base-url",
+    "http://127.0.0.1:18031",
+    "--fixture",
+    "backend/tmp/n04-wsl/native-profile/live-fixture.json",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/real-native-auxiliary-task.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T16:45:56.235473+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T16:47:32.216262+00:00"
+}

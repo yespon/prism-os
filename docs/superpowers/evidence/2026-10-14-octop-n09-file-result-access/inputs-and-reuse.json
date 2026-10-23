@@ -1,0 +1,40 @@
+{
+  "base_commit": "4694650",
+  "current_code_inputs": {
+    ".github/workflows/octop-integration.yml": "fc3d870e593630f024466ee644ff121ba5625f1a68a78266aea9c90770d96773",
+    "backend/app/alerting/ingest.py": "6e84dd70b823087196b222a0a612f8a47654535ee71f46381eb57828bea96219",
+    "backend/app/gateway/file_authorization.py": "7a6decc069be056e5ae3460462636adaf4c94ea9a0513802dc09e7d00b65987f",
+    "backend/app/gateway/routers/artifacts.py": "d66c358ef1fe5de4c018ef317f1107de8205faa43cfd6868ff51b8627fc8e30d",
+    "backend/app/gateway/routers/langgraph_proxy.py": "bab8f28a48be7ed21e1640684a5aeb24b7afe0e61151b9e27e497092d7ec796d",
+    "backend/app/gateway/routers/threads.py": "8ef6caf8db485a6bbb126b5bfc70c3f9eb0892faa9123f8efa51a0ae2d3abddd",
+    "backend/app/gateway/routers/uploads.py": "b7a305a253cc6abfadfd8cb27017561657ab126ddb3961a38d6a1258a7d11ac4",
+    "backend/app/integrations/agent_skill_members.py": "11801b04453747135d2570caa434e10b15ba0cf207e5892883d7f5f690e2ac8d",
+    "backend/app/integrations/file_access.py": "be4a40abe18dc8920607e521ae89954aa3187cb16e6bf9b9ebd345a3d0257495",
+    "backend/app/runtime_adapters.py": "454d5c0e74ded61ba10ba69f925eb42d2bb08e4f1e0bba9cbdb70af6019c0d5d",
+    "backend/packages/harness/deerflow/runtime.py": "712441f95922fc2d06dbaa399403159dea390ed75ad20f097cfb02687f1a9f76",
+    "backend/packages/harness/deerflow/sandbox/file_access.py": "5d87561ae8186d360dc8915b49c6f2cf847ced3efaa416aa2e592b7304bd7752",
+    "backend/packages/harness/deerflow/sandbox/tools.py": "a84c6a5c149fde25c9818ff7ebccb57a4c559d34e24ce1c0c8ed790c58de27de",
+    "backend/packages/harness/deerflow/tools/builtins/present_file_tool.py": "d6892c9c14b9105bf493a92315349fdea302d34ac64467754a7a72725131b558",
+    "backend/packages/harness/deerflow/tools/builtins/view_image_tool.py": "979a1837dee0f745b6c016621f77188df29976f75f39f040c94e28191109ae3b",
+    "backend/tests/test_artifacts_router.py": "573909668d689295fba5fbb97fd95523726add3ab5fa4e642036c8774e58d487",
+    "backend/tests/test_diagnosis_authorization.py": "35c4f4cf9d0386d5f0c3fcf4effbf0b1f5fb6933128184457a6b9386c892afb9",
+    "backend/tests/test_file_access_boundaries.py": "964a5a953ef7477f5fe71b64159a540b49ca175dc667bf7fec86ccf3af33084e",
+    "backend/tests/test_file_access_http.py": "2ad47633da197f5890aed7af03cc1c095c22e1434d49fc66df54671ac83d2a79",
+    "backend/tests/test_langgraph_proxy.py": "6e373ec390ab11de80a34c3eec4ab2fca51f296769ffb1733c9796aa250d6ae0",
+    "backend/tests/test_langgraph_proxy_stream.py": "42ffbcc925d97c58d7d1397197dd6f9271622efbca7d86a2f99c3de2b7e5dcb6",
+    "backend/tests/test_skill_member_tools.py": "2363ab365111e9cd80fe1b78d5a652427a606f3a7f3df231cbd2cf519c27e1c1",
+    "backend/tests/test_threads_router.py": "39c0fc7bb28820224e7880dbafeeb8df16ced9a14865b877b061919040e5beca",
+    "backend/tests/test_uploads_router.py": "967877f7e28ecc0e41595c801acef07907f1a8687edb6cc33356d29b9549e64d",
+    "scripts/octop_upgrade_probe.py": "316c2223c7a68e9c17d94ae9483a42372891d235bff928b57bd3f35e423c2178"
+  },
+  "unchanged_frontend_files": 499,
+  "changed_frontend_files": [],
+  "unchanged_lock_distribution_sha256": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2",
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "historical_evidence": "../2026-10-14-octop-n09-scoped-command-block/validation.json",
+  "reuse_scope": "499 frontend files verified against 4694650; original frontend full/production/traces, source distribution, lock and unchanged migrations retain historical scope. Current full backend/changed PostgreSQL/upgrade/image are new validations."
+}

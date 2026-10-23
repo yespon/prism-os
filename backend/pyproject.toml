@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "deerflow-harness",
+    "prismos-octop-capabilities",
     "fastapi>=0.141.1",
     "httpx>=0.28.0",
     "python-multipart>=0.0.20",
@@ -25,13 +26,29 @@ dependencies = [
     "greenlet>=3.3.2",
     "bcrypt>=5.0.0",
     "langchain-ollama>=1.1.0",
+    # Knowledge document parsing (R2, migrated from Octop b6): text layer only.
+    "pypdf>=4.0",
+    # Security floors for transitive deps (2026-10 CVE batch).
+    "pillow>=13.0",
+    "urllib3>=2.8",
+    "mcp>=1.30.0,<2",
+    "multidict>=6.9.1",
+    "oauthlib>=4.0.0",
+    "anyio>=4.14.2",
+    "certifi>=2026.10.19",
+    "langgraph-sdk>=0.4.4",
+    "pyjwt>=2.15.0",
+    "python-docx>=1.1",
+    "apscheduler>=3.10,<4",
+    "openpyxl>=3.1",
 ]
 
 [dependency-groups]
 dev = ["pytest>=9.0.3", "ruff>=0.14.11"]
 
 [tool.uv.workspace]
-members = ["packages/harness"]
+members = ["packages/harness", "packages/octop-capabilities"]
 
 [tool.uv.sources]
 deerflow-harness = { workspace = true }
+prismos-octop-capabilities = { workspace = true }

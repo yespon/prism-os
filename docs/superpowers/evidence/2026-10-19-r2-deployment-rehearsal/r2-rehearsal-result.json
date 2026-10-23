@@ -1,0 +1,25 @@
+{
+  "steps": [
+    {
+      "step": "kb-created",
+      "kb_id": "kb_1d86e4914a2542408dab4bcf43dfbf26"
+    },
+    {
+      "step": "document-ready",
+      "doc_id": "kd_2fded2c9319b4ba594b08f0a358c18e8",
+      "state": "ready"
+    },
+    {
+      "step": "private-kb-invisible-to-nonmember"
+    },
+    {
+      "step": "grant-revoke-cycle",
+      "revoke_status": 200,
+      "after_status": 404
+    },
+    {
+      "step": "delete-invalidates"
+    }
+  ],
+  "complete": true
+}

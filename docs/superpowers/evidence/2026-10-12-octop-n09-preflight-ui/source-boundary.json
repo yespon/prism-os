@@ -1,0 +1,529 @@
+{
+  "purpose": "copy permitted pinned upstream Skill sources into a reviewed host-format bundle; user explicitly requested Octop source migration and N09 resource copying/use",
+  "repository": "https://github.com/TencentCloud/Octop",
+  "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "retained_only": true,
+  "source_roots": [
+    "prismos_octop/data/experts"
+  ],
+  "runtime_config_imports": [],
+  "tenant_database_reads_by_package_builder": false,
+  "installed_private_skill_directory_reads_by_package_builder": false,
+  "automatic_outbound_requests": false,
+  "source_cases": [
+    {
+      "template_id": "expert:ai-coding-coach",
+      "resource_id": "resource:dc165616f64b0d3154f084cd8ce6b638c60af750de4a5563d091b0e6279860ab",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/ai-coding-coach/skills/cheatsheet/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "cheatsheet",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:ai-safety-guardian",
+      "resource_id": "resource:f90abc43cab15b04b522b1072767405b0a04933229245211c9b5324919de0bf4",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/ai-safety-guardian/skills/security-guide/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "security-guide",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:7e72918bbb3f8b3d500d14351974b2145279e78559fa99314b59e0f4d3440a69",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/clinical-q-and-a/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "clinical-q-and-a",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:9ecbe90a51981e26395902e101217db9ec8a8fb7009e3611203af1ecc573d0bf",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/doctor-registration/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "doctor-registration",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:82063e854970c739b3a22cd8603f4d3308641008e2619016aeab6206912aff79",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/exam-material-recommendation/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "exam-material-recommendation",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:9413a84fa79bac4c129d315a01af4414729fa4bac31c09ebe2341218b525108f",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-learning/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "guideline-learning",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:f9d232d2c4fc0442255a151703f13edde11680102cd185548f669eaf183d7a1c",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-learning-diagnosis/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "guideline-learning-diagnosis",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:67e450df47b9eb3593a249b1ab6e90280efbae85d4553601b855b759e4419d74",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-section-expansion/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "guideline-section-expansion",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:8a82646e09d9b975e2884ca714424d25c7b7200d34ea6238ccdac1a9bb822557",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/guideline-update-reminder/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "guideline-update-reminder",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:f77e05fe46a636f05dacb100d8e30674c6078c32f3824c7067aa2d38535f4ba0",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/insurance-policy-learning/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "insurance-policy-learning",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:9301161148e6e896d231b0e0827d19c26d0d0dcc966723bbb2156f8b0c190464",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/intent-routing/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "intent-routing",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:312644393c8b898b5fb553ca6a464284ec17a97d3ed2a280157003b3b17d02cf",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/SKILL.md",
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/references/document-identity.md",
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/references/domestic-source-registry.md",
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/medical-source-failover/references/failover-policy.md"
+      ],
+      "source_count": 4,
+      "host_name": "medical-source-failover",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:ffe8983c10e59d9b346b4667ca2d02e7af7e6d1a898fd62919e8d96300d74c93",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/output-format/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "output-format",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:0e52e9cca3b55a27c3a78e4bc2b9a5cabe269da969455dd625fc6bfcfb295109",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/source-verify/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "source-verify",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:clinical-learning-subscription",
+      "resource_id": "resource:be5b9c44efb5cbda34717916ffb642fac9a13d0d4483a29e0062a723f3d7b98e",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/clinical-learning-subscription/skills/subscription-setup/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "subscription-setup",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:cvm-ai-doctor",
+      "resource_id": "resource:6540280b74c6b7c8075b92c5e8ce24082817dae31225d2bc1cb9410af73d3710",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/API.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/AUDIT-INDEX.txt",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/AUDIT-REPORT-2026-05-09.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/AUDIT-SUMMARY.txt",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/COMMAND-SAMPLING-AUDIT.txt",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/README.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/SKILL.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_archived/SKILL-v1-original.md.bak",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_archived/SKILL-v3-lean.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/00-quick-reference.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/00-scenario-index.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/disk-smart.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/hardware-other.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/resource-saturation.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/system-logs.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/_backup/time-sync.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/cli-seeders/ai-clis.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/cli-seeders/evaltools.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/audit-local-ai-packages.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/comfyui/setup-comfyui.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/gpu-ai-ml-assessment.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/ollama/prune-ollama.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/ollama/setup-ollama.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/local-ai/ollama/suggest-ollama-models.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/mcp/manage-mcp-servers.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/ai/stt/setup-speech-to-text.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/audio/mic-always-100.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/audio/set-as-default-mic.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/backup/identify-backup-targets.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/bluetooth/reset-bluetooth.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/bluetooth/troubleshoot-bluetooth.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/bash/add-bash-alias.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/bash/validate-bashrc.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/check-path.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/git/check-git-config.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/git/check-global-gitignore.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/permissions/debug-folder-permissions.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/ssh/list-ssh-connections.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/configuration/ssh/manage-ssh-keys.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/boot/check-boot-logs.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/boot/failed-boot-services.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/boot/review-boot.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/diagnose-crash.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/debugging/diagnose-slowdown.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/docker/setup-docker.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/ides/optimize-vscode-installation.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/node/node-version-check.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/node/npm-install.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/manage-conda-environments.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-data-analysis.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-llm-finetune.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-rocm.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/conda/setup-conda-stt-finetune.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/identify-python-environments.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/python/pyenv/setup-pyenv.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/sdks/sdk-check.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/suggest-ides.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/yadm/check-yadm.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/dev-tools/yadm/manually-update-yadm.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/capture-current-config.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/list-connected-displays.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/optimize-display-scaling.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/setup-multi-monitor.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/display/switch-display-profile.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fonts/install-google-fonts.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fonts/list-fonts.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/chunk/chunk-this-dir.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/consolidate/consolidate-folders.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/flatten/flatten.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/idate/suggest-folder-structure.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/separate/separate-by-filetype.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/separate/separate-photos-and-video.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/tidy-up/desktop-tidy.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/fs-optimisation/tidy-up/organize-loose-files.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/check-gpu-os-optimization.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/evaluate-wake-devices.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-cpu.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-gpu.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-motherboard.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/by-component/profile-ram.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/hardware-identity.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/hardware-profilers/hardware-profile.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/hardware/review-gpu-settings.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-brew.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-gh-cli.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-pipx.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-sdkman.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/install-yadm.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/setup-aws-cli.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/setup-b2-cli.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/clis/setup-rclone.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/guis/input-remapper.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/install-from-gh.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/installation/install-this.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/backup-kde-settings.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/list-kde-shortcuts.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/optimize-kde-performance.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/kde/reset-plasma-config.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/analyze-journal-errors.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/check-failed-units.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/monitor-system-resources.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/logging/tail-system-logs.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/media/check-codecs.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/diagnose-network-issues.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/diagnose-lan-connectivity.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/lan-ssh-setup.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/scan-lan.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/network/lan/smart-arp.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/optimisation/large-files.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/optimisation/optimize-boot-speed.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/check-apt-health.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/check-third-party-repos.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/configure-auto-updates.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/evaluate-installed-software.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/identify-unused-packages.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/package-management/install-brew.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/peripherals/evtest.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/peripherals/list-usb-devices.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/power-mgmt/hibernation.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/power-mgmt/wol-setup.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/program-management/install-github-program.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/repositories/delete-old-repos.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/repositories/organise-repos.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/audits/probe-vulnerabilities.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/audits/write-audit.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/auth/yubi-setup.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/av/install-clamav.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/detect-spyware.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/firewall/analyze-firewall.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/security/posture-diagnostics/security-posture-check.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/health-checks/btrfs-snapper-health.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/health-checks/check-drive-health.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/health-checks/smart-status.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/network-mounts/setup-nfs-mounts.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/network-mounts/setup-smb-mounts.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/raid/check-raid-config.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/storage/storage-deep-dive.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/optimize-pipewire.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/review-startup-services.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/system-health-checkup.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/system-health/system-upgrade.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/utilities/diagnose-printers.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/video/codecs.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/commands/virtualization/check-virtualization.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/architecture.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/cvm-doctor-report.html",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/scenario-decision-guide.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/docs/scenario-index-maintenance.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/examples/cron-job-spec.json",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/00-scenario-index.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-deep-analysis.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-discovery.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-health-score.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-quick-check.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cluster-remediation.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/cvm-self-diagnosis-repair.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/disk-smart-deep.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/disk-smart-quick.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/hardware-health-deep.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/hardware-health-quick.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-combined.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-cpu.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-disk.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-memory.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-deep-network.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/resource-saturation-quick.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/skill-collaboration-tencentcloud.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/skill-collaboration.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-auth.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-fs.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-kernel.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-oom.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-deep-service.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/system-logs-quick.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/references/time-sync.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/README.md",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/analyze_stats.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_cpu.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_disk.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_memory.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_network.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_deep_ssh.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_os_snapshot.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_patrol_record.py",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_patrol_server.py",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/cluster_score.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/combined_analysis.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/deep_scan.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/generate_promo.py",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/log_stats.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/patrol.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/patrol_server.py",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/quick_scan.ps1",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/quick_scan.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/serve_dashboard.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/setup-lightclaw-cron.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/scripts/sync_skill.sh",
+        "src/octop/infra/agents/experts/library/cvm-ai-doctor/skills/cvm-ai-doctor/version.ini"
+      ],
+      "source_count": 198,
+      "host_name": "cvm-ai-doctor",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:cvm-cluster-doctor",
+      "resource_id": "resource:321ffae09f33770f3f2eb1d3c0940b577006230c6717645fdf85456fbe71b7c5",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/SKILL.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/_meta.json",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/auto-check-resource.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/cbs-bindto-cvm.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/cloud-service-healthcheck.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/cvm-security-check.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/lighthouse-app-deploy.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/lighthouse-openclaw-setup.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/references/lighthouse-website-setup.md",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/scripts/tccli-oauth-helper.py",
+        "src/octop/infra/agents/experts/library/cvm-cluster-doctor/skills/tencentcloud-infra/scripts/whoami.sh"
+      ],
+      "source_count": 11,
+      "host_name": "tencentcloud-infra",
+      "adapted": true
+    },
+    {
+      "template_id": "expert:general-assistant",
+      "resource_id": "resource:cd2e2e006f296a25a8fc27192091862c43743e414e998e6bd2c5a68551f1a926",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/general-assistant/skills/octop-assistant/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "octop-assistant",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:karpathy-knowledge-base",
+      "resource_id": "resource:f15fee97275f7d047cbc8e3c08e0a5ed5c0e8cd8bf148e55dc67a5c7781afc86",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/karpathy-knowledge-base/skills/llm-wiki/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "llm-wiki",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:meituan-living-assistant",
+      "resource_id": "resource:ac229da518cd19293fcf0a17f2ad42788cce9da030dae0bd2ce0c6294a557198",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/SKILL.md",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/references/DOCTOR.md",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/references/mt_login.png",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/auth.py",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/config.json",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/diag_auth_log.py",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/diag_issue_log.py",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/mtuser-pt-passport-0.1.4.tgz",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/package-lock.json",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/package.json",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/plugin_version_lite.py",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/qr_local.py",
+        "src/octop/infra/agents/experts/library/meituan-living-assistant/skills/meituan-deals/scripts/run.js"
+      ],
+      "source_count": 13,
+      "host_name": "meituan-deals",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:news-trend",
+      "resource_id": "resource:66faa2c406061fde73c80fbbcb1ae1a2b1e7bce0072be410301d2c2a6d9d365f",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/SKILL.md",
+        "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/references/api-formats.md",
+        "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/references/dailyhot-api.md",
+        "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/references/sources.md",
+        "src/octop/infra/agents/experts/library/news-trend/skills/daily-hot-news/scripts/fetch_dailyhot.mjs"
+      ],
+      "source_count": 5,
+      "host_name": "daily-hot-news",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:office-automation",
+      "resource_id": "resource:3375eddfc889b1f341ff388a8431621e30511f0e15ee8f9f5d01519ce541fbd0",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/office-automation/skills/file_reader/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "file-reader",
+      "adapted": true
+    },
+    {
+      "template_id": "expert:office-automation",
+      "resource_id": "resource:3e7521ac71c26e39d2899828d86c1c2dbfc08d719942e9af457128fd88c17d57",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/office-automation/skills/news/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "news",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:stock-assistant",
+      "resource_id": "resource:dc631792503557a02c86d064d95cfac1f23a82d196c519a70358d09e645aa25e",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/stock-assistant/skills/stock-info/SKILL.md",
+        "src/octop/infra/agents/experts/library/stock-assistant/skills/stock-info/references/examples.md",
+        "src/octop/infra/agents/experts/library/stock-assistant/skills/stock-info/references/known-issues.md"
+      ],
+      "source_count": 3,
+      "host_name": "akshare-data",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:superpowers-methodology",
+      "resource_id": "resource:853299639592b3fc6526cda5d0df684abbaeb5d328cccf2d40458a9cfac4b66f",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/superpowers-methodology/skills/engineering-workflow/SKILL.md"
+      ],
+      "source_count": 1,
+      "host_name": "engineering-workflow",
+      "adapted": false
+    },
+    {
+      "template_id": "expert:tencentcloud-api",
+      "resource_id": "resource:47b9d545b3cd8136afc00cd0962c4b64d30f6ab41cb37aadfa6d3595a6c2b176",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/SKILL.md",
+        "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/references/auth.md",
+        "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/references/install.md",
+        "src/octop/infra/agents/experts/library/tencentcloud-api/skills/tcapi/references/refs.md"
+      ],
+      "source_count": 4,
+      "host_name": "tcapi",
+      "adapted": true
+    },
+    {
+      "template_id": "expert:wechat-ops",
+      "resource_id": "resource:59a3d9e3ac23d8801c4850961d325c5193e90b40e538ee24adf48a20fde81327",
+      "source_paths": [
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/IDENTITY.md",
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/SKILL.md",
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/SOUL.md",
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/manifest.yaml",
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/scripts/setup_server.sh",
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/scripts/wechat_publish.py",
+        "src/octop/infra/agents/experts/library/wechat-ops/skills/publisher-multi-platform/scripts/xhs_publish.py"
+      ],
+      "source_count": 7,
+      "host_name": "wechat-publisher-personal",
+      "adapted": false
+    }
+  ],
+  "material_fields": "global source files plus deterministic origin hashes; no runtime session, private tenant resource or credential resolver input",
+  "upstream_license": {
+    "source": "LICENSE",
+    "sha256": "5f2089cdcc57d00c6b70c0fb83368cbf3a86bb57839385fc6ac9086878d606e8",
+    "archive_file": "LICENSE.octop",
+    "scope": "fixed public upstream root copyright notice; hash matches both pinned b5 and b6 member receipts; no private or runtime input"
+  }
+}

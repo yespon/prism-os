@@ -1,0 +1,21 @@
+{
+  "command": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "backend/app/runtime_adapters.py",
+    "backend/app/integrations/mcp_access.py",
+    "backend/packages/harness/deerflow/runtime.py",
+    "backend/packages/harness/deerflow/mcp/authorization.py",
+    "backend/packages/harness/deerflow/mcp/tools.py",
+    "backend/packages/harness/deerflow/mcp/cache.py",
+    "backend/tests/test_mcp_runtime_access.py",
+    "scripts/octop_mcp_task_probe.py",
+    "scripts/octop_mcp_analytics_service.py",
+    "scripts/octop_mcp_test_env.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:59:09.712828+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:59:09.733468+00:00"
+}

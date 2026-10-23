@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -18,13 +18,21 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useSkills, useCreateAgent } from "@/core/agents";
-import { checkAgentName } from "@/core/agents/api";
+import { checkAgentName, AgentMutationError } from "@/core/agents/api";
+import { useDraftIsCurrent } from "@/core/agents/draft-scope";
+import type { CreateAgentRequest } from "@/core/agents/types";
+import type { AgentQuickPrompt } from "@/core/agents/types";
 import { useI18n } from "@/core/i18n/hooks";
 import { useAvailableMcpConfig } from "@/core/mcp/hooks";
 import { useAvailableModels } from "@/core/models/hooks";
 import { isTenantAdminRole } from "@/core/permissions/scope";
+import { useSkillImportContext } from "@/core/skills/import-context";
 import { useCurrentTenant } from "@/core/tenants/hooks";
 import { cn } from "@/lib/utils";
+
+import { AgentPresentationEditor } from "./agent-presentation-editor";
+import { AgentSkillSelection, type AgentSkillSelectionValue } from "./agent-skill-selection";
+import { AgentTemplatePicker } from "./agent-template-picker";
 
 interface CreateAgentDialogProps {
   open: boolean;
@@ -34,8 +42,22 @@ interface CreateAgentDialogProps {
 
 const NAME_RE = /^[A-Za-z0-9-]+$/;
 
-export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgentDialogProps) {
-  const { t } = useI18n();
+export function CreateAgentDialog(props: CreateAgentDialogProps) {
+  const { key: tenant } = useSkillImportContext();
+  const { locale } = useI18n();
+  return <CreateAgentDialogFields key={`${tenant}:${locale}:${props.open}`} {...props} />;
+}
+
+function CreateAgentDialogFields({ open, onOpenChange, onSuccess }: CreateAgentDialogProps) {
+  const { t, locale } = useI18n();
+  const templateLocale = locale === "zh-CN" ? "zh" : "en";
+  const [templateId, setTemplateId] = useState("");
+  const [personaCode, setPersonaCode] = useState("");
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [avatarId, setAvatarId] = useState("");
+  const [quickPrompts, setQuickPrompts] = useState<AgentQuickPrompt[]>([]);
+  const isCurrent = useDraftIsCurrent();
+  const [saveNeedsInspection, setSaveNeedsInspection] = useState(false);
 
   const { skills } = useSkills();
   const createAgent = useCreateAgent();
@@ -47,6 +69,9 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
   const [description, setDescription] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
   const [selectedModel, setSelectedModel] = useState<string>("");
+  const [skillSelection, setSkillSelection] = useState<AgentSkillSelectionValue>({mode:"all",resources:[]});
+  const [, setSelectionEdited] = useState(false);
+  const [legacyNames, setLegacyNames] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
   const [selectedToolGroups, setSelectedToolGroups] = useState<Set<string>>(new Set());
   const [tags, setTags] = useState<string[]>([]);
@@ -67,10 +92,18 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
   useEffect(() => {
     if (open) {
       setName("");
+      setTemplateId("");
+      setPersonaCode("");
+      setWelcomeMessage("");
+      setAvatarId("");
+      setQuickPrompts([]);
       setDescription("");
       setSystemPrompt("");
       setSelectedModel("");
       setSelectedSkills(new Set());
+      setSkillSelection({mode:"all",resources:[]});
+      setSelectionEdited(false);
+      setLegacyNames([]);
       setSelectedToolGroups(new Set());
       setTags([]);
       setTagInput("");
@@ -85,14 +118,17 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
 
   // Real-time name checking with debounce/effect
   useEffect(() => {
+    let active = true;
     const trimmed = name.trim();
     if (!trimmed) {
+      setIsCheckingName(false);
       setNameError("");
       setIsNameAvailable(null);
       return;
     }
 
     if (!NAME_RE.test(trimmed)) {
+      setIsCheckingName(false);
       setNameError(t.agents.nameStepInvalidError);
       setIsNameAvailable(false);
       return;
@@ -106,6 +142,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
       void (async () => {
         try {
           const result = await checkAgentName(trimmed, isShared);
+          if (!active || !isCurrent()) return;
           if (result.available) {
             setIsNameAvailable(true);
             setNameError("");
@@ -114,16 +151,17 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
             setNameError(t.agents.nameStepAlreadyExistsError);
           }
         } catch {
+          if (!active || !isCurrent()) return;
           setNameError(t.agents.nameStepCheckError);
           setIsNameAvailable(false);
         } finally {
-          setIsCheckingName(false);
+          if (active && isCurrent()) setIsCheckingName(false);
         }
       })();
     }, 400);
 
-    return () => clearTimeout(delayDebounce);
-  }, [name, isShared, t.agents.nameStepInvalidError, t.agents.nameStepAlreadyExistsError, t.agents.nameStepCheckError]);
+    return () => { active = false; clearTimeout(delayDebounce); };
+  }, [name, isShared, isCurrent, t.agents.nameStepInvalidError, t.agents.nameStepAlreadyExistsError, t.agents.nameStepCheckError]);
 
   // Group skills by category
   const skillsByCategory = skills.reduce(
@@ -135,16 +173,6 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
     },
     {} as Record<string, typeof skills>,
   );
-
-  const toggleSkill = (skillName: string) => {
-    const next = new Set(selectedSkills);
-    if (next.has(skillName)) {
-      next.delete(skillName);
-    } else {
-      next.add(skillName);
-    }
-    setSelectedSkills(next);
-  };
 
   const toggleToolGroup = (groupName: string) => {
     const next = new Set(selectedToolGroups);
@@ -246,76 +274,39 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
           </div>
         </label>
       ));
-    } else if (activeTab === "custom") {
-      const customSkills = skillsByCategory.custom ?? [];
-      if (customSkills.length === 0) {
-        return <div className="text-xs text-muted-foreground py-8 text-center">暂无自定义技能 SOP</div>;
-      }
-      return customSkills.map((skill) => (
-        <label
-          key={skill.name}
-          className="flex cursor-pointer items-start gap-2.5 rounded-md px-2 py-1.5 hover:bg-muted/50 transition-colors"
-        >
-          <Checkbox
-            checked={selectedSkills.has(skill.name)}
-            onCheckedChange={() => toggleSkill(skill.name)}
-          />
-          <div className="min-w-0 -mt-0.5">
-            <div className="text-xs font-medium">{skill.name}</div>
-            {skill.description && (
-              <div className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
-                {skill.description}
-              </div>
-            )}
-          </div>
-        </label>
-      ));
-    } else {
-      const publicSkills = skillsByCategory.public ?? [];
-      if (publicSkills.length === 0) {
-        return <div className="text-xs text-muted-foreground py-8 text-center">暂无内置技能 SOP</div>;
-      }
-      return publicSkills.map((skill) => (
-        <label
-          key={skill.name}
-          className="flex cursor-pointer items-start gap-2.5 rounded-md px-2 py-1.5 hover:bg-muted/50 transition-colors"
-        >
-          <Checkbox
-            checked={selectedSkills.has(skill.name)}
-            onCheckedChange={() => toggleSkill(skill.name)}
-          />
-          <div className="min-w-0 -mt-0.5">
-            <div className="text-xs font-medium">{skill.name}</div>
-            {skill.description && (
-              <div className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
-                {skill.description}
-              </div>
-            )}
-          </div>
-        </label>
-      ));
     }
+    return <AgentSkillSelection choices={skills} value={skillSelection} shared={isShared} category={activeTab === "public" ? "public" : "custom"} legacyNames={legacyNames} onReplaceLegacy={() => {setLegacyNames([]);setSelectionEdited(true);setSkillSelection({mode:"selected",resources:[]});}} onChange={(value) => {setSkillSelection(value);setSelectionEdited(true);}} />;
   };
 
   const handleSave = async () => {
+    if (saveNeedsInspection) return;
+    if (isShared && skillSelection.resources.some((r) => r.scope === "personal")) { toast.error("共享前请解除个人 Skill 选择或改选共享来源。"); return; }
     const trimmedName = name.trim();
     if (!trimmedName) {
       toast.error("Please enter a valid agent name");
       return;
     }
-    if (nameError || isNameAvailable === false) {
+    if (nameError || isNameAvailable !== true) {
       toast.error("Please resolve name validation errors before saving");
       return;
     }
 
     const toolGroupsList = Array.from(selectedToolGroups);
 
-    const request = {
+    const request: CreateAgentRequest = {
       name: trimmedName.toLowerCase(),
+      template_id: templateId || undefined,
+      template_locale: templateLocale,
+      persona_mbti: personaCode || undefined,
+      welcome_message: welcomeMessage,
+      avatar_id: avatarId || null,
+      quick_prompts: quickPrompts,
       description,
       model: selectedModel || null,
       system_prompt: systemPrompt,
-      skills: Array.from(selectedSkills),
+      skills: Array.from(new Set(skillSelection.resources.map((r) => r.name))),
+      skill_binding_mode:skillSelection.mode,
+      skill_resources:skillSelection.resources,
       tags,
       tool_groups: toolGroupsList.length > 0 ? toolGroupsList : null,
       enabled,
@@ -323,11 +314,15 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
     };
 
     try {
+      if (!isCurrent()) return;
       await createAgent.mutateAsync(request);
+      if (!isCurrent()) return;
       toast.success("智能体创建成功！");
       onOpenChange(false);
       onSuccess?.();
     } catch (err) {
+      if (!isCurrent()) return;
+      if ((err instanceof AgentMutationError && err.inspectionRequired) || err instanceof TypeError) setSaveNeedsInspection(true);
       toast.error(
         err instanceof Error ? err.message : "创建智能体失败"
       );
@@ -338,12 +333,13 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
     !name.trim() ||
     isCheckingName ||
     !!nameError ||
-    isNameAvailable === false ||
-    createAgent.isPending;
+    isNameAvailable !== true ||
+    createAgent.isPending || saveNeedsInspection;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[94vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-6xl xl:max-w-7xl h-[85vh] p-0 flex flex-col overflow-hidden gap-0 bg-card border border-border shadow-2xl rounded-xl">
+        {saveNeedsInspection && <div role="alert" className="p-3 text-sm">保存结果需要核对，请勿重复提交。<a className="ml-2 underline" href="/workspace/agents">查看当前 Agent 配置</a></div>}
         {/* Header */}
         <header className="flex items-center justify-between border-b px-6 py-4 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -353,6 +349,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
             <DialogTitle className="text-base font-semibold text-foreground">
               新建智能体
             </DialogTitle>
+            <DialogDescription className="sr-only">{locale === "en-US" ? "Configure this agent’s instructions, personality and welcome content." : "配置智能体的提示词、人格和欢迎内容。"}</DialogDescription>
           </div>
         </header>
 
@@ -375,6 +372,26 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
                 </div>
               </div>
             </div>
+
+            <AgentTemplatePicker
+              open={open}
+              locale={templateLocale}
+              templateId={templateId}
+              personaCode={personaCode}
+              onPersona={setPersonaCode}
+              onTemplate={template => {
+                setTemplateId(template?.id ?? "");
+                if (!template) return;
+                setSystemPrompt(template.system_prompt);
+                setDescription(template.description);
+                setWelcomeMessage(template.welcome_message ?? "");
+                setAvatarId(template.avatar_id ?? "");
+                setQuickPrompts(template.quick_prompts ?? []);
+                if (!name.trim()) setName(template.suggested_name);
+              }}
+            />
+
+            <AgentPresentationEditor quickPrompts={quickPrompts} onQuickPrompts={setQuickPrompts} open={open} locale={templateLocale} welcomeMessage={welcomeMessage} avatarId={avatarId} onWelcome={setWelcomeMessage} onAvatar={setAvatarId} onPersona={setPersonaCode} />
 
             {/* Name */}
             <div className="space-y-2 shrink-0">
@@ -582,6 +599,7 @@ export function CreateAgentDialog({ open, onOpenChange, onSuccess }: CreateAgent
               <div className="border border-border rounded-lg bg-zinc-50/50 dark:bg-zinc-900/10 p-3 flex flex-col gap-2.5 flex-1 overflow-y-auto min-h-0">
                 <label className="flex cursor-pointer items-center gap-2.5 px-1 py-1 rounded hover:bg-muted/50 border-b pb-2 border-border/50 text-xs font-medium shrink-0">
                   <Checkbox
+                    disabled={activeTab !== "mcp"}
                     checked={isAllSelected}
                     onCheckedChange={handleToggleSelectAll}
                   />

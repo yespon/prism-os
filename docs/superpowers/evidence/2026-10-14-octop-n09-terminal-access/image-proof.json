@@ -1,0 +1,61 @@
+{
+  "image_id": "sha256:64da943d0fac3ff05db9926a7b14852b08748d20d6f52ce57135e7f38a45c28f",
+  "modules": {
+    "backend/Dockerfile": {
+      "host": "a453fc956e78296854ce9ce535e392a45dc8e7a5493b0fb6146b0d8ad81c0d77",
+      "image": "a453fc956e78296854ce9ce535e392a45dc8e7a5493b0fb6146b0d8ad81c0d77",
+      "matches": true
+    },
+    "backend/app/agent/terminal_graph.py": {
+      "host": "4c0d6a391676b9c1c6c320b1e915e1e4138c2deec310a0aea9d8f80c64c45aa1",
+      "image": "4c0d6a391676b9c1c6c320b1e915e1e4138c2deec310a0aea9d8f80c64c45aa1",
+      "matches": true
+    },
+    "backend/app/agent/terminal_tools.py": {
+      "host": "f1978507621166183bc277c22aa97e6fe842f2b18548a4f8a6f3bef302ba71c3",
+      "image": "f1978507621166183bc277c22aa97e6fe842f2b18548a4f8a6f3bef302ba71c3",
+      "matches": true
+    },
+    "backend/app/gateway/routers/terminal.py": {
+      "host": "fe81204b9ea4133635bcc2e5f0e048a22facb3c5a422af6487a930a20d25d47e",
+      "image": "fe81204b9ea4133635bcc2e5f0e048a22facb3c5a422af6487a930a20d25d47e",
+      "matches": true
+    },
+    "backend/app/runtime_adapters.py": {
+      "host": "29757cea3278de229a52caba5f0516230687e7f174a6855ef302c360c5bdcb27",
+      "image": "29757cea3278de229a52caba5f0516230687e7f174a6855ef302c360c5bdcb27",
+      "matches": true
+    },
+    "backend/app/services/terminal/session.py": {
+      "host": "4d61fdf700b795817bcf19132a8d0db52134f4aae9ad7b4615e9996ceb03d248",
+      "image": "4d61fdf700b795817bcf19132a8d0db52134f4aae9ad7b4615e9996ceb03d248",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/agents/lead_agent/agent.py": {
+      "host": "88b81f382a1d36695207e32d86dad67f7235b2d38694b2d9fbf064f669296630",
+      "image": "88b81f382a1d36695207e32d86dad67f7235b2d38694b2d9fbf064f669296630",
+      "matches": true
+    },
+    "backend/packages/harness/deerflow/runtime.py": {
+      "host": "304408227e7a4bba05896767d7969e5b63810a60f9890e0aae8430518934a39f",
+      "image": "304408227e7a4bba05896767d7969e5b63810a60f9890e0aae8430518934a39f",
+      "matches": true
+    },
+    "backend/tests/test_terminal_trimming.py": {
+      "host": "b699b2cf090518d3693ea16ef712015677ff42731362ec087547e31f31e3dd1f",
+      "image": "b699b2cf090518d3693ea16ef712015677ff42731362ec087547e31f31e3dd1f",
+      "matches": true
+    },
+    "backend/app/services/terminal/access.py": {
+      "host": "98e02c9421b48770cc5a969057ac96697709b7ed57ce544d882ac644e73d0bf2",
+      "image": "98e02c9421b48770cc5a969057ac96697709b7ed57ce544d882ac644e73d0bf2",
+      "matches": true
+    },
+    "backend/tests/test_terminal_access_boundaries.py": {
+      "host": "ea4212d584adc8e2028f2e3425a36582f35d3eb3213032948c9db115ba219479",
+      "image": "ea4212d584adc8e2028f2e3425a36582f35d3eb3213032948c9db115ba219479",
+      "matches": true
+    }
+  },
+  "owned_container_removed": true
+}

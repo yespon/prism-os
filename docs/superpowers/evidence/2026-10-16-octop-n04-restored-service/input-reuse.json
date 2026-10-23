@@ -1,0 +1,11 @@
+{
+  "base_commit": "b6471abb03280904eb085f1c14fa0e60ae51646d",
+  "checked_files": 13631,
+  "changed": [],
+  "full_backend": {
+    "passed": 2453,
+    "skipped": 18,
+    "returncode": 0
+  },
+  "scope": "All frozen backend/scripts/Skills/config inputs unchanged; frontend/image/upgrade evidence reused only for their unchanged inputs."
+}

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_task_probe.py", line 119, in <module>
+    execute(parser.parse_args().output)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_task_probe.py", line 79, in execute
+    assert {'read_file', 'office_docx', 'present_files'}.issubset(result['tool_names']), 'Required actual model tools missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Required actual model tools missing

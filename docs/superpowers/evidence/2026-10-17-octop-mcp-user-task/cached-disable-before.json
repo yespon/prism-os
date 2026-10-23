@@ -1,0 +1,9 @@
+{
+  "complete": true,
+  "model_requests_sent": 0,
+  "completed_calls_before": 1,
+  "completed_calls_after": 2,
+  "cached_tool_called_after_disable": true,
+  "error_type": null,
+  "configuration_restored": true
+}

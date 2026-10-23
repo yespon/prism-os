@@ -77,7 +77,7 @@ async def evaluate_escalation_rules(
             AlertRule.enabled == True,  # noqa: E712
         )
     )
-    rules = rules_result.scalars().all()
+    rules = rules_result.all()
 
     matching: list[AlertRule] = []
     for rule in rules:

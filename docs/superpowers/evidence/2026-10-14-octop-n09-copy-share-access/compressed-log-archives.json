@@ -1,0 +1,11 @@
+{
+  "archives": [
+    {
+      "original": "logs/brand-staged.log",
+      "archive": "logs/brand-staged.log.gz",
+      "raw_sha256": "8b9a9c4145f9fafff22a4cf8dccafe37477f17dc7ac9d7f5439d56465ca8501c",
+      "archive_sha256": "f62e370f23a903afc864b8b0267280320dfb7cf4684b9a6f2d19e58ea9bda37b",
+      "reason": "retain actual gate failure output verbatim as compressed historical evidence"
+    }
+  ]
+}

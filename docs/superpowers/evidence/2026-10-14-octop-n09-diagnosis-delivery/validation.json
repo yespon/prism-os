@@ -1,0 +1,84 @@
+{
+  "base_commit": "b1fec9b",
+  "status": "incident_detail_checkpoint_cached_replay_and_live_delivery_authority_verified_first_milestone_pending",
+  "related": {
+    "passed": 66,
+    "additional_actual_http_checkpoint_withdrawal": 1
+  },
+  "backend": {
+    "passed": 1947,
+    "skipped": 18,
+    "warnings": 342,
+    "observed_exit_code": 0
+  },
+  "postgres": {
+    "passed": 67,
+    "warnings": 56,
+    "observed_exit_code": 0,
+    "owned_container_removed": true
+  },
+  "image": {
+    "image_id": "sha256:8e076dbfd9cf55f521a7de880867203233448e831a56a58c15fcad281f5a3b2d",
+    "matching_modules": 2,
+    "runtime_passed": 67,
+    "runtime_observed_exit_code": 0,
+    "build_observed_exit_code": 0,
+    "owned_containers_removed": true,
+    "publish_or_deploy": false
+  },
+  "upgrade": {
+    "complete": true,
+    "host_changed": false,
+    "host_inputs": 81,
+    "observed_exit_code": 0,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "94 passed, 67 warnings in 154.48s (0:02:34)"
+      },
+      {
+        "release": "b6",
+        "returncode": 0,
+        "pytest": "94 passed, 67 warnings in 151.56s (0:02:31)"
+      },
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "94 passed, 67 warnings in 112.38s (0:01:52)"
+      }
+    ]
+  },
+  "static": {
+    "ruff_paths": 85,
+    "passed": true,
+    "git_diff_check_passed": true
+  },
+  "historical_reuse": {
+    "unchanged_frontend_files": 499,
+    "new_frontend_compile": false,
+    "scope": "Source/lock distribution, unchanged migrations and prior functional blocks retain original scopes; changed backend/runtime/PG/upgrade/image are new."
+  },
+  "real_model_or_external_tool_ticket_calls": false,
+  "pending": [
+    "N04 real model/external tool/countable ticket environment references",
+    "N07 actual CI",
+    "legacy/default/terminal command and remote full-tool scopes",
+    "copy/share/source-version-target reauthorization",
+    "purpose-limited general Secrets and complete C1/C2",
+    "first milestone complete exit; N08 not started"
+  ],
+  "raw_log_sha256": {
+    "logs/image-runtime.log": "074ffa3b5b2fc8e54e262afcedcb241145ff22320a4b75d29251c46f7c1c6113",
+    "logs/backend-full.log": "bfd28901fed8efb48ffb1ffccf44afc67b8b7298546ae3cb4b0c40afb46c6362",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/delivery-compat.log": "0ff15cb0c2f8fe9a17aa682a5f52520781a6b87f350a817360bdf488137f6042",
+    "logs/delivery-authority.log": "751ab787c607043655305d012712992d2242f5df81244e5da6dcd62cb808072a",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/backend-image.log": "b8c99b4e0f8481d40907598859a8e79fc64e716d160ba9a39aa3047bc6042ebb",
+    "logs/delivery-fixed.log": "5c19360d4490b994697f04ac25d4d0a2ea5fd3c45a8e9c6758aff256adb84fbb",
+    "logs/actual-checkpoint.log": "7d08665da87ed0f6b7748c79cb01a444e983f549fe14451344283bb353017b41",
+    "logs/postgres.log": "01c2fa6bf7495f9375788158dac37d6e39cdad96303c147bb1da620e8bac6795",
+    "logs/postgres-cases.log": "d81a4fbff7a039437e3205390d82e1a4840315fe95cfba7b20cc1dc0ee7c76ea"
+  }
+}

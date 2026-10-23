@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-16-octop-governed-readers/live_binary_faults.py", line 7, in <module>
+    original=json.loads((HERE/'real-binary-task.json').read_text());assert original['complete']
+                                                                           ~~~~~~~~^^^^^^^^^^^^
+AssertionError

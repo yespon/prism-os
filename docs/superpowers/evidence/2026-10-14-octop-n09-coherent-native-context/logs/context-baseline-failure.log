@@ -1,0 +1,107 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding __
+
+delegated = (<starlette.testclient.TestClient object at 0x7f3aac301ca0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...sis_agent_id': 'shared-id', 'diagnosis_authorization': {'version': 1, 'actor_id': 'user-a', 'agent_id': 'shared-id'}}})
+configured = (<starlette.testclient.TestClient object at 0x7f3aac301ca0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:d52bdafa252ec6a28f3fa644b499c46f0102fc5a39fdd4eb74dea762e6c4df20'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3aacddb410>
+
+    def test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding(delegated, configured, monkeypatch):
+        from test_lead_agent_model_resolution import _make_app_config, _make_model
+    
+        import deerflow.tools as tools
+        from app import runtime_adapters
+        from app.integrations import agent_skill_references as refs
+        from deerflow.agents.lead_agent import agent as graph
+        from deerflow.agents.lead_agent import prompt as template
+    
+        http, factory, config = delegated
+        _, _, root, resources = configured
+        monkeypatch.setattr(runtime_adapters, "get_session_factory", lambda: factory)
+        monkeypatch.setenv("PRISMOS_TRUSTED_GRAPH_CONTEXT", "required")
+        monkeypatch.setattr(graph, "load_runtime_adapters", lambda: None)
+        monkeypatch.setattr(graph, "get_execution_validator", lambda: runtime_adapters._consume_graph_capability)
+        monkeypatch.setattr(graph, "get_agent_identity_provider", lambda: runtime_adapters._load_agent_by_id)
+        monkeypatch.setattr(graph, "get_skill_prompt_provider", lambda: runtime_adapters._current_skill_prompt)
+        if hasattr(graph, "get_agent_context_provider"):
+            monkeypatch.setattr(graph, "get_agent_context_provider", lambda: runtime_adapters._load_agent_context)
+        monkeypatch.setattr(graph, "get_app_config", lambda: _make_app_config([_make_model("old-model", supports_thinking=False), _make_model("new-model", supports_thinking=False)]))
+        monkeypatch.setattr(graph, "load_enabled_tenant_model_names", lambda tenant: ["old-model", "new-model"])
+        monkeypatch.setattr(graph, "_build_middlewares", lambda *args, **kwargs: [])
+        monkeypatch.setattr(graph, "create_chat_model", lambda **kwargs: kwargs)
+        monkeypatch.setattr(graph, "create_agent", lambda **kwargs: kwargs)
+        groups = []
+        monkeypatch.setattr(tools, "get_available_tools", lambda **kwargs: groups.append(kwargs["groups"]) or [])
+        monkeypatch.setattr(template, "_get_memory_context", lambda *args, **kwargs: "")
+        monkeypatch.setattr(template, "get_agent_soul", lambda *args, **kwargs: pytest.fail("Native soul fell back to name"))
+        monkeypatch.setattr(template, "get_deferred_tools_prompt_section", lambda: "")
+    
+        async def seed():
+            async with factory() as session:
+                row = await session.get(CustomAgent, "shared-id")
+                row.system_prompt = "OLD COHERENT SOUL"
+                row.model = "old-model"
+                row.tool_groups = ["old-group"]
+                row.skills = ["collision"]
+                row.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [resources["tenant"]], "legacy_names": []}}
+                session.add(row)
+                await session.commit()
+        asyncio.run(seed())
+        original = graph._db_agent_to_config
+    
+        def edit_after_configuration_read(record):
+            result = original(record)
+            async def edit():
+                async with factory() as writer:
+                    row = await writer.get(CustomAgent, "shared-id")
+                    row.system_prompt = "NEW COHERENT SOUL"
+                    row.model = "new-model"
+                    row.tool_groups = ["new-group"]
+                    row.skills = []
+                    row.meta_info = {refs.KEY: {"version": 1, "mode": "selected", "resources": [], "legacy_names": []}}
+                    writer.add(row)
+                    await writer.commit()
+            asyncio.run(edit())
+            return result
+        monkeypatch.setattr(graph, "_db_agent_to_config", edit_after_configuration_read)
+        token = asyncio.run(_repository(factory).issue("tenant-a", "user-a", "coherent-thread", "collision-agent", agent_id="shared-id"))
+        built = graph.make_lead_agent({"context": {"tenant_id": "tenant-a", "user_id": "user-a", "thread_id": "coherent-thread", "agent_name": "collision-agent", "agent_id": "shared-id", "prismos_execution_capability": token}})
+        assert built["model"]["name"] == "old-model" and groups == [["old-group"]]
+>       assert "OLD COHERENT SOUL" in built["system_prompt"] and "SHARED ONLY" in built["system_prompt"]
+E       AssertionError: assert ('OLD COHERENT SOUL' in '\n<role>\nYou are collision-agent, an open-source super agent.\n</role>\n\nOLD COHERENT SOUL\n\n\n<thinking_style>\n-...ible response to the user after thinking.\n</critical_reminders>\n\n<current_date>2026-10-14, Wednesday</current_date>' and 'SHARED ONLY' in '\n<role>\nYou are collision-agent, an open-source super agent.\n</role>\n\nOLD COHERENT SOUL\n\n\n<thinking_style>\n-...ible response to the user after thinking.\n</critical_reminders>\n\n<current_date>2026-10-14, Wednesday</current_date>')
+
+tests/test_diagnosis_authorization.py:825: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  deerflow.agents.lead_agent.agent:agent.py:197 Thinking mode is enabled but model 'old-model' does not support it; fallback to non-thinking mode.
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_diagnosis_authorization.py::test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_diagnosis_authorization.py::test_native_graph_does_not_mix_agent_configuration_with_later_skill_binding
+1 failed, 48 deselected, 2 warnings in 14.90s

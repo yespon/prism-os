@@ -17,6 +17,10 @@ export interface Skill {
 
 
 export interface AvailableSkillResponse extends Skill {
+  file_sha256?: string | null;
+  resource_id?: string | null;
+  owner_kind?: string | null;
+  files_status?: string | null;
   scope: string; // "global" | "tenant"
   source: string; // Skill source classification
   managed_by_current_user: boolean; // Whether current user can manage this skill
@@ -24,6 +28,10 @@ export interface AvailableSkillResponse extends Skill {
 }
 
 export interface SkillDetail extends Skill {
+  file_sha256?: string | null;
+  resource_id?: string | null;
+  owner_kind?: string | null;
+  files_status?: string | null;
   references?: Record<string, string> | null;
   scope: string;
   managed_by_current_user: boolean;
@@ -63,4 +71,10 @@ export interface SummarizeDiagnosisResponse {
   instructions: string;
   suggested_tools: string[];
   suggested_category: string;
+}
+
+export interface SkillCreationResult extends SkillDetail {
+  operation_id: string;
+  recovery_available: boolean;
+  configuration_phase: string;
 }

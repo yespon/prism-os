@@ -1,0 +1,74 @@
+Generating route types...
+✓ Types generated successfully
+Checking TypeScript and generated route contracts...
+Strict typecheck passed; starting production compiler...
+▲ Next.js 16.2.11 (webpack)
+- Experiments (use with caution):
+  · cpus: 2
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 71s
+  Skipping validation of types
+  Finished TypeScript config validation in 16ms ...
+  Collecting page data using 2 workers ...
+  Generating static pages using 2 workers (0/42) ...
+  Generating static pages using 2 workers (10/42) 
+  Generating static pages using 2 workers (20/42) 
+  Generating static pages using 2 workers (31/42) 
+✓ Generating static pages using 2 workers (42/42) in 4.0s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /admin
+├ ƒ /admin/announcements
+├ ƒ /admin/audit
+├ ƒ /admin/models
+├ ƒ /admin/security
+├ ƒ /admin/tenants
+├ ƒ /admin/tools
+├ ƒ /admin/users
+├ ƒ /api/terminal/chat
+├ ƒ /api/terminal/chat/approve
+├ ƒ /change-password
+├ ○ /icon.svg
+├ ƒ /mock/api/mcp/config
+├ ƒ /mock/api/models
+├ ƒ /mock/api/skills
+├ ƒ /mock/api/threads/[thread_id]/artifacts/[[...artifact_path]]
+├ ƒ /mock/api/threads/[thread_id]/history
+├ ƒ /mock/api/threads/search
+├ ƒ /select-workspace
+├ ƒ /setup
+├ ƒ /sign-in
+├ ƒ /sign-up
+├ ƒ /tenant-admin
+├ ƒ /tenant-admin/agents
+├ ƒ /tenant-admin/alerts
+├ ƒ /tenant-admin/audit
+├ ƒ /tenant-admin/im
+├ ƒ /tenant-admin/members
+├ ƒ /tenant-admin/models
+├ ƒ /tenant-admin/settings
+├ ƒ /tenant-admin/settings/[section]
+├ ƒ /tenant-admin/skills
+├ ƒ /tenant-admin/tools
+├ ƒ /workspace
+├ ƒ /workspace/agents
+├ ƒ /workspace/announcements
+├ ƒ /workspace/chats
+├ ƒ /workspace/chats/[thread_id]
+├ ƒ /workspace/files
+├ ƒ /workspace/incidents
+├ ƒ /workspace/incidents/[incident_id]
+├ ƒ /workspace/overview
+├ ƒ /workspace/skills
+├ ƒ /workspace/skills/[name]
+└ ƒ /workspace/terminal
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

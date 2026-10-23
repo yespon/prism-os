@@ -1,0 +1,66 @@
+...........FF                                                            [100%]
+=================================== FAILURES ===================================
+________ test_actual_configured_image_reads_only_current_selected_view _________
+
+container_command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x725fce9b3dd0>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x725fcea71460>)
+
+    def test_actual_configured_image_reads_only_current_selected_view(container_command_runtime):
+        _, root, _, _, runtime, _ = container_command_runtime
+        code = "from pathlib import Path; print(Path('/mnt/skills/custom/tenant-a/user-a/collision/member.txt').read_text()); print('public-present',Path('/mnt/skills/public/collision/member.txt').exists()); Path('/mnt/user-data/outputs/container.txt').write_text('CONTAINER OUTPUT')"
+        result = run(runtime, code)
+>       assert "AUTHORIZED PERSONAL MEMBER" in result and "public-present False" in result, result
+E       AssertionError: Error: Current scoped command access unavailable or changed; inspect outputs and any external effects
+E       assert ('AUTHORIZED PERSONAL MEMBER' in 'Error: Current scoped command access unavailable or changed; inspect outputs and any external effects')
+
+tests/test_skill_scoped_commands.py:161: AssertionError
+___ test_actual_container_selected_source_is_readonly_and_host_env_is_absent ___
+
+container_command_runtime = (async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x725fce924c50>, ...None, server_info=None), <deerflow.sandbox.local.local_sandbox_provider.LocalSandboxProvider object at 0x725fced7a000>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x725fcead0860>
+
+    def test_actual_container_selected_source_is_readonly_and_host_env_is_absent(container_command_runtime, monkeypatch):
+        _, root, _, _, runtime, _ = container_command_runtime
+        monkeypatch.setenv("PRISMOS_HOST_PRIVATE_CANARY", "HOST-ENV CANARY")
+        code = (
+            "import os; from pathlib import Path; print('host-env-present','PRISMOS_HOST_PRIVATE_CANARY' in os.environ); "
+            "p=Path('/mnt/skills/custom/tenant-a/user-a/collision/member.txt');\ntry: p.write_text('CHANGED')\nexcept OSError: print('readonly')"
+        )
+        result = run(runtime, code)
+>       assert "host-env-present False" in result and "readonly" in result, result
+E       AssertionError: Error: Current scoped command access unavailable or changed; inspect outputs and any external effects
+E       assert ('host-env-present False' in 'Error: Current scoped command access unavailable or changed; inspect outputs and any external effects')
+
+tests/test_skill_scoped_commands.py:174: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_scoped_commands.py: 13 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_scoped_commands.py::test_actual_configured_image_reads_only_current_selected_view
+FAILED tests/test_skill_scoped_commands.py::test_actual_container_selected_source_is_readonly_and_host_env_is_absent
+2 failed, 11 passed, 14 warnings in 19.18s

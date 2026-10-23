@@ -1,0 +1,22 @@
+
+> prismos-frontend@0.2.0-alpha.1 test:unit /root/.codex/worktrees/octop-integration/prism-os/frontend
+> vitest run src/components/tenant-admin/tenant-admin-tools-page.test.tsx src/components/workspace/skills/skill-creation-flows.test.tsx --maxWorkers=1
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90m/root/.codex/worktrees/octop-integration/prism-os/frontend[39m
+
+ [32m✓[39m src/components/workspace/skills/skill-creation-flows.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 1362[2mms[22m[39m
+   [33m[2m✓[22m[39m incident unknown creation blocks repeats and offers original recovery inspection [33m 588[2mms[22m[39m
+   [33m[2m✓[22m[39m terminal unknown creation blocks repeats and offers original recovery inspection [33m 331[2mms[22m[39m
+[90mstderr[2m | src/components/tenant-admin/tenant-admin-tools-page.test.tsx[2m > [22m[2mTenantAdminToolsPage[2m > [22m[2msupports toggling, deleting and creating tenant MCP tools
+[22m[39mWarning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ [32m✓[39m src/components/tenant-admin/tenant-admin-tools-page.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 809[2mms[22m[39m
+     [33m[2m✓[22m[39m shows built-in tools alongside tenant-owned tools [33m 307[2mms[22m[39m
+     [33m[2m✓[22m[39m supports toggling, deleting and creating tenant MCP tools [33m 499[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 11:30:34
+[2m   Duration [22m 5.43s[2m (transform 590ms, setup 174ms, import 1.22s, tests 2.17s, environment 1.51s)[22m
+

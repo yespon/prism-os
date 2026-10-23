@@ -1,0 +1,1 @@
+{"scope": "pure independent document engine samples; native authorization and actual download separately tested in test_office_docx.py", "files": {"demo-original.docx": {"bytes": 2816, "sha256": "afc51fe892fdda15c8350821ca7ca0312e0f31471da07af216e005e055b7dd22"}, "demo-edited.docx": {"bytes": 2817, "sha256": "8993602f47c04d5c5685ba11f905dfd1d088e934b6ded008789aa2dced7262f5"}}}

@@ -1,0 +1,14 @@
+2026-10-17 07:38:11 - httpx - INFO - HTTP Request: POST http://127.0.0.1:18036/api/auth/login "HTTP/1.1 200 OK"
+2026-10-17 07:38:11 - httpx - INFO - HTTP Request: GET http://127.0.0.1:18036/api/mcp/config "HTTP/1.1 200 OK"
+2026-10-17 07:38:12 - deerflow.mcp.client - INFO - Configured MCP server: owned_analytics_d162d469
+2026-10-17 07:38:12 - deerflow.mcp.tools - INFO - Initializing MCP client with 1 server(s)
+2026-10-17 07:38:12 - httpx - INFO - HTTP Request: POST http://127.0.0.1:18041/mcp "HTTP/1.1 200 OK"
+2026-10-17 07:38:12 - mcp.client.streamable_http - INFO - Negotiated protocol version: 2025-11-25
+2026-10-17 07:38:12 - httpx - INFO - HTTP Request: POST http://127.0.0.1:18041/mcp "HTTP/1.1 202 Accepted"
+2026-10-17 07:38:12 - httpx - INFO - HTTP Request: POST http://127.0.0.1:18041/mcp "HTTP/1.1 200 OK"
+2026-10-17 07:38:12 - deerflow.mcp.tools - INFO - Successfully loaded 1 tool(s) from MCP servers
+2026-10-17 07:38:12 - httpx - INFO - HTTP Request: PUT http://127.0.0.1:18036/api/mcp/config "HTTP/1.1 200 OK"
+2026-10-17 07:38:12 - httpx - INFO - HTTP Request: GET http://127.0.0.1:18041/stats "HTTP/1.1 200 OK"
+2026-10-17 07:38:12 - httpx - INFO - HTTP Request: GET http://127.0.0.1:18041/stats "HTTP/1.1 200 OK"
+2026-10-17 07:38:13 - httpx - INFO - HTTP Request: PUT http://127.0.0.1:18036/api/mcp/config "HTTP/1.1 200 OK"
+Actual loaded-tool disable behavior recorded; config restored

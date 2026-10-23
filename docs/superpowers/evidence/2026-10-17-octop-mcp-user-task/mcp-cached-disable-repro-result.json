@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/cached_tool_revoke.py",
+    "--expect-bypass",
+    "--output",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/cached-disable-before.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:30:54.289356+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T23:30:54.542963+00:00"
+}

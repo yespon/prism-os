@@ -1,0 +1,37 @@
+{
+  "baseline": "fddc307",
+  "experts": 18,
+  "verified_expert_source_members": 352,
+  "resource_members": 297,
+  "legacy_bundle_members": 270,
+  "additional_members": 27,
+  "template_members": 55,
+  "resource_groups": 60,
+  "host_format": {
+    "compatible": 24,
+    "binding_required": 33,
+    "needs_adapter": 3
+  },
+  "format_adaptation_required": [
+    {
+      "template_id": "expert:cvm-cluster-doctor",
+      "root": "skills/tencentcloud-infra",
+      "detail": "Name 'Tencent Cloud Infra' should be hyphen-case (lowercase letters, digits, and hyphens only)"
+    },
+    {
+      "template_id": "expert:office-automation",
+      "root": "skills/file_reader",
+      "detail": "Name 'file_reader' should be hyphen-case (lowercase letters, digits, and hyphens only)"
+    },
+    {
+      "template_id": "expert:tencentcloud-api",
+      "root": "skills/tcapi",
+      "detail": "Unexpected key(s) in SKILL.md frontmatter: display_name, examples, keywords, prompt_template, tags"
+    }
+  ],
+  "installation_checked": false,
+  "execution_ready": false,
+  "permission_grants": false,
+  "full_n09_complete": false,
+  "m1_exit": false
+}

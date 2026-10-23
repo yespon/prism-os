@@ -89,6 +89,55 @@ export async function getIncident(incidentId: string): Promise<IncidentDetail> {
   return json as IncidentDetail;
 }
 
+export interface RunFactSnapshot {
+  agent_name?: string | null;
+  agent_id?: string | null;
+  model_name?: string | null;
+  source?: string | null;
+}
+
+export interface RunFactProjection {
+  state: "created" | "completed" | "failed";
+  started_at: string;
+  finished_at?: string | null;
+  snapshot: RunFactSnapshot;
+}
+
+export interface GovernedTicketStatus {
+  enabled: boolean;
+  status: "denied" | "awaiting_approval" | "approved" | "rejected" | "expired" | "submitted" | "unknown" | null;
+  decision_id?: string;
+  approval_id?: string | null;
+  tenant_id?: string;
+  actor_id?: string | null;
+  workload_id?: string;
+  run_id?: string;
+  /** Durable platform run fact (R1): refresh-safe execution state and frozen snapshot. */
+  run?: RunFactProjection | null;
+  policy_id?: string;
+  policy_version?: string;
+  reason_code?: string;
+  ticket_id?: string | null;
+  can_resume?: boolean;
+}
+
+export async function getGovernedTicketStatus(incidentId: string): Promise<GovernedTicketStatus> {
+  const response = await fetchAuthApi(`/api/incidents/${encodeURIComponent(incidentId)}/governed-ticket`);
+  if (!response.ok) throw new Error("加载受控建单状态失败");
+  return response.json() as Promise<GovernedTicketStatus>;
+}
+
+export async function reviewGovernedTicket(approvalId: string, action: "approve" | "reject"): Promise<void> {
+  const response = await fetchAuthApi(`/api/approvals/${encodeURIComponent(approvalId)}/${action}`, { method: "POST" });
+  if (!response.ok) throw new Error(response.status === 403 ? "需要租户管理员审批权限" : "审批操作失败");
+}
+
+export async function resumeGovernedTicket(incidentId: string): Promise<GovernedTicketStatus> {
+  const response = await fetchAuthApi(`/api/incidents/${encodeURIComponent(incidentId)}/governed-ticket/resume`, { method: "POST" });
+  if (!response.ok) throw new Error(response.status === 403 ? "请求者权限已失效" : "恢复建单失败，请查看操作记录");
+  return response.json() as Promise<GovernedTicketStatus>;
+}
+
 export interface DiagnoseResponse {
   status: string;
   incident_id: string;

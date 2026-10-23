@@ -1,0 +1,16 @@
+{
+  "base_commit": "b6b886c",
+  "scope": "Exact initial font implementation/fixtures/CI changes for in-flight first full/PG/image/upgrade; combined cmap budget fix still pending, not final acceptance",
+  "sha256": {
+    ".gitignore": "a4b6735d2f3972638f1ea352cccec573108c4c023d156e80c08c1bf0354afcb3",
+    ".dockerignore": "1899ae5f5648c6bacf6b808ff36547ea38e1413f290911bac6b2de97f3119741",
+    ".github/workflows/octop-integration.yml": "620327dc3dc2be0aa379bc99fa30701157ad991ccbf56df757e4a805a3c7d692",
+    "scripts/octop_upgrade_probe.py": "980f4a5d423156aceecb1c87dd4ecfbb32fa2441545613993a4e52a1912c9d07",
+    "backend/packages/harness/deerflow/tools/builtins/office_fonts.py": "3aa54d0dcb3c2c858909973ba5f69776c84ab5fe315540c44725910faf107a2e",
+    "backend/packages/harness/deerflow/tools/builtins/office_pdf.py": "4da47aea4b738acf7aacd6863a048a18bb15be2c6cdebdb907fbf7ad064ba36e",
+    "backend/tests/test_office_pdf_fonts.py": "e4ea5c09b945976014b3162cd2b91bf0b325da784dbc2ffc708227cf98f4bacc",
+    "backend/tests/fixtures/pdf-fonts/provenance.json": "31f76e83bd163474cec04faf7fe0dcee86f055d6327fc11b8d6db519b6501eb4",
+    "backend/tests/fixtures/pdf-fonts/copyright.txt": "075f91382875da1c4b491f1facf2586f55448705133264d98ce15cab6211b125",
+    "backend/tests/fixtures/pdf-fonts/NotoMono-Regular.ttf": "41fd7ccc82375e2a1e47f0cc2c941c14d7c99ba2f57cf69c9f738d07fb257686"
+  }
+}

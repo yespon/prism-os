@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "M1_exited": false,
+  "live_database_downgrade_attempted": false,
+  "original_alembic": {
+    "returncode": 1,
+    "expected_nonempty_guard": true,
+    "clone_database_selected": true
+  },
+  "nonempty_secret_rows": 41,
+  "all_snapshot_rows_unchanged_after_refused_downgrade": true,
+  "owned_clone_removed": true
+}

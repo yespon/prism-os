@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-13",
+  "baseline": "70853b871f45c822c911065ef13c59cdc73570c6",
+  "scope": "N09-C1 install/recovery controls and stable default production build",
+  "local_verified": true,
+  "full_n09_c1_complete": false,
+  "full_n09_complete": false,
+  "m1_exit": false,
+  "remote_ci_verified": false,
+  "live_model_tool_webhook_verified": false,
+  "current_batch_compose_verified": false,
+  "m2_persistent_implementation_started": false,
+  "backend_full": {
+    "passed": 1645,
+    "skipped": 18,
+    "warnings": 29
+  },
+  "frontend_full": {
+    "files": 47,
+    "passed": 173,
+    "current_and_independent": true
+  },
+  "octop_build": {
+    "backend": 316,
+    "frontend": 86,
+    "current_make_exit": 0,
+    "independent_make_exit": 0,
+    "independent_log_verified": true,
+    "gateway_real_auth_and_tenant_membership": true,
+    "migration_head": "n8h9i0j1k2l3",
+    "compiler": "webpack",
+    "strict_typecheck_before_compilation": true,
+    "current_and_independent_production_build": true
+  },
+  "fault_acceptance": {
+    "sqlite_cases": 27,
+    "postgres_cases": 27,
+    "owned_postgres_removed": true,
+    "unknown_result_requires_inspection": true,
+    "tenant_session_close_late_response_checks": true,
+    "disabled_preserved": true,
+    "execution_granted": false
+  },
+  "upgrade": {
+    "host_inputs": 21,
+    "stages": [
+      "0.3.0b5",
+      "b6",
+      "0.3.0b5"
+    ],
+    "passed_each": 148,
+    "rollback_verified": true,
+    "host_changed": false
+  },
+  "candidate": {
+    "code_inputs": 20,
+    "current_candidate_and_index_hashes_match": true,
+    "original_source_members": 902
+  },
+  "artifacts": {
+    "current": {
+      "trace_files": 50,
+      "references": 15688,
+      "outside_frontend": 0,
+      "verified": true,
+      "locks_sha256": {
+        "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+        "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+      },
+      "artifact_sha256": {
+        "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+        "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+      }
+    },
+    "independent": {
+      "verified": true,
+      "trace_files": 50,
+      "references": 15602,
+      "outside_frontend": 0
+    }
+  },
+  "new_schema": false,
+  "remaining": [
+    "stable receipt pagination beyond 100 operations and retention/maintenance rules",
+    "N09-C2 through C5 and original N09 scope",
+    "N04/M1 and remote CI"
+  ],
+  "resource_failure": {
+    "initial_default_turbopack_interrupted": true,
+    "owned_parallel_checks_interrupted": true,
+    "final_sequential_default_build_passed": true,
+    "node_heap_mb": 1024,
+    "affinity_cpus": 1,
+    "other_projects_untouched": true
+  },
+  "log_recovery": {
+    "early_empty_log_not_accepted": true,
+    "reproducer_frozen": true,
+    "independent_build_reverified": true
+  },
+  "static_checks": {
+    "backend_ruff": true,
+    "new_frontend_eslint": true
+  },
+  "original_scope_preserved": [
+    "N01-N15",
+    "O01-O42",
+    "F01-F12",
+    "original PrismOS roadmap and gates"
+  ]
+}

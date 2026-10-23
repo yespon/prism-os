@@ -1,0 +1,1 @@
+{"scope": "Synthetic table metadata only; no native font parsing or exhaustion attempted", "font_bytes": 175668, "aliased_table_bytes": 8388608, "current_coverage_preflight_accepted": true, "required_fix": "Bound total declared table bytes before copying table payloads"}

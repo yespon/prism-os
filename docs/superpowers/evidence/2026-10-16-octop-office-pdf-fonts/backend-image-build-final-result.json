@@ -1,0 +1,18 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "--progress",
+    "plain",
+    "-f",
+    "backend/Dockerfile",
+    "-t",
+    "prismos-office-pdf-fonts-final:test",
+    "."
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T01:31:16.704421+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T01:34:57.911732+00:00"
+}

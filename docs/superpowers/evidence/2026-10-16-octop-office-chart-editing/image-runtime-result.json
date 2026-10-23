@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "256",
+    "--name",
+    "prismos-office-charts-484b17710d87",
+    "sha256:b0f0b8db1bba39e62db48f972ea42c8614bb50d7379e31fb2ba200abafe2dd9f",
+    "sh",
+    "-c",
+    "cd /app/backend && .venv/bin/python -m pytest tests/test_office_chart_editing.py tests/test_office_charts.py tests/test_office_xlsx.py tests/test_office_formats.py tests/test_office_docx.py tests/test_file_access_http.py -q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T02:03:40.361426+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T02:06:51.211502+00:00"
+}

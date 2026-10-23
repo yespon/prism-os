@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/final_proof.py", line 10, in <module>
+    for name,item in processes.items():assert process_identity(item['pid'])=={k:item[k] for k in ['starttime','cmdline_sha256']},name
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: langgraph

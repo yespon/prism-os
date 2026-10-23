@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-governed-readers/deploy_owned_image.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T16:05:53.152291+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T16:06:16.197107+00:00"
+}

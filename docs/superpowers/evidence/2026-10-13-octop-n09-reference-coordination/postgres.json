@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "database": "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+  "container_id": "41e098fc73007e7da7ebe7ede9832c1c10fdd2c3f19233c5779bec6a61286b94",
+  "loopback_only": true,
+  "owned_tmpfs_database": true,
+  "schema": "existing SQLModel metadata including native TenantSkill uniqueness; no production database",
+  "cases": "import recovery, identity, mutation, enablement, creation, deletion and two-connection Agent reference ordering",
+  "credentials_in_evidence": false,
+  "returncode": 0,
+  "owned_container_removed": true
+}

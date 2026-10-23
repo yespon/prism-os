@@ -1,0 +1,83 @@
+.......................F...................                              [100%]
+=================================== FAILURES ===================================
+____________________ test_mcp_tool_sync_wrapper_generation _____________________
+tests/test_mcp_sync_wrapper.py:49: in test_mcp_tool_sync_wrapper_generation
+    result = patched_tool.func(x=42)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+packages/harness/deerflow/mcp/tools.py:50: in sync_wrapper
+    return asyncio.run(coro(*args, **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+packages/harness/deerflow/mcp/authorization.py:34: in guarded
+    context = get_runtime().context
+              ^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/runtime.py:309: in get_runtime
+    runtime = cast(Runtime[ContextT], get_config()[CONF].get(CONFIG_KEY_RUNTIME))
+                                      ^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/config.py:29: in get_config
+    raise RuntimeError("Called get_config outside of a runnable context")
+E   RuntimeError: Called get_config outside of a runnable context
+------------------------------ Captured log call -------------------------------
+ERROR    deerflow.mcp.tools:tools.py:52 Error invoking MCP tool 'test_tool' via sync wrapper: Called get_config outside of a runnable context
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/mcp/tools.py", line 50, in sync_wrapper
+    return asyncio.run(coro(*args, **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/mcp/authorization.py", line 34, in guarded
+    context = get_runtime().context
+              ^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/langgraph/runtime.py", line 309, in get_runtime
+    runtime = cast(Runtime[ContextT], get_config()[CONF].get(CONFIG_KEY_RUNTIME))
+                                      ^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/langgraph/config.py", line 29, in get_config
+    raise RuntimeError("Called get_config outside of a runnable context")
+RuntimeError: Called get_config outside of a runnable context
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_mcp_runtime_access.py: 13 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_mcp_sync_wrapper.py::test_mcp_tool_sync_wrapper_generation
+1 failed, 42 passed, 14 warnings in 15.05s

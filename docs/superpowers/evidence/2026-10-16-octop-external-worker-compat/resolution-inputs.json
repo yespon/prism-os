@@ -1,0 +1,6 @@
+{
+  "upstream_lock_sha256": "9dd1e05b55d10383a0cfd575d19af05c05d616ed257eb148eb59bca28b62de2e",
+  "unique_version_constraints": 239,
+  "ambiguous_forks_not_constrained": {},
+  "host_lock_not_modified": true
+}

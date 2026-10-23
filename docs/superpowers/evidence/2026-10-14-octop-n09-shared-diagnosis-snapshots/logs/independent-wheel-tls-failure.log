@@ -1,0 +1,13 @@
+Building source distribution...
+WARN Retry attempt #0. Sleeping 824.452862ms before the next attempt
+WARN Retry attempt #1. Sleeping 1.604085135s before the next attempt
+WARN Retry attempt #2. Sleeping 3.979119765s before the next attempt
+  × Failed to build
+  │ `/tmp/prismos-n09n-independent/backend/packages/octop-capabilities`
+  ├─▶ Failed to resolve requirements from `build-system.requires`
+  ├─▶ No solution found when resolving: `hatchling`
+  ├─▶ Failed to fetch: `https://pypi.org/simple/hatchling/`
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url (https://pypi.org/simple/hatchling/)
+  ├─▶ client error (Connect)
+  ╰─▶ tls handshake eof

@@ -1,0 +1,1 @@
+{"actual_image_http": {"/health": 200, "/api/sandboxes": 503, "/api/scoped-commands/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": 401}, "real_cluster_exercised": false}

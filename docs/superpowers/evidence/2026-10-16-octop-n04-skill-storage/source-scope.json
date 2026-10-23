@@ -1,0 +1,11 @@
+{
+  "changed_production_function": "diagnose_incident",
+  "all_other_router_AST_unchanged": true,
+  "new_behavior": "End preflight transaction before worker start/SSE; independent current checks remain in worker/delivery",
+  "changed_inputs": [
+    "backend/app/gateway/routers/alerts.py",
+    "backend/tests/test_incident_diagnosis.py",
+    "backend/tests/test_n04_ticket_receiver.py",
+    "scripts/octop_wsl_test_env.py"
+  ]
+}

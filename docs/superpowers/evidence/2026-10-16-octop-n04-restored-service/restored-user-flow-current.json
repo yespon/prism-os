@@ -1,0 +1,38 @@
+{
+  "complete": false,
+  "M1_exited": false,
+  "N08_started": false,
+  "project": "prismos-n04-restored-bd0e6671df",
+  "private_runtime": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/prismos-n04-restored-bd0e6671df",
+  "phases": [
+    {
+      "phase": "prepare",
+      "complete": true,
+      "original_auth_roles_model_and_history_restored": true,
+      "existing_skill_identity_and_edit_preserved": true,
+      "new_skill_create_duplicate_and_member_write_guards": true,
+      "busy_thread_projections": 1,
+      "active_or_unknown_restored_runs": 0,
+      "terminal_run_evidence": [
+        {
+          "thread_id": "01a143c1-741c-7c40-b4eb-1e687f2d8442",
+          "thread_projection": "busy",
+          "runs": [
+            {
+              "run_id": "01a143c1-c529-71e2-887e-744d386c56c3",
+              "status": "interrupted"
+            }
+          ]
+        }
+      ],
+      "receiver_before": 25
+    }
+  ],
+  "original_receiver_before": 26,
+  "phase": "restored native CRUD/history/roles verified; model workload prepared",
+  "owned_services_removed": true,
+  "owned_network_removed": true,
+  "owned_clone_databases_removed": true,
+  "original_receiver_after": 26,
+  "original_compose_unchanged": true
+}

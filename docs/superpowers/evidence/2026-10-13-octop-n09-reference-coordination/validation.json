@@ -1,0 +1,99 @@
+{
+  "status": "reference_transaction_coordination_progress_not_C2_exit",
+  "base_commit": "b552fb1b4fa45bfc4232837a501d0f5bbdd8de69",
+  "scope": "Original Agent CRUD and Skill withdrawal/recovery transactions; no new reference registry or execution grant.",
+  "backend": {
+    "passed": 1749,
+    "skipped": 18,
+    "warnings": 141,
+    "exit_code": 0,
+    "input_mtime_before_run_start": true
+  },
+  "octop_check": {
+    "backend_passed": 420,
+    "frontend_files": 17,
+    "frontend_passed": 152,
+    "strict_typecheck": true,
+    "locked_sync": true,
+    "exit_code": 0
+  },
+  "frontend": {
+    "source_changed": false,
+    "tree": "f8326fa236c8af6ea85db092c519fcb749c597f4",
+    "full_suite_this_batch": false,
+    "historical_full_suite": {
+      "commit": "b552fb1",
+      "files": 55,
+      "passed": 239
+    }
+  },
+  "postgres": {
+    "passed": 131,
+    "warnings": 70,
+    "two_connection_ordering_cases": 6,
+    "owned_container_removed": true,
+    "exit_code": 0
+  },
+  "negative_probe": {
+    "scope": "Two real PostgreSQL create races with only the writer coordination seam bypassed in the test fixture; not a full historical checkout replay. Raw runner cases description is inherited; actual test selection is in baseline-probe.py.",
+    "expected_failed_cases": 2,
+    "actual_uncoordinated_commit_observed": true,
+    "owned_container_removed": true,
+    "counted_as_green": false
+  },
+  "gateway": {
+    "real_session_and_membership": true,
+    "exit_code": 0
+  },
+  "artifacts": {
+    "rebuilt": true,
+    "verified_imported_files": 902,
+    "production_default_build_exit_code": 0,
+    "strict_typegen_and_tsc": true,
+    "trace_files": 50,
+    "outside_frontend": []
+  },
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "bd547656e31d8a3586b11a3582ce2263cb901b096e21c243a6200e651e5c1c2a",
+    "Makefile": "841a1316f6ac119008d669541862b7a31c5640c8c64063ddf7694124aba6764f",
+    "backend/app/gateway/routers/agents.py": "8bc19eb9d9baaadb1a4a26d653aa90d3b797b5ec31a19c75e94c6c63b64f863c",
+    "backend/app/integrations/skill_deletions.py": "83894ae92ee4be8297ecf7540bb7f4d123310d0d4936cd70f41dc390f32fb9b1",
+    "scripts/octop_skill_postgres.py": "4d26543fa1e3821b17de7e49e7f91e5ff277dd340c91b7462e0b162781e21fea",
+    "scripts/octop_upgrade_probe.py": "a87dda614109df756c083c52fab61ea11b180f0319c65ba53fd79b5a8fe8b012",
+    "backend/app/integrations/skill_reference_transactions.py": "da62e810b43eddabcfade3ae4e8981ef7ad6b7feb690348f76bf9673a044bafa",
+    "backend/tests/test_skill_reference_transactions.py": "428af953c7e061488e0760714aff459bd202581e5d7a0734ba8168324d61ce4f"
+  },
+  "lock_sha256s": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifact_sha256s": {
+    "backend/dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "backend/dist/prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "evidence_sha256s": {
+    "baseline-probe.py": "4ab06e25acaf49aebb2fa6ef8c056a187b0cde2fea5a590b4373f8b345ea47c3",
+    "gateway.json": "7e4b532c1cceef150c1e75ed52e198ba9fbedcf9c658f4b90253c4f439b94808",
+    "logs/backend-full.log": "3cdf9132354aa2b0730855bd5b03ac3d10acbb76db0cd83ec5cc7452ee36c71f",
+    "logs/brand.log": "09647b9d741cb7b642d562f49e9636bd21f774679e6f918807debcfb9924cd0e",
+    "logs/gateway.log": "20f73c373b84273a2fd6ca03449726afc2d0dceacdd2000fb22b036281d3897f",
+    "logs/octop-check.log": "48ed9a657a020fe747a067e3f1cd8162ada464afe8f1fe9b1383dfcf07654c94",
+    "logs/postgres.log": "750cbd1ced27f8d30393a65d179f02659c24463c36d8561f116adbe72030e02c",
+    "logs/production-build.log": "213fd0e0a9c50604e201a2cd6f3aefd1167acc8f653b30f042afacdd956a221d",
+    "logs/sqlite-concurrency.log": "26c371af50f1c3d791563fe4d914e4f933888f72e72baac5e2ed9922e165d2b8",
+    "logs/uncoordinated-writer-run.log": "3f649f273e00c14e9598be61547752c6d21b676e91fe8b9a6cbe86cd955ba500",
+    "logs/uncoordinated-writer.log": "6d669e7694b36ed43520982aa6dfa1ff81d3e0330da0267b31d4ae676b50d8ef",
+    "logs/wheel-build.log": "5275e34cff1a12b01c417b9c898f53dbf9c80d49e22cfa0704590d30b537fbd4",
+    "logs/wheel-verify.log": "08ca4c354f83a830d1d23cf352a079ba28e4bb176a90248e2960a27e88506897",
+    "postgres.json": "d7c0a8ffd7a2bcdfc78ce9b3508d39a740684e44dd92f65dcc7a004dea3719b5",
+    "uncoordinated-writer-postgres.json": "9dd23123e450d81af8499cf0c3b2913b6771597fdad2eff331498323f6618535"
+  },
+  "pending": [
+    "Concrete resource reference configuration and actual editing/reselection UI; legacy names must not silently bind another source.",
+    "Current use authorization across graph/prompt and manual/automatic diagnosis; caches and public same-name fallback are not proof.",
+    "Definitive deletion rejection vs unknown outcome and a completable inspection/retry flow.",
+    "True deletion process interruption/recovery, frozen independent unified build, fixed-host source upgrade/rollback and full C2/N09 exit.",
+    "N04 real environment/model/ticket count and N07 remote CI; M1 not exited; N08 persistence not started.",
+    "Full N01-N15/O01-O42/F01-F12 and original PrismOS scope remains unchanged."
+  ]
+}

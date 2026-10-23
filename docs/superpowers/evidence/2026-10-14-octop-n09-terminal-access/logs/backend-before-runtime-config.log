@@ -1,0 +1,299 @@
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 10%]
+........................................................................ [ 14%]
+........................................................................ [ 18%]
+........................................................................ [ 21%]
+........................................................ssssss...ss..ss. [ 25%]
+...s.................................................................... [ 28%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+........................................................................ [ 39%]
+........................................................................ [ 43%]
+........................................................................ [ 46%]
+........................................................................ [ 50%]
+........................................................................ [ 54%]
+........................................................................ [ 57%]
+........................................................................ [ 61%]
+........................................................................ [ 65%]
+........................................................................ [ 68%]
+........................................................................ [ 72%]
+........................................................................ [ 75%]
+......................................................ssssss............ [ 79%]
+........................................................................ [ 83%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+.................................................                        [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_admin_e2e_tenant_guard.py::test_tenant_guard_protects_admin_boundary
+tests/test_client_e2e.py::TestMemoryAccess::test_get_memory_returns_dict
+tests/test_client_e2e.py::TestMemoryAccess::test_reload_memory_returns_dict
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_uses_tenant_allowlist_default
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/agents/memory/updater.py:59: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "lastUpdated": datetime.utcnow().isoformat() + "Z",
+
+tests/test_agent_skill_references.py: 18 warnings
+tests/test_diagnosis_authorization.py: 55 warnings
+tests/test_file_access_boundaries.py: 15 warnings
+tests/test_file_access_http.py: 11 warnings
+tests/test_legacy_default_scope.py: 13 warnings
+tests/test_runtime_source_revocation.py: 12 warnings
+tests/test_skill_deletion_process.py: 22 warnings
+tests/test_skill_enablement_boundaries.py: 26 warnings
+tests/test_skill_manual_creation.py: 5 warnings
+tests/test_skill_member_tools.py: 27 warnings
+tests/test_skill_mutation_boundaries.py: 10 warnings
+tests/test_skill_reference_transactions.py: 4 warnings
+tests/test_skill_resource_deletion.py: 2 warnings
+tests/test_skill_resource_identity.py: 22 warnings
+tests/test_skill_scoped_commands.py: 17 warnings
+tests/test_terminal_access_boundaries.py: 15 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_agent_skill_references.py: 2 warnings
+tests/test_skill_mutation_boundaries.py: 14 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:105: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_auth_middleware_status.py::test_auth_middleware_allows_user_without_status
+tests/test_auth_middleware_status.py::test_auth_middleware_allows_missing_tenant_id_for_now
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/tenant_service.py:133: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_channels.py::TestFeishuChannel::test_streaming_reuses_single_running_card
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/lark_oapi/ws/pb/google/protobuf/internal/well_known_types.py:91: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+    _EPOCH_DATETIME_NAIVE = datetime.datetime.utcfromtimestamp(0)
+
+tests/test_channels.py::TestFeishuChannel::test_streaming_reuses_single_running_card
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/lark_oapi/ws/client.py:67: DeprecationWarning: websockets.InvalidStatusCode is deprecated
+    def _parse_ws_conn_exception(e: websockets.InvalidStatusCode):
+
+tests/test_channels.py::TestFeishuChannel::test_streaming_reuses_single_running_card
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/websockets/legacy/__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+tests/test_custom_agent.py::TestPaths::test_agent_memory_file
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path_is_user_scoped_when_user_id_present
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/config/paths.py:188: DeprecationWarning: agent_dir() is deprecated. Agents are now stored in the custom_agents DB table. Use load_agent_config() from deerflow.config.agents_config instead.
+    return self.agent_dir(name, user_id=user_id, tenant_id=tenant_id) / "memory.json"
+
+tests/test_custom_agent.py::TestPaths::test_agent_memory_file
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path_is_user_scoped_when_user_id_present
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/config/paths.py:180: DeprecationWarning: agents_dir() is deprecated. Agents are now stored in the custom_agents DB table. Use load_agent_config() / list_custom_agents() from deerflow.config.agents_config instead.
+    return self.agents_dir(user_id=user_id, tenant_id=tenant_id) / name.lower()
+
+tests/test_infoquest_client.py::TestInfoQuestClient::test_web_fetch_tool
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/readabilipy/simplifiers/html.py:86: DeprecationWarning: Call to deprecated method findAll. (Replaced by find_all) -- Deprecated since version 4.0.0.
+    for comment in soup.findAll(string=lambda text: any(isinstance(text, x) for x in [Comment, Doctype])):
+
+tests/test_memory_updater.py::test_apply_updates_skips_existing_duplicate_and_preserves_removals
+tests/test_memory_updater.py::test_apply_updates_skips_same_batch_duplicates_and_keeps_source_metadata
+tests/test_memory_updater.py::test_apply_updates_preserves_threshold_and_max_facts_trimming
+tests/test_memory_updater.py::TestUpdateMemoryStructuredResponse::test_string_response_parses
+tests/test_memory_updater.py::TestUpdateMemoryStructuredResponse::test_list_content_response_parses
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/agents/memory/updater.py:404: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow().isoformat() + "Z"
+
+tests/test_skill_deletion_process.py: 22 warnings
+tests/test_skill_manual_creation.py: 8 warnings
+tests/test_skill_resource_deletion.py: 2 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1572: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_enablement_boundaries.py: 18 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:188: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_terminal_access_boundaries.py::test_actual_local_pty_closes_after_revocation_even_without_output
+tests/test_terminal_access_boundaries.py::test_actual_pty_withdrawal_records_original_audit_unknown_once_without_stdout
+  /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pty.py:95: DeprecationWarning: This process (pid=1277710) is multi-threaded, use of forkpty() may lead to deadlocks in the child.
+    pid, fd = os.forkpty()
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:44: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    role = (await db.execute(sa_select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == actor, TenantMembership.status == "active"))).scalars().first()
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:498: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:509: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    count_result = await db.execute(count_query)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1976 passed, 18 skipped, 380 warnings in 634.87s (0:10:34)

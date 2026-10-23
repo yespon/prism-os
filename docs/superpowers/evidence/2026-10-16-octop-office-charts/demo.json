@@ -1,0 +1,177 @@
+{
+  "scope": "Actual bounded independent Office chart packages, not desktop rendering or model behavior acceptance",
+  "files": {
+    "demo-charts.xlsx": {
+      "sha256": "bcdb70f0b052ab86690c286469f78f3ba9a03d4177e5b92930e9300e71213176",
+      "bytes": 7997,
+      "inspected": {
+        "sheets": [
+          {
+            "name": "季度预算",
+            "rows": [
+              [
+                "季度",
+                "预算",
+                "实际"
+              ],
+              [
+                "第一季",
+                125,
+                110
+              ],
+              [
+                "第二季",
+                160,
+                145
+              ],
+              [
+                "第三季",
+                180,
+                175
+              ],
+              [
+                "第四季",
+                200,
+                190
+              ]
+            ],
+            "merged_cells": [],
+            "charts": [
+              {
+                "kind": "BarChart",
+                "series_count": 2
+              },
+              {
+                "kind": "LineChart",
+                "series_count": 2
+              },
+              {
+                "kind": "PieChart",
+                "series_count": 1
+              }
+            ]
+          }
+        ],
+        "formulas_calculated": false
+      }
+    },
+    "demo-charts.pptx": {
+      "sha256": "39287e06232d917f22651fbcde7826e297775b40377eabf19eea0a714f291551",
+      "bytes": 54240,
+      "inspected": {
+        "slides": [
+          {
+            "texts": [
+              "项目预算与实际"
+            ],
+            "tables": [],
+            "charts": [
+              {
+                "kind": "COLUMN_CLUSTERED (51)",
+                "series": [
+                  {
+                    "name": "预算",
+                    "values": [
+                      125.0,
+                      160.0,
+                      180.0,
+                      200.0
+                    ]
+                  },
+                  {
+                    "name": "实际",
+                    "values": [
+                      110.0,
+                      145.0,
+                      175.0,
+                      190.0
+                    ]
+                  }
+                ],
+                "categories": [
+                  "第一季",
+                  "第二季",
+                  "第三季",
+                  "第四季"
+                ]
+              }
+            ],
+            "notes": "实际文件示例；桌面渲染仍待验收，未调用模型或外部工具。"
+          },
+          {
+            "texts": [
+              "季度走势"
+            ],
+            "tables": [],
+            "charts": [
+              {
+                "kind": "LINE (4)",
+                "series": [
+                  {
+                    "name": "预算",
+                    "values": [
+                      125.0,
+                      160.0,
+                      180.0,
+                      200.0
+                    ]
+                  },
+                  {
+                    "name": "实际",
+                    "values": [
+                      110.0,
+                      145.0,
+                      175.0,
+                      190.0
+                    ]
+                  }
+                ],
+                "categories": [
+                  "第一季",
+                  "第二季",
+                  "第三季",
+                  "第四季"
+                ]
+              }
+            ],
+            "notes": "实际文件示例；桌面渲染仍待验收，未调用模型或外部工具。"
+          },
+          {
+            "texts": [
+              "预算分布"
+            ],
+            "tables": [],
+            "charts": [
+              {
+                "kind": "PIE (5)",
+                "series": [
+                  {
+                    "name": "预算",
+                    "values": [
+                      125.0,
+                      160.0,
+                      180.0,
+                      200.0
+                    ]
+                  }
+                ],
+                "categories": [
+                  "第一季",
+                  "第二季",
+                  "第三季",
+                  "第四季"
+                ]
+              }
+            ],
+            "notes": "实际文件示例；桌面渲染仍待验收，未调用模型或外部工具。"
+          }
+        ],
+        "size_emu": [
+          12191695,
+          6858000
+        ],
+        "rendered": false
+      }
+    }
+  }
+}

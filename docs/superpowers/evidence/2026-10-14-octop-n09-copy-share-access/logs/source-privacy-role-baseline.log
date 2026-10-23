@@ -1,0 +1,81 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__ test_private_configuration_not_disclosed_to_other_member_through_discovery __
+
+configured = (<starlette.testclient.TestClient object at 0x7981e787f3e0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:bbf7453a33fe0595448bcfe957d35db3adf912ad27e7033b2e2e351f85fdf9d5'}})
+
+    def test_private_configuration_not_disclosed_to_other_member_through_discovery(configured):
+        http, factory, _, _ = configured
+        async def create():
+            async with factory() as db:
+                db.add(CustomAgent(id='private-foreign', tenant_id='tenant-a', user_id='other-user', name='private-foreign', system_prompt='PRIVATE CONFIGURATION'))
+                role = (await db.exec(select(TenantMembership))).scalars().one()
+                role.role = 'tenant_member'
+                db.add(role)
+                await db.commit()
+        asyncio.run(create())
+        result = http.get('/api/agents?show_all=true')
+        assert result.status_code == 200
+>       assert 'PRIVATE CONFIGURATION' not in result.text
+E       assert 'PRIVATE CONFIGURATION' not in '{"agents":[...GURATION"}]}'
+E         
+E         'PRIVATE CONFIGURATION' is contained here:
+E           _prompt":"PRIVATE CONFIGURATION","skill_binding_mode":null,"skill_resources":null,"skills":[],"enabled":true,"tags":[],"created_by":null,"created_at":"2026-10-14T15:11:34.177211","updated_at":"2026-10-14T15:11:34.177224","is_shared":false,"presentation":{"quick_prompts":[],"welcome_message":"","avatar_id":null,"template_locale":"zh","persona_mbti":null,"template_id":null,"bundled_resources_installed":false,"excluded_resources":[]},"base_system_prompt":"PRIVATE CONFIGURATION","soul":"PRIVATE CONFIGURATION"}]}
+
+/tmp/test_prismos_agent_copy_source_repro.py:23: AssertionError
+___ test_cached_admin_claim_does_not_authorize_sharing_after_role_withdrawal ___
+
+configured = (<starlette.testclient.TestClient object at 0x7981eb459490>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...ion', 'scope': 'personal', 'resource_id': 'skill:1:bf55c87a21e2241357a2aac720279a1927dd2e2f179b5a52706cc377c18e3e2b'}})
+
+    def test_cached_admin_claim_does_not_authorize_sharing_after_role_withdrawal(configured):
+        http, factory, _, _ = configured
+        created = http.post('/api/agents',json={'name':'before-role-withdrawal','system_prompt':'Owned configuration','skill_binding_mode':'selected','skill_resources':[]})
+        assert created.status_code == 201
+        async def revoke():
+            async with factory() as db:
+                role = (await db.exec(select(TenantMembership))).scalars().one()
+                role.role = 'tenant_member'
+                db.add(role)
+                await db.commit()
+        asyncio.run(revoke())
+        result = http.put('/api/agents/before-role-withdrawal',json={'is_shared':True},headers={'x-tenant-role':'tenant_admin'})
+>       assert result.status_code == 403, result.text
+E       AssertionError: {"revision":"b77265743e529419fc21a75d0c0c7405d6d2d33263d85b750759fc51d12ce360","id":"a504736a-6acc-4eff-9108-92646fb58254","name":"before-role-withdrawal","description":"","model":null,"tool_groups":[],"system_prompt":"Owned configuration","skill_binding_mode":"selected","skill_resources":[],"skills":[],"enabled":true,"tags":[],"created_by":"user-a","created_at":"2026-10-14T15:11:35.798294","updated_at":"2026-10-14T15:11:35","is_shared":true,"presentation":{"quick_prompts":[],"welcome_message":"","avatar_id":null,"template_locale":"zh","persona_mbti":null,"template_id":null,"bundled_resources_installed":false,"excluded_resources":[]},"base_system_prompt":"Owned configuration","soul":"Owned configuration"}
+E       assert 200 == 403
+E        +  where 200 = <Response [200 OK]>.status_code
+
+/tmp/test_prismos_agent_copy_source_repro.py:38: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+test_prismos_agent_copy_source_repro.py::test_private_configuration_not_disclosed_to_other_member_through_discovery
+test_prismos_agent_copy_source_repro.py::test_cached_admin_claim_does_not_authorize_sharing_after_role_withdrawal
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../../../tmp/test_prismos_agent_copy_source_repro.py::test_private_configuration_not_disclosed_to_other_member_through_discovery
+FAILED ../../../../../../tmp/test_prismos_agent_copy_source_repro.py::test_cached_admin_claim_does_not_authorize_sharing_after_role_withdrawal
+2 failed, 3 warnings in 5.52s

@@ -14,16 +14,17 @@ _admin_created = False
 def bootstrap_admin():
     """Create the initial bootstrap admin user if one does not exist.
     Safe to call multiple times — only creates the admin once.
-    On PostgreSQL, tables are created by Better Auth on frontend startup;
-    retries a few times when the tables are not yet ready.
+    Gateway owns the existing identity schema on both supported databases.
+    PostgreSQL startup workers serialize initialization within the transaction.
     """
     global _admin_created
     if _admin_created:
         return
     try:
         with auth_connection() as conn, conn.begin():
-            if conn.dialect.name == "sqlite":
-                _ensure_sqlite_tables(conn)
+            if conn.dialect.name == "postgresql":
+                conn.execute(text("SELECT pg_advisory_xact_lock(22608476990295891)"))
+            _ensure_auth_tables(conn)
 
             result = conn.execute(
                 text("SELECT id FROM \"user\" WHERE role = 'admin' LIMIT 1")
@@ -70,9 +71,12 @@ def bootstrap_admin():
         logger.warning("Failed to bootstrap admin account (will retry): %s", exc)
 
 
-def _ensure_sqlite_tables(conn):
-    """Create Better Auth identity tables — SQLite only.
-    On PostgreSQL, Better Auth creates these via Kysely on first frontend startup."""
+def _ensure_auth_tables(conn):
+    """Create the Gateway identity schema if absent, preserving existing tables.
+
+    The legacy Gateway uses text timestamps and integer flags on both dialects;
+    no existing column or data is altered by these create-if-absent statements.
+    """
     tables = [
         ("\"user\"", (
             "id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, "

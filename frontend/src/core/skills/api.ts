@@ -1,12 +1,23 @@
 import { getAuthHeaders } from "@/core/api/auth-client";
 import { getBackendBaseURL } from "@/core/config";
 
-import type { Skill, AvailableSkillResponse, SummarizeDiagnosisRequest, SummarizeDiagnosisResponse } from "./type";
+import { deleteOwnedSkill, type SkillDeletionOptions } from "./deletions";
+import { readSkillImportResponse, SkillImportError } from "./imports";
+import { SkillMutationError, readSkillMutationResponse } from "./mutations";
+import type {
+  Skill,
+  SkillCreationResult,
+  AvailableSkillResponse,
+  SummarizeDiagnosisRequest,
+  SummarizeDiagnosisResponse,
+} from "./type";
 
-export async function loadSkills() {
+export async function loadSkills(signal?: AbortSignal) {
   const skills = await fetch(`${getBackendBaseURL()}/api/skills`, {
     headers: await getAuthHeaders(),
+    signal,
   });
+  if (!skills.ok) throw new Error(`Failed to load skills: ${skills.status}`);
   const json = await skills.json();
   return json.skills as Skill[];
 }
@@ -20,6 +31,7 @@ export interface InstallSkillResponse {
   success: boolean;
   skill_name: string;
   message: string;
+  operation_id?: string;
 }
 
 export async function installSkill(
@@ -33,23 +45,23 @@ export async function installSkill(
     body: JSON.stringify(request),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const errorMessage =
-      errorData.detail ?? `HTTP ${response.status}: ${response.statusText}`;
+  try {
+    return await readSkillImportResponse<InstallSkillResponse>(response);
+  } catch (error) {
+    if (!(error instanceof SkillImportError)) throw error;
     return {
       success: false,
       skill_name: "",
-      message: errorMessage,
+      message: error.message,
+      operation_id: error.operationId,
     };
   }
-
-  return response.json();
 }
 
-export async function loadAvailableSkills() {
+export async function loadAvailableSkills(signal?: AbortSignal) {
   const response = await fetch(`${getBackendBaseURL()}/api/skills/available`, {
     headers: await getAuthHeaders(),
+    signal,
   });
 
   if (!response.ok) {
@@ -60,9 +72,10 @@ export async function loadAvailableSkills() {
   return json.skills as AvailableSkillResponse[];
 }
 
-export async function loadTenantSkills() {
+export async function loadTenantSkills(signal?: AbortSignal) {
   const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills`, {
     headers: await getAuthHeaders(),
+    signal,
   });
 
   if (!response.ok) {
@@ -73,23 +86,31 @@ export async function loadTenantSkills() {
   return json.skills as Skill[];
 }
 
-export async function updateTenantSkill(skillName: string, enabled: boolean) {
+export async function updateTenantSkill(
+  skillName: string,
+  enabled: boolean,
+  options: { expectedResourceId?: string; isCurrent?: () => boolean } = {},
+) {
+  const headers = await getAuthHeaders({ "Content-Type": "application/json" });
+  if (options.isCurrent && !options.isCurrent())
+    throw new SkillMutationError(
+      401,
+      options.expectedResourceId,
+      false,
+      "Skill mutation identity changed",
+    );
   const response = await fetch(
-    `${getBackendBaseURL()}/api/tenants/skills/${skillName}`,
+    `${getBackendBaseURL()}/api/tenants/skills/${encodeURIComponent(skillName)}`,
     {
       method: "PUT",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
+      headers,
       body: JSON.stringify({
         enabled,
+        expected_resource_id: options.expectedResourceId,
       }),
-    }
+    },
   );
-  if (!response.ok) {
-    throw new Error(`Failed to update tenant skill: ${response.status}`);
-  }
-  return response.json();
+  return readSkillMutationResponse(response);
 }
 
 export async function createTenantSkill(input: {
@@ -101,27 +122,24 @@ export async function createTenantSkill(input: {
   bound_tools?: string[];
   prompt_template?: string | null;
   strategy?: string | null;
-}) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/tenants/skills`,
-    {
-      method: "POST",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(input),
-    }
-  );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to create tenant skill: ${response.status}`);
-  }
-  return response.json();
+}, options: {isCurrent?: () => boolean} = {}) {
+  const headers = await getAuthHeaders({"Content-Type": "application/json"});
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+  const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(input),
+  });
+  const created = await readSkillMutationResponse<SkillCreationResult>(response);
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+  return created;
 }
 
 export async function patchTenantSkill(
   skillName: string,
   input: {
+    expected_resource_id?: string;
+    expected_file_sha256?: string;
     description?: string | null;
     instructions?: string | null;
     enabled?: boolean;
@@ -139,15 +157,10 @@ export async function patchTenantSkill(
         "Content-Type": "application/json",
       }),
       body: JSON.stringify(input),
-    }
+    },
   );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to patch tenant skill: ${response.status}`);
-  }
-  return response.json();
+  return readSkillMutationResponse(response);
 }
-
 export async function createPersonalSkill(input: {
   name: string;
   description: string;
@@ -157,27 +170,24 @@ export async function createPersonalSkill(input: {
   bound_tools?: string[];
   prompt_template?: string | null;
   strategy?: string | null;
-}) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/skills/personal`,
-    {
-      method: "POST",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(input),
-    }
-  );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to create personal skill: ${response.status}`);
-  }
-  return response.json();
+}, options: {isCurrent?: () => boolean} = {}) {
+  const headers = await getAuthHeaders({"Content-Type": "application/json"});
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+  const response = await fetch(`${getBackendBaseURL()}/api/skills/personal`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(input),
+  });
+  const created = await readSkillMutationResponse<SkillCreationResult>(response);
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill creation identity changed");
+  return created;
 }
 
 export async function patchPersonalSkill(
   skillName: string,
   input: {
+    expected_resource_id?: string;
+    expected_file_sha256?: string;
     description?: string | null;
     instructions?: string | null;
     enabled?: boolean;
@@ -195,88 +205,81 @@ export async function patchPersonalSkill(
         "Content-Type": "application/json",
       }),
       body: JSON.stringify(input),
-    }
+    },
   );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to patch personal skill: ${response.status}`);
-  }
-  return response.json();
+  return readSkillMutationResponse(response);
 }
-
-export async function deletePersonalSkill(skillName: string) {
-  const response = await fetch(`${getBackendBaseURL()}/api/skills/personal/${skillName}`, {
-    method: "DELETE",
-    headers: await getAuthHeaders(),
-  });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to delete personal skill: ${response.status}`);
-  }
+export async function deletePersonalSkill(skillName: string, options: SkillDeletionOptions = {}) {
+  return deleteOwnedSkill("personal", skillName, options);
 }
 
 export async function importPersonalSkill(file: File) {
   const formData = new FormData();
   formData.append("archive", file);
 
-  const response = await fetch(`${getBackendBaseURL()}/api/skills/personal/import`, {
-    method: "POST",
-    headers: await getAuthHeaders(),
-    body: formData,
-  });
+  const response = await fetch(
+    `${getBackendBaseURL()}/api/skills/personal/import`,
+    {
+      method: "POST",
+      headers: await getAuthHeaders(),
+      body: formData,
+    },
+  );
 
   if (!response.ok) {
     if (response.status === 413) {
-      throw new Error("技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限");
+      throw new Error(
+        "技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限",
+      );
     }
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to import personal skill: ${response.status}`);
+    return readSkillImportResponse(response);
   }
 
-  return response.json();
+  return readSkillImportResponse(response);
 }
 
 export async function importTenantSkill(file: File) {
   const formData = new FormData();
   formData.append("archive", file);
 
-  const response = await fetch(`${getBackendBaseURL()}/api/tenants/skills/import`, {
-    method: "POST",
-    headers: await getAuthHeaders(),
-    body: formData,
-  });
+  const response = await fetch(
+    `${getBackendBaseURL()}/api/tenants/skills/import`,
+    {
+      method: "POST",
+      headers: await getAuthHeaders(),
+      body: formData,
+    },
+  );
 
   if (!response.ok) {
     if (response.status === 413) {
-      throw new Error("技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限");
+      throw new Error(
+        "技能包过大（超过网关限制），请压缩后重试或联系管理员提升上传上限",
+      );
     }
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to import tenant skill: ${response.status}`);
+    return readSkillImportResponse(response);
   }
 
-  return response.json();
+  return readSkillImportResponse(response);
 }
 
-export async function deleteTenantSkill(skillName: string) {
-  const response = await fetch(
-    `${getBackendBaseURL()}/api/tenants/skills/${skillName}`,
-    {
-      method: "DELETE",
-      headers: await getAuthHeaders(),
-    }
-  );
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to delete tenant skill: ${response.status}`);
-  }
+export async function deleteTenantSkill(skillName: string, options: SkillDeletionOptions = {}) {
+  return deleteOwnedSkill("tenant", skillName, options);
 }
 
-export async function getSkillDetail(skillName: string) {
+export async function getSkillDetail(
+  skillName: string,
+  options: { scope?: string; resourceId?: string; signal?: AbortSignal } = {},
+) {
+  const query = new URLSearchParams();
+  if (options.scope) query.set("scope", options.scope);
+  if (options.resourceId) query.set("resource_id", options.resourceId);
   const response = await fetch(
-    `${getBackendBaseURL()}/api/skills/${skillName}/detail`,
+    `${getBackendBaseURL()}/api/skills/${encodeURIComponent(skillName)}/detail${query.size ? `?${query}` : ""}`,
     {
       headers: await getAuthHeaders(),
-    }
+      signal: options.signal,
+    },
   );
   if (!response.ok) {
     throw new Error(`Failed to load skill detail: ${response.status}`);
@@ -293,31 +296,36 @@ export async function generateInstructions(prompt: string, modelName?: string) {
         "Content-Type": "application/json",
       }),
       body: JSON.stringify({ prompt, model_name: modelName }),
-    }
+    },
   );
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to generate instructions: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to generate instructions: ${response.status}`,
+    );
   }
   return response.json();
 }
 
 export async function summarizeDiagnosis(
   input: SummarizeDiagnosisRequest,
+  options: {isCurrent?: () => boolean} = {},
 ): Promise<SummarizeDiagnosisResponse> {
+  const headers = await getAuthHeaders({"Content-Type": "application/json"});
+  if (options.isCurrent && !options.isCurrent()) throw new SkillMutationError(401, undefined, false, "Skill refinement identity changed");
   const response = await fetch(
     `${getBackendBaseURL()}/api/skills/summarize-diagnosis`,
     {
       method: "POST",
-      headers: await getAuthHeaders({
-        "Content-Type": "application/json",
-      }),
+      headers,
       body: JSON.stringify(input),
-    }
+    },
   );
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.detail ?? `Failed to summarize diagnosis: ${response.status}`);
+    throw new Error(
+      payload.detail ?? `Failed to summarize diagnosis: ${response.status}`,
+    );
   }
   return response.json();
 }

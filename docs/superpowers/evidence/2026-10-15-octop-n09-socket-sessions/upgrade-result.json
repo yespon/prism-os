@@ -1,0 +1,29 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_SCOPED_TEST_IMAGE=sha256:19309ada80b9753adca73c4db2630c6932d0a1a621e696be82ef3be3e6445a91",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-socket-sessions/upgrade.json",
+    "--test-file",
+    "tests/test_auth_session_delivery.py",
+    "--test-file",
+    "tests/test_terminal_socket_sessions.py",
+    "--test-file",
+    "tests/test_terminal_access_boundaries.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T14:25:49.285045+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T14:31:31.064689+00:00"
+}

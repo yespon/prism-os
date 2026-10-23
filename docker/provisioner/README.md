@@ -1,335 +1,108 @@
-# PrismOS Sandbox Provisioner
+# PrismOS scoped command provisioner
 
-The **Sandbox Provisioner** is an optional FastAPI service that dynamically manages sandbox Pods in Kubernetes. It provides a REST API for the PrismOS backend to create, monitor, and destroy sandbox environments for code execution.
+The remote Provider now uses authenticated finite command leases. The previous
+`/api/sandboxes` endpoints return 503: their global resource mounts and unscoped
+thread paths do not satisfy current resource authority. Their old NodePort
+behavior is retained in Git history, not exposed as a working scoped runtime.
 
-This service is a deployment adapter, not the PrismOS governance layer. It does
-not provide a complete policy engine, workflow lifecycle, or production security
-guarantee by itself. The cluster operator remains responsible for Kubernetes
-RBAC, namespace policy, image provenance, resource limits, network policy, and
-kubeconfig protection.
-
-## Architecture
-
-```
-┌────────────┐  HTTP  ┌─────────────┐  K8s API  ┌──────────────┐
-│  Backend   │ ─────▸ │ Provisioner │ ────────▸ │  Host K8s    │
-│  (gateway/ │        │   :8002     │           │  API Server  │
-│ langgraph) │        └─────────────┘           └──────┬───────┘
-└────────────┘                                          │ creates
-                                                        │
-                          ┌─────────────┐         ┌────▼─────┐
-                          │   Backend   │ ──────▸ │  Sandbox │
-                          │ (via Docker │ NodePort│  Pod(s)  │
-                          │   network)  │         └──────────┘
-                          └─────────────┘
-```
-
-### How It Works
-
-1. **Backend Request**: When the backend needs to execute code, it sends a `POST /api/sandboxes` request with a `sandbox_id` and `thread_id`.
-
-2. **Pod Creation**: The provisioner creates a dedicated Pod in the `prismos` namespace by default with:
-   - The sandbox container image (all-in-one-sandbox)
-   - HostPath volumes mounted for:
-     - `/mnt/skills` → Read-only access to public skills
-     - `/mnt/user-data` → Read-write access to thread-specific data
-   - Resource limits (CPU, memory, ephemeral storage)
-   - Readiness/liveness probes
-
-3. **Service Creation**: A NodePort Service is created to expose the Pod, with Kubernetes auto-allocating a port from the NodePort range (typically 30000-32767).
-
-4. **Access URL**: The provisioner returns `http://host.docker.internal:{NodePort}` to the backend, which the backend containers can reach directly.
-
-5. **Cleanup**: When the session ends, `DELETE /api/sandboxes/{sandbox_id}` removes both the Pod and Service.
-
-## Requirements
-
-Host machine with a running Kubernetes cluster (Docker Desktop K8s, OrbStack, minikube, kind, etc.)
-
-### Enable Kubernetes in Docker Desktop
-1. Open Docker Desktop settings
-2. Go to "Kubernetes" tab
-3. Check "Enable Kubernetes"
-4. Click "Apply & Restart"
-
-### Enable Kubernetes in OrbStack
-1. Open OrbStack settings
-2. Go to "Kubernetes" tab
-3. Check "Enable Kubernetes"
-
-## API Endpoints
-
-### `GET /health`
-Health check endpoint.
-
-**Response**:
-```json
-{
-  "status": "ok"
-}
-```
-
-### `POST /api/sandboxes`
-Create a new sandbox Pod + Service.
-
-**Request**:
-```json
-{
-  "sandbox_id": "abc-123",
-  "thread_id": "thread-456"
-}
-```
-
-**Response**:
-```json
-{
-  "sandbox_id": "abc-123",
-  "sandbox_url": "http://host.docker.internal:32123",
-  "status": "Pending"
-}
-```
-
-**Idempotent**: Calling with the same `sandbox_id` returns the existing sandbox info.
-
-### `GET /api/sandboxes/{sandbox_id}`
-Get status and URL of a specific sandbox.
-
-**Response**:
-```json
-{
-  "sandbox_id": "abc-123",
-  "sandbox_url": "http://host.docker.internal:32123",
-  "status": "Running"
-}
-```
-
-**Status Values**: `Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`, `NotFound`
-
-### `DELETE /api/sandboxes/{sandbox_id}`
-Destroy a sandbox Pod + Service.
-
-**Response**:
-```json
-{
-  "ok": true,
-  "sandbox_id": "abc-123"
-}
-```
-
-### `GET /api/sandboxes`
-List all sandboxes currently managed.
-
-**Response**:
-```json
-{
-  "sandboxes": [
-    {
-      "sandbox_id": "abc-123",
-      "sandbox_url": "http://host.docker.internal:32123",
-      "status": "Running"
-    }
-  ],
-  "count": 1
-}
-```
+The new path is integrated with the original resource materialization and live
+Tenant/member/Agent/source checks. Local Docker behavior remains available.
+Remote Browser/interactive sandbox sessions, Apple runtime and real Kubernetes
+acceptance retain separate pending exits. Protocol tests using a fake Kubernetes
+API are not real cluster execution evidence.
 
 ## Configuration
 
-The provisioner is configured via environment variables (set in [docker-compose-dev.yaml](../docker-compose-dev.yaml)):
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `K8S_NAMESPACE` | `prismos` | Kubernetes namespace for sandbox resources |
-| `SANDBOX_IMAGE` | `enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest` | Container image for sandbox Pods |
-| `SKILLS_HOST_PATH` | - | **Host machine** path to skills directory (must be absolute) |
-| `THREADS_HOST_PATH` | - | **Host machine** path to threads data directory (must be absolute) |
-| `KUBECONFIG_PATH` | `/root/.kube/config` | Path to kubeconfig **inside** the provisioner container |
-| `NODE_HOST` | `host.docker.internal` | Hostname that backend containers use to reach host NodePorts |
-| `K8S_API_SERVER` | (from kubeconfig) | Override K8s API server URL (e.g., `https://host.docker.internal:26443`) |
-
-### Important: K8S_API_SERVER Override
-
-If your kubeconfig uses `localhost`, `127.0.0.1`, or `0.0.0.0` as the API server address (common with OrbStack, minikube, kind), the provisioner **cannot** reach it from inside the Docker container. 
-
-**Solution**: Set `K8S_API_SERVER` to use `host.docker.internal`:
+Backend configuration uses references, never credential values:
 
 ```yaml
-# docker-compose-dev.yaml
-provisioner:
-  environment:
-    - K8S_API_SERVER=https://host.docker.internal:26443  # Replace 26443 with your API port
+sandbox:
+  use: deerflow.community.aio_sandbox:AioSandboxProvider
+  provisioner_url: https://sandbox-provisioner.example
+  provisioner_token_env: PRISMOS_PROVISIONER_TOKEN
+  provisioner_shared_root: /absolute/backend-data
 ```
 
-Check your kubeconfig API server:
-```bash
-kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
-```
+The credential environment variable must contain at least 32 characters. The
+provisioner reads `PRISMOS_PROVISIONER_TOKEN`. Use TLS termination for non-loopback
+connections; the client verifies certificates and rejects redirects. HTTP is
+accepted only for loopback development probes. No deployment is performed by
+these changes.
 
-## Prerequisites
+Provisioner environment:
 
-### Host Machine Requirements
+| Setting | Required meaning |
+| --- | --- |
+| PRISMOS_SCOPED_DATA_ROOT | Existing absolute shared-data root visible inside the provisioner; aliases and `/` are rejected |
+| PRISMOS_SCOPED_NODE_ROOT | Absolute path to that same filesystem on the selected Kubernetes node |
+| PRISMOS_SCOPED_NODE | Explicit `kubernetes.io/hostname` label of that node |
+| PRISMOS_SCOPED_IMAGE | Fully qualified image pinned with `@sha256:` and a 64-digit digest |
+| PRISMOS_PROVISIONER_TOKEN | Service credential injected through the deployment's secret mechanism |
+| KUBECONFIG_PATH | Existing kubeconfig file, or in-cluster configuration when absent |
+| K8S_NAMESPACE | Namespace managed by the provisioner |
 
-1. **Kubernetes Cluster**: 
-   - Docker Desktop with Kubernetes enabled, or
-   - OrbStack (built-in K8s), or
-   - minikube, kind, k3s, etc.
+The configured data mapping must refer to the same underlying files. The backend,
+provisioner and node must be able to access owned temporary resource views and
+thread directories with the command UID/GID. A copied directory or a different
+node filesystem is not an accepted mapping. Admission validates existing paths;
+real cluster acceptance must verify mapping, readonly resources, permissions,
+revocation, actual child-process termination and cleanup.
 
-2. **kubectl Configured**:
-   - `~/.kube/config` must exist and be valid
-   - Current context should point to your local cluster
+The provisioner requires namespace-scoped Pod create/get/delete/log access and
+ConfigMap create/get/update and Pod patch access, in addition to existing startup namespace
+inspection. Command Pods receive no service account token and expose no Service
+or NodePort. Host directories are exactly the current resource view (readonly)
+and current workspace/uploads/outputs (read/write). The root filesystem is
+readonly, capabilities are dropped, privilege escalation is disabled, and finite
+CPU/memory/storage/deadline limits apply. No configured host environment, global
+Skills root or extra mount is inherited.
 
-3. **Kubernetes Access**:
-   - The provisioner needs permissions to:
-     - Create/read/delete Pods and Services in the configured namespace
-     - Read Namespaces (to create the configured namespace if missing)
+## Lease semantics
 
-4. **Host Paths**:
-   - The `SKILLS_HOST_PATH` and `THREADS_HOST_PATH` must be **absolute paths on the host machine**
-   - These paths are mounted into sandbox Pods via K8s HostPath volumes
-   - The paths must exist and be readable by the K8s node
+`POST /api/scoped-commands` accepts a new random lease ID, exact relative mounts,
+command, explicit environment, UID/GID and a maximum 600-second timeout. All
+endpoints require the service bearer credential. GET and DELETE additionally
+require `X-Prismos-Contract`, the SHA-256 of canonical request JSON.
 
-### Docker Compose Setup
+A namespace ConfigMap records the contract and publication/cancellation facts.
+Atomic creation and resourceVersion updates prevent duplicate dispatch across
+workers and restarts. A lost submission response is inspected and cancelled;
+the client never repeats POST. Cancellation before submission leaves a tombstone
+that blocks late dispatch. Missing Pods while dispatch is in flight do not prove
+termination. Unknown publication remains an inspection item.
 
-The provisioner runs as part of the docker-compose-dev stack:
+Observation and cleanup validate labels, contract and Pod UID. Log delivery
+rechecks the UID after reading. DELETE uses normal graceful deletion with UID preconditions. A command finalizer
+holds the Pod until kubelet container termination is recorded in its receipt; only
+then is that finalizer removed with UID/resourceVersion tests. Object disappearance
+without the terminal fact remains unknown, including force deletion on an
+unreachable node. No dispatch may remain in flight. Finite
+command receipts remain for inspection; do not delete an unresolved receipt or
+reuse a lease ID. Retention cleanup is an operator action after resolving the
+recorded operation, not automatic business retry or N08 persistent execution.
 
-```bash
-# Start Docker services (provisioner starts only when config.yaml enables provisioner mode)
-make docker-start
+Backend live-authority checks run before dispatch, around each observation and
+before delivery; withdrawal discards output and requests cleanup. Network calls
+have bounded timeouts; unconfirmed cancellation is reported as unknown and must
+not be treated as successful interruption or replay permission.
 
-# Or start just the provisioner
-docker compose -p prismos-dev -f docker/docker-compose-dev.yaml --profile provisioner up -d provisioner
-```
+`GET /health` is process health only. It does not certify node mapping, image
+availability, current permission or real execution. Original Policy, Approval,
+Action and Audit remain authoritative above this deployment adapter.
 
-The compose file:
-- Mounts your host's `~/.kube/config` into the container
-- Adds `extra_hosts` entry for `host.docker.internal` (required on Linux)
-- Configures environment variables for K8s access
-
-## Testing
-
-### Manual API Testing
-
-```bash
-# Health check
-curl http://localhost:8002/health
-
-# Create a sandbox (via provisioner container for internal DNS)
-docker exec prismos-provisioner curl -X POST http://localhost:8002/api/sandboxes \
-  -H "Content-Type: application/json" \
-  -d '{"sandbox_id":"test-001","thread_id":"thread-001"}'
-
-# Check sandbox status
-docker exec prismos-provisioner curl http://localhost:8002/api/sandboxes/test-001
-
-# List all sandboxes
-docker exec prismos-provisioner curl http://localhost:8002/api/sandboxes
-
-# Verify Pod and Service in K8s
-kubectl get pod,svc -n prismos -l sandbox-id=test-001
-
-# Delete sandbox
-docker exec prismos-provisioner curl -X DELETE http://localhost:8002/api/sandboxes/test-001
-```
-
-### Verify from Backend Containers
-
-Once a sandbox is created, the backend containers (gateway, langgraph) can access it:
+When an existing cluster is configured, run the opt-in probe from the locked
+backend environment:
 
 ```bash
-# Get sandbox URL from provisioner
-SANDBOX_URL=$(docker exec prismos-provisioner curl -s http://localhost:8002/api/sandboxes/test-001 | jq -r .sandbox_url)
-
-# Test from gateway container
-docker exec prismos-gateway curl -s $SANDBOX_URL/v1/sandbox
+.venv/bin/python ../scripts/octop_remote_smoke.py \
+  --url https://sandbox-provisioner.example \
+  --shared-root /absolute/backend-data \
+  --output /absolute/evidence/remote-command.json
 ```
 
-## Troubleshooting
+It creates unique owned directories, verifies readonly selected input and actual
+owned output, waits for a command-start marker, then withdraws authority and checks
+that a child cannot write later. It preserves directories on unknown outcomes.
+Its receipt cannot claim real model, external tool or ticket acceptance.
 
-### Issue: "Kubeconfig not found"
-
-**Cause**: The kubeconfig file doesn't exist at the mounted path.
-
-**Solution**: 
-- Ensure `~/.kube/config` exists on your host machine
-- Run `kubectl config view` to verify
-- Check the volume mount in docker-compose-dev.yaml
-
-### Issue: "Kubeconfig path is a directory"
-
-**Cause**: The mounted `KUBECONFIG_PATH` points to a directory instead of a file.
-
-**Solution**:
-- Ensure the compose mount source is a file (e.g., `~/.kube/config`) not a directory
-- Verify inside container:
-  ```bash
-  docker exec prismos-provisioner ls -ld /root/.kube/config
-  ```
-- Expected output should indicate a regular file (`-`), not a directory (`d`)
-
-### Issue: "Connection refused" to K8s API
-
-**Cause**: The provisioner can't reach the K8s API server.
-
-**Solution**:
-1. Check your kubeconfig server address:
-   ```bash
-   kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
-   ```
-2. If it's `localhost` or `127.0.0.1`, set `K8S_API_SERVER`:
-   ```yaml
-   environment:
-     - K8S_API_SERVER=https://host.docker.internal:PORT
-   ```
-
-### Issue: "Unprocessable Entity" when creating Pod
-
-**Cause**: HostPath volumes contain invalid paths (e.g., relative paths with `..`).
-
-**Solution**: 
-- Use absolute paths for `SKILLS_HOST_PATH` and `THREADS_HOST_PATH`
-- Verify the paths exist on your host machine:
-  ```bash
-  ls -la /path/to/skills
-  ls -la /path/to/backend/.prismos/threads
-  ```
-
-### Issue: Pod stuck in "ContainerCreating"
-
-**Cause**: Usually pulling the sandbox image from the registry.
-
-**Solution**:
-- Pre-pull the image: `make docker-init`
-- Check Pod events: `kubectl describe pod sandbox-XXX -n prismos`
-- Check node: `kubectl get nodes`
-
-### Issue: Cannot access sandbox URL from backend
-
-**Cause**: NodePort not reachable or `NODE_HOST` misconfigured.
-
-**Solution**:
-- Verify the Service exists: `kubectl get svc -n prismos`
-- Test from host: `curl http://localhost:NODE_PORT/v1/sandbox`
-- Ensure `extra_hosts` is set in docker-compose (Linux)
-- Check `NODE_HOST` env var matches how backend reaches host
-
-## Security Considerations
-
-1. **HostPath Volumes**: The provisioner mounts host directories into sandbox Pods. Ensure these paths contain only trusted data.
-
-2. **Resource Limits**: Each sandbox Pod has CPU, memory, and storage limits to prevent resource exhaustion.
-
-3. **Network Isolation**: Sandbox Pods run in the `prismos` namespace but share the host's network namespace via NodePort. Consider NetworkPolicies for stricter isolation.
-
-4. **kubeconfig Access**: The provisioner has full access to your Kubernetes cluster via the mounted kubeconfig. Run it only in trusted environments.
-
-5. **Image Trust**: The sandbox image should come from a trusted registry. Review and audit the image contents.
-
-## Future Enhancements
-
-- [ ] Support for custom resource requests/limits per sandbox
-- [ ] PersistentVolume support for larger data requirements
-- [ ] Automatic cleanup of stale sandboxes (timeout-based)
-- [ ] Metrics and monitoring (Prometheus integration)
-- [ ] Multi-cluster support (route to different K8s clusters)
-- [ ] Pod affinity/anti-affinity rules for better placement
-- [ ] NetworkPolicy templates for sandbox isolation
+The provisioner builds from the complete pinned dependency set in requirements.lock. Dependency updates require a new image and protocol/admission regression.

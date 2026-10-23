@@ -1,7 +1,24 @@
+import pytest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
 from app.agent.terminal_graph import _trim_message_history
 
+
+@pytest.fixture(autouse=True)
+def deterministic_tokenizer(monkeypatch):
+    import tiktoken
+    class Encoding:
+        def encode(self, text):
+            # This suite tests block grouping, independent of downloaded codec
+            # data. Model/tokenizer integration remains a separate runtime gate.
+            if text.startswith("run cmd"):
+                size = 37
+            elif text == "first human message":
+                size = 15
+            else:
+                size = len(text.split())
+            return [0] * size
+    monkeypatch.setattr(tiktoken, "get_encoding", lambda name: Encoding())
 
 def test_trim_empty_messages():
     assert _trim_message_history([]) == []
@@ -65,3 +82,21 @@ def test_trim_keep_tool_calls_together():
     assert isinstance(trimmed_fit_tool[2], ToolMessage)
     assert trimmed_fit_tool[3].content == "summary of disk space"
     assert trimmed_fit_tool[4].content == "second human message"
+
+
+def test_offline_tokenizer_fallback_never_orphans_tool_results(monkeypatch):
+    import tiktoken
+    def unavailable(name):
+        raise RuntimeError("codec unavailable offline")
+    monkeypatch.setattr(tiktoken, "get_encoding", unavailable)
+    messages = [
+        SystemMessage(content="system"), HumanMessage(content="old private conversation" * 50),
+        AIMessage(content="run cmd", tool_calls=[{"name":"execute_command","args":{"command":"df -h"},"id":"call-offline"}]),
+        ToolMessage(content="disk space output",tool_call_id="call-offline"), HumanMessage(content="recent request"),
+    ]
+    for budget in (5, 15, 48, 500):
+        trimmed = _trim_message_history(messages, max_tokens=budget)
+        starts = [message for message in trimmed if isinstance(message, AIMessage) and message.tool_calls]
+        outputs = [message for message in trimmed if isinstance(message, ToolMessage)]
+        assert len(starts) == len(outputs)
+        assert trimmed[-1].content == "recent request"

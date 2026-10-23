@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-10",
+  "branch": "codex/octop-integration",
+  "parent_commit": "b7130fd5af99bf23189ea9e604369c29820bb572",
+  "scope": "N05 source/resource/dependency inventory and curated artifacts; not complete Octop runtime equivalence",
+  "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+  "status": "local_verified",
+  "original_archive_sha256": "270dc73f7fb8f12486d31731b540ca7fdd75180b78d33d38f3b3008faedc572b",
+  "retained_archive_sha256": "5af171afd215f4b8199d7b5644218d25353c3275617fc336acdf54a04e582cdf",
+  "original_main_members": 3771,
+  "retained_main_members": 3585,
+  "imported_files": 849,
+  "excluded_main_members": 186,
+  "excluded_external_members": 51,
+  "final_backend": {
+    "passed": 1501,
+    "skipped": 18,
+    "warnings": 30,
+    "command": "cd backend && uv run --locked pytest tests -q",
+    "summary": "1501 passed, 18 skipped, 30 warnings in 448.31s (0:07:28)"
+  },
+  "final_frontend": {
+    "files": 40,
+    "passed": 94,
+    "command": "pnpm exec vitest run --maxWorkers=2",
+    "summary": [
+      " Test Files  40 passed (40)",
+      "      Tests  94 passed (94)",
+      "   Duration  66.21s (transform 5.56s, setup 5.52s, import 28.80s, tests 19.11s, environment 66.47s)"
+    ]
+  },
+  "final_targeted": {
+    "passed": 34,
+    "warnings": 1,
+    "includes_member_receipt_forgery_tests": true,
+    "summary": "34 passed, 1 warning in 569.82s (0:09:29)"
+  },
+  "integration_build": {
+    "status": "passed",
+    "bounded_backend_passed": 136,
+    "phase": "source curation build; final two receipt-pin cases subsequently included in final full backend and 34 targeted checks",
+    "frontend_unit_passed": 3,
+    "typecheck": "passed",
+    "gateway": {
+      "passed": true,
+      "gateway": "real uvicorn process",
+      "auth": "real Better Auth session and tenant membership",
+      "migration_head": "n8h9i0j1k2l3",
+      "catalog": {
+        "release": "v1.0.2b6",
+        "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+        "templates": 290,
+        "personas": 16,
+        "integrity_verified": true,
+        "mode": "prompt_templates",
+        "automatic_resource_installation": false
+      },
+      "agent_created_and_reloaded": true,
+      "temporary_databases": true
+    },
+    "wheel_and_sdist": "passed",
+    "production_frontend_build": "passed"
+  },
+  "final_source_checks": {
+    "inventory": "passed",
+    "artifact_summary": {
+      "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+      "verified_files": 849,
+      "excluded_source_files": 186,
+      "zh_templates": 290,
+      "en_templates": 235,
+      "personas": 16,
+      "installed_wheel": true
+    },
+    "upgrade_rollback": "b5 -> b6 -> b5; three runs of the same 9 host contracts; final receipt pins active",
+    "ruff": "passed",
+    "brand": "passed",
+    "diff_check": "passed",
+    "ci_yaml": "checked; not remotely executed"
+  },
+  "artifacts": {
+    "prismos_octop_capabilities-0.1.0-py3-none-any.whl": "5f20b037af738714fcdddff3eee4b3a534a2617e8e01bf15f1894d5f87d41cdb",
+    "prismos_octop_capabilities-0.1.0.tar.gz": "dbc940b05ec083c6bac17e8ba78360a87f3a4598045665b8a4a5fbf40719ac99"
+  },
+  "code_sha256": {
+    "scripts/octop_sync.py": "430309dccbe2908f8cca2641b3463dbc48137d7ec89d8292639100824865d44d",
+    "scripts/octop_external.py": "bcbe6a70f926e580c0e3be9b41864d25c7b562f500a91ed76e91a86cf7371224",
+    "scripts/octop_inventory.py": "52412ba124d60d2537f652ae14fb66f2bf5f4cae67f91bcd6e7c84612993941f",
+    "scripts/octop_upgrade_probe.py": "44334ee622020adafc07aa871922f9a8f6fe99081203e68e48f314e638959957",
+    "scripts/octop_wheel_verify.py": "b87b4bf48f4446c4e26a5279b6537ef6e3c133046ddffb22b7d2a3e865a5ae6c",
+    "backend/packages/octop-capabilities/src/prismos_octop/source_policy.py": "eb45077cd3fc1264125f84bd131e0685bc3958f035e8ac6da64fa33ac4f55d41",
+    "backend/packages/octop-capabilities/src/prismos_octop/catalog.py": "43efc3133d78cb04961df3266a62442d5f659da99f82855884890b30ec58ca0d",
+    "backend/tests/test_octop_source_curation.py": "135247e7ddea6bf4beb25a519880b599d0f4f41bbf763ba06b83060fed165f9d",
+    "backend/tests/test_octop_inventory.py": "48a8b9d2301cde9d2ec0e3cb8c6aabf9fceee92cca6f8a2bfad6930e126f9b61",
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e"
+  },
+  "evidence_sha256": {
+    "future-ledger.json": "e12f06572cb494dc0846f58c02449f578d734b6931525251e77dcc5cd8ca3ade",
+    "dependencies.json": "fbc3f0b4ba9801d9f54b87e1b4a0c1c60854b30cd23e21ee29b9ffebb6e9e476",
+    "resolver-evidence.json": "d14860b45d1f687658bba5e8d99d8d65c62b33cc27f072ad34521a508e609343",
+    "capability-ledger.json": "869c54ea3d4906c4330199dfefaf9ce782e6610fdaeb516da803fd0f24c51cca",
+    "curated-upgrade-rollback.json": "67fbc1eb865b9c1e90bea7ac5847075eac733d2e5f307514ee4b9f1334204cbe",
+    "source-index.json": "4610183675b6eeb1977707df011b5da5c0fe43ca68d50ed3aff817533c8c2f3c",
+    "excluded-resources.json": "f1c9a95815ea63b9935925976801f9e8a2120e7d3407cf28819cfe6d5d99dcd3",
+    "coupling-edges.json": "e951979fd359fde986e655e57b294d3a82375c35caae98cb824be7cd90465115",
+    "capability-items.json": "32eef9616e9e09c633a3be3581ecde2fc1a12c6e1f89bb6dfda3f9c47f784b25",
+    "summary.json": "ea1d6c2a9fff061dfc937f2f578bfff5f8e4a96a356ef28c3b18e1010502bf33"
+  },
+  "initial_command_correction": {
+    "frontend": "minWorkers rejected before execution; rerun with supported maxWorkers=2"
+  },
+  "known_limits": [
+    "N04 target environment location/configuration references remain unavailable; M1 not exited",
+    "No external Octop runtime installed; core dependency conflict recorded",
+    "Independent Office/PowerPoint equivalent implementations remain N09 targets",
+    "N06 content UX and N07 clean checkout/container/remote CI remain pending",
+    "Frontend node_modules still uses original-workspace link; N07 must remove this dependency",
+    "Curated source/artifacts exclude known restricted materials; pre-existing Git history not rewritten",
+    "Existing frontend build warnings retained; no claim of clean full lint"
+  ],
+  "full_octop_parity": false,
+  "m1_exit": false,
+  "n08_started": false,
+  "external_runtime_integration": false
+}

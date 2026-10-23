@@ -1,0 +1,4 @@
+
+> prismos-frontend@0.2.0-alpha.1 typecheck /root/.codex/worktrees/octop-integration/prism-os/frontend
+> tsc --noEmit
+

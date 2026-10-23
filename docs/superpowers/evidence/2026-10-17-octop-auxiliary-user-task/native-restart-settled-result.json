@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_native_env.py",
+    "--mode",
+    "restart",
+    "--output",
+    "docs/superpowers/evidence/2026-10-17-octop-auxiliary-user-task/native-restart-settled.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T22:26:06.273964+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T22:26:10.145943+00:00"
+}

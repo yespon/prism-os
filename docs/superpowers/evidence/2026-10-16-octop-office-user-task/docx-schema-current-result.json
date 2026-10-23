@@ -1,0 +1,16 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_office_docx.py",
+    "tests/test_office_docx_images.py",
+    "-q",
+    "--tb=short"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-16T10:09:11.328249+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T10:10:08.855632+00:00"
+}

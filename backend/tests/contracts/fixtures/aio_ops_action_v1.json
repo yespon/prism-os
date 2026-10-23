@@ -1,0 +1,51 @@
+{
+  "schema_version": "prismos.platform/v1",
+  "tenant_id": "tenant-golden",
+  "event_id": "event_1fca8dd66c904e65aa4a880530ef7298",
+  "event_type": "action.policy_evaluated",
+  "action": "terminal.execute",
+  "outcome": "pending",
+  "severity": "warning",
+  "execution": {
+    "schema_version": "prismos.platform/v1",
+    "tenant_id": "tenant-golden",
+    "task_id": "task_a9f3697ce9ec4ae3b2e2776127f18b12",
+    "run_id": "run_06562d595bc948c1abe4a296e2cbb928",
+    "correlation_id": "alert-delivery-42",
+    "workload": {
+      "kind": "workload",
+      "id": "diagnosis-agent-v1",
+      "tenant_id": "tenant-golden"
+    },
+    "actor": {
+      "kind": "system",
+      "id": "alert-ingest",
+      "tenant_id": "tenant-golden"
+    },
+    "definition": {
+      "kind": "agent",
+      "id": "diagnosis-agent",
+      "version": "1",
+      "tenant_id": "tenant-golden"
+    },
+    "environment": {
+      "kind": "production",
+      "id": "golden-prod",
+      "tenant_id": "tenant-golden"
+    },
+    "occurred_at": "2026-08-08T08:30:00Z",
+    "attributes": {
+      "domain": "aio_ops",
+      "external_incident_id": "incident-42",
+      "risk_level": "high"
+    }
+  },
+  "policy_decision_id": "decision-golden-42",
+  "approval_id": null,
+  "resource_id": "asset-server-7",
+  "payload": {
+    "tool_name": "terminal.execute",
+    "command_class": "service_restart"
+  },
+  "recorded_at": "2026-08-08T08:30:01Z"
+}

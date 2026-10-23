@@ -1,0 +1,13 @@
+{
+  "current_build_exit": 0,
+  "full_tests_exit": 0,
+  "backend_full_inputs_unchanged": true,
+  "frontend_cleanup_verified": true,
+  "logs_verified": true,
+  "code_hashes_verified": true,
+  "logs_sha256": {
+    "backend-full.log": "d8dea760c09e22fe48102595598715a245261f51c8a708ca486cca59589d63a8",
+    "frontend-full.log": "d0aecba4d7780dd37a563284a132a499eee8b5d711d3c529cb767949bb63d57f",
+    "build-current.log": "dfd0f8d1eff98c633fb6fb6677b765a0543b814ca483e44443e7dac24de724fc"
+  }
+}

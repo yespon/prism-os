@@ -1,0 +1,30 @@
+{
+  "base_commit": "3afdde403af94dce7187e81c051314f3d4be47d0",
+  "input_sha256s": {
+    ".github/workflows/octop-integration.yml": "a86072d3d54c65150bdf83d6b28af0b77eafcafd64f8971a3184998294e64937",
+    "Makefile": "248a92d7ab10d7824f4d4e656db516358503fab75457c34eae3581f6d0fe6ecd",
+    "backend/app/alerting/governed_read_tool.py": "065e02e108d5ec70c516f7d9d9fc39511ea69115eec49bb948b0d2197b6b00ea",
+    "backend/app/alerting/governed_ticket_tool.py": "00632e5d8f9dc501bd6e989be24e4423f5581e817d1710a933e7efd32a36e015",
+    "backend/app/gateway/routers/alerts.py": "b2b7e631665a74f24c4b623e5ec80703d8665839e11cf6876a93256144bac58a",
+    "backend/app/platform/execution/trust.py": "ebfcbc544e2c7df73eaeb70f5edeeaed023bc84cce3336f714378983c7b34e45",
+    "backend/app/runtime_adapters.py": "67b99ac4ea8666d017f79802affa9c0109ee427fb2369eff36c503175bad204c",
+    "backend/tests/test_diagnosis_authorization.py": "01e68fb9db94511450bfb62fb33ae83019ab91436a71e2faa462f27082df1172",
+    "backend/tests/test_governed_ticket.py": "5161ecc3f32330de07ae5966c11017faa7cf4b614aefe9d06c514a3106a2289b",
+    "backend/tests/test_incident_diagnosis.py": "eb1fed21674921e7a3913f680e027a19b34380ffe60bb2cd2d560d5044c0a3d8",
+    "scripts/octop_gateway_smoke.py": "7164abb0eef30e6070c603472684472672521e3dfbd02ea6952ce2752a3f84e4",
+    "scripts/octop_upgrade_probe.py": "2403e37c62160473ec54b5e28b62e369710fd41bc8cb2b94835b6d1acdb6b343"
+  },
+  "excluded_host_metadata_links": [
+    {
+      "path": ".antigravitycli/6c35884e-8672-4105-9367-51a661a49410.json",
+      "link_sha256": "985bc579892e71b33f4596261f7eb9fcf1d89db4327f75df06ef67d6f0031ee3",
+      "reason": "absolute host tool metadata; target not read"
+    },
+    {
+      "path": ".antigravitycli/a5876dcc-c993-4336-891e-6785a988d573.json",
+      "link_sha256": "162855c02682afdc76510d558f6a141b2902933b28049a43c92dc4960bbbc8db",
+      "reason": "absolute host tool metadata; target not read"
+    }
+  ],
+  "independent_directory": "/tmp/prismos-n09o-independent"
+}

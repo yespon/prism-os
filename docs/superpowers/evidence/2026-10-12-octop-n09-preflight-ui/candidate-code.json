@@ -1,0 +1,26 @@
+{
+  "base": "06875f8cd6342b5435128229e6b6c2c280d89772",
+  "root": "/tmp/prismos-n09b-clean-yf664f8f/src",
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "6034c3b287355e4e969efc95147e0ebda5a91c8135d4fade602bf1b69878e491",
+    "Makefile": "cb9f20ee2ea0622fc090038d4c9f668f570c9d4582fbdb46e14b9e480ec01fbf",
+    "backend/app/gateway/routers/agent_catalog.py": "ec9080cc9a1a91489be0d1ffb222bb4d720bf6864ceb78bd5046fd3380e9aa21",
+    "backend/app/gateway/routers/skills.py": "90df0a8e4f4f1115ba123ac93a9b2219044b46949cb4764ac74a9cbbfbca82d0",
+    "frontend/src/components/workspace/agents/agent-presentation.test.tsx": "c77c2c28c347dab0ac472184bd0832b23c0ffa633033a039b2f14ce06472d475",
+    "frontend/src/components/workspace/agents/agent-template-picker.tsx": "3276c69e5c8e1af02b841df960cdb1c6d063605b1c845b326b473d90b1c97af5",
+    "frontend/src/core/agents/catalog.test.ts": "a0b2f79f33935ac7483026f51b2a4a44ff280040cedfa43a03216eb85ae09cae",
+    "frontend/src/core/agents/catalog.ts": "cef972e443ebda17046cd2e83d5a22119adac2e97484e62ecd70f1e1bcc3b6e9",
+    "scripts/octop_gateway_smoke.py": "58ada7cdc13847b91d5a0647a35f1ae0d06c93f52279523ed4f5e81e69cff23c",
+    "scripts/octop_upgrade_probe.py": "26af6ccd9cec1a459a17843d8ed699b45150172de0244cbaf8030042890d9ed8",
+    "backend/app/integrations/octop/resource_installations.py": "7e0200a325ebec8fcafaf61fc6736cdafa575cbd1923c0799d8405da5adce51c",
+    "backend/app/integrations/octop/skill_packages.py": "97b3327b0b3e987fb9dfb9d6155fe85e6e8972b32533e5551eb8c5dc69049bd0",
+    "backend/tests/test_octop_resource_installations.py": "8cc80518e780c79f8e7e9d572eb7ed258b3af8e5e289597a29ffcc23600e082d",
+    "backend/tests/test_octop_skill_packages.py": "e076064bfec6462f26613dfcff97bbc65bc45fb7827b8bef2a74e984fdfb48e2",
+    "frontend/src/components/workspace/agents/agent-resource-preflight.tsx": "d38afab3e5ca1a8f38231d9932e603654f16a2c07258a3ccb7c0f360bca9a48b",
+    "frontend/src/components/workspace/agents/agent-resource-preflight.test.tsx": "be86b0fdf46cd0d8fe86fbcaa72be0cab840e75b2c4aaffbe36429971f72151e",
+    "frontend/package.json": "622d4cd4675876193467a0c116f964d8a357d876aa5a1c8c9294994ff5a9bb62",
+    "frontend/next.config.js": "b4a7af4c08c8cd0fc46622f5710c33516bc31bc0b3941b4384152070edc45939",
+    "frontend/scripts/build.mjs": "d9ec33360372401cd6d3fdf1c268ca713580d6ddd40e23ce333c2030a0bf0863"
+  },
+  "physical_dependencies_required": true
+}

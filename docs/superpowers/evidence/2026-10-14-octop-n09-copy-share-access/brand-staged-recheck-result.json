@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/check_brand_identity.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T03:41:32.761257+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T03:41:35.405030+00:00"
+}

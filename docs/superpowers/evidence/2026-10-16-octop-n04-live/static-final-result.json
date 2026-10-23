@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/ruff",
+    "check",
+    "backend/packages/harness/deerflow/database/session.py",
+    "backend/app/services/terminal/credential_access.py",
+    "backend/app/gateway/routers/alerts.py",
+    "backend/tests/test_incident_diagnosis.py",
+    "backend/tests/test_runtime_worker_bootstrap.py",
+    "backend/tests/test_langgraph_proxy_nginx.py",
+    "scripts/octop_wsl_test_env.py",
+    "backend/app/alerting/governed_ticket.py",
+    "backend/app/alerting/governed_ticket_tool.py",
+    "backend/tests/test_ticket_policy_changes.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T04:34:17.419959+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T04:34:17.436211+00:00"
+}

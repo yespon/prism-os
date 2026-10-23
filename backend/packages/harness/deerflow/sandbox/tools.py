@@ -1,3 +1,4 @@
+import posixpath
 import re
 from pathlib import Path
 
@@ -6,6 +7,7 @@ from langgraph.typing import ContextT
 
 from deerflow.agents.thread_state import ThreadDataState, ThreadState
 from deerflow.config.paths import VIRTUAL_PATH_PREFIX
+from deerflow.runtime import get_skill_command_provider, get_skill_file_provider, load_runtime_adapters
 from deerflow.sandbox.exceptions import (
     SandboxError,
     SandboxNotFoundError,
@@ -75,7 +77,8 @@ def _get_skills_host_path() -> str | None:
 def _is_skills_path(path: str) -> bool:
     """Check if a path is under the skills container path."""
     skills_prefix = _get_skills_container_path()
-    return path == skills_prefix or path.startswith(f"{skills_prefix}/")
+    canonical = posixpath.normpath("/" + path.lstrip("/")) if path.startswith("/") else path
+    return any(value == skills_prefix or value.startswith(f"{skills_prefix}/") for value in (path, canonical))
 
 
 def _resolve_skills_path(path: str) -> str:
@@ -761,8 +764,6 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
         command: The bash command to execute. Always use absolute paths for files and directories.
     """
     try:
-        sandbox = ensure_sandbox_initialized(runtime)
-        ensure_thread_directories_exist(runtime)
         thread_data = get_thread_data(runtime)
 
         thread_id = runtime.context.get("thread_id") if runtime.context else None
@@ -773,6 +774,18 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
         if thread_id and user_id:
             env = _get_text2image_env(user_id, tenant_id, thread_id)
 
+        load_runtime_adapters()
+        command_provider = get_skill_command_provider()
+        if command_provider is not None and ((runtime.context or {}).get("agent_id") or (runtime.context or {}).get("tenant_id")):
+            protected = command_provider(runtime.context or {}, command, get_sandbox_provider(), thread_data, env)
+            if protected is None:
+                raise PermissionError("Current scoped command authority unavailable")
+            return _apply_line_limit(protected, None, None)
+        elif command_provider is None and ((runtime.context or {}).get("agent_id") or (runtime.context or {}).get("tenant_id")):
+            raise PermissionError("Current scoped command provider unavailable")
+
+        sandbox = ensure_sandbox_initialized(runtime)
+        ensure_thread_directories_exist(runtime)
         if is_local_sandbox(runtime):
             validate_local_bash_command_paths(command, thread_data)
             command = replace_virtual_paths_in_command(command, thread_data)
@@ -789,6 +802,19 @@ def bash_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, com
         return f"Error: Unexpected error executing command: {_sanitize_error(e, runtime)}"
 
 
+def _current_skill_file(runtime, operation, path):
+    if not _is_skills_path(path):
+        return None
+    load_runtime_adapters()
+    provider = get_skill_file_provider()
+    context = runtime.context or {}
+    if provider is None:
+        if context.get("agent_id") or context.get("tenant_id"):
+            raise PermissionError("Current Skill access provider unavailable")
+        return None
+    return provider(context, operation, path, _get_skills_container_path())
+
+
 @tool("ls", parse_docstring=True)
 def ls_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, path: str) -> str:
     """List the contents of a directory up to 2 levels deep in tree format.
@@ -797,7 +823,18 @@ def ls_tool(runtime: ToolRuntime[ContextT, ThreadState], description: str, path:
         description: Explain why you are listing this directory in short words. ALWAYS PROVIDE THIS PARAMETER FIRST.
         path: The **absolute** path to the directory to list.
     """
+    requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+
+        protected = _current_skill_file(runtime, "ls", path)
+        if protected is None:
+            protected = current_file_access(runtime, "ls", path)
+        if protected is not None:
+            result = "\n".join(protected[:MAX_LS_ENTRIES]) if protected else "(empty)"
+            if len(protected) > MAX_LS_ENTRIES:
+                result += f"\n\n[System Warning: The directory has {len(protected)} entries in total. Only {MAX_LS_ENTRIES} entries are shown here. Use ls tool on subdirectories to explore further.]"
+            return result
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path
@@ -844,7 +881,15 @@ def read_file_tool(
         start_line: Optional starting line number (1-indexed, inclusive). Use with end_line to read a specific range.
         end_line: Optional ending line number (1-indexed, inclusive). Use with start_line to read a specific range.
     """
+    requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+
+        protected = _current_skill_file(runtime, "read", path)
+        if protected is None:
+            protected = current_file_access(runtime, "read", path)
+        if protected is not None:
+            return _apply_line_limit(protected, start_line, end_line)
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path
@@ -884,7 +929,12 @@ def write_file_tool(
         path: The **absolute** path to the file to write to. ALWAYS PROVIDE THIS PARAMETER SECOND.
         content: The content to write to the file. ALWAYS PROVIDE THIS PARAMETER THIRD.
     """
+    requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+        protected = current_file_access(runtime, ("write", content, append), path)
+        if protected is not None:
+            return protected
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path
@@ -925,7 +975,12 @@ def str_replace_tool(
         new_str: The new substring. ALWAYS PROVIDE THIS PARAMETER FOURTH.
         replace_all: Whether to replace all occurrences of the substring. If False, only the first occurrence will be replaced. Default is False.
     """
+    requested_path = path
     try:
+        from deerflow.runtime import current_file_access
+        protected = current_file_access(runtime, ("replace", old_str, new_str, replace_all), path)
+        if protected is not None:
+            return protected
         sandbox = ensure_sandbox_initialized(runtime)
         ensure_thread_directories_exist(runtime)
         requested_path = path

@@ -1,0 +1,18 @@
+{
+  "image": "sha256:ec510859c66f0b1acf1b515a9ed1f98ecd39456d7afa97fb73cd71e061c8f934",
+  "previous": {
+    "gateway": "sha256:b0c9fd9aff20be306d0bb1c7a007118e6e221251fc22580f486db8e0d5160872",
+    "langgraph": "sha256:b0c9fd9aff20be306d0bb1c7a007118e6e221251fc22580f486db8e0d5160872"
+  },
+  "files": {
+    "app/alerting/governed_native_reads.py": "1047f97a2a299d1685435ad9940a05c7f840f64615e7c3569e7c109844a35c0f",
+    "app/alerting/governed_read_tool.py": "a41c4a25411ff867bf8938ada97992c49c496ccdeb954d1f6f1001a57a953c70",
+    "app/integrations/file_access.py": "ffe387d1575e3ad48eaa479b66f69a706adb9fbbb5685e0758c8ef7933dbc0eb",
+    "app/runtime_adapters.py": "79bbfd2feb466060eb2dd362d56ae4d5051901600ffc381960bf9f0f33beba78",
+    "packages/harness/deerflow/runtime.py": "c154a248a748eb137f633f4e948f9554333b084f6fdf9cb1ba88d23796d71da7",
+    "packages/harness/deerflow/agents/lead_agent/agent.py": "ab211cf8339c7d8ab94e5dc606c4108fc38143a2b1eb76cacd091de105a80cbe",
+    "tests/test_governed_native_reads.py": "deae3dec8927e028e04bc6382f7d401ef90ea01c3d2a5f73b91398c60d68efde"
+  },
+  "action": "off",
+  "private_original_compose": "/root/.codex/worktrees/octop-integration/prism-os/backend/tmp/n04-wsl/compose-before-governed-readers-history.yaml"
+}

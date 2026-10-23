@@ -1,0 +1,48 @@
+{
+  "backend_image": "sha256:5b59be8641e7778d48edfe0fa732b6ead846a79f3d4d707659998172f4732750",
+  "files": {
+    "backend/app/integrations/actor_authorization.py": {
+      "sha256": "25a77a8251a34878cb8d28a728a50f2c380ac3e565fa824f67b19292c7472a8d",
+      "matches": true
+    },
+    "backend/app/integrations/file_access.py": {
+      "sha256": "2e950927e9085757e43b0e63012440e17f203ef3b72193c70c5d05c2a645386f",
+      "matches": true
+    },
+    "backend/app/runtime_adapters.py": {
+      "sha256": "9574c0e5bffdeaa5dd14f390bf1a18af39671bdacb3af757190e1e183e7bc996",
+      "matches": true
+    },
+    "backend/app/alerting/diagnosis_authorization.py": {
+      "sha256": "1d6257adc9e1de26e0c7087c7ff6fc3edc26d9c4c1dfb5d9384a561709d04064",
+      "matches": true
+    },
+    "backend/tests/native_auth_test_identity.py": {
+      "sha256": "1ecbe96a99dc50d63a5eccc4779ead34be874b700cf1ad248bd8812b86af5de8",
+      "matches": true
+    },
+    "backend/tests/test_runtime_actor_status.py": {
+      "sha256": "4e61359dd41c424ef3c2766fb61a7fe508add50a83f74b462f8b6ebf840d6896",
+      "matches": true
+    },
+    "backend/tests/conftest.py": {
+      "sha256": "b7d135a3bf31b644c77a07adb6289bd867f76b884c510438ed0087fa3cf546f1",
+      "matches": true
+    },
+    "backend/tests/test_langgraph_proxy.py": {
+      "sha256": "0487af5aa9674d73ff607695764f76299c2e32d323c8ade69b9cdc60d87249b9",
+      "matches": true
+    },
+    "backend/tests/test_diagnosis_authorization.py": {
+      "sha256": "c1b33fbf664915b15ce6cba250b20ac7136596b770952cebf28852963438af0a",
+      "matches": true
+    },
+    "backend/tests/test_file_access_http.py": {
+      "sha256": "f1b75ee589ed98a07ae33ad1bdcf54514ca4b0fef9f8e2af9a92a7e7c21eb0d3",
+      "matches": true
+    }
+  },
+  "default_privileges": true,
+  "network": "none",
+  "owned_test_container_removed": true
+}

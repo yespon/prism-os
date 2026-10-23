@@ -1,0 +1,269 @@
+F..F.F.........................                                          [100%]
+=================================== FAILURES ===================================
+______ test_owned_output_download_archive_and_history_cross_actor_guards _______
+
+file_client = (<starlette.testclient.TestClient object at 0x79d1b5756270>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem....<lambda> at 0x79d1b58f4360>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x79d1bb1e5820>
+
+    def test_owned_output_download_archive_and_history_cross_actor_guards(file_client, monkeypatch):
+        from starlette.responses import Response
+        client, _, paths, runtime = file_client
+        output = Path(runtime.state['thread_data']['outputs_path'])
+        (output / 'report.txt').write_text('OWNED RESULT 中文')
+        with zipfile.ZipFile(output / 'bundle.skill', 'w') as archive:
+            archive.writestr('bundle/SKILL.md', 'OWNED ARCHIVE')
+        history_calls = []
+        async def forward(*args):
+            history_calls.append(args[:2]); return Response(b'{"result":"OWNED HISTORY"}', media_type='application/json')
+        monkeypatch.setattr(langgraph_proxy, '_forward', forward)
+        url = '/api/threads/member-thread/artifacts/mnt/user-data/outputs/report.txt'
+        assert client.get(url).text == 'OWNED RESULT 中文'
+        download = client.get(url + '?download=true')
+        assert download.text == 'OWNED RESULT 中文' and download.headers['content-disposition'].startswith('attachment;')
+        assert download.headers['cache-control'] == 'no-store'
+        assert client.get('/api/threads/member-thread/artifacts/mnt/user-data/outputs/bundle.skill/SKILL.md').text == 'OWNED ARCHIVE'
+        assert client.get('/api/langgraph/threads/member-thread/history').status_code == 200
+        for headers in [{'x-user':'user-b'}, {'x-tenant':'tenant-b'}]:
+            assert client.get(url, headers=headers).status_code == 404
+            assert client.get('/api/langgraph/threads/member-thread/history', headers=headers).status_code == 404
+>           assert client.get('/api/threads/member-thread/uploads', headers=headers).status_code == 404
+E           AssertionError: assert 405 == 404
+E            +  where 405 = <Response [405 Method Not Allowed]>.status_code
+E            +    where <Response [405 Method Not Allowed]> = get('/api/threads/member-thread/uploads', headers={'x-user': 'user-b'})
+E            +      where get = <starlette.testclient.TestClient object at 0x79d1b5756270>.get
+
+backend/tests/test_file_access_http.py:73: AssertionError
+_ test_stale_request_identity_cannot_access_after_membership_withdrawal[uploads] _
+
+file_client = (<starlette.testclient.TestClient object at 0x79d1b5897b60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem....<lambda> at 0x79d1b4e49a80>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+endpoint = 'uploads'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x79d1b4c30860>
+
+    @pytest.mark.parametrize('endpoint', ['artifacts/mnt/user-data/outputs/report.txt', 'history', 'uploads', 'delete'])
+    def test_stale_request_identity_cannot_access_after_membership_withdrawal(file_client, endpoint, monkeypatch):
+        client, factory, _, runtime = file_client
+        (Path(runtime.state['thread_data']['outputs_path']) / 'report.txt').write_text('REVOKED SECRET')
+        async def revoke():
+            async with factory() as session:
+                member = (await session.exec(select(TenantMembership).where(TenantMembership.user_id=='user-a', TenantMembership.tenant_id=='tenant-a'))).scalars().one()
+                member.status='inactive'; session.add(member); await session.commit()
+        asyncio.run(revoke())
+        def should_not_delete(*args):
+            pytest.fail('Unauthorized checkpoint deletion')
+        monkeypatch.setattr(threads, '_delete_thread_checkpoints', should_not_delete)
+        if endpoint == 'history':
+            response = client.get('/api/langgraph/threads/member-thread/history')
+        elif endpoint == 'delete':
+            response = client.delete('/api/threads/member-thread')
+        else:
+            response = client.get('/api/threads/member-thread/' + endpoint)
+>       assert response.status_code == 403 and 'REVOKED SECRET' not in response.text
+E       assert (405 == 403)
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+backend/tests/test_file_access_http.py:96: AssertionError
+_____ test_artifact_alias_and_revocation_during_read_do_not_publish_bytes ______
+
+file_client = (<starlette.testclient.TestClient object at 0x79d1b4b8ec60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem....<lambda> at 0x79d1b4d01a80>, tool_call_id='member-read', store=None, tools=[], execution_info=None, server_info=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x79d1b4c913d0>
+
+    def test_artifact_alias_and_revocation_during_read_do_not_publish_bytes(file_client, monkeypatch):
+        client, factory, _, runtime = file_client
+        output = Path(runtime.state['thread_data']['outputs_path'])
+        private = output.parent / 'private.txt'; private.write_text('PRIVATE CONTENT')
+        (output / 'alias.txt').symlink_to(private)
+        prefix = '/api/threads/member-thread/artifacts/mnt/user-data/outputs/'
+        assert client.get(prefix + 'alias.txt').status_code == 403
+        (output / 'report.txt').write_text('REVOKED DURING READ')
+        original = artifacts.read_owned_file
+        def revoke_after_read(path):
+            data = original(path)
+            async def revoke():
+                async with factory() as session:
+                    member = (await session.exec(select(TenantMembership).where(TenantMembership.user_id=='user-a', TenantMembership.tenant_id=='tenant-a'))).scalars().one()
+                    member.status='inactive'; session.add(member); await session.commit()
+            asyncio.run(revoke()); return data
+        monkeypatch.setattr(artifacts, 'read_owned_file', revoke_after_read)
+>       response = client.get(prefix + 'report.txt')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_file_access_http.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:483: in get
+    return super().get(
+backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1053: in get
+    return self.request(
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:455: in request
+    return super().request(
+backend/.venv/lib/python3.12/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/httpx/_client.py:914: in send
+    response = self._send_handling_auth(
+backend/.venv/lib/python3.12/site-packages/httpx/_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+backend/.venv/lib/python3.12/site-packages/httpx/_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:354: in handle_request
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:351: in handle_request
+    portal.call(self.app, scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py:334: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py:259: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/tests/test_file_access_http.py:45: in identity
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:168: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:144: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/routing.py:670: in __call__
+    await self.middleware_stack(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:2734: in app
+    await route.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1780: in handle
+    await self.original_router.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:2789: in handle
+    await included_router._handle_selected(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1800: in _handle_selected
+    await original_route.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1279: in handle
+    await app(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:158: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:144: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:706: in app
+    raw_response = await run_endpoint_function(
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:352: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/gateway/routers/artifacts.py:207: in get_artifact
+    actual_path, content = await _read_artifact(request, thread_id, path)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/gateway/routers/artifacts.py:74: in _read_artifact
+    content = read_owned_file(actual)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+backend/tests/test_file_access_http.py:114: in revoke_after_read
+    asyncio.run(revoke()); return data
+    ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+main = <coroutine object test_artifact_alias_and_revocation_during_read_do_not_publish_bytes.<locals>.revoke_after_read.<locals>.revoke at 0x79d1b6a29d40>
+debug = None, loop_factory = None
+
+    def run(main, *, debug=None, loop_factory=None):
+        """Execute the coroutine and return the result.
+    
+        This function runs the passed coroutine, taking care of
+        managing the asyncio event loop, finalizing asynchronous
+        generators and closing the default executor.
+    
+        This function cannot be called when another asyncio event loop is
+        running in the same thread.
+    
+        If debug is True, the event loop will be run in debug mode.
+        If loop_factory is passed, it is used for new event loop creation.
+    
+        This function always creates a new event loop and closes it at the end.
+        It should be used as a main entry point for asyncio programs, and should
+        ideally only be called once.
+    
+        The executor is given a timeout duration of 5 minutes to shutdown.
+        If the executor hasn't finished within that duration, a warning is
+        emitted and the executor is closed.
+    
+        Example:
+    
+            async def main():
+                await asyncio.sleep(1)
+                print('hello')
+    
+            asyncio.run(main())
+        """
+        if events._get_running_loop() is not None:
+            # fail fast with short traceback
+>           raise RuntimeError(
+                "asyncio.run() cannot be called from a running event loop")
+E           RuntimeError: asyncio.run() cannot be called from a running event loop
+
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:191: RuntimeError
+=============================== warnings summary ===============================
+backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_file_access_http.py::test_owned_output_download_archive_and_history_cross_actor_guards
+tests/test_file_access_http.py::test_stale_request_identity_cannot_access_after_membership_withdrawal[artifacts/mnt/user-data/outputs/report.txt]
+tests/test_file_access_http.py::test_stale_request_identity_cannot_access_after_membership_withdrawal[history]
+tests/test_file_access_http.py::test_stale_request_identity_cannot_access_after_membership_withdrawal[uploads]
+tests/test_file_access_http.py::test_stale_request_identity_cannot_access_after_membership_withdrawal[delete]
+tests/test_file_access_http.py::test_artifact_alias_and_revocation_during_read_do_not_publish_bytes
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED backend/tests/test_file_access_http.py::test_owned_output_download_archive_and_history_cross_actor_guards
+FAILED backend/tests/test_file_access_http.py::test_stale_request_identity_cannot_access_after_membership_withdrawal[uploads]
+FAILED backend/tests/test_file_access_http.py::test_artifact_alias_and_revocation_during_read_do_not_publish_bytes/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/_pytest/unraisableexception.py:33: RuntimeWarning: coroutine 'test_artifact_alias_and_revocation_during_read_do_not_publish_bytes.<locals>.revoke_after_read.<locals>.revoke' was never awaited
+  gc.collect()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+
+3 failed, 28 passed, 7 warnings in 18.95s

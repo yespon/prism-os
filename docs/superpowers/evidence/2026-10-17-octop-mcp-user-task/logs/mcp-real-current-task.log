@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_mcp_task_probe.py", line 244, in <module>
+    execute(args.output, args.resume)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_mcp_task_probe.py", line 170, in execute
+    assert {"read_file", "write_file", "present_files"} <= names
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

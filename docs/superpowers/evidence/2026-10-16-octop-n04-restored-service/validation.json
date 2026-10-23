@@ -1,0 +1,26 @@
+{
+  "results": {
+    "restored-user-flow-current-result.json": 1,
+    "brand-staged-result.json": 1,
+    "public-secrets-result.json": 0,
+    "final-runtime-result.json": 0,
+    "restored-stack-result.json": 1,
+    "brand-final-result.json": 0,
+    "restored-exact-path-flow-result.json": 0,
+    "restored-preflight-diagnostic-result.json": 1,
+    "backend-full-final-result.json": 0
+  },
+  "failed_attempts_retained": true,
+  "brand_receipt_note": "Input manifest JSON key uses a Unicode escape; decoded original pathname/hash mapping unchanged. Initial brand failure retained.",
+  "raw_logs_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/final-runtime.log": "eef324782c5ea795da26fabb643030ddbf3e60a43761e4d75bae7097ad9dfc72",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/public-secrets.log": "af72378240e065377bd39b7db0bba83c2f83126aa4fdba5c28159f1fd06eb59a",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/restored-preflight-diagnostic.log": "8a8da0d31e70baf7320b8dc920f13933d1a34c4d7d62d49a625ae5acba81370d",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/backend-full-final.log": "9e8238ce9566e8ec74350a2e753bb55e2f1ed930621953079400d54bad20ec90",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/restored-stack.log": "b7fccdb73844fb954d8888f7788a5b84bb9f7d0da97e34115d8fb80ffe7a8c20",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/restored-user-flow-current.log": "52edcd29df751bd0a235a25001f4d1bf623a4b7d8c005280d3c7077bacdf0663",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/brand-staged.log": "03060a507b7b7f2a6ace912f97b4a2f058ec9e43b7fc6dd48f57fee0084a42e1",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/restored-exact-path-flow.log": "599752ddec60af9c2504820ec06a45a227e774a79c9f8b5b1fbfa597d07ce8c2",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/logs/brand-final.log": "69fa939e4946880c058cb2550ea49a1a7967faeaea094388187729d718e3b3bb"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "run_id": "01a14539-fbf1-7b13-ac80-c563a47f174b",
+  "task": "请将已完成的中文 PDF /mnt/user-data/outputs/chinese-report-4ee19ccb88.pdf 首页渲染为清晰的 PNG 预览，保存为 /mnt/user-data/outputs/chinese-report-4ee19ccb88-preview.png 并提供预览结果。直接使用现有 PDF，不要重新生成简报。",
+  "actual_tool_names": [
+    "office_pdf",
+    "present_files"
+  ],
+  "artifact_url": "/api/threads/9ddb8681-488d-46c7-9a98-768de17f6ede/artifacts/mnt/user-data/outputs/chinese-report-4ee19ccb88-preview.png?download=true",
+  "png_sha256": "296757872e06e151e316cd362a34763115309e57bdcf6b240fe3b19576fab7eb",
+  "png_size": [
+    1190,
+    1684
+  ],
+  "source_pdf_unchanged": true,
+  "history_and_fresh_login": true,
+  "nonowners_denied": true,
+  "pdf_regenerated": false
+}

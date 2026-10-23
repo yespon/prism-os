@@ -1,0 +1,159 @@
+........FF........................................................       [100%]
+=================================== FAILURES ===================================
+_______ test_notes_use_current_authority_and_original_download[asyncio] ________
+tests/test_office_pptx_notes.py:51: in test_notes_use_current_authority_and_original_download
+    factory, actor, _, runtime = owned_runtime
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ValueError: too many values to unpack (expected 4)
+____________ test_model_schema_exposes_slide_notes_and_note_updates ____________
+tests/test_office_pptx_notes.py:68: in test_model_schema_exposes_slide_notes_and_note_updates
+    schema = office_pptx_tool.args_schema.model_json_schema()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/main.py:576: in model_json_schema
+    return model_json_schema(
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:2548: in model_json_schema
+    return schema_generator_instance.generate(cls.__pydantic_core_schema__, mode=mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:415: in generate
+    json_schema: JsonSchemaValue = self.generate_inner(schema)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:556: in new_handler_func
+    json_schema = js_modify_function(schema_or_field, current_handler)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/main.py:852: in __get_pydantic_json_schema__
+    return handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1604: in model_schema
+    json_schema = self.generate_inner(schema['schema'])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1717: in model_fields_schema
+    json_schema = self._named_required_fields_schema(named_required_fields)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1508: in _named_required_fields_schema
+    field_json_schema = self.generate_inner(field).copy()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1576: in model_field_schema
+    return self.generate_inner(schema['schema'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1806: in dataclass_schema
+    json_schema = self.generate_inner(schema['schema']).copy()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1789: in dataclass_args_schema
+    return self._named_required_fields_schema(named_required_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1508: in _named_required_fields_schema
+    field_json_schema = self.generate_inner(field).copy()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:1565: in dataclass_field_schema
+    return self.generate_inner(schema['schema'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:578: in generate_inner
+    json_schema = current_handler(schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py:37: in __call__
+    return self.handler(core_schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:511: in handler_func
+    json_schema = generate_for_schema_type(schema_or_field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:948: in callable_schema
+    return self.handle_invalid_for_json_schema(schema, 'core_schema.CallableSchema')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pydantic/json_schema.py:2442: in handle_invalid_for_json_schema
+    raise PydanticInvalidForJsonSchema(f'Cannot generate a JsonSchema for {error_info}')
+E   pydantic.errors.PydanticInvalidForJsonSchema: Cannot generate a JsonSchema for core_schema.CallableSchema
+E   
+E   For further information visit https://errors.pydantic.dev/2.12/u/invalid-for-json-schema
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_office_pptx_notes.py: 1 warning
+tests/test_office_chart_editing.py: 3 warnings
+tests/test_office_pptx_images.py: 3 warnings
+tests/test_office_charts.py: 3 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_office_pptx_notes.py::test_notes_use_current_authority_and_original_download[asyncio]
+FAILED tests/test_office_pptx_notes.py::test_model_schema_exposes_slide_notes_and_note_updates
+2 failed, 64 passed, 11 warnings in 18.88s

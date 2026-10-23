@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "scope": "three real independent-loop MCP discoveries with controlled overlap; no tool or model execution",
+  "results": [
+    {
+      "index": 0,
+      "error_type": "RuntimeError",
+      "success": false
+    },
+    {
+      "index": 2,
+      "loaded_tools": 1,
+      "success": true
+    },
+    {
+      "index": 1,
+      "error_type": "TimeoutError",
+      "success": false
+    }
+  ],
+  "live_threads": 0,
+  "all_discoveries_succeeded": false
+}

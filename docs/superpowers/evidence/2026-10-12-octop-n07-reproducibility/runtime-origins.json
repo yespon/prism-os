@@ -1,0 +1,22 @@
+{
+  "python": "3.12.11",
+  "uv": "0.8.17",
+  "node_host": "24.11.1",
+  "pnpm": "10.26.2",
+  "module_origins": {
+    "prismos_octop": "/tmp/prismos-n07-clean-05dlf1ee/src/backend/packages/octop-capabilities/src/prismos_octop/__init__.py",
+    "deerflow": "/tmp/prismos-n07-clean-05dlf1ee/src/backend/packages/harness/deerflow/__init__.py",
+    "app.runtime_adapters": "/tmp/prismos-n07-clean-05dlf1ee/src/backend/app/runtime_adapters.py",
+    "app.gateway.auth_db": "/tmp/prismos-n07-clean-05dlf1ee/src/backend/app/gateway/auth_db.py"
+  },
+  "pythonpath": [
+    "",
+    "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python312.zip",
+    "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12",
+    "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/lib-dynload",
+    "/tmp/prismos-n07-clean-05dlf1ee/src/backend/.venv/lib/python3.12/site-packages",
+    "/tmp/prismos-n07-clean-05dlf1ee/src/backend/packages/harness",
+    "/tmp/prismos-n07-clean-05dlf1ee/src/backend/packages/octop-capabilities/src"
+  ],
+  "foreign_octop_packages_installed": []
+}

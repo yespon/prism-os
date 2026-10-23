@@ -1,0 +1,94 @@
+{
+  "base_commit": "6c63e7e",
+  "status": "runtime_source_withdrawal_cancellation_and_native_governed_action_verified_first_milestone_pending",
+  "related": {
+    "passed": 75,
+    "observed_exit_code": 0
+  },
+  "backend": {
+    "passed": 1942,
+    "skipped": 18,
+    "warnings": 341,
+    "observed_exit_code": 0
+  },
+  "postgres": {
+    "passed": 27,
+    "warnings": 13,
+    "observed_exit_code": 0,
+    "owned_container_removed": true
+  },
+  "image": {
+    "image_id": "sha256:8dd0f12b2738d10d8da37e07999b4ab0c3cb51bccfb057a0aa78f4bf7b01e300",
+    "verified_runtime_modules": 9,
+    "runtime_cases_passed": 15,
+    "runtime_observed_exit_code": 0,
+    "build_observed_exit_code": 0,
+    "owned_containers_removed": true,
+    "publish_or_deploy": false
+  },
+  "upgrade": {
+    "complete": true,
+    "host_changed": false,
+    "host_inputs": 79,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "205 passed, 111 warnings in 271.30s (0:04:31)"
+      },
+      {
+        "release": "b6",
+        "returncode": 0,
+        "pytest": "205 passed, 111 warnings in 265.73s (0:04:25)"
+      },
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "205 passed, 111 warnings in 217.90s (0:03:37)"
+      }
+    ],
+    "scope": "Changed source/incident/runtime/cancellation/governance paths; original default complete gate retained. Unchanged source/distribution/install/delete contracts retain historical scope only."
+  },
+  "static": {
+    "ruff_paths": 83,
+    "passed": true,
+    "git_diff_check": true
+  },
+  "real_model_remote_run_external_tools_ticket_calls": false,
+  "original_governance_preserved": [
+    "Policy",
+    "Approval",
+    "ActionSubmission",
+    "Audit",
+    "unknown/no blind retry"
+  ],
+  "pending": [
+    "N04 real model/external tool/countable ticket environment references",
+    "N07 actual CI",
+    "event-specific result/history/SSE membership/owner access and long-running manual delivery",
+    "legacy/default/terminal and remote all-tool scopes",
+    "source/version/target reauthorization/share/copy and purpose-limited Secrets",
+    "first milestone complete exit; N08 not started"
+  ],
+  "logs_sha256": {
+    "logs/backend-full.log": "c0ec97ed70d1d0e8738a920747f8e405c850b1ba5d37c67b346c93bbadb84f6c",
+    "logs/backend-image.log": "3fdde4818d1db2f434889c15fc1a78a8b9c9f6355474215a4facd254b07a2adf",
+    "logs/cancel-admission.log": "d1e6627c6ac077a6662579c03ee3d95eee575230b7fd26b2a20205c99e170309",
+    "logs/cancel-http.log": "4766f08a19b27bc3e9a41d5743e983543b84c6c9b1a82200b4c2e5f4e8c4f493",
+    "logs/control-final.log": "b891f2f2e4dca86da58e8462d0b3aeb9c4331508abea393f42cc326e71d73437",
+    "logs/control.log": "fb53bebedef9eadef63b943fc6e094f7fa5b50be28067723e47e1af52322ca2d",
+    "logs/functional-related.log": "a25bfe091b623a5d21c5b8377c6ef91099c02b92bf30199619fdc6cb1c2a1a34",
+    "logs/governed-compat.log": "693e7baff2ea36c5433ce8e666932d44063ac513ec26efe46b4fae48b3db6f07",
+    "logs/image-runtime.log": "6aa111d208709f867f681b6dbe49b32e56f3bcd40129d6480076df7feda2bc6e",
+    "logs/postgres.log": "4487ee3d6a612369a639c78d47a4f0f311b8782b97d30a0de55a68802e0112a2",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/source-and-dispatch.log": "a22294d81194bac039d00adafa75e30c777d5310c0a4fd8657f1a793948f4dad",
+    "logs/source-policy-fixed.log": "4264abd73a9e7f7fa1638ed003f9dfc92b18fa63663eae035a9713d163d189eb",
+    "logs/source-policy.log": "75591525564ecaff3bb2de04d71d0881b4947a99479df7e5ba7763f8d9827e1b",
+    "logs/source-runtime-fixed.log": "0cc2b55e943fb381bfb347a7b5f5f0e2b97ecc15dd62ced5ffe38380e58213e8",
+    "logs/source-runtime.log": "f0115c06de99ce235ae5c1a6dcd0059fd69833623e95c351ff16e1e06eff5e17",
+    "logs/upgrade-static.log": "df598c097b96e7258f41bacae4ec8c5e163920e4677c8bb1e10dfac040547b95",
+    "logs/upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/postgres-cases.log": "bc71af610a3c1e80c246950ab83412b82b18e3673794da00be47c629120d4d1a"
+  }
+}

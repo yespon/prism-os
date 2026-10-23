@@ -5,14 +5,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    fastapi \
-    "uvicorn[standard]" \
-    kubernetes
+# Install the recorded complete Python dependency set.
+COPY requirements.lock /tmp/requirements.lock
+RUN pip install --no-cache-dir -r /tmp/requirements.lock
 
 WORKDIR /app
-COPY app.py .
+COPY app.py scoped_commands.py ./
 
 EXPOSE 8002
 

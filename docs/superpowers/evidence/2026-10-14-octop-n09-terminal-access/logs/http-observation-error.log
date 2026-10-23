@@ -1,0 +1,317 @@
+........FE.......................................                        [100%]
+==================================== ERRORS ====================================
+_ ERROR at teardown of test_actual_http_refuses_foreign_asset_or_history_before_execution[execute] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-185/test_actual_http_refuses_forei0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78ad41561670>
+
+    @pytest.fixture
+    def scoped_client(tmp_path, monkeypatch):
+        root = tmp_path / "skills"
+        root.mkdir()
+        url = os.environ.get("PRISMOS_SKILL_TEST_DB_URL", "sqlite+aiosqlite://")
+        parsed = make_url(url)
+        if parsed.get_backend_name() == "postgresql":
+            assert parsed.host == "127.0.0.1" and parsed.database == "prismos_skill_probe", "Only the isolated probe database is supported"
+        engine = create_async_engine(url, **({"poolclass": NullPool} if parsed.get_backend_name() == "postgresql" else {}))
+        factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    
+        async def setup():
+            async with engine.begin() as connection:
+                await connection.run_sync(SQLModel.metadata.drop_all)
+                await connection.run_sync(SQLModel.metadata.create_all)
+    
+        asyncio.run(setup())
+        monkeypatch.setattr(user_config_service, "get_session_factory", lambda: factory)
+        monkeypatch.setattr(skills, "get_skills_root_path", lambda: root)
+        monkeypatch.setattr(skill_imports, "get_skills_root_path", lambda: root)
+        app = FastAPI()
+    
+        @app.middleware("http")
+        async def identity(request: Request, call_next):
+            request.state.user_id = request.headers.get("x-user-id", "user-a")
+            request.state.tenant_id = request.headers.get("x-tenant-id", "tenant-a")
+            request.state.tenant_role = request.headers.get("x-tenant-role", "tenant_member")
+            request.state.user_role = request.headers.get("x-user-role", "user")
+            return await call_next(request)
+    
+        app.include_router(skills.router)
+        app.include_router(agent_catalog.router)
+>       with TestClient(app) as http:
+             ^^^^^^^^^^^^^^^
+
+tests/test_skill_import_recovery.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/starlette/testclient.py:709: in __exit__
+    self.exit_stack.close()
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:618: in close
+    self.__exit__(None, None, None)
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:610: in __exit__
+    raise exc_details[1]
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:595: in __exit__
+    if cb(*exc_details):
+       ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py:478: in _exit_wrapper
+    callback(*args, **kwds)
+.venv/lib/python3.12/site-packages/starlette/testclient.py:702: in wait_shutdown
+    portal.call(self.wait_shutdown)
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:334: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:376: in start_task_soon
+    self._check_running()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x78ad413a3290>
+
+    def _check_running(self) -> None:
+        if self._event_loop_thread_id is None:
+>           raise RuntimeError("This portal is not running")
+E           RuntimeError: This portal is not running
+
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:214: RuntimeError
+=================================== FAILURES ===================================
+_ test_actual_http_refuses_foreign_asset_or_history_before_execution[execute] __
+  + Exception Group Traceback (most recent call last):
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_terminal_access_boundaries.py", line 169, in test_actual_http_refuses_foreign_asset_or_history_before_execution
+  |     response = terminal_http.post("/api/terminal/"+endpoint, json=payload)
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 556, in post
+  |     return super().post(
+  |            ^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1144, in post
+  |     return self.request(
+  |            ^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 455, in request
+  |     return super().request(
+  |            ^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 825, in request
+  |     return self.send(request, auth=auth, follow_redirects=follow_redirects)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 914, in send
+  |     response = self._send_handling_auth(
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+  |     response = self._send_handling_redirects(
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+  |     response = self._send_single_request(request)
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1014, in _send_single_request
+  |     response = transport.handle_request(request)
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 354, in handle_request
+  |     raise exc
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 351, in handle_request
+  |     portal.call(self.app, scope, receive, send)
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 334, in call
+  |     return cast(T_Retval, self.start_task_soon(func, *args).result())
+  |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+  |     return self.__get_result()
+  |            ^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+  |     raise self._exception
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 259, in _call_func
+  |     retval = await retval_or_awaitable
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+  |     await super().__call__(scope, receive, send)
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+  |     await self.app(scope, receive, _send)
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 192, in __call__
+  |     async with create_collapsing_task_group() as task_group:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 85, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | BaseExceptionGroup: unhandled errors in a TaskGroup (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in call_next
+    |     message = await recv_stream.receive()
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/anyio/streams/memory.py", line 132, in receive
+    |     raise EndOfStream from None
+    | anyio.EndOfStream
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 86, in create_collapsing_task_group
+    |     yield tg
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_skill_import_recovery.py", line 131, in identity
+    |     return await call_next(request)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 169, in call_next
+    |     raise RuntimeError("No response returned.")
+    | RuntimeError: No response returned.
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 670, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2734, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1780, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2789, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1800, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1279, in handle
+    |     await app(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 158, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 144, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 706, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 352, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py", line 204, in execute_command_api
+    |     session = await _authorized_terminal_session(context, req.asset_id)
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/tests/test_terminal_access_boundaries.py", line 161, in forbidden
+    |     pytest.fail("Unauthorized execution or checkpoint access started")
+    |   File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/_pytest/outcomes.py", line 162, in __call__
+    |     raise Failed(msg=reason, pytrace=pytrace)
+    | Failed: Unauthorized execution or checkpoint access started
+    +------------------------------------
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_terminal_access_boundaries.py: 13 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_terminal_access_boundaries.py::test_actual_local_pty_closes_after_revocation_even_without_output
+  /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pty.py:95: DeprecationWarning: This process (pid=1264779) is multi-threaded, use of forkpty() may lead to deadlocks in the child.
+    pid, fd = os.forkpty()
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:44: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    role = (await db.execute(sa_select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == actor, TenantMembership.status == "active"))).scalars().first()
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:498: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    result = await db.execute(query)
+
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+tests/test_terminal_access_boundaries.py::test_actual_http_audit_outputs_use_current_owner_or_current_admin
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/terminal.py:509: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    count_result = await db.execute(count_query)
+
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_disables_thinking_when_model_does_not_support_it
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_uses_tenant_allowlist_default
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/agents/memory/updater.py:59: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "lastUpdated": datetime.utcnow().isoformat() + "Z",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_terminal_access_boundaries.py::test_actual_http_refuses_foreign_asset_or_history_before_execution[execute]
+ERROR tests/test_terminal_access_boundaries.py::test_actual_http_refuses_foreign_asset_or_history_before_execution[execute]
+1 failed, 47 passed, 25 warnings, 1 error in 15.80s

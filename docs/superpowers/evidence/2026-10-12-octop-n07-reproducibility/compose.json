@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "m1_exit": false,
+  "real_model_webhook": "not exercised",
+  "remote_ci": "not run",
+  "project": "prismos-n07-b04bb9db52",
+  "services": [
+    "db-init",
+    "gateway",
+    "langgraph",
+    "frontend",
+    "nginx",
+    "postgres"
+  ],
+  "image_ids": {
+    "db-init": "sha256:67ce806629677e07c0712800745ace6e313849c564cc9c8a79156916d372ca22",
+    "gateway": "sha256:67ce806629677e07c0712800745ace6e313849c564cc9c8a79156916d372ca22",
+    "langgraph": "sha256:67ce806629677e07c0712800745ace6e313849c564cc9c8a79156916d372ca22",
+    "frontend": "sha256:3fe1c169f168f8158906d67866918dec469792f56a5cfa57ead30e4e69d84fba",
+    "nginx": "sha256:6769dc3a703c719c1d2756bda113659be28ae16cf0da58dd5fd823d6b9a050ea",
+    "postgres": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+  },
+  "resources": {
+    "verified_files": 902,
+    "provenance_sha256": "e0385e5a62ab1e9c14b30260d47e178768170266afa9b9629880bdbed9893f44",
+    "python": "3.12.15"
+  },
+  "runtime_versions": "Python 3.12.15\nv22.23.3\n10.9.9\n10.9.9\nuv 0.9.26",
+  "migration_head": "n8h9i0j1k2l3",
+  "bootstrap_setup_login_session": true,
+  "single_bootstrap_admin_after_restart": true,
+  "tenant_context": {
+    "tenant_id": "t-06a36a0e29074a4f",
+    "role": "tenant_member",
+    "tenant_type": "general"
+  },
+  "catalog": {
+    "release": "b6",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "templates": 290,
+    "personas": 16,
+    "integrity_verified": true,
+    "mode": "prompt_templates",
+    "automatic_resource_installation": false
+  },
+  "agent_created_edited_reopened": true,
+  "questionnaire_readonly": true,
+  "avatars_authenticated_hash_verified": true,
+  "gateway_langgraph_thread_proxy": true,
+  "checkpoint_backend_configured": "postgres; no model run/persistent M2 asserted",
+  "postgres_restart": true,
+  "session_and_agent_preserved": true,
+  "backup_restore_head": "n8h9i0j1k2l3",
+  "backup_restored_agent": true,
+  "runtime_guards": {
+    "gateway": {
+      "PRISMOS_GOVERNED_TICKET_ACTION": "off",
+      "PRISMOS_TRUSTED_GRAPH_CONTEXT": "off"
+    },
+    "langgraph": {
+      "PRISMOS_GOVERNED_TICKET_ACTION": "off",
+      "PRISMOS_TRUSTED_GRAPH_CONTEXT": "off"
+    }
+  },
+  "backup_bytes": 113081,
+  "backup_sha256": "db44bdbbabd0613c1c7f4dcc617a746fd53c8ecc9869be97620a79974d60416f",
+  "governed_action": "off",
+  "plugins_disabled_for_isolation": [
+    "ops-alerting",
+    "ops-assets",
+    "ops-terminal"
+  ],
+  "cleanup_returncode": 0,
+  "remaining_owned_containers": [],
+  "remaining_owned_networks": [],
+  "remaining_owned_volumes": []
+}

@@ -1,0 +1,260 @@
+{
+  "complete": true,
+  "returncode": 0,
+  "inputs_unchanged": true,
+  "input_count": 504,
+  "strict_typecheck_and_generated_routes": true,
+  "build_id": "EGb9QnDzCvTacXnDztV2d",
+  "traces": {
+    "next-minimal-server.js.nft.json": {
+      "files": 147,
+      "missing": [],
+      "sha256": "06d0c19f802c7daf2228fd6eb9b32d73bf83638c94e3bc08083a14b04ce93384"
+    },
+    "next-server.js.nft.json": {
+      "files": 841,
+      "missing": [],
+      "sha256": "01b95f0b602e50511b50743725bf68951ecc4acdd1910e93cf35da22eac23a06"
+    },
+    "server/app/_global-error/page.js.nft.json": {
+      "files": 157,
+      "missing": [],
+      "sha256": "5236ed19f207ba8d4b24ff3fe1c5d5870b1821f452b7b00b623bdbe07cde699c"
+    },
+    "server/app/_not-found/page.js.nft.json": {
+      "files": 158,
+      "missing": [],
+      "sha256": "01b440553d68ae21543bc7494288295b733113a1a39201f96da64417243f48b1"
+    },
+    "server/app/admin/announcements/page.js.nft.json": {
+      "files": 168,
+      "missing": [],
+      "sha256": "0028ad2e4775b960f1afbf90a28bdbedfb7bf9d67a2cd62a2f296ca206cd84fe"
+    },
+    "server/app/admin/audit/page.js.nft.json": {
+      "files": 169,
+      "missing": [],
+      "sha256": "ac5290df47b9f7e19f1767234336fd268feb8555556758453a50f1ee274f7d73"
+    },
+    "server/app/admin/models/page.js.nft.json": {
+      "files": 170,
+      "missing": [],
+      "sha256": "79591681b18c716fbe9a583c4b8b04ce812607c72f7512522db843e12e74865b"
+    },
+    "server/app/admin/page.js.nft.json": {
+      "files": 169,
+      "missing": [],
+      "sha256": "e898639ef8581e74f1075461068763d05003adaab44ee3b1956b84b3893a1c28"
+    },
+    "server/app/admin/security/page.js.nft.json": {
+      "files": 168,
+      "missing": [],
+      "sha256": "0028ad2e4775b960f1afbf90a28bdbedfb7bf9d67a2cd62a2f296ca206cd84fe"
+    },
+    "server/app/admin/tenants/page.js.nft.json": {
+      "files": 170,
+      "missing": [],
+      "sha256": "07cd336fe74ec3967528627b7606870c35d1aae935f2e8eaf977ac062fca8f15"
+    },
+    "server/app/admin/tools/page.js.nft.json": {
+      "files": 169,
+      "missing": [],
+      "sha256": "5c0d18f3ffce6f174d0f4949c41e4bd8893fd43c8ce763926c34cea2a4064ead"
+    },
+    "server/app/admin/users/page.js.nft.json": {
+      "files": 169,
+      "missing": [],
+      "sha256": "7898f794bc428cc32697b3ce4a9bdead3e4ec6f32baf388954bb3f4dce0a28e1"
+    },
+    "server/app/api/terminal/chat/approve/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "5dd43007ad6ce69643aa787fe041f60010f9e86505cdd461524c435eb8d75a8b"
+    },
+    "server/app/api/terminal/chat/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "7b89fa777d285ea642381ed05493d7cce66619b09b6c0f81d116fb9030d4b434"
+    },
+    "server/app/change-password/page.js.nft.json": {
+      "files": 163,
+      "missing": [],
+      "sha256": "eb72a85707f999f1baf472ab51742af6fc61ee3ee31a2ec832eed06013b854ef"
+    },
+    "server/app/icon.svg/route.js.nft.json": {
+      "files": 150,
+      "missing": [],
+      "sha256": "8183921fde641bd0bbc81d391e07f77e26c05c0c417f60458ace18ca61353ffe"
+    },
+    "server/app/mock/api/mcp/config/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "5dd43007ad6ce69643aa787fe041f60010f9e86505cdd461524c435eb8d75a8b"
+    },
+    "server/app/mock/api/models/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "7b89fa777d285ea642381ed05493d7cce66619b09b6c0f81d116fb9030d4b434"
+    },
+    "server/app/mock/api/skills/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "7b89fa777d285ea642381ed05493d7cce66619b09b6c0f81d116fb9030d4b434"
+    },
+    "server/app/mock/api/threads/[thread_id]/artifacts/[[...artifact_path]]/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "693e2617fdb1d571345abfc32a3fb30cb53741987d8b9ca44af6b08e0ca24008"
+    },
+    "server/app/mock/api/threads/[thread_id]/history/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "6ff00938c4954f823a2af8c3bddab7ca5a4a9cc5e584bb5b9724c9d2f8bb52f9"
+    },
+    "server/app/mock/api/threads/search/route.js.nft.json": {
+      "files": 151,
+      "missing": [],
+      "sha256": "5dd43007ad6ce69643aa787fe041f60010f9e86505cdd461524c435eb8d75a8b"
+    },
+    "server/app/page.js.nft.json": {
+      "files": 160,
+      "missing": [],
+      "sha256": "b3eb4c59e1e2e85da42c64a8c756ce9977987e715507dec38b0b9905ca03e028"
+    },
+    "server/app/select-workspace/page.js.nft.json": {
+      "files": 163,
+      "missing": [],
+      "sha256": "eb72a85707f999f1baf472ab51742af6fc61ee3ee31a2ec832eed06013b854ef"
+    },
+    "server/app/setup/page.js.nft.json": {
+      "files": 163,
+      "missing": [],
+      "sha256": "eb72a85707f999f1baf472ab51742af6fc61ee3ee31a2ec832eed06013b854ef"
+    },
+    "server/app/sign-in/page.js.nft.json": {
+      "files": 167,
+      "missing": [],
+      "sha256": "4a1a4732b6352e2138d9c263eb87a1f7ee6a2bbe3759a29d7d5f88e8e2185dd0"
+    },
+    "server/app/sign-up/page.js.nft.json": {
+      "files": 163,
+      "missing": [],
+      "sha256": "5e3140ab9ecd61e27ba49f982d142210bc5a6a0aa4d1868eee3d4b9b0fcbe097"
+    },
+    "server/app/tenant-admin/agents/page.js.nft.json": {
+      "files": 174,
+      "missing": [],
+      "sha256": "ee9913a04f4e2f54d71dc7082b35181ccde10d0108204af2fd9a435ecf0138b8"
+    },
+    "server/app/tenant-admin/alerts/page.js.nft.json": {
+      "files": 173,
+      "missing": [],
+      "sha256": "0edccb661d1c8a73586f27a2da026a8676aa9db6ccbe0890a7836df9cd6dc564"
+    },
+    "server/app/tenant-admin/audit/page.js.nft.json": {
+      "files": 171,
+      "missing": [],
+      "sha256": "1774e069353bb24225e1bd7694d42ccd63a0e63affa8dda374b75ae377a0e569"
+    },
+    "server/app/tenant-admin/im/page.js.nft.json": {
+      "files": 171,
+      "missing": [],
+      "sha256": "ea7d66370092f0d71f994b33ffdf1d940a397e6fd19e8c2f8d267537e42ba130"
+    },
+    "server/app/tenant-admin/members/page.js.nft.json": {
+      "files": 171,
+      "missing": [],
+      "sha256": "1774e069353bb24225e1bd7694d42ccd63a0e63affa8dda374b75ae377a0e569"
+    },
+    "server/app/tenant-admin/models/page.js.nft.json": {
+      "files": 170,
+      "missing": [],
+      "sha256": "8dfe6e0e6adeba0a5ba5b89f87231a312c63ff0db0c30c1507efa4f1e7a7a40c"
+    },
+    "server/app/tenant-admin/page.js.nft.json": {
+      "files": 172,
+      "missing": [],
+      "sha256": "d9054e39517d6b55952810610d1cee926fd94ed59544bb538fd0119a67b85f15"
+    },
+    "server/app/tenant-admin/settings/[section]/page.js.nft.json": {
+      "files": 671,
+      "missing": [],
+      "sha256": "3aa19518f05046f0304dd44da446f11d61dca506e04153057ba87476e903830a"
+    },
+    "server/app/tenant-admin/settings/page.js.nft.json": {
+      "files": 170,
+      "missing": [],
+      "sha256": "8dfe6e0e6adeba0a5ba5b89f87231a312c63ff0db0c30c1507efa4f1e7a7a40c"
+    },
+    "server/app/tenant-admin/skills/page.js.nft.json": {
+      "files": 172,
+      "missing": [],
+      "sha256": "76dc28fe92a935214d842f052daa79ad469806538441b9e967cdf230bde1164a"
+    },
+    "server/app/tenant-admin/tools/page.js.nft.json": {
+      "files": 171,
+      "missing": [],
+      "sha256": "1774e069353bb24225e1bd7694d42ccd63a0e63affa8dda374b75ae377a0e569"
+    },
+    "server/app/workspace/agents/page.js.nft.json": {
+      "files": 677,
+      "missing": [],
+      "sha256": "474f0725a72bbaaccd13c0a597549de87a4f7ad1f82830659206378f76da2a9e"
+    },
+    "server/app/workspace/announcements/page.js.nft.json": {
+      "files": 676,
+      "missing": [],
+      "sha256": "07dd8b9b12ca82aff3a0cd1304c18160689bc1a238c8fe86f094b73c187a29c6"
+    },
+    "server/app/workspace/chats/[thread_id]/page.js.nft.json": {
+      "files": 787,
+      "missing": [],
+      "sha256": "619fd0c82bbc39d0f9ad5d9f4826a23216d31bc48293bbed9abaae77ea8b1486"
+    },
+    "server/app/workspace/chats/page.js.nft.json": {
+      "files": 677,
+      "missing": [],
+      "sha256": "474f0725a72bbaaccd13c0a597549de87a4f7ad1f82830659206378f76da2a9e"
+    },
+    "server/app/workspace/files/page.js.nft.json": {
+      "files": 786,
+      "missing": [],
+      "sha256": "5161cccdfed76f87b28a6c4a7bac8f27ea3b88d1502b806479dddebcd200b849"
+    },
+    "server/app/workspace/incidents/[incident_id]/page.js.nft.json": {
+      "files": 677,
+      "missing": [],
+      "sha256": "59cac3ea14ebeb61b31897f29433efda9b7d85eb4bf6a96f929fd19d47d29b8b"
+    },
+    "server/app/workspace/incidents/page.js.nft.json": {
+      "files": 677,
+      "missing": [],
+      "sha256": "30dfb5196661bc8c26edb71b9fd7f1a797493da41dd9bffc8c095b9596aaeaba"
+    },
+    "server/app/workspace/overview/page.js.nft.json": {
+      "files": 677,
+      "missing": [],
+      "sha256": "30dfb5196661bc8c26edb71b9fd7f1a797493da41dd9bffc8c095b9596aaeaba"
+    },
+    "server/app/workspace/page.js.nft.json": {
+      "files": 677,
+      "missing": [],
+      "sha256": "87838b52e520f7104c1848ae33a2d39fedc50098c5ff5c40ca092e6227e34095"
+    },
+    "server/app/workspace/skills/[name]/page.js.nft.json": {
+      "files": 676,
+      "missing": [],
+      "sha256": "d28c75fa4521cb8d8bf3f37a33d45cee22d7f7ea74f96ce0d283a3593dde9b93"
+    },
+    "server/app/workspace/skills/page.js.nft.json": {
+      "files": 676,
+      "missing": [],
+      "sha256": "07dd8b9b12ca82aff3a0cd1304c18160689bc1a238c8fe86f094b73c187a29c6"
+    },
+    "server/app/workspace/terminal/page.js.nft.json": {
+      "files": 676,
+      "missing": [],
+      "sha256": "07dd8b9b12ca82aff3a0cd1304c18160689bc1a238c8fe86f094b73c187a29c6"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "--build-arg",
+    "TEST_MARKER=SSH_TASK_16c3ea9808569e48ed8d5914814aaa6b",
+    "-t",
+    "prismos-ssh-target:test",
+    "docker/ssh-test"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-17T00:11:52.189839+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-17T00:12:06.233487+00:00"
+}

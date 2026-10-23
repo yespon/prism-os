@@ -1,0 +1,18 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "sha256:5ed1507c9168ed6d25b69ef2a7a3178cc1c122902a6fb47c88c5b4bbdea879cd",
+    "python",
+    "-c",
+    "import app; assert any(r.path == \"/api/scoped-commands/{lease_id}\" for r in app.app.routes); print(\"Scoped service imports and routes verified; cluster not exercised\")"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T07:20:03.861805+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-15T07:20:05.603353+00:00"
+}

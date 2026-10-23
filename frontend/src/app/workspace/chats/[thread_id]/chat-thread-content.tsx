@@ -25,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { AgentWelcome } from "@/components/workspace/agent-welcome";
 import { ArtifactsProvider } from "@/components/workspace/artifacts";
 import {
   ArtifactTrigger,
@@ -42,6 +43,7 @@ import { ThreadContext } from "@/components/workspace/messages/context";
 import { ThreadTitle } from "@/components/workspace/thread-title";
 import { TodoList } from "@/components/workspace/todo-list";
 import { TokenUsageIndicator } from "@/components/workspace/token-usage-indicator";
+import { useAgent } from "@/core/agents";
 import { useIncidentDetail, getSeverityBadgeStyles } from "@/core/alerting";
 import { useI18n } from "@/core/i18n/hooks";
 import { buildRetrySubmissionFromMessage } from "@/core/messages/utils";
@@ -69,11 +71,17 @@ interface ChatThreadContentProps {
   threadId: string;
   context: ReturnType<typeof useLocalSettings>[0]["context"];
   onContextChange: (context: ReturnType<typeof useLocalSettings>[0]["context"]) => void;
+  noAvailableModel: boolean;
+  isTenantAdmin: boolean;
 }
 
-export function ChatThreadContent({ threadId, context, onContextChange }: ChatThreadContentProps) {
+export function ChatThreadContent({ threadId, context: incomingContext, onContextChange, noAvailableModel, isTenantAdmin }: ChatThreadContentProps) {
   const { t } = useI18n();
   const searchParams = useSearchParams();
+  const selectedAgentName = searchParams.get("agent") ?? (typeof incomingContext.agent_name === "string" ? incomingContext.agent_name : undefined);
+  const { agent: selectedAgent, isLoading: agentLoading } = useAgent(selectedAgentName);
+  const context: ChatThreadContentProps["context"] = useMemo(() => ({ ...incomingContext, agent_name: selectedAgentName }), [incomingContext, selectedAgentName]);
+  const agentUnavailable = !!selectedAgentName && (!selectedAgent || !selectedAgent.enabled || agentLoading);
   const incidentId = searchParams.get("incident");
   const { data: sourceIncident } = useIncidentDetail(incidentId);
   const [incidentCardDismissed, setIncidentCardDismissed] = useState(false);
@@ -184,6 +192,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
 
   const handleSubmit = useCallback(
     (message: PromptInputMessage) => {
+      if (agentUnavailable) return;
       const selectedAttachments = threadAttachments.filter((file) =>
         selectedAttachmentIds.includes(file.attachment_id || `legacy:${file.filename}`),
       );
@@ -193,7 +202,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
         console.warn("Failed to send message", error);
       });
     },
-    [selectedAttachmentIds, sendMessage, threadAttachments, effectiveThreadId],
+    [agentUnavailable, selectedAttachmentIds, sendMessage, threadAttachments, effectiveThreadId],
   );
 
   useEffect(() => {
@@ -206,6 +215,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
 
   const handleRetryHumanMessage = useCallback(
     (message: Message) => {
+      if (agentUnavailable) return;
       const { text, attachments } = buildRetrySubmissionFromMessage(message);
       if (!text && attachments.length === 0) {
         return;
@@ -224,7 +234,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
         console.warn("Retry send failed", error);
       });
     },
-    [sendMessage, effectiveThreadId],
+    [agentUnavailable, sendMessage, effectiveThreadId],
   );
 
   const handleToggleAttachment = useCallback((attachmentId: string) => {
@@ -423,6 +433,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                 {isNewThread && thread.messages.length === 0 && (
                   <div className="pointer-events-none absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 justify-center">
                     <div className="mx-auto flex w-full max-w-(--container-width-md) flex-col items-center justify-center rounded-3xl p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+                      {selectedAgentName ? <AgentWelcome disabled={agentUnavailable} agent={selectedAgent} agentName={selectedAgentName} /> : <>
                       <h2 className="text-xl font-semibold tracking-tight text-foreground">{t.chatHeader.startNewTask}</h2>
                       <p className="mt-2.5 max-w-sm text-sm leading-relaxed text-muted-foreground">
                         {t.chatHeader.startNewTaskDesc.split("<br />").map((line, i) => (
@@ -432,7 +443,19 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                           </span>
                         ))}
                       </p>
+                      </>}
+                      {agentUnavailable && <p role="alert" className="text-muted-foreground mt-2 text-sm">{agentLoading ? t.common.loading : "智能体不可用，请返回智能体列表重新选择。"}</p>}
                     </div>
+                  </div>
+                )}
+                {isNewThread && noAvailableModel && (
+                  <div role="alert" className="mx-auto mb-4 w-full max-w-3xl rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+                    <p>{isTenantAdmin ? t.chatHeader.noModelAdminHint : t.chatHeader.noModelMemberHint}</p>
+                    {isTenantAdmin && (
+                      <Link href="/tenant-admin/models" className="mt-2 inline-block font-medium underline underline-offset-4">
+                        {t.chatHeader.manageModels}
+                      </Link>
+                    )}
                   </div>
                 )}
                 {isThreadConnecting && (
@@ -545,7 +568,7 @@ export function ChatThreadContent({ threadId, context, onContextChange }: ChatTh
                           : "ready"
                     }
                     context={context}
-                    disabled={env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" || isUploading}
+                    disabled={agentUnavailable || env.NEXT_PUBLIC_STATIC_WEBSITE_ONLY === "true" || isUploading || (isNewThread && noAvailableModel)}
                     onContextChange={onContextChange}
                     onSubmit={handleSubmit}
                     onStop={handleStop}

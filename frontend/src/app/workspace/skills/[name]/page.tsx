@@ -7,7 +7,7 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -17,8 +17,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { MarkdownContent } from "@/components/workspace/messages/markdown-content";
+import { SkillCreationInspection } from "@/components/workspace/skills/skill-creation-inspection";
 import { useAvailableModels } from "@/core/models/hooks";
 import {
   getSkillDetail,
@@ -27,18 +29,38 @@ import {
   createPersonalSkill,
   generateInstructions,
 } from "@/core/skills/api";
+import { SkillMutationError, skillMutationMessage } from "@/core/skills/mutations";
+import { useSkillQueryIdentity } from "@/core/skills/query-identity";
 import type { SkillDetail } from "@/core/skills/type";
 import type { TerminalMessagePart, TerminalToolCall } from "@/core/terminal-agent/message-types";
 import { useTerminalAgent } from "@/core/terminal-agent/useTerminalAgent";
 
 export default function SkillDetailPage() {
+  const identity = useSkillQueryIdentity();
+  const params = useParams();
+  const search = useSearchParams();
+  return <SkillDetailContent key={JSON.stringify([identity.key, params.name, search.get("scope"), search.get("resource_id")])} />;
+}
+
+function SkillDetailContent() {
   const params = useParams();
   const router = useRouter();
   const skillName = params.name as string;
+  const identity = useSkillQueryIdentity();
+  const search = useSearchParams();
+  const scope = search.get("scope") ?? undefined;
+  const resourceId = search.get("resource_id") ?? undefined;
+  const contextKey = JSON.stringify([identity.key, skillName, scope, resourceId]);
+  const liveContext = useRef(contextKey);
+  liveContext.current = contextKey;
+  const [loadedContext, setLoadedContext] = useState("");
   const isNew = skillName === "new";
 
   const [skill, setSkill] = useState<SkillDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [inspectionNeeded, setInspectionNeeded] = useState(false);
+  const [creationOperation, setCreationOperation] = useState<string | undefined>();
+  const [inspectionNonce, setInspectionNonce] = useState(0);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
@@ -81,9 +103,18 @@ export default function SkillDetailPage() {
   });
 
   const instructionsRef = useRef<HTMLTextAreaElement>(null);
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const currentView = () => mounted.current && liveContext.current === contextKey && identity.isCurrent();
 
   useEffect(() => {
-    if (!skillName) return;
+    if (!skillName || !identity.identityReady) return;
+    const controller = new AbortController();
+    const valid = () => !controller.signal.aborted && liveContext.current === contextKey && identity.isCurrent();
+    setSkill(null);
+    setInstructions("");
+    setDescription("");
+    setDirty(false);
 
     if (isNew) {
       setSkill({
@@ -98,31 +129,36 @@ export default function SkillDetailPage() {
         license: "private",
       } as unknown as SkillDetail);
       setLoading(false);
-      return;
+      setLoadedContext(contextKey);
+      return () => controller.abort();
     }
 
     setLoading(true);
-    getSkillDetail(skillName)
+    getSkillDetail(skillName, {scope, resourceId, signal: controller.signal})
       .then((data) => {
+        if (!valid()) return;
+        setLoadedContext(contextKey);
+        setInspectionNeeded(false);
         setSkill(data);
         setInstructions(data.instructions ?? "");
         setDescription(data.description ?? "");
         setBoundToolsText((data.bound_tools ?? []).join(", "));
         setStrategy(data.strategy ?? "default");
       })
-      .catch(() => toast.error("加载 Skill 详情失败"))
-      .finally(() => setLoading(false));
-  }, [skillName, isNew]);
+      .catch(() => { if (valid()) toast.error("加载 Skill 详情失败"); })
+      .finally(() => { if (valid()) setLoading(false); });
+    return () => controller.abort();
+  }, [contextKey, identity.identityReady, skillName, isNew, scope, resourceId, inspectionNonce]);
 
   const handleSave = async () => {
-    if (!skill) return;
+    if (!skill || inspectionNeeded || loadedContext !== contextKey || !currentView()) return;
     if (isNew) {
       if (!newName.trim()) {
         toast.error("请输入 Skill 英文名称");
         return;
       }
-      if (!/^[a-z0-9_]+$/.test(newName)) {
-        toast.error("名称只能包含小写字母、数字和下划线");
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(newName)) {
+        toast.error("名称使用小写字母、数字和连字符");
         return;
       }
     }
@@ -139,10 +175,11 @@ export default function SkillDetailPage() {
           name: newName,
           description: description.trim() || "",
           instructions: instructions.trim() || null,
-          enabled: true,
+          enabled: skill.enabled,
           bound_tools: boundToolsText.split(",").map((t) => t.trim()).filter(Boolean),
           strategy: strategy || null,
-        });
+        }, {isCurrent: currentView});
+        if (!currentView()) return;
         toast.success("创建成功");
         setDirty(false);
         router.push("/workspace/skills");
@@ -150,6 +187,9 @@ export default function SkillDetailPage() {
       }
 
       const payload = {
+        enabled: skill.enabled,
+        expected_resource_id: skill.resource_id ?? undefined,
+        expected_file_sha256: skill.file_sha256 ?? undefined,
         description: description.trim() || null,
         instructions: instructions.trim() || null,
         bound_tools: boundToolsText
@@ -165,17 +205,23 @@ export default function SkillDetailPage() {
         await patchTenantSkill(skill.name, payload);
       }
 
+      if (!currentView()) return;
       setDirty(false);
       toast.success("保存成功");
       router.push("/workspace/skills");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "保存失败");
+      if (currentView()) {
+        if (isNew && err instanceof SkillMutationError) setCreationOperation(err.operationId);
+        if (err instanceof TypeError || (err instanceof SkillMutationError && (err.inspectionRequired || err.status === 409))) setInspectionNeeded(true);
+        toast.error(skillMutationMessage(err));
+      }
     } finally {
-      setSaving(false);
+      if (currentView()) setSaving(false);
     }
   };
 
   const handleAIGenerate = async () => {
+    if (!currentView()) return;
     if (!genPrompt.trim()) {
       toast.error("请输入你想让 Skill 做什么");
       return;
@@ -183,23 +229,24 @@ export default function SkillDetailPage() {
     setAiLoading(true);
     try {
       const result = await generateInstructions(genPrompt.trim(), selectedModel);
+      if (!currentView()) return;
       setInstructions(result.instructions);
       setDirty(true);
       toast.success("AI 已生成 Instructions，请检查并调整");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "生成失败");
+      if (currentView()) toast.error(err instanceof Error ? err.message : "生成失败");
     } finally {
-      setAiLoading(false);
+      if (currentView()) setAiLoading(false);
     }
   };
 
   const handleTest = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!testInput.trim() || testLoading) return;
+    if (!currentView() || !testInput.trim() || testLoading) return;
     void sendMessage({ text: testInput.trim() });
   };
 
-  if (loading) {
+  if (loading || !identity.identityReady || (skill !== null && loadedContext !== contextKey)) {
     return (
       <div className="flex size-full items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -275,10 +322,12 @@ export default function SkillDetailPage() {
               ))}
             </SelectContent>
           </Select>
+          {inspectionNeeded && isNew && <SkillCreationInspection scope="personal" operationId={creationOperation} />}
+          {inspectionNeeded && !isNew && <Button variant="outline" onClick={() => setInspectionNonce(value => value + 1)}>重新检查当前资源</Button>}
           <Button
             variant="outline"
             onClick={handleSave}
-            disabled={!canEdit || saving}
+            disabled={!canEdit || saving || inspectionNeeded}
           >
             <Save className="mr-2 h-4 w-4" />
             {saving ? "保存中..." : "保存"}
@@ -309,13 +358,14 @@ export default function SkillDetailPage() {
                   placeholder="输入小写英文名称"
                   className="mt-1.5 font-semibold text-sm"
                 />
-                <span className="text-[10px] text-muted-foreground mt-1 block">仅限小写字母、数字、下划线</span>
+                <span className="text-[10px] text-muted-foreground mt-1 block">仅限小写字母、数字、连字符</span>
               </div>
             )}
 
             {/* Description */}
             <div>
               <label className="text-sm font-medium">描述<span className="text-red-500 ml-1">*</span></label>
+              <label className="flex items-center gap-2 text-sm"><Switch aria-label="启用此 Skill" checked={skill.enabled} disabled={!canEdit || saving || inspectionNeeded} onCheckedChange={enabled => {setSkill({...skill, enabled}); setDirty(true);}} />启用此 Skill</label>
               <Input
                 value={description}
                 onChange={(e) => {

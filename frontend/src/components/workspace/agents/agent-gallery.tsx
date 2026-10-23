@@ -1,7 +1,6 @@
 "use client";
 
 import { BotIcon, PlusIcon, SearchIcon, RotateCwIcon, Settings2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,16 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SummarizationSettingsPage } from "@/components/workspace/settings/summarization-settings-page";
 import { useAgents } from "@/core/agents";
+import type { Agent } from "@/core/agents";
 import { useI18n } from "@/core/i18n/hooks";
+import { useSkillImportContext } from "@/core/skills/import-context";
 
 import { AgentCard } from "./agent-card";
+import { CopyAgentDialog } from "./copy-agent-dialog";
 import { CreateAgentDialog } from "./create-agent-dialog";
 import { EditAgentDialog } from "./edit-agent-dialog";
 
 export function AgentGallery() {
   const { t } = useI18n();
   const { agents, isLoading, refetch } = useAgents();
-  const router = useRouter();
 
   // Tab state: "agents" | "summarization"
   const [activeTab, setActiveTab] = useState<"agents" | "summarization">("agents");
@@ -28,6 +29,8 @@ export function AgentGallery() {
 
   // Dialogs State
   const [createOpen, setCreateOpen] = useState(false);
+  const {key: copyIdentity} = useSkillImportContext();
+  const [copyingAgent, setCopyingAgent] = useState<{agent:Agent;identity:string} | null>(null);
   const [editingAgentName, setEditingAgentName] = useState<string | null>(null);
 
   // Filtered agents list searching name, prompt, description, and tags
@@ -192,6 +195,7 @@ export function AgentGallery() {
                 key={agent.name} 
                 agent={agent} 
                 onEdit={() => setEditingAgentName(agent.name)}
+                onCopy={() => setCopyingAgent({agent,identity:copyIdentity})}
               />
             ))}
           </div>
@@ -205,6 +209,7 @@ export function AgentGallery() {
         onSuccess={refetch}
       />
 
+      <CopyAgentDialog agent={copyingAgent?.identity === copyIdentity ? copyingAgent.agent : null} onClose={() => setCopyingAgent(null)} onSuccess={refetch} />
       <EditAgentDialog
         agentName={editingAgentName}
         open={editingAgentName !== null}

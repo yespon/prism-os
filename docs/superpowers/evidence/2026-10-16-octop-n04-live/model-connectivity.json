@@ -1,0 +1,7 @@
+{
+  "model_name": "gpt-5.6-luna",
+  "actual_request_completed": true,
+  "expected_text_received": true,
+  "tool_calls": 0,
+  "scope": "direct original factory connectivity only; not authenticated graph/Action acceptance"
+}

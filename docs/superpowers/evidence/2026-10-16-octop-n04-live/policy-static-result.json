@@ -1,0 +1,15 @@
+{
+  "command": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "backend/app/alerting/governed_ticket.py",
+    "backend/app/alerting/governed_ticket_tool.py",
+    "backend/app/gateway/routers/alerts.py",
+    "backend/tests/test_ticket_policy_changes.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T04:19:18.249490+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T04:19:18.345256+00:00"
+}

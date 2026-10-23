@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "M1_exited": false,
+  "N08_started": false,
+  "native_browser": "http://localhost:18036",
+  "process_identity_verified": [
+    "langgraph",
+    "gateway",
+    "frontend",
+    "proxy"
+  ],
+  "main_compose_and_isolation_unchanged": true,
+  "main_healthy": true,
+  "receiver_count": 26,
+  "native_private_files_owner_only": true,
+  "api_harness_production_and_frontend_inputs_unchanged_from": "d52ff07",
+  "new_model_task_submissions_during_recheck": 0
+}

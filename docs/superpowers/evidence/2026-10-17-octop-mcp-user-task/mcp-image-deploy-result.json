@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/deploy_owned_image.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:52:30.029675+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:52:52.894742+00:00"
+}

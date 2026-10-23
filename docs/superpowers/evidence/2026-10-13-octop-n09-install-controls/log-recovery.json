@@ -1,0 +1,7 @@
+{
+  "early_independent_log_empty": true,
+  "early_serial_summary_not_accepted_as_build_evidence": true,
+  "reproducer_frozen": true,
+  "replacement_log": "logs/build-independent.log",
+  "replacement_gate_receipt": "independent-build-exit.json"
+}

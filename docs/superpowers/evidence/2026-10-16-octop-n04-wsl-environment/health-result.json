@@ -1,0 +1,14 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "scripts/octop_wsl_test_probe.py",
+    "health",
+    "--output",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-wsl-environment/health.json"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T03:07:50.734941+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T03:07:51.047299+00:00"
+}

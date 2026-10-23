@@ -10,21 +10,28 @@ from app.gateway.bootstrap_admin import bootstrap_admin
 from app.gateway.config import get_gateway_config, get_plugin_states, set_gateway_config
 from app.gateway.routers import (
     admin,
+    agent_catalog,
+    agent_versions,
     agents,
     announcements,
+    approvals,
     artifacts,
     channels,
     files,
+    knowledge,
+    langgraph_proxy,
     mcp,
     memory,
     models,
     plugins,
+    schedules,
     skills,
     suggestions,
     summarization,
     templates,
     tenants,
     threads,
+    ticket_secrets,
     uploads,
 )
 from app.gateway.routers import (
@@ -179,7 +186,7 @@ API Gateway for PrismOS, a governed Agent operating system built on a LangGraph-
 
 ### Architecture
 
-LangGraph requests are handled by nginx reverse proxy.
+Browser LangGraph requests pass through this authenticated gateway.
 This gateway provides custom endpoints for models, MCP configuration, skills, and artifacts.
         """,
         version="0.1.0",
@@ -282,6 +289,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # Include routers
     # Models API is mounted at /api/models
     app.include_router(models.router)
+    app.include_router(agent_catalog.router)
 
     # MCP API is mounted at /api/mcp
     app.include_router(mcp.router)
@@ -309,6 +317,13 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Agents API is mounted at /api/agents
     app.include_router(agents.router)
+
+    # Authenticated browser boundary for LangGraph thread/run APIs.
+    app.include_router(langgraph_proxy.router)
+
+    # Approval API reads tenant-scoped durable facts; review uses current membership.
+    app.include_router(approvals.router)
+    app.include_router(ticket_secrets.router)
 
     # Auth helpers (bootstrap-status, setup-bootstrap-admin)
     app.include_router(auth_routes.router)
@@ -339,6 +354,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # File Center API — unified file and folder management
     app.include_router(files.router)
+    app.include_router(knowledge.router)
+    app.include_router(schedules.router)
+    app.include_router(agent_versions.router)
 
     # Summarization settings API (tenant-admin)
     app.include_router(summarization.router)

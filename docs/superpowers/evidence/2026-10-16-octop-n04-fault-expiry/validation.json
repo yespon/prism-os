@@ -1,0 +1,34 @@
+{
+  "complete_local_fault_expiry_block": true,
+  "base_commit": "1c11dbb",
+  "M1_exited": false,
+  "N08_started": false,
+  "production_inputs_unchanged": 2058,
+  "actual_wall_clock_expiry": true,
+  "actual_database_fault_cases": [
+    "policy",
+    "audit_policy",
+    "audit_result",
+    "legacy_action"
+  ],
+  "fault_triggers_removed": true,
+  "application_image": "sha256:04eef0d269316cf578b963d7535612ea9ec7557761a2839fd5d04e37d4eda01b",
+  "receiver_counter_version": 2,
+  "requests_after": 25,
+  "acceptance_scope": "Owned WSL deployment, real configured model/native HTTP/PG and real HTTPS test receiver; enterprise integration not implied. Existing application/image/upgrade gates reused by exact input SHA.",
+  "remaining": [
+    "actual read-only file PEP and other entry review",
+    "complete target configuration/artifact rollback",
+    "original five-gate final judgment",
+    "remote CI and full retained capability scope"
+  ],
+  "raw_sha256": {
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/logs/brand-staged.log": "a22bb1146504f2ee5321f8fed60cd5094966e6d181ffb5d450b289eb4a8e476f",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/logs/database-write-faults.log": "5ae2157ba42522423d6c0badbfa85061cdc4ae0c7b432633363556ec1397007d",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/logs/final-backup.log": "72b0c6ae2e6a55eb90e9ca82e29fb3ae1d620cd300ec64656c5e5436c9a637ba",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/logs/final-runtime.log": "eef324782c5ea795da26fabb643030ddbf3e60a43761e4d75bae7097ad9dfc72",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/logs/public-secrets.log": "9b9a381b19153db8b48ce7d1ae71aa290e317225ae7420e36bd71c5e02c80431",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/logs/wall-clock-expiry.log": "6e2a3764404bd24de90ba6383c700839a7672421b08133b60637e5518ef0e70d",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-fault-expiry/policy-activations.jsonl": "00b67d828d03a018ba5c0e430614b7b9eced2e21a41b4acb5fcb8a9839ab574a"
+  }
+}

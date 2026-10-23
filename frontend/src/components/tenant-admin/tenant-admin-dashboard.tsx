@@ -1,12 +1,14 @@
 "use client";
 
 import { AlertTriangle, Bot, Boxes, ShieldAlert, Users, Wrench } from "lucide-react";
+import Link from "next/link";
 
 import {
   OverviewPageHeader,
   OverviewSectionCard,
 } from "@/components/backoffice/overview-primitives";
 import { useAlertRules } from "@/core/alerting";
+import { isFirstRunGuidanceEnabled } from "@/core/first-run-guidance";
 import { useI18n } from "@/core/i18n/hooks";
 import { useAvailableMcpConfig } from "@/core/mcp/hooks";
 import { useAvailableModels } from "@/core/models/hooks";
@@ -17,7 +19,7 @@ export function TenantAdminDashboard() {
   const { t } = useI18n();
   const { data: currentTenant } = useCurrentTenant();
   const { data: members = [] } = useTenantMembers();
-  const { models = [] } = useAvailableModels();
+  const { models = [], isLoading: modelsLoading, error: modelsError } = useAvailableModels();
   const { rawArray: tools = [] } = useAvailableMcpConfig();
   const { skills = [] } = useAvailableSkills();
   const { data: alertRules = [] } = useAlertRules();
@@ -49,6 +51,36 @@ export function TenantAdminDashboard() {
           currentTenant?.role ?? "tenant_member"
         )}
       />
+
+      {isFirstRunGuidanceEnabled(currentTenant?.tenant_id) && <OverviewSectionCard
+        title={t.tenantAdmin.dashboard.firstRunTitle}
+        description={t.tenantAdmin.dashboard.firstRunDescription}
+      >
+        <div className="space-y-3 rounded-lg border p-4">
+          <p role="status" className="text-sm">
+            {modelsLoading
+              ? t.tenantAdmin.dashboard.firstRunLoading
+              : modelsError
+                ? t.tenantAdmin.dashboard.firstRunUnknown
+                : enabledTenantModels.length > 0
+                  ? t.tenantAdmin.dashboard.firstRunReady
+                  : t.tenantAdmin.dashboard.firstRunNoModel}
+          </p>
+          <div className="flex flex-wrap gap-3 text-sm">
+            <Link className="text-primary underline-offset-4 hover:underline" href="/tenant-admin/models">
+              {t.tenantAdmin.dashboard.firstRunModelsLink}
+            </Link>
+            <Link className="text-primary underline-offset-4 hover:underline" href="/tenant-admin/agents">
+              {t.tenantAdmin.dashboard.firstRunAgentsLink}
+            </Link>
+            {!modelsLoading && !modelsError && enabledTenantModels.length > 0 && (
+              <Link className="text-primary underline-offset-4 hover:underline" href="/workspace/chats/new">
+                {t.tenantAdmin.dashboard.firstRunWorkspaceLink}
+              </Link>
+            )}
+          </div>
+        </div>
+      </OverviewSectionCard>}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
         <MetricCard icon={Users} label={t.tenantAdmin.dashboard.members} value={members.length} />

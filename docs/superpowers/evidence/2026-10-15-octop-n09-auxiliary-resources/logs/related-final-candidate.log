@@ -1,0 +1,268 @@
+........................................................................ [ 22%]
+........................................................................ [ 45%]
+........................................................................ [ 67%]
+........................................................................ [ 90%]
+....................F...........                                         [100%]
+=================================== FAILURES ===================================
+________________________ TestSkillsAPI.test_list_skills ________________________
+
+self = <test_custom_agent.TestSkillsAPI object at 0x7749e96f6660>
+agent_client = <starlette.testclient.TestClient object at 0x7749e0820830>
+
+    def test_list_skills(self, agent_client):
+        response = agent_client.get("/api/skills")
+>       assert response.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_custom_agent.py:714: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    app.gateway.routers.skills:skills.py:445 Failed to load available skills: (sqlite3.OperationalError) no such table: user_configs
+[SQL: SELECT user_configs.id, user_configs.tenant_id, user_configs.user_id, user_configs.app_config, user_configs.extensions_config, user_configs.created_at, user_configs.updated_at 
+FROM user_configs 
+WHERE user_configs.user_id = ? AND user_configs.tenant_id = ?]
+[parameters: ('user-a', 'tenant-a')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 182, in execute
+    self._adapt_connection._handle_exception(error)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 342, in _handle_exception
+    raise error
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 164, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 40, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 32, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+    result = function()
+             ^^^^^^^^^^
+sqlite3.OperationalError: no such table: user_configs
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/app/gateway/routers/skills.py", line 423, in list_available_skills
+    rows = await get_available_skills(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py", line 1715, in get_available_skills
+    await ensure_user_config(user_id, tenant_id=tenant_id)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py", line 386, in ensure_user_config
+    existing = await _get_user_config_record(session, user_id=user_id, tenant_id=tenant_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py", line 39, in _get_user_config_record
+    return await session.scalar(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 505, in scalar
+    return await greenlet_spawn(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2399, in scalar
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 182, in execute
+    self._adapt_connection._handle_exception(error)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 342, in _handle_exception
+    raise error
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 164, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 40, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 32, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+    result = function()
+             ^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: user_configs
+[SQL: SELECT user_configs.id, user_configs.tenant_id, user_configs.user_id, user_configs.app_config, user_configs.extensions_config, user_configs.created_at, user_configs.updated_at 
+FROM user_configs 
+WHERE user_configs.user_id = ? AND user_configs.tenant_id = ?]
+[parameters: ('user-a', 'tenant-a')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_resource_catalog_access.py: 69 warnings
+tests/test_auxiliary_resource_runtime.py: 5 warnings
+tests/test_skill_mutation_boundaries.py: 10 warnings
+tests/test_skill_enablement_boundaries.py: 26 warnings
+tests/test_skill_manual_creation.py: 5 warnings
+tests/test_agent_skill_references.py: 18 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_resource_catalog_access.py: 33 warnings
+tests/test_skill_mutation_boundaries.py: 14 warnings
+tests/test_agent_skill_references.py: 2 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:105: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_enablement_boundaries.py: 18 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:188: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_manual_creation.py::test_new_personal_creation_does_not_inherit_old_same_name_settings
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[False]
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[True]
+tests/test_skill_manual_creation.py::test_configuration_transaction_failure_keeps_registered_disabled_and_old_slot
+tests/test_skill_manual_creation.py::test_actual_configuration_commit_then_timeout_preserves_enabled_and_settings
+tests/test_skill_manual_creation.py::test_changed_native_instance_cannot_receive_old_configuration_initialization
+tests/test_skill_manual_creation.py::test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents
+tests/test_skill_manual_creation.py::test_shared_manual_same_name_public_has_distinct_custom_category
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1572: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_custom_agent.py::TestPaths::test_agent_memory_file
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path_is_user_scoped_when_user_id_present
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/config/paths.py:188: DeprecationWarning: agent_dir() is deprecated. Agents are now stored in the custom_agents DB table. Use load_agent_config() from deerflow.config.agents_config instead.
+    return self.agent_dir(name, user_id=user_id, tenant_id=tenant_id) / "memory.json"
+
+tests/test_custom_agent.py::TestPaths::test_agent_memory_file
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestPaths::test_paths_are_different_from_global
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_different_paths_for_different_agents
+tests/test_custom_agent.py::TestMemoryFilePath::test_agent_memory_path_is_user_scoped_when_user_id_present
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/config/paths.py:180: DeprecationWarning: agents_dir() is deprecated. Agents are now stored in the custom_agents DB table. Use load_agent_config() / list_custom_agents() from deerflow.config.agents_config instead.
+    return self.agents_dir(user_id=user_id, tenant_id=tenant_id) / name.lower()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_custom_agent.py::TestSkillsAPI::test_list_skills - assert 5...
+1 failed, 319 passed, 223 warnings in 138.90s (0:02:18)

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-n04-restored-service/restored_stack.py",
+    "--case",
+    "restored-preflight-diagnostic"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T09:26:50.341795+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T09:27:26.557320+00:00"
+}

@@ -1,0 +1,108 @@
+....FF........                                                           [100%]
+=================================== FAILURES ===================================
+_ test_personal_edit_preserves_instance_updates_owned_file_and_original_state __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x727355a93350>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-172/test_personal_edit_preserves_i0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7273575ef110>
+
+    def test_personal_edit_preserves_instance_updates_owned_file_and_original_state(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        detail = personal_detail(http)
+        file = root / "custom/tenant-a/user-a/collision/SKILL.md"
+        mode = file.stat().st_mode & 0o777
+        shared = (root / "custom/tenant-a/collision/SKILL.md").read_bytes()
+        response = http.patch(
+            "/api/skills/personal/collision",
+            json={"expected_resource_id": detail["resource_id"], "expected_file_sha256": detail["file_sha256"], "enabled": False, "description": "Edited own description", "instructions": "NEW OWN BODY", "strategy": "reviewed"},
+        )
+        assert response.status_code == 200, response.text
+        body = response.json()
+>       assert body["resource_id"] == detail["resource_id"] and body["file_sha256"] != detail["file_sha256"]
+               ^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'resource_id'
+
+tests/test_skill_mutation_boundaries.py:103: KeyError
+__ test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public __
+
+scoped_client = (<starlette.testclient.TestClient object at 0x727355ae4a10>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...lush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-172/test_shared_admin_edit_reads_f0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x727355a3ba70>
+
+    def test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        detail = http.get("/api/skills/collision/detail", params={"scope": "tenant"}, headers={"x-tenant-role": "tenant_admin"}).json()
+        unchanged = {p: p.read_bytes() for p in [root / "public/collision/SKILL.md", root / "custom/tenant-a/user-a/collision/SKILL.md"]}
+        response = http.patch(
+            "/api/tenants/skills/collision",
+            headers={"x-tenant-role": "tenant_admin"},
+            json={"expected_resource_id": detail["resource_id"], "expected_file_sha256": detail["file_sha256"], "description": "New shared description", "instructions": "NEW SHARED BODY"},
+        )
+        assert response.status_code == 200, response.text
+>       assert response.json()["instructions"] == "NEW SHARED BODY" and response.json()["scope"] == "tenant"
+                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'scope'
+
+tests/test_skill_mutation_boundaries.py:121: KeyError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_mutation_boundaries.py: 12 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_mutations.py:104: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_mutation_boundaries.py::test_personal_edit_preserves_instance_updates_owned_file_and_original_state
+tests/test_skill_mutation_boundaries.py::test_personal_edit_preserves_instance_updates_owned_file_and_original_state
+tests/test_skill_mutation_boundaries.py::test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public
+tests/test_skill_mutation_boundaries.py::test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public
+tests/test_skill_mutation_boundaries.py::test_stale_content_digest_cannot_overwrite_a_later_edit
+tests/test_skill_mutation_boundaries.py::test_failure_after_file_replace_is_unknown_and_never_restores_old_bytes
+tests/test_skill_mutation_boundaries.py::test_failure_after_file_replace_is_unknown_and_never_restores_old_bytes
+tests/test_skill_mutation_boundaries.py::test_actual_commit_followed_by_transport_failure_preserves_committed_facts
+tests/test_skill_mutation_boundaries.py::test_actual_commit_followed_by_transport_failure_preserves_committed_facts
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1691: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_mutation_boundaries.py::test_personal_edit_preserves_instance_updates_owned_file_and_original_state
+FAILED tests/test_skill_mutation_boundaries.py::test_shared_admin_edit_reads_frontmatter_and_preserves_personal_and_public
+2 failed, 12 passed, 22 warnings in 4.62s

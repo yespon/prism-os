@@ -1,0 +1,119 @@
+{
+  "date": "2026-10-12",
+  "baseline": "97d5ab0f015926be7733e3f5c8e94715b572b634",
+  "scope": "N09-C1 backend native Skill publication/registration/recovery plus fixed source install API; UI pending",
+  "local_verified": true,
+  "full_n09_complete": false,
+  "full_n09_c1_complete": false,
+  "m1_exit": false,
+  "m2_persistent_implementation_started": false,
+  "remote_ci_verified": false,
+  "current_batch_compose_verified": false,
+  "live_model_tool_webhook_verified": false,
+  "backend_full": {
+    "passed": 1645,
+    "skipped": 18,
+    "warnings": 30
+  },
+  "frontend_full": {
+    "files": 44,
+    "passed": 140,
+    "code_unchanged": true
+  },
+  "octop_build": {
+    "backend": 316,
+    "frontend": 49,
+    "current_make_exit": 0,
+    "independent_make_exit": 0,
+    "production_build_current_and_independent": true,
+    "real_gateway_auth_source_install_recovery": true,
+    "temporary_skill_root": true,
+    "imported_source_members": 902
+  },
+  "fault_acceptance": {
+    "baseline_reproduced": 3,
+    "final_sqlite_cases": 27,
+    "postgres_cases": 27,
+    "database": "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+    "actual_process_exit_before_and_after_publication": true,
+    "current_tenant_owner_shared_admin_checked": true,
+    "disabled_state_preserved": true,
+    "partial_copy_hidden": true,
+    "foreign_directory_not_deleted": true,
+    "db_commit_uncertainty_reconciled": true,
+    "execution_granted": false
+  },
+  "upgrade": {
+    "fresh_previous_source_acquired": true,
+    "steps": [
+      "b5",
+      "b6",
+      "b5"
+    ],
+    "tests_each": 148,
+    "fixed_host_inputs": 21,
+    "host_changed": false
+  },
+  "migration_head": "n8h9i0j1k2l3",
+  "new_schema": false,
+  "locks_sha256": {
+    "backend/uv.lock": "05b777ae8395199adf41fc4a02d29c128a8bd66a64ef8ed775828f29dcab357e",
+    "frontend/pnpm-lock.yaml": "a5471082daf491786de6fc34740a21b9552646266908ac578da2fed24a69abe2"
+  },
+  "artifacts_sha256": {
+    "prismos_octop_capabilities-0.1.0-py3-none-any.whl": "fc4e48df1bdea5e8e4629647edb416085718adaba204cc75554a5c603ab1e4b5",
+    "prismos_octop_capabilities-0.1.0.tar.gz": "6c77d923e9d2d65193fe7c1c11fc238ef64918c61283f07334766e43eba6dd0e"
+  },
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "e20f6e127ae972f3c5b0d53b4a0422cf90c7eaf3719a3fd140b155f458d90063",
+    "Makefile": "89c99b36f025aac7fd5c106cdeb11801ff3b40a14f6ebacdb4fa0a29a6b12369",
+    "backend/app/gateway/routers/agent_catalog.py": "d4872f93df612199cf494237ca0b4ff9825af07e6a8a08a1524f4df2148d9537",
+    "backend/app/gateway/routers/skills.py": "b5e2fc237bbc3546b51ef1428ffc112856d9f1910def65fffb681171c028f8fe",
+    "backend/packages/harness/deerflow/skills/installer.py": "9f72cf583f8a0b22db09420462826d626037c4c64a799ea0cef1cdf777156c80",
+    "backend/tests/test_skills_scope_router.py": "6b35209bf07272a4d7c6a5a69997a04de0bb09af2b445addf861c8261ecccdab",
+    "scripts/octop_gateway_smoke.py": "363dc244bce4e89e019b9e699096995bb5bd620794c2cea28e758452f441cff1",
+    "scripts/octop_upgrade_probe.py": "78b8f8a16115f48264175ebed0056f2422db3dcd403d3c4a6b10c9194d8e6cf6",
+    "backend/app/integrations/skill_imports.py": "dee47612bc505800f24f5926f0ef09b0daa18a1d96a0982310f9e435e3b0b8ac",
+    "backend/packages/harness/deerflow/skills/install_receipts.py": "8dd625fb63bf7fb9f4ee367a7ff7fb111e493a58e690fb8ff2891e23c37baba3",
+    "backend/tests/test_skill_import_recovery.py": "77c42368f2f3f90a640414767ec6ed877c1ae9b5c950af7773f17c7ab5cc23f8",
+    "scripts/octop_skill_postgres.py": "6e476317ced5b42b7901b10390150d1b8255c8479eb5fb7cbb81bf911689a1a4"
+  },
+  "log_sha256": {
+    "clean-backend-install.log": "a6f0ea7589a4cfc78086644f963ae22e98b01501d01727f26eb1c8d5e388fb61",
+    "ci-lint.log": "b5c878ec5bf6b860894bacf53c445f60d062b55ad6cf20fa2c6f335839846f34",
+    "brand.log": "21d635a65549080b358690d2e90b82dfe43ba5f418478963dea0f57227ad2b7e",
+    "source-tests.log": "e0a4e71d49f4eae1ac64b1d9e05a4a15c6ff80e75d7c227c91ace1b355e6811a",
+    "clean-build.log": "19b4541a6deff70cb750f4ca9e585fa8516da74c9bd81aa6ed63f6072b481c08",
+    "source-fetch.log": "d2561d16ae2b492d879c087ec3602d342fa3edd75ccaf8e46a2894ed0437042c",
+    "backend-full.log": "f67767cc506e6417f30c122ce104ce00e45e486f3bc14de4f2d5b325caa6bd24",
+    "gateway.log": "6a313c79c34d5d663929445e0118f60621dd103a8a5cf8081aa79bbb9e3e988a",
+    "upgrade.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "gateway-initial-failure.log": "f9ea52f195f3ac7967aee121a34a11b3461fed911eb88bff7e9e73d3827831a0",
+    "gateway-root-diagnostic.log": "d31f48f793d65eea535b24d05ef24708507a6f658e616e477bd69d130dd10d48",
+    "clean-frontend-install.log": "f2475969884057d96452345608c3f64bb96d0778101675a37b8413c9863b68ca",
+    "frontend-full.log": "8d68e0d2168c9a834ac6cdcbc1dd41900f44d10ad01079edf837e39996681fdd",
+    "stage-tests.log": "0d85686c01c0592339542c307186652dac8d663b5060eb76439bcb6b500049f9",
+    "postgres.log": "50f5a38cbb0e11c77d5055addc0cb03d4213e73d56c7803992d8440ca1ced306",
+    "baseline-faults.log": "da5a01d2c456e0a2708e9a938eb66753aae0fa5a73bdad3d0c7ddcbe37878340",
+    "skill-router-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "build.log": "5a2e00bd2aef68269d89216cc1d737de41b00a283c5210d7c86bd274220f595b"
+  },
+  "evidence_sha256": {
+    "capability-delta.json": "b8d8f8d10d64b3f1254137395fc445fbdfce2f24e8885cb4f97fc14c76543d67",
+    "gateway.json": "c912e55ceb291accedc4b54274ee7d5e2511d309012ffcbb6d88e02be14d77fd",
+    "upgrade.json": "fd645f27dbaefd9e6b4e725af6d6495e833ace400ccef11e78816f3e76465df5",
+    "independence.json": "f4473e7fb7259388ed2a249f749a0dd9f6c12fd6d84b9821b1b99e62d5dd2038",
+    "candidate-code.json": "dc7f418708b1b8cd0b77b1b15b91c12ace75806ad59474ea34e34db951482809",
+    "postgres.json": "291d729138588685a4c0ff0012f4023c88df5d3bfebdf2b0c344a8a4532d2b5d"
+  },
+  "remaining": [
+    "C1 UI and operation UX/retention policy",
+    "ownership/sharing/copy/revoke complete behavior",
+    "non-Skill explicit binding",
+    "actual tool/schema/PEP/Sandbox/runtime dependency acceptance",
+    "18 experts actual behavior and independent Office equivalents",
+    "N08 execution binding/delegation after M1",
+    "N04 live and N07 remote CI"
+  ],
+  "brand_gate": "PrismOS brand gate passed: 14405 tracked files, 526 allowlisted matches"
+}

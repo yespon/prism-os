@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "PrismOS",
   description:
     "A governed Agent operating system for enterprise teams, with multi-tenant control, sandboxed execution, Skills, MCP, and artifacts.",
+  manifest: "/manifest.webmanifest",
 };
 
 export default async function RootLayout({

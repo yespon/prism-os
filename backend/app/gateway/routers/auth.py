@@ -10,6 +10,7 @@ from sqlalchemy import text
 from app.gateway.auth_crypto import hash_password, verify_password
 from app.gateway.auth_db import _row_to_dict, auth_connection, column_exists
 from app.gateway.bootstrap_admin import bootstrap_admin
+from app.gateway.session_authorization import session_expiry, session_token
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -66,16 +67,7 @@ def _resolve_session(token: str) -> dict | None:
 
 
 def _extract_token(request: Request) -> str | None:
-    """Extract session token from Authorization header, query param, or cookie."""
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        return auth_header.split(" ", 1)[1]
-    token = request.query_params.get("token")
-    if token:
-        return token
-    return request.cookies.get(SESSION_COOKIE) or request.cookies.get(
-        f"__Secure-{SESSION_COOKIE}"
-    )
+    return session_token(request)
 
 
 # ---------- request / response models ----------
@@ -247,18 +239,15 @@ def get_session(request: Request) -> SessionResponse:
     if not token:
         return SessionResponse()
 
-    row = _resolve_session(token)
+    try:
+        row = _resolve_session(token)
+    except Exception:
+        raise HTTPException(503, "Auth session storage unavailable") from None
     if row is None:
         return SessionResponse()
-
-    expires_at = row.get("expiresAt")
-    if expires_at:
-        try:
-            exp = datetime.fromisoformat(str(expires_at).replace("Z", "+00:00"))
-            if exp <= datetime.now(UTC):
-                return SessionResponse()
-        except ValueError:
-            pass
+    expires = session_expiry(row.get("expiresAt"))
+    if expires is None or expires <= datetime.now(UTC):
+        return SessionResponse()
 
     return SessionResponse(
         session=SessionInfo(
@@ -397,7 +386,7 @@ def signup(body: SignupRequest, response: Response) -> AuthResponse:
 
 @router.get("/bootstrap-status", response_model=BootstrapStatusResponse)
 def get_bootstrap_status() -> BootstrapStatusResponse:
-    # On PostgreSQL, tables are created by Better Auth. bootstrap_admin
+    # Gateway initializes identity tables in both supported databases. bootstrap_admin
     # runs at gateway startup but may fail because the tables don't exist yet.
     # Retry here — by now the frontend has started and tables should exist.
     bootstrap_admin()

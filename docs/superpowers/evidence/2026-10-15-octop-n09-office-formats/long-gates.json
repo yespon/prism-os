@@ -1,0 +1,7 @@
+{
+  "complete": true,
+  "returncodes": {
+    "run_upgrade.py": 0,
+    "run_full.py": 0
+  }
+}

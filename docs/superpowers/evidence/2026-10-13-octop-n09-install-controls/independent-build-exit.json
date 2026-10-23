@@ -1,0 +1,9 @@
+{
+  "returncode": 0,
+  "log_sha256": "8198ceace5493a4f77f042870a9587d2f5a709201ba4d230563c6ccd9ce45f3f",
+  "backend_passed": 316,
+  "frontend_passed": 86,
+  "production_compiled": true,
+  "candidate_hashes_match": true,
+  "log_verified": true
+}

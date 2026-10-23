@@ -1,0 +1,77 @@
+{
+  "image_id": "sha256:06d36cfd88be46e79f9c8e95d21ff1ef3345c69bc803e7245a26374fb738a129",
+  "runtime_modules": [
+    {
+      "path": "app/gateway/file_authorization.py",
+      "sha256": "7a6decc069be056e5ae3460462636adaf4c94ea9a0513802dc09e7d00b65987f",
+      "matches": true
+    },
+    {
+      "path": "app/integrations/file_access.py",
+      "sha256": "be4a40abe18dc8920607e521ae89954aa3187cb16e6bf9b9ebd345a3d0257495",
+      "matches": true
+    },
+    {
+      "path": "app/gateway/routers/artifacts.py",
+      "sha256": "d66c358ef1fe5de4c018ef317f1107de8205faa43cfd6868ff51b8627fc8e30d",
+      "matches": true
+    },
+    {
+      "path": "app/gateway/routers/langgraph_proxy.py",
+      "sha256": "bab8f28a48be7ed21e1640684a5aeb24b7afe0e61151b9e27e497092d7ec796d",
+      "matches": true
+    },
+    {
+      "path": "app/gateway/routers/threads.py",
+      "sha256": "8ef6caf8db485a6bbb126b5bfc70c3f9eb0892faa9123f8efa51a0ae2d3abddd",
+      "matches": true
+    },
+    {
+      "path": "app/gateway/routers/uploads.py",
+      "sha256": "b7a305a253cc6abfadfd8cb27017561657ab126ddb3961a38d6a1258a7d11ac4",
+      "matches": true
+    },
+    {
+      "path": "app/runtime_adapters.py",
+      "sha256": "454d5c0e74ded61ba10ba69f925eb42d2bb08e4f1e0bba9cbdb70af6019c0d5d",
+      "matches": true
+    },
+    {
+      "path": "app/integrations/agent_skill_members.py",
+      "sha256": "11801b04453747135d2570caa434e10b15ba0cf207e5892883d7f5f690e2ac8d",
+      "matches": true
+    },
+    {
+      "path": "packages/harness/deerflow/runtime.py",
+      "sha256": "712441f95922fc2d06dbaa399403159dea390ed75ad20f097cfb02687f1a9f76",
+      "matches": true
+    },
+    {
+      "path": "packages/harness/deerflow/sandbox/tools.py",
+      "sha256": "a84c6a5c149fde25c9818ff7ebccb57a4c559d34e24ce1c0c8ed790c58de27de",
+      "matches": true
+    },
+    {
+      "path": "packages/harness/deerflow/sandbox/file_access.py",
+      "sha256": "5d87561ae8186d360dc8915b49c6f2cf847ced3efaa416aa2e592b7304bd7752",
+      "matches": true
+    },
+    {
+      "path": "packages/harness/deerflow/tools/builtins/view_image_tool.py",
+      "sha256": "979a1837dee0f745b6c016621f77188df29976f75f39f040c94e28191109ae3b",
+      "matches": true
+    },
+    {
+      "path": "packages/harness/deerflow/tools/builtins/present_file_tool.py",
+      "sha256": "d6892c9c14b9105bf493a92315349fdea302d34ac64467754a7a72725131b558",
+      "matches": true
+    },
+    {
+      "path": "app/alerting/ingest.py",
+      "sha256": "6e84dd70b823087196b222a0a612f8a47654535ee71f46381eb57828bea96219",
+      "matches": true
+    }
+  ],
+  "owned_inspection_container_removed": true,
+  "deployment_or_publish": false
+}

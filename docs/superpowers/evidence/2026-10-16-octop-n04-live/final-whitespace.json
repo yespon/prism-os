@@ -1,0 +1,8 @@
+{
+  "file": "backend/tests/test_incident_diagnosis.py",
+  "old_sha256": "398a2ed3cfa73af9122d16b927252d52c2516ec55ba0a05ccbfcffa9c1191d37",
+  "current_sha256": "716178999c2f0ff9f4f3750af38d47c50a878a16b7cd8f409158b7d828dd915d",
+  "removed_bytes_hex": "0a",
+  "AST_unchanged": true,
+  "scope": "Only final blank line removed after successful runtime/image/upgrade acceptance; no production code changed."
+}

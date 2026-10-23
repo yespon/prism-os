@@ -1,0 +1,26 @@
+{
+  "capabilities": [
+    "O05",
+    "O07"
+  ],
+  "scope_preserved": {
+    "O": 42,
+    "F": 12,
+    "N": 15
+  },
+  "full_parity": false,
+  "n09_c1_backend": "locally verified: staged/exclusive publication, existing registration, uncertain result preservation, current-row reconciliation/recovery/owned-stage abort, pinned-source explicit install API",
+  "n09_c1_ui": "pending explicit source confirmation, conflict/unknown display, operation inspection/recover/abort",
+  "authoritative_registration": "existing TenantSkill unique (tenant_id,user_id,name)",
+  "new_migration": false,
+  "execution_permission_grants": false,
+  "remaining": [
+    "C1 UI and operation UX/retention policy",
+    "ownership/sharing/copy/revoke complete behavior",
+    "non-Skill explicit binding",
+    "actual tool/schema/PEP/Sandbox/runtime dependency acceptance",
+    "18 experts actual behavior and independent Office equivalents",
+    "N08 execution binding/delegation after M1",
+    "N04 live and N07 remote CI"
+  ]
+}

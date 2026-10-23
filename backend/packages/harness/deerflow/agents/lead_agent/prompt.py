@@ -571,6 +571,8 @@ def apply_prompt_template(
     *,
     agent_name: str | None = None,
     available_skills: set[str] | None = None,
+    skill_section_override: str | None = None,
+    agent_soul_override: str | None = None,
     user_id: str | None = None,
 ) -> str:
     # Get memory context
@@ -604,7 +606,7 @@ def apply_prompt_template(
         skill_reminder = f"- **MANDATORY SKILL**: The user selected skill \"{skill_name}\". You MUST read and follow this skill's instructions before responding. Do NOT skip this step.\n"
 
     # Get skills section
-    skills_section = get_skills_prompt_section(available_skills)
+    skills_section = skill_section_override if skill_section_override is not None else get_skills_prompt_section(available_skills)
 
     # Get deferred tools section (tool_search)
     deferred_tools_section = get_deferred_tools_prompt_section()
@@ -612,7 +614,7 @@ def apply_prompt_template(
     # Format the prompt with dynamic skills and memory
     prompt = SYSTEM_PROMPT_TEMPLATE.format(
         agent_name=agent_name or "PrismOS",
-        soul=get_agent_soul(agent_name, user_id=user_id),
+        soul=agent_soul_override if agent_soul_override is not None else get_agent_soul(agent_name, user_id=user_id),
         skills_section=skills_section,
         deferred_tools_section=deferred_tools_section,
         memory_context=memory_context,

@@ -3,7 +3,14 @@ import json
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Request,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy import func
@@ -11,14 +18,36 @@ from sqlalchemy import select as sa_select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.gateway.authorization import require_tenant_context
-from app.models.assets import Keychain, LocalAsset
 from app.models.terminal import ChatSession, CommandAuditLog, TerminalSecuritySettings
-from app.services.terminal.session import build_ssh_command, session_manager
+from app.services.terminal.session import build_ssh_command as build_ssh_command
 from deerflow.database.session import get_session
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+async def _require_current_terminal_member(request: Request = None):
+    # WebSocket identity is resolved explicitly from its authenticated cookie;
+    # HTTP routes use the original middleware identity and fresh member facts.
+    if request is None:
+        return
+    from app.services.terminal.access import verify_terminal_access
+    try:
+        await verify_terminal_access({"tenant_id": require_tenant_context(request), "user_id": getattr(request.state, "user_id", None)})
+    except PermissionError:
+        raise HTTPException(403, "Current terminal membership unavailable") from None
+
+
+async def _audit_view(request):
+    from app.services.terminal.access import get_session_factory
+    from deerflow.database.models import TenantMembership
+    from deerflow.database.tenant_service import tenant_role_has_admin_capability
+    tenant, actor = require_tenant_context(request), getattr(request.state, "user_id", None)
+    await _require_current_terminal_member(request)
+    async with get_session_factory()() as db:
+        role = (await db.execute(sa_select(TenantMembership).where(TenantMembership.tenant_id == tenant, TenantMembership.user_id == actor, TenantMembership.status == "active"))).scalars().first()
+        return role is not None and tenant_role_has_admin_capability(role.role)
+
+
+router = APIRouter(dependencies=[Depends(_require_current_terminal_member)])
 
 class ExecuteCommandRequest(BaseModel):
     session_id: str
@@ -51,6 +80,44 @@ def _build_web_fetch_argv(url: str) -> list[str]:
     ]
 
 
+
+async def _require_terminal_delivery(context, targets=()):
+    from app.services.terminal.access import verify_terminal_access
+    try:
+        await verify_terminal_access(context)
+        for target in targets:
+            if target:
+                await verify_terminal_access(context, target)
+    except PermissionError:
+        raise HTTPException(403, "Current terminal access unavailable") from None
+
+
+async def _terminal_stream(iterator, context, targets):
+    from app.services.terminal.access import current_terminal_stream
+    try:
+        async for value in current_terminal_stream(iterator, context, targets):
+            yield value
+    except PermissionError:
+        return
+
+
+async def _authorized_terminal_session(context, asset_id, *, acquisition_guard=None):
+    from app.agent.terminal_tools import (
+        _ensure_session,
+        get_terminal_context,
+        set_terminal_context,
+    )
+
+    previous = get_terminal_context()
+    try:
+        set_terminal_context(context)
+        if acquisition_guard is None:
+            return await _ensure_session(asset_id)
+        return await _ensure_session(asset_id, acquisition_guard=acquisition_guard)
+    finally:
+        set_terminal_context(previous)
+
+
 @router.websocket("/ws")
 async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, session_id: str | None = None, db: AsyncSession = Depends(get_session)):
     """
@@ -64,16 +131,20 @@ async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, 
         await websocket.close(code=1008)
         return
         
-    token = websocket.cookies.get("better-auth.session_token") or websocket.cookies.get("__Secure-better-auth.session_token")
-    if not token:
-        token = websocket.query_params.get("token")
-        
+    from app.gateway.session_authorization import SessionAuthorityUnavailable, session_token
+
+    token = session_token(websocket)
+
     if not token:
         await websocket.send_text("Unauthorized: missing session token.\r\n")
         await websocket.close(code=1008)
         return
 
-    from app.gateway.auth import _get_tenant_id_from_header, _resolve_tenant_id, _resolve_user_from_auth_db
+    from app.gateway.auth import (
+        _get_tenant_id_from_header,
+        _resolve_tenant_id,
+        _resolve_user_from_auth_db,
+    )
     db_user = _resolve_user_from_auth_db(token)
     if not db_user:
         await websocket.send_text("Unauthorized: invalid session token.\r\n")
@@ -90,38 +161,32 @@ async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, 
         await websocket.close(code=1008)
         return
 
-    # Fetch the asset from DB and check auth
-    query = sa_select(LocalAsset).where(
-        LocalAsset.id == asset_id,
-        LocalAsset.tenant_id == tenant_id
-    )
-    result = await db.execute(query)
-    asset = result.scalars().first()
+    from app.gateway.auth import current_session_verifier
 
-    if not asset:
-        await websocket.send_text("Asset not found or unauthorized.\r\n")
+    verify_session = current_session_verifier(token, user_id)
+    context = {"tenant_id": tenant_id, "user_id": user_id, "terminal_session_id": session_id}
+    try:
+        verify_session()
+        session = await _authorized_terminal_session(context, asset_id, acquisition_guard=verify_session)
+    except (PermissionError, SessionAuthorityUnavailable):
+        await websocket.send_text("Current terminal access unavailable.\r\n")
         await websocket.close(code=1008)
         return
+    from app.services.terminal.socket_access import CurrentTerminalSocket
 
-    session = session_manager.get_or_create_session(session_id, asset_id)
-    session.attach_websocket(websocket)
-
-    if session.pty.fd is None:
-        keychain = None
-        if asset.keychain_id:
-            query_kc = sa_select(Keychain).where(Keychain.id == asset.keychain_id)
-            res_kc = await db.execute(query_kc)
-            keychain = res_kc.scalars().first()
-
-        cmd, env_updates, temp_files = build_ssh_command(asset, keychain)
-        session.start(cmd=cmd, env_updates=env_updates, temp_files=temp_files)
-        
+    connection = CurrentTerminalSocket(websocket, verify_session, session.authority_validator)
+    pending = None
     try:
+        await connection.authorize()
+        session.attach_websocket(connection)
         while True:
-            # Wait for user input from the frontend terminal
-            data = await websocket.receive_text()
-            
-            # Handle JSON payloads (e.g. window resize)
+            await connection.authorize()
+            pending = asyncio.create_task(websocket.receive_text())
+            while not pending.done():
+                await asyncio.wait({pending}, timeout=.25)
+                await connection.authorize()
+            data = pending.result()
+            await connection.authorize()
             if data.startswith("{") and data.endswith("}") and "type" in data:
                 try:
                     payload = json.loads(data)
@@ -130,15 +195,20 @@ async def terminal_websocket(websocket: WebSocket, asset_id: str | None = None, 
                         continue
                 except json.JSONDecodeError:
                     pass
-            
-            # Otherwise it's raw terminal input (keystrokes)
             session.pty.write(data)
     except WebSocketDisconnect:
         logger.info("Terminal WebSocket disconnected")
-    except Exception as e:
-        logger.error(f"Terminal WebSocket error: {e}")
+    except (PermissionError, SessionAuthorityUnavailable):
+        await connection.close()
+    except Exception:
+        logger.error("Terminal WebSocket transport unavailable; external effects unknown")
+        await connection.close()
     finally:
-        session.detach_websocket(websocket)
+        if pending is not None:
+            if not pending.done():
+                pending.cancel()
+            await asyncio.gather(pending, return_exceptions=True)
+        session.detach_websocket(connection)
 
 
 @router.post("/execute")
@@ -149,35 +219,16 @@ async def execute_command_api(req: ExecuteCommandRequest, request: Request, db: 
     """
     tenant_id = require_tenant_context(request)
     
-    query = sa_select(LocalAsset).where(
-        LocalAsset.id == req.asset_id,
-        LocalAsset.tenant_id == tenant_id
-    )
-    result = await db.execute(query)
-    asset = result.scalars().first()
-    if not asset:
-        raise HTTPException(status_code=404, detail="Asset not found or unauthorized")
-        
-    session = session_manager.get_session(req.session_id, req.asset_id)
-    if not session or session.pty.fd is None:
-        # Start a new session if not exists
-        session = session_manager.get_or_create_session(req.session_id, req.asset_id)
-            
-        keychain = None
-        if asset.keychain_id:
-            query_kc = sa_select(Keychain).where(Keychain.id == asset.keychain_id)
-            res_kc = await db.execute(query_kc)
-            keychain = res_kc.scalars().first()
-
-        cmd, env_updates, temp_files = build_ssh_command(asset, keychain)
-        session.start(cmd=cmd, env_updates=env_updates, temp_files=temp_files)
-        
-        # Wait a bit for ssh connection
-        await asyncio.sleep(1.0)
-        
+    context = {"tenant_id": tenant_id, "user_id": getattr(request.state, "user_id", None), "terminal_session_id": req.session_id}
+    try:
+        session = await _authorized_terminal_session(context, req.asset_id)
+    except PermissionError:
+        raise HTTPException(403, "Current terminal access unavailable") from None
     try:
         result = await session.execute_command(req.command, timeout_seconds=req.timeout_seconds)
         return result
+    except PermissionError:
+        raise HTTPException(403, "Current terminal access unavailable; external effects unknown") from None
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -350,7 +401,10 @@ async def get_security_settings(request: Request, db: AsyncSession = Depends(get
     result = await db.execute(query)
     settings = result.scalars().first()
 
-    from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG
+    from app.services.terminal.security import (
+        DEFAULT_AUTO_APPROVAL,
+        DEFAULT_SECURITY_CONFIG,
+    )
 
     if not settings:
         return {
@@ -426,7 +480,10 @@ async def reset_security_settings(request: Request, db: AsyncSession = Depends(g
         await db.delete(settings)
         await db.commit()
 
-    from app.services.terminal.security import DEFAULT_AUTO_APPROVAL, DEFAULT_SECURITY_CONFIG
+    from app.services.terminal.security import (
+        DEFAULT_AUTO_APPROVAL,
+        DEFAULT_SECURITY_CONFIG,
+    )
     return {
         "ok": True,
         "security_config": DEFAULT_SECURITY_CONFIG,
@@ -445,9 +502,12 @@ async def list_audit_logs(
 ):
     """List paginated command audit logs."""
     tenant_id = require_tenant_context(request)
+    user_id = getattr(request.state, "user_id", None)
+    tenant_wide = await _audit_view(request)
 
     query = sa_select(CommandAuditLog).where(
-        CommandAuditLog.tenant_id == tenant_id
+        CommandAuditLog.tenant_id == tenant_id,
+        True if tenant_wide else CommandAuditLog.user_id == user_id
     )
     if terminal_session_id:
         query = query.where(CommandAuditLog.terminal_session_id == terminal_session_id)
@@ -459,7 +519,8 @@ async def list_audit_logs(
     logs = result.scalars().all()
 
     count_query = sa_select(func.count(CommandAuditLog.id)).where(
-        CommandAuditLog.tenant_id == tenant_id
+        CommandAuditLog.tenant_id == tenant_id,
+        True if tenant_wide else CommandAuditLog.user_id == user_id
     )
     if terminal_session_id:
         count_query = count_query.where(CommandAuditLog.terminal_session_id == terminal_session_id)
@@ -468,6 +529,8 @@ async def list_audit_logs(
     count_result = await db.execute(count_query)
     total = count_result.scalar_one()
 
+    if await _audit_view(request) != tenant_wide:
+        raise HTTPException(403, "Current terminal audit scope changed")
     return {
         "logs": [log.model_dump() for log in logs],
         "total": total,
@@ -520,6 +583,20 @@ async def agent_invoke(req: AgentInvokeRequest, request: Request):
     primary_asset_id = req.asset_id or (
         str(req.selected_assets[0].get("id", "")) if req.selected_assets else ""
     )
+
+
+    delivery_context = {"tenant_id": tenant_id, "user_id": user_id, "chat_session_id": req.session_id}
+    target_ids = [str(asset.get("id", "")) for asset in req.selected_assets or []] or [primary_asset_id]
+    await _require_terminal_delivery(delivery_context, target_ids)
+
+    if req.mode == "sandbox":
+        from app.agent.sandbox_graph import sandbox_graph
+        checked_graph = sandbox_graph
+    else:
+        checked_graph = terminal_graph
+    prior = await checked_graph.aget_state({"configurable": {"thread_id": req.session_id}})
+    if prior.values and (prior.values.get("tenant_id"), prior.values.get("user_id"), prior.values.get("session_id")) != (tenant_id, user_id, req.session_id):
+        raise HTTPException(403, "Current terminal checkpoint unavailable")
 
     async def event_stream():
         try:
@@ -667,10 +744,10 @@ async def agent_invoke(req: AgentInvokeRequest, request: Request):
             yield f"data: {json_mod.dumps({'type': 'RUN_ERROR', 'message': str(e)})}\n\n"
 
     return StreamingResponse(
-        event_stream(),
+        _terminal_stream(event_stream(), delivery_context, target_ids),
         media_type="text/event-stream",
         headers={
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-store",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },
@@ -692,6 +769,17 @@ async def agent_approve(req: AgentApproveRequest, request: Request):
     from langgraph.types import Command
 
     from app.agent.terminal_graph import terminal_graph
+
+    tenant_id = require_tenant_context(request)
+    user_id = getattr(request.state, "user_id", None)
+    delivery_context = {"tenant_id": tenant_id, "user_id": user_id, "chat_session_id": req.session_id}
+    await _require_terminal_delivery(delivery_context)
+    snapshot = await terminal_graph.aget_state({"configurable": {"thread_id": req.session_id}})
+    values = snapshot.values or {}
+    if (values.get("tenant_id"), values.get("user_id"), values.get("session_id")) != (tenant_id, user_id, req.session_id):
+        raise HTTPException(403, "Current terminal approval unavailable")
+    target_ids = [str(asset.get("id", "")) for asset in values.get("selected_assets", [])] or [values.get("asset_id", "")]
+    await _require_terminal_delivery(delivery_context, target_ids)
 
     async def event_stream():
         try:
@@ -806,10 +894,10 @@ async def agent_approve(req: AgentApproveRequest, request: Request):
             yield f"data: {json_mod.dumps({'type': 'RUN_ERROR', 'message': str(e)})}\n\n"
 
     return StreamingResponse(
-        event_stream(),
+        _terminal_stream(event_stream(), delivery_context, target_ids),
         media_type="text/event-stream",
         headers={
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-store",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },

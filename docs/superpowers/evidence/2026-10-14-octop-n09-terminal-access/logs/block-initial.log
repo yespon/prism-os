@@ -1,0 +1,46 @@
+..........................................                               [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_terminal_access_boundaries.py::test_foreign_or_withdrawn_access_never_acquires_pty[foreign-asset]
+tests/test_terminal_access_boundaries.py::test_foreign_or_withdrawn_access_never_acquires_pty[foreign-key]
+tests/test_terminal_access_boundaries.py::test_foreign_or_withdrawn_access_never_acquires_pty[withdrawn]
+tests/test_terminal_access_boundaries.py::test_foreign_or_withdrawn_access_never_acquires_pty[foreign-chat]
+tests/test_terminal_access_boundaries.py::test_tool_factory_freezes_each_context_and_keeps_parallel_execution_isolated
+tests/test_terminal_access_boundaries.py::test_cached_terminal_result_is_discarded_if_member_withdrawn_during_wait
+tests/test_terminal_access_boundaries.py::test_actual_local_pty_closes_after_revocation_even_without_output
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+tests/test_terminal_access_boundaries.py::test_actual_local_pty_closes_after_revocation_even_without_output
+  /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/pty.py:95: DeprecationWarning: This process (pid=1260197) is multi-threaded, use of forkpty() may lead to deadlocks in the child.
+    pid, fd = os.forkpty()
+
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_disables_thinking_when_model_does_not_support_it
+tests/test_lead_agent_model_resolution.py::test_make_lead_agent_uses_tenant_allowlist_default
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/agents/memory/updater.py:59: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "lastUpdated": datetime.utcnow().isoformat() + "Z",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+42 passed, 11 warnings in 11.87s

@@ -40,11 +40,12 @@ def _db_agent_to_config(agent) -> "AgentConfig":
         name=agent.name,
         description=agent.description or "",
         model=agent.model,
-        tool_groups=agent.tool_groups or None,
+        tool_groups=list(agent.tool_groups or []),
         system_prompt=agent.system_prompt or "",
         skills=agent.skills or [],
         enabled=agent.enabled,
         tags=agent.tags or [],
+        meta_info=dict(agent.meta_info) if getattr(agent, "meta_info", None) else None,
     )
 
 
@@ -61,6 +62,9 @@ class AgentConfig(BaseModel):
     skills: list[str] | None = None
     enabled: bool = True
     tags: list[str] | None = None
+    # Host-managed metadata (R2: knowledge_base_ids); optional so file-based
+    # agents without metadata keep working.
+    meta_info: dict | None = None
 
 
 async def _query_agent_config(name: str, user_id: str, tenant_id: str | None):

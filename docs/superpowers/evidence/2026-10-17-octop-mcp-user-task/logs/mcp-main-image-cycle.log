@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/runtime_cycle.py", line 60, in <module>
+    verify('restart')
+  File "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/runtime_cycle.py", line 37, in verify
+    subprocess.run([str(ROOT / 'backend/.venv/bin/python'), str(ROOT / 'scripts/octop_office_chart_task_probe.py'), '--resume', str(accepted_path), '--output', str(output)], cwd=ROOT, check=True, capture_output=True)
+  File "/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python', '/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_office_chart_task_probe.py', '--resume', '/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-office-chart-task/real-chart-task-recovered.json', '--output', '/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-17-octop-mcp-user-task/recheck-restart.json']' returned non-zero exit status 1.

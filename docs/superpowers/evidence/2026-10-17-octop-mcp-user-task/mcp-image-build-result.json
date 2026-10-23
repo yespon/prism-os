@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "-f",
+    "backend/Dockerfile",
+    "-t",
+    "prismos-mcp-task:test",
+    "."
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T23:42:09.730112+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T23:42:40.468211+00:00"
+}

@@ -1,0 +1,110 @@
+{
+  "base_commit": "e0c7f29",
+  "status": "default_and_legacy_resource_access_accepted_first_milestone_pending",
+  "backend": {
+    "passed": 1960,
+    "skipped": 18,
+    "warnings": 355,
+    "observed_exit_code": 0
+  },
+  "new_standalone": {
+    "passed": 13,
+    "observed_exit_code": 0
+  },
+  "model_unit_fixture": {
+    "passed": 11,
+    "observed_exit_code": 0
+  },
+  "postgres": {
+    "passed": 71,
+    "observed_exit_code": 0,
+    "owned_container_removed": true
+  },
+  "image": {
+    "image_id": "sha256:c95e0e0238f1a453acb0118fb2b26b45d89e86ee2dc3b7b9bd25e2e4c1fefc2e",
+    "matching_modules": 7,
+    "authority_passed": 65,
+    "local_nested_commands_deselected": 6,
+    "authority_observed_exit_code": 0,
+    "actual_default_aio_command_passed": 1,
+    "actual_aio_observed_exit_code": 0,
+    "build_observed_exit_code": 0,
+    "privileged_test_review_rejected": true,
+    "privileged_command_executed": false,
+    "standard_container_nested_local_namespace_pending": true
+  },
+  "upgrade": {
+    "host_inputs": 82,
+    "complete": true,
+    "host_changed": false,
+    "observed_exit_code": 0,
+    "stages": [
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "71 passed, 76 warnings in 209.02s (0:03:29)"
+      },
+      {
+        "release": "b6",
+        "returncode": 0,
+        "pytest": "71 passed, 76 warnings in 151.08s (0:02:31)"
+      },
+      {
+        "release": "0.3.0b5",
+        "returncode": 0,
+        "pytest": "71 passed, 76 warnings in 155.00s (0:02:35)"
+      }
+    ]
+  },
+  "static": {
+    "ci_ruff_paths": 86,
+    "model_unit_file_ruff": true,
+    "git_diff_check": true
+  },
+  "historical_reuse": {
+    "frontend_tracked_inputs": 499,
+    "frontend_changed_since_base": false,
+    "new_frontend_build": false,
+    "scope": "See scope-audit.md; model-only fixture outside unchanged image/PG/upgrade covered inputs, independently verified by 11 units and complete backend."
+  },
+  "initial_failures_retained": {
+    "independent_fixture_errors": 13,
+    "backend_first_interrupt_exit": 2,
+    "backend_second_interrupt_exit": 1,
+    "model_unit_isolation_failures": 3,
+    "image_local_namespace_failed": 5
+  },
+  "real_model_external_tool_ticket_acceptance": false,
+  "pending": [
+    "Terminal full owned session/asset/credential/current stream block",
+    "Remote full-tool execution and mounts",
+    "copy/share/source-version/target reauthorization",
+    "purpose-limited general Secrets and complete C1/C2",
+    "N04 real environment references and N07 actual CI",
+    "complete first milestone exit; N08 not started"
+  ],
+  "raw_log_sha256": {
+    "logs/actual-default-aio.log": "870a2cd2faf2ca6f7616994fee10977bccfbcec6ba8f997780a25b425ecc001d",
+    "logs/backend-full-accepted.log": "a8a884bf8edc60e2dea04a126835b8409980b28faab93a604b649b10804f0f1e",
+    "logs/backend-interrupted-fixture.log": "cd26f56627f6dc7b78727c391d8b45471d78792c9ad82be0145ac4ae7439410e",
+    "logs/backend-interrupted-model.log": "9ac9c55d43e3226ecb959b2484575840fade05f0506f7df3c7caa69a973ceed8",
+    "logs/brand.log": "659e3c4ce6b3ab20a615662860cd4f55800d4a63569231e442409c7dcca4bbd4",
+    "logs/external.log": "78abc64b52e8d5fb1dccf50fbc93848fb26c0afabf49f8b24ff294cf55e2ded4",
+    "logs/image-authority.log": "c1832452db292cd08514727ccc8dd13b7b2464b55f854deb1176b2cb244fa2ca",
+    "logs/image-build-final.log": "d8ada7a843dd2a51fda63197a77d94f653d86e3a6ec3683493d310d8a6baef4b",
+    "logs/image-build-initial.log": "584af6a0986030ab6bdda46e8ec562cd0e7c2c3a7694d961d6e8c006ed08578f",
+    "logs/image-fixture-error.log": "de70e6df0661d1882e4433464d50b600b7a98fbdbd5436f1e839a833362d50f2",
+    "logs/image-local-namespace-error.log": "e41da51e546fb5b5336f878735042c0ca2a6b42782219bc65e399aa5e4a7249a",
+    "logs/image-namespace-single.log": "156a6aa3ebc2a9f477823e5bbd35aad8a4663abcca0b017c2c5e323c294afbe5",
+    "logs/inventory.log": "528b0949e856809fa6a7d57313fa0b24c280be4dac8cc1240d26fe32952a64f8",
+    "logs/model-fixture-fixed.log": "97f77a784b5498a4a867c8d62e667b7e376f3d5a41e0abf2a86af227f2818316",
+    "logs/postgres-final.log": "8dd80c738f8830b29b904e3e0352caecc2d543888a1779be993ddbb6e2a516fb",
+    "logs/postgres-initial-fixture-error.log": "f3c665e9dc9f04c01e525a64f26fa3b0c89ba2085de167cfa06805526ad26316",
+    "logs/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "logs/source.log": "1e6836bf27a86cda1311cdd0a4c2556799e977218e11511edd75948e1e8ebf03",
+    "logs/standalone-fixed.log": "92d6aab074f2bf2301054fa93223217e650f3770c68d29068d89d92bb145c106",
+    "logs/targeted-original.log": "c04e6124b5e34b052d94ea51bb2efa08b49f99da334213dd7ac2c50a6fb039e6",
+    "logs/upgrade-final.log": "f540ba204cc17887c63093b2d32cc7e0f41b1e4f47e01b89de6b71d99ea09133",
+    "logs/upgrade-initial-fixture.log": "5883bd9d1e739d1e6b1405597e9537c99c952658206251aff2860440c727c2e1"
+  }
+}

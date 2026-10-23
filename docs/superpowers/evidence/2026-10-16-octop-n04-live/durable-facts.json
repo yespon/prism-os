@@ -1,0 +1,59 @@
+{
+  "approval_states": {
+    "approval_6f590ebe783c94299672c7329a564c55": {
+      "scenario": "approve",
+      "status": "consumed"
+    },
+    "approval_b02e780f39ede533fbca03d6b7e70c6b": {
+      "scenario": "reject",
+      "status": "rejected"
+    },
+    "approval_5c76b6a1084986e2c658404cc6ca1b28": {
+      "scenario": "revoke_agent",
+      "status": "approved"
+    },
+    "approval_d093c497552a6046b12cfed728c81299": {
+      "scenario": "withdraw_secret",
+      "status": "approved"
+    },
+    "approval_e5ed4ef94b73cc03ffab37d61497e2ee": {
+      "scenario": "rotate_secret",
+      "status": "approved"
+    },
+    "approval_77d326505c38d196b1f3e350ab2d752e": {
+      "scenario": "restart",
+      "status": "consumed"
+    },
+    "approval_d9f67a93a03c67b7c1c94ae25e9141a6": {
+      "scenario": "approve",
+      "status": "consumed"
+    },
+    "approval_a38492764fa6385899389c6ccd96a82e": {
+      "scenario": "restart",
+      "status": "consumed"
+    }
+  },
+  "timeline_successes": {
+    "approval_6f590ebe783c94299672c7329a564c55": {
+      "ticket_id": "N04-10",
+      "original_timeline_contains_ticket": true
+    },
+    "approval_77d326505c38d196b1f3e350ab2d752e": {
+      "ticket_id": "N04-11",
+      "original_timeline_contains_ticket": true
+    },
+    "approval_d9f67a93a03c67b7c1c94ae25e9141a6": {
+      "ticket_id": "N04-15",
+      "original_timeline_contains_ticket": true
+    },
+    "approval_a38492764fa6385899389c6ccd96a82e": {
+      "ticket_id": "N04-16",
+      "original_timeline_contains_ticket": true
+    }
+  },
+  "scope": "real authenticated reads of durable approval and original timeline facts; no model or ticket send",
+  "policy_changed_approval_not_consumed": {
+    "approval_id": "approval_7b2f54ad8a797ca3c0b457af02607e8c",
+    "status": "approved"
+  }
+}

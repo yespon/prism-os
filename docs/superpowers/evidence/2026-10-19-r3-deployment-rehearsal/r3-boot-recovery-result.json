@@ -1,0 +1,23 @@
+{
+  "steps": [
+    {
+      "step": "schedule-created",
+      "schedule_id": "sched_fd280bc4ac2e4842beaac526cac3dc4c"
+    },
+    {
+      "step": "worker-restart-recovered",
+      "jobs": 1
+    },
+    {
+      "step": "auto-trigger-fired",
+      "count": 1,
+      "states": [
+        "completed"
+      ]
+    },
+    {
+      "step": "cleanup-done"
+    }
+  ],
+  "complete": true
+}

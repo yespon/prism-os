@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from typing import Any
 
+from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from sqlmodel import delete, select
 
@@ -21,6 +22,9 @@ from deerflow.database.secrets_crypto import (
 from deerflow.database.session import get_session_factory
 from deerflow.database.user_config_store import _build_default_payloads
 from deerflow.skills import get_skills_root_path, load_skills
+from deerflow.skills.loader import _load_public_skills
+from deerflow.skills.parser import parse_skill_file
+from deerflow.skills.resource_identity import public_resource_id, registered_resource_id, resource_directory
 
 
 def _config_scope_clause(model, tenant_id: str | None):
@@ -1549,6 +1553,41 @@ async def update_tenant_shared_skill_settings(
         return current
 
 
+async def initialize_owned_skill_configuration(
+    tenant_id: str, user_id: str, skill_name: str, *, shared: bool,
+    expected_resource_id: str, enabled: bool, bound_tools: list[str] | None = None,
+    prompt_template: str | None = None, strategy: str | None = None,
+) -> dict[str, Any]:
+    """Initialize the original encrypted slot and enablement in one DB transaction.
+
+    Creation starts disabled. A new instance never inherits old name-based
+    bindings, and current-instance validation guards this second phase.
+    """
+    owner = _tenant_shared_skill_owner_id(tenant_id) if shared else user_id
+    await ensure_user_config(owner, tenant_id=tenant_id)
+    settings = {"bound_tools": [item.strip() for item in (bound_tools or []) if item.strip()], "prompt_template": (prompt_template or "").strip() or None, "strategy": (strategy or "").strip() or None}
+    async with get_session_factory()() as session:
+        async with session.begin():
+            if session.get_bind().dialect.name == "sqlite":
+                await session.execute(text("BEGIN IMMEDIATE"))
+            native = await session.scalar(select(TenantSkill).where(TenantSkill.tenant_id == tenant_id, TenantSkill.user_id == owner, TenantSkill.name == skill_name).with_for_update())
+            if native is None or registered_resource_id(native) != expected_resource_id:
+                raise ValueError("Current Skill instance changed before configuration initialization")
+            config = await session.scalar(select(UserConfig).where(UserConfig.user_id == owner, _config_scope_clause(UserConfig, tenant_id)).with_for_update())
+            if config is None:
+                raise ValueError("Original Skill configuration is unavailable")
+            payload = decrypt_extensions_payload(dict(config.extensions_config or {}))
+            slots = payload.get("tenant_skill_settings")
+            slots = dict(slots) if isinstance(slots, dict) else {}
+            slots[skill_name] = settings
+            payload["tenant_skill_settings"] = slots
+            config.extensions_config = encrypt_extensions_payload(payload)
+            native.enabled = enabled
+            session.add(config)
+            session.add(native)
+    return settings
+
+
 async def delete_tenant_shared_skill_settings(tenant_id: str, skill_name: str) -> None:
     owner_id = _tenant_shared_skill_owner_id(tenant_id)
     name = skill_name.strip()
@@ -1675,9 +1714,7 @@ async def get_available_skills(
     """Return platform-builtin and tenant-shared skills for the active tenant."""
     await ensure_user_config(user_id, tenant_id=tenant_id)
 
-    discovered = load_skills(use_config=False, enabled_only=False)
-    global_skills = [skill for skill in discovered if skill.category == "public"]
-    discovered_by_name = {skill.name: skill for skill in discovered}
+    global_skills = _load_public_skills(get_skills_root_path(), secure=True)
 
     tenant_skill_settings = await get_tenant_shared_skill_settings(tenant_id)
     personal_skill_settings = await get_tenant_personal_skill_settings(tenant_id, user_id)
@@ -1696,28 +1733,37 @@ async def get_available_skills(
         ).scalars().all()
 
         global_skill_names = {skill.name for skill in global_skills}
-        # To avoid name conflicts, we prioritize tenant shared skills over personal skills with the same name,
-        # or maybe we should keep them separate? Actually, they shouldn't conflict because we enforce uniqueness 
-        # on (tenant_id, user_id, name). But if a personal skill has the same name as a shared one, we should
-        # probably just return both, or let the UI handle it. We will return all.
+        # Concrete scoped rows remain distinct; public rows are tenant toggles.
 
     items: list[dict[str, Any]] = []
 
-    global_permissions = ["read", "use"]
+    global_permissions = ["read", "use", "toggle"] if is_tenant_admin else ["read", "use"]
     for skill in global_skills:
         # For global skills, we check if there's a tenant shared override to disable it
-        override_row = next((r for r in db_rows if r.name == skill.name and r.user_id == tenant_shared_id), None)
+        override_row = next((r for r in db_rows if r.name == skill.name and r.user_id == tenant_shared_id and r.category == "public"), None)
+        public_status = "missing"
+        try:
+            directory = resource_directory(get_skills_root_path(), tenant_id, user_id, {"scope": "global", "install_dir": str(skill.skill_dir)})
+            if (directory / "SKILL.md").is_file():
+                public_status = "verified"
+        except ValueError:
+            public_status = "location_unverified"
         items.append(
             {
                 "name": skill.name,
+                "resource_id": public_resource_id(skill.skill_path),
+                "owner_kind": "platform",
+                "install_dir": str(skill.skill_dir),
+                "relative_path": skill.skill_path,
+                "files_status": public_status,
                 "description": skill.description,
                 "license": skill.license,
                 "category": skill.category,
                 "enabled": bool(override_row.enabled) if override_row is not None else skill.enabled,
                 "scope": "global",
                 "source": "platform_builtin",
-                "managed_by_current_user": is_tenant_admin or is_platform_admin,
-                "effective_permissions": global_permissions,
+                "managed_by_current_user": is_tenant_admin,
+                "effective_permissions": [permission for permission in global_permissions if permission != "use" or (public_status == "verified" and (bool(override_row.enabled) if override_row is not None else skill.enabled))],
             }
         )
 
@@ -1725,15 +1771,13 @@ async def get_available_skills(
     personal_permissions = ["read", "use", "manage"]
 
     for row in db_rows:
-        if row.name in global_skill_names and row.user_id == tenant_shared_id:
+        if row.name in global_skill_names and row.user_id == tenant_shared_id and row.category == "public":
             continue  # Already handled as override for global
 
-        resolved = discovered_by_name.get(row.name)
-        
         if row.user_id == tenant_shared_id:
             scope = "tenant"
             source = "tenant_shared"
-            managed = is_tenant_admin or is_platform_admin
+            managed = is_tenant_admin
             perms = tenant_permissions
             settings = _normalize_tenant_skill_settings(tenant_skill_settings.get(row.name))
         else:
@@ -1743,9 +1787,26 @@ async def get_available_skills(
             perms = personal_permissions
             settings = _normalize_tenant_skill_settings(personal_skill_settings.get(row.name))
 
+        descriptor = {"name": row.name, "scope": scope, "install_dir": row.install_dir, "relative_path": row.relative_path}
+        resolved = None
+        files_status = "missing"
+        try:
+            directory = resource_directory(get_skills_root_path(), tenant_id, user_id, descriptor)
+            if (directory / "SKILL.md").is_file():
+                resolved = parse_skill_file(directory / "SKILL.md", category=row.category, relative_path=directory.relative_to(get_skills_root_path().resolve() / "custom"), secure=True)
+                if resolved is None or resolved.name != row.name:
+                    resolved = None
+                    files_status = "metadata_unverified"
+                else:
+                    files_status = "verified"
+        except ValueError:
+            files_status = "location_unverified"
         items.append(
             {
                 "name": row.name,
+                "resource_id": registered_resource_id(row),
+                "owner_kind": "tenant" if scope == "tenant" else "user",
+                "files_status": files_status,
                 "description": resolved.description if resolved is not None else "",
                 "license": resolved.license if resolved is not None else None,
                 "category": row.category,
@@ -1756,7 +1817,7 @@ async def get_available_skills(
                 "scope": scope,
                 "source": source,
                 "managed_by_current_user": managed,
-                "effective_permissions": perms,
+                "effective_permissions": [permission for permission in perms if permission != "use" or (row.enabled and files_status == "verified")],
                 "install_dir": row.install_dir,
                 "relative_path": row.relative_path,
             }

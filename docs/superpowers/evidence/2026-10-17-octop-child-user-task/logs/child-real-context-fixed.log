@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_child_task_probe.py", line 290, in <module>
+    execute(args.output, args.resume, args.template)
+  File "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_child_task_probe.py", line 204, in execute
+    assert {"task", "present_files"}.issubset(result["tool_names"]), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Required actual delegated task/presentation missing

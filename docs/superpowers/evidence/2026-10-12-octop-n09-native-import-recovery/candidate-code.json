@@ -1,0 +1,18 @@
+{
+  "baseline": "97d5ab0f015926be7733e3f5c8e94715b572b634",
+  "root": "/tmp/prismos-n09c-clean-j9p327_c/src",
+  "code_sha256": {
+    ".github/workflows/octop-integration.yml": "e20f6e127ae972f3c5b0d53b4a0422cf90c7eaf3719a3fd140b155f458d90063",
+    "Makefile": "89c99b36f025aac7fd5c106cdeb11801ff3b40a14f6ebacdb4fa0a29a6b12369",
+    "backend/app/gateway/routers/agent_catalog.py": "d4872f93df612199cf494237ca0b4ff9825af07e6a8a08a1524f4df2148d9537",
+    "backend/app/gateway/routers/skills.py": "b5e2fc237bbc3546b51ef1428ffc112856d9f1910def65fffb681171c028f8fe",
+    "backend/packages/harness/deerflow/skills/installer.py": "9f72cf583f8a0b22db09420462826d626037c4c64a799ea0cef1cdf777156c80",
+    "backend/tests/test_skills_scope_router.py": "6b35209bf07272a4d7c6a5a69997a04de0bb09af2b445addf861c8261ecccdab",
+    "scripts/octop_gateway_smoke.py": "363dc244bce4e89e019b9e699096995bb5bd620794c2cea28e758452f441cff1",
+    "scripts/octop_upgrade_probe.py": "78b8f8a16115f48264175ebed0056f2422db3dcd403d3c4a6b10c9194d8e6cf6",
+    "backend/app/integrations/skill_imports.py": "dee47612bc505800f24f5926f0ef09b0daa18a1d96a0982310f9e435e3b0b8ac",
+    "backend/packages/harness/deerflow/skills/install_receipts.py": "8dd625fb63bf7fb9f4ee367a7ff7fb111e493a58e690fb8ff2891e23c37baba3",
+    "backend/tests/test_skill_import_recovery.py": "77c42368f2f3f90a640414767ec6ed877c1ae9b5c950af7773f17c7ab5cc23f8",
+    "scripts/octop_skill_postgres.py": "6e476317ced5b42b7901b10390150d1b8255c8479eb5fb7cbb81bf911689a1a4"
+  }
+}

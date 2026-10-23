@@ -1,0 +1,14 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "-t",
+    "prismos-command-provisioner:test",
+    "/root/.codex/worktrees/octop-integration/prism-os/docker/provisioner"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T07:24:37.967819+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T07:26:13.902241+00:00"
+}

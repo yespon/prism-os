@@ -1,0 +1,58 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_diagnosis_stream_releases_preflight_resource_transaction _________
+
+client = <starlette.testclient.TestClient object at 0x7630f84ca5d0>
+mock_langgraph = <MagicMock id='129952696285952'>
+test_session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7630f8421590>, autoflush=True, expire_on_commit=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7630fa8beb40>
+
+    def test_diagnosis_stream_releases_preflight_resource_transaction(client, mock_langgraph, test_session_factory, monkeypatch):
+        from sqlmodel import select
+    
+        from app.integrations import agent_skill_references
+        from deerflow.database.models import TenantSkill
+    
+        asyncio.run(TestIncidentDiagnosis()._setup_data(test_session_factory))
+    
+        async def resource():
+            async with test_session_factory() as session:
+                session.add(TenantSkill(tenant_id="tenant-a", user_id="__tenant_shared_skill__:tenant-a", name="transaction-probe", category="custom", enabled=False))
+                await session.commit()
+        asyncio.run(resource())
+        sessions = []
+        observed = []
+    
+        async def lock_selected_resource(session, *_args, **_kwargs):
+            await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == "tenant-a", TenantSkill.name == "transaction-probe").with_for_update())
+            sessions.append(session)
+            return None
+    
+        async def create_thread(**_kwargs):
+            observed.append(not sessions[0].in_transaction())
+            async with test_session_factory() as session:
+                # PostgreSQL must permit an independent worker to acquire this row now.
+                await session.exec(select(TenantSkill).where(TenantSkill.tenant_id == "tenant-a", TenantSkill.name == "transaction-probe").with_for_update(nowait=True))
+            return {"thread_id": "mock-thread-xyz"}
+    
+        monkeypatch.setattr(agent_skill_references, "current_skill_prompt", lock_selected_resource)
+        mock_langgraph.threads.create.side_effect = create_thread
+        with patch("app.gateway.routers.alerts.get_session_factory", return_value=test_session_factory):
+            response = client.post("/api/incidents/incident-1/diagnose")
+        assert response.status_code == 200
+>       assert observed == [True]
+E       assert [False] == [True]
+E         
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_incident_diagnosis.py:499: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_incident_diagnosis.py::test_diagnosis_stream_releases_preflight_resource_transaction
+1 failed, 1 warning in 6.29s

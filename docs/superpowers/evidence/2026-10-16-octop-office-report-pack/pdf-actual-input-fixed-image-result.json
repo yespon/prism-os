@@ -1,0 +1,12 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-office-report-pack/pdf_native_repro.py",
+    "--current"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T14:26:42.787195+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-16T14:26:49.336992+00:00"
+}

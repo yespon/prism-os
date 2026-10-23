@@ -4,15 +4,18 @@ import logging
 import os
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.alerting import diagnosis_authorization
 from app.alerting.ai_analysis import DEFAULT_AUTO_SEVERITIES
 from app.alerting.incident_manager import suppress_incident
 from app.alerting.ingest import process_alert
+from app.alerting.ticket_config import redact_ticket_config, restore_ticket_config, validate_ticket_ref_config
 from app.gateway.authorization import require_tenant_admin, require_tenant_context
 from app.models.alerting import AlertingSettings, AlertRule, AlertSource, ChangeEvent, Incident, IncidentSignalLink, RawAlert, Signal
+from app.platform.execution.trust import attach_execution_capability
 from deerflow.database.session import get_session, get_session_factory
 
 logger = logging.getLogger(__name__)
@@ -27,12 +30,16 @@ class DiagnosisTaskManager:
         self._stream_states = {} # incident_id -> StreamState
         self._thread_ids = {}    # incident_id -> str
         self._agent_names = {}   # incident_id -> str
+        self._identities = {}    # active task -> (tenant, actor, native Agent ID)
 
     def get_thread_id(self, incident_id: str) -> str | None:
         return self._thread_ids.get(incident_id)
 
     def get_agent_name(self, incident_id: str) -> str | None:
         return self._agent_names.get(incident_id)
+
+    def get_identity(self, incident_id: str):
+        return self._identities.get(incident_id)
 
     def is_running(self, incident_id: str) -> bool:
         task = self._tasks.get(incident_id)
@@ -66,6 +73,7 @@ class DiagnosisTaskManager:
         def _cleanup(t):
             if incident_id in self._tasks and self._tasks[incident_id] == t:
                 del self._tasks[incident_id]
+                self._identities.pop(incident_id, None)
         
         task.add_done_callback(_cleanup)
 
@@ -560,6 +568,134 @@ class TimelineEvent(BaseModel):
     metadata: dict | None = None
 
 
+async def _governed_ticket_status(incident_id: str, tenant_id: str, user_id: str | None = None) -> dict:
+    """Read durable Decision, Approval and Submission facts for the current diagnosis."""
+    from datetime import UTC, datetime
+
+    from app.alerting.governed_ticket import ticket_decision_matches_current_policy
+    from app.alerting.governed_ticket_tool import ticket_canary_enabled, ticket_policy_configuration, ticket_request_id
+    from app.platform.approval.repository import ApprovalRepository
+    from app.platform.policy.repository import PolicyDecisionRepository
+    from app.platform.runs import RunFactRepository
+    from app.platform.submission.repository import ActionSubmissionRepository
+
+    if not ticket_canary_enabled(tenant_id):
+        return {"enabled": False, "status": None}
+    async with get_session_factory()() as session:
+        incident = (await session.exec(select(Incident).where(
+            Incident.id == incident_id, Incident.tenant_id == tenant_id,
+        ))).scalars().first()
+    if incident is None:
+        raise HTTPException(404, "Incident not found")
+    if not incident.thread_id:
+        return {"enabled": True, "status": None}
+    decision = await PolicyDecisionRepository().get_by_request(
+        tenant_id, ticket_request_id(incident.thread_id, incident_id),
+    )
+    if decision is None or decision.action != "ticket.create" or decision.resource_id != incident_id:
+        return {"enabled": True, "status": None}
+    found = await ApprovalRepository().get_by_decision(tenant_id, decision.decision_id)
+    approval = found[0] if found else None
+    submission = await ActionSubmissionRepository().get(tenant_id, decision.decision_id)
+    if submission:
+        status = "submitted" if submission.status == "submitted" else "unknown"
+    elif decision.verdict == "deny":
+        status = "denied"
+    elif approval:
+        expired = approval.expires_at <= datetime.now(UTC) or decision.expires_at <= datetime.now(UTC)
+        status = "expired" if expired and approval.status in ("pending", "approved") else (
+            "awaiting_approval" if approval.status == "pending" else
+            "unknown" if approval.status == "consumed" else approval.status
+        )
+    else:
+        status = "unknown"
+    run_fact = await RunFactRepository().get(tenant_id, decision.execution.run_id)
+    return {
+        "enabled": True, "status": status, "decision_id": decision.decision_id,
+        "approval_id": approval.approval_id if approval else None,
+        "tenant_id": decision.tenant_id, "actor_id": decision.execution.actor.id if decision.execution.actor else None,
+        "workload_id": decision.execution.workload.id, "run_id": decision.execution.run_id,
+        "run": {
+            "state": run_fact.state,
+            "started_at": run_fact.started_at,
+            "finished_at": run_fact.finished_at,
+            "snapshot": {
+                "agent_name": run_fact.snapshot.agent_name,
+                "agent_id": run_fact.snapshot.agent_id,
+                "model_name": run_fact.snapshot.model_name,
+                "source": run_fact.snapshot.source,
+            },
+        } if run_fact else None,
+        "policy_id": decision.policy_id, "policy_version": decision.policy_version,
+        "reason_code": decision.reason_code, "ticket_id": submission.ticket_id if submission else None,
+        "can_resume": (ticket_decision_matches_current_policy(decision, ticket_policy_configuration())
+                       and approval is not None and approval.status == "approved" and submission is None
+                       and decision.expires_at > datetime.now(UTC) and decision.execution.actor is not None
+                       and decision.execution.actor.id == user_id),
+    }
+
+
+@router.get("/incidents/{incident_id}/governed-ticket")
+async def get_governed_incident_ticket(incident_id: str, request: Request) -> dict:
+    tenant_id = require_tenant_context(request)
+    return await _governed_ticket_status(incident_id, tenant_id, getattr(request.state, "user_id", None))
+
+
+@router.post("/incidents/{incident_id}/governed-ticket/resume")
+async def resume_governed_incident_ticket(incident_id: str, request: Request) -> dict:
+    from app.alerting.governed_ticket_tool import execute_ticket_scope
+
+    tenant_id = require_tenant_context(request)
+    user_id = getattr(request.state, "user_id", None)
+    if not isinstance(user_id, str) or not user_id:
+        raise HTTPException(401, "Authentication required")
+    status = await _governed_ticket_status(incident_id, tenant_id, user_id)
+    if not status.get("enabled") or not status.get("decision_id"):
+        raise HTTPException(404, "Governed Action unavailable")
+    if status["actor_id"] != user_id:
+        raise HTTPException(403, "Only the requesting user can resume this Action")
+    if status["status"] not in ("approved", "rejected", "expired", "submitted", "unknown"):
+        raise HTTPException(409, "Approval has not been decided")
+    async with get_session_factory()() as session:
+        incident = (await session.exec(select(Incident).where(
+            Incident.id == incident_id, Incident.tenant_id == tenant_id,
+        ))).scalars().first()
+    if incident is None or not incident.thread_id or not status["workload_id"].startswith("diagnosis-agent:"):
+        raise HTTPException(409, "Diagnosis context changed")
+    from app.alerting.governed_ticket_tool import ticket_request_id
+    from app.platform.policy.repository import PolicyDecisionRepository
+
+    decision = await PolicyDecisionRepository(get_session_factory()).get_by_request(
+        tenant_id, ticket_request_id(incident.thread_id, incident_id),
+    )
+    if decision is None or decision.decision_id != status["decision_id"]:
+        raise HTTPException(409, "Diagnosis decision changed")
+    attributes = decision.execution.attributes
+    if attributes.get("agent_id") is not None and incident.agent_id != attributes["agent_id"]:
+        raise HTTPException(409, "Diagnosis Agent changed")
+    scope = {"tenant_id": tenant_id, "user_id": user_id, "thread_id": incident.thread_id,
+             "incident_id": incident_id, "agent_name": status["workload_id"].removeprefix("diagnosis-agent:")}
+    # Only immutable server-side decision facts may restore protected context.
+    # Client fields and the current replacement Agent cannot rewrite an old Action.
+    scope.update({key: attributes[key] for key in (
+        "agent_id", "diagnosis_source_id", "diagnosis_source_revision", "diagnosis_incident_id",
+    ) if attributes.get(key) is not None})
+    try:
+        if status["status"] in {"submitted", "unknown"}:
+            from app.alerting.governed_ticket_tool import authorize_diagnosis_execution
+
+            await authorize_diagnosis_execution(decision.execution, get_session_factory())
+            # This endpoint reads a settled submission fact. Later diagnosis
+            # text must not re-render an old payload or attempt a second send.
+            return await _governed_ticket_status(incident_id, tenant_id, user_id)
+        await execute_ticket_scope(scope)
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
+    return await _governed_ticket_status(incident_id, tenant_id, user_id)
+
+
 @router.get(
     "/incidents/{incident_id}/timeline",
     response_model=list[TimelineEvent],
@@ -992,67 +1128,16 @@ async def create_incident_ticket(
     if incident.ticket_id:
         raise HTTPException(status_code=400, detail="Ticket already exists for this incident")
 
-    # Find the ticket config from the incident's alert source
-    links_result = await session.exec(
-        select(IncidentSignalLink).where(
-            IncidentSignalLink.incident_id == incident_id,
-            IncidentSignalLink.tenant_id == tenant_id,
-        )
-    )
-    signal_ids = [link.signal_id for link in links_result.scalars().all()]
-
-    ticket_config = {}
-    if signal_ids:
-        raw_ids_res = await session.exec(
-            select(Signal.raw_alert_id).where(
-                Signal.id.in_(signal_ids),
-                Signal.raw_alert_id.isnot(None),
-            )
-        )
-        raw_alert_ids = list({r for r in raw_ids_res.scalars().all()})
-        if raw_alert_ids:
-            src_ids_res = await session.exec(
-                select(RawAlert.source_id).where(
-                    RawAlert.id.in_(raw_alert_ids),
-                    RawAlert.source_id.isnot(None),
-                )
-            )
-            source_ids = list({r for r in src_ids_res.scalars().all()})
-            if source_ids:
-                src_result = await session.exec(
-                    select(AlertSource).where(
-                        AlertSource.tenant_id == tenant_id,
-                        AlertSource.id.in_(source_ids),
-                    )
-                )
-                for src in src_result.scalars().all():
-                    ticket_config = (src.config_json or {}).get("ticket", {})
-                    if ticket_config:
-                        break
-
-    if not ticket_config:
-        raise HTTPException(status_code=400, detail="No ticket provider configured for this incident's alert source")
-
-    # Collect signal data for ticket context
-    signals_data: list[dict] = []
-    if signal_ids:
-        sig_result = await session.exec(select(Signal).where(Signal.id.in_(signal_ids)))
-        for s in sig_result.scalars().all():
-            signals_data.append({
-                "title": s.title,
-                "severity": s.severity,
-                "source": s.source,
-                "status": s.status,
-            })
-
+    from app.alerting.governed_ticket import resolve_ticket_target
     from app.alerting.ticket_provider import create_ticket as do_create_ticket
 
     try:
-        ticket_result = await do_create_ticket(incident, ticket_config, signals_data)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except RuntimeError as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        target = await resolve_ticket_target(tenant_id, incident_id, session=session)
+        ticket_result = await do_create_ticket(incident, target.config, target.signals, source_id=target.source_id)
+    except (ValueError, PermissionError):
+        raise HTTPException(status_code=400, detail="Ticket configuration or credentials unavailable") from None
+    except RuntimeError:
+        raise HTTPException(status_code=502, detail="Ticket creation failed") from None
 
     incident.ticket_id = ticket_result.ticket_id
     incident.ticket_url = ticket_result.ticket_url
@@ -1268,16 +1353,34 @@ async def _run_diagnosis_background_task(
         langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2025")
         client = get_client(url=langgraph_url)
 
-        # Cancel any orphaned diagnosis from previous attempts
+        from app.alerting.diagnosis_helper import build_incident_diagnosis_prompt
+        from app.integrations.agent_skill_references import current_skill_prompt
+        from app.models.agents import CustomAgent
+        from app.platform.execution.trust import ThreadBindingRepository
+        from app.runtime_adapters import verify_native_selection
+
         async with db_factory() as read_session:
+            current = await read_session.get(CustomAgent, agent_id)
+            if current is None:
+                raise ValueError("Current diagnosis Agent unavailable")
+            agent_name = current.name
+            await verify_native_selection(read_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
             inc = await read_session.get(Incident, incident_id)
-            old_thread_id = inc.thread_id if inc else None
-            
+            old_thread_id = inc.thread_id
+
+        # Only cancel a previous thread with proven current actor ownership.
         if old_thread_id:
-            try:
+            owned = await ThreadBindingRepository(db_factory).lookup(old_thread_id)
+            allowed = owned is not None and owned.tenant_id == tenant_id and owned.user_id == user_id
+            if owned is None:
+                try:
+                    previous = await client.threads.get(old_thread_id)
+                    metadata = previous.get("metadata", {}) if isinstance(previous, dict) else {}
+                    allowed = metadata.get("owner_tenant_id") == tenant_id and metadata.get("owner_user_id") == user_id
+                except Exception:
+                    allowed = False
+            if allowed:
                 await _cancel_incident_diagnosis_run(client, old_thread_id, incident_id)
-            except Exception:
-                pass
 
         thread = await client.threads.create(metadata={
             "owner_user_id": user_id,
@@ -1285,17 +1388,34 @@ async def _run_diagnosis_background_task(
             "incident_id": incident_id,
         })
         thread_id = thread["thread_id"]
-        task_manager._thread_ids[incident_id] = thread_id
 
-        # Update status to running and store thread_id early
+        # Establish original thread ownership before exposing any thread pointer.
+        async with db_factory() as selection_session:
+            current = await selection_session.get(CustomAgent, agent_id)
+            if current is None:
+                raise ValueError("Current diagnosis Agent unavailable")
+            agent_name = current.name
+            await verify_native_selection(selection_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+        repository = ThreadBindingRepository(db_factory)
+        await repository.create(thread_id, tenant_id, user_id)
+        await repository.bind_agent(thread_id, tenant_id, user_id, agent_name)
+
+        # Recheck current selection and resources after the network/DB waits.
         async with db_factory() as write_session:
+            current = await write_session.get(CustomAgent, agent_id)
+            if current is None:
+                raise ValueError("Current diagnosis Agent unavailable")
+            await verify_native_selection(write_session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+            await current_skill_prompt(write_session, agent_name, tenant_id, user_id, selected_agent_id=agent_id)
             fresh = await write_session.get(Incident, incident_id)
-            if fresh:
-                fresh.agent_id = agent_id
-                fresh.thread_id = thread_id
-                fresh.diagnosis_status = "running"
-                write_session.add(fresh)
-                await write_session.commit()
+            diagnosis_prompt = await build_incident_diagnosis_prompt(write_session, fresh, tenant_id, include_agent_configuration=False)
+            fresh.agent_id = agent_id
+            fresh.thread_id = thread_id
+            fresh.diagnosis_status = "running"
+            write_session.add(fresh)
+            await write_session.commit()
+        task_manager._thread_ids[incident_id] = thread_id
+        task_manager._agent_names[incident_id] = agent_name
 
         # Broadcast thread_id start event
         task_manager.broadcast(incident_id, msg_thread(thread_id, agent_name))
@@ -1309,12 +1429,14 @@ async def _run_diagnosis_background_task(
             config={
                 "recursion_limit": 500,
             },
-            context={
+            context=await attach_execution_capability({
                 "agent_name": agent_name,
+                "agent_id": agent_id,
+                "diagnosis_incident_id": incident_id,
                 "user_id": user_id,
                 "tenant_id": tenant_id,
                 "thread_id": thread_id,
-            },
+            }, action_incident_id=incident_id, native_selection_validator=verify_native_selection, session_factory=db_factory),
             stream_mode=["messages-tuple", "values"],
         ):
             event = getattr(chunk, "event", "")
@@ -1328,7 +1450,7 @@ async def _run_diagnosis_background_task(
                 
                 async with db_factory() as write_session:
                     fresh = await write_session.get(Incident, incident_id)
-                    if fresh:
+                    if fresh and fresh.tenant_id == tenant_id:
                         fresh.diagnosis_status = "failed"
                         fresh.diagnosis_error = err_msg
                         if stream_state.full_text_buffer:
@@ -1353,7 +1475,7 @@ async def _run_diagnosis_background_task(
         # Finished successfully
         async with db_factory() as write_session:
             fresh = await write_session.get(Incident, incident_id)
-            if fresh and fresh.diagnosis_status != "cancelled":
+            if fresh and fresh.tenant_id == tenant_id and fresh.diagnosis_status != "cancelled":
                 fresh.diagnosis_status = "completed"
                 fresh.diagnosis_result = stream_state.full_text_buffer or None
                 fresh.diagnosis_error = None
@@ -1369,7 +1491,7 @@ async def _run_diagnosis_background_task(
         # Update status to cancelled in DB
         async with db_factory() as write_session:
             fresh = await write_session.get(Incident, incident_id)
-            if fresh and fresh.diagnosis_status == "running":
+            if fresh and fresh.tenant_id == tenant_id and fresh.diagnosis_status == "running":
                 fresh.diagnosis_status = "cancelled"
                 fresh.diagnosis_error = "诊断任务被手动终止"
                 write_session.add(fresh)
@@ -1389,7 +1511,7 @@ async def _run_diagnosis_background_task(
         try:
             async with db_factory() as write_session:
                 fresh = await write_session.get(Incident, incident_id)
-                if fresh:
+                if fresh and fresh.tenant_id == tenant_id:
                     fresh.diagnosis_status = "failed"
                     fresh.diagnosis_error = err_msg[:5000]
                     if stream_state.full_text_buffer:
@@ -1445,6 +1567,7 @@ async def diagnose_incident(
         select(CustomAgent).where(
             CustomAgent.id == agent_id,
             CustomAgent.tenant_id == tenant_id,
+            CustomAgent.enabled.is_(True),
             (CustomAgent.user_id == user_id) | (CustomAgent.user_id == "tenant-shared")
         )
     )
@@ -1454,18 +1577,30 @@ async def diagnose_incident(
 
     agent_name = agent.name
 
-    # Build the unified detailed prompt using helper (pass agent metadata)
-    diagnosis_prompt = await build_incident_diagnosis_prompt(
-        session, incident, tenant_id,
-        agent_system_prompt=agent.system_prompt,
-        agent_skills=agent.skills,
-        agent_tool_groups=agent.tool_groups,
-    )
+    from app.integrations.agent_skill_references import current_skill_prompt
+    from app.runtime_adapters import verify_native_selection
+    from deerflow.runtime import ExecutionTrustError
+
+    try:
+        await verify_native_selection(session, tenant_id, user_id, agent_name, agent_id, diagnosis_incident_id=incident_id)
+    except ExecutionTrustError:
+        raise HTTPException(403, "Current diagnosis selection or membership unavailable") from None
+    await current_skill_prompt(session, agent_name, tenant_id, user_id, selected_agent_id=agent_id)
+    identity = (tenant_id, user_id, agent_id)
+    if diagnosis_task_manager.is_running(incident_id) and diagnosis_task_manager.get_identity(incident_id) != identity:
+        raise HTTPException(409, "A different diagnosis is already running for this incident")
+    diagnosis_prompt = await build_incident_diagnosis_prompt(session, incident, tenant_id, include_agent_configuration=False)
+
+    # Selected Skill preflight holds row locks. Release them before the SSE
+    # waits for a worker that independently rechecks those same resources.
+    await session.commit()
 
     # Check if a diagnosis is already running. If not, start it.
     if not diagnosis_task_manager.is_running(incident_id):
         from app.alerting.diagnosis_sse import StreamState
         diagnosis_task_manager._stream_states[incident_id] = StreamState()
+        diagnosis_task_manager._thread_ids.pop(incident_id, None)
+        diagnosis_task_manager._identities[incident_id] = identity
         diagnosis_task_manager._agent_names[incident_id] = agent_name
         
         diagnosis_task_manager.start_task(
@@ -1485,6 +1620,7 @@ async def diagnose_incident(
     async def event_stream():
         import asyncio
 
+        from app.alerting.diagnosis_delivery import verify_delivery
         from app.alerting.diagnosis_sse import _step_finished, _step_started, _text_message_content, msg_done, msg_thread
 
         # Capture current length of text buffer
@@ -1497,10 +1633,16 @@ async def diagnose_incident(
         queue = asyncio.Queue()
         diagnosis_task_manager.register_queue(incident_id, queue)
 
+        async def verify_current_delivery():
+            return await verify_delivery(get_session_factory(), tenant_id, user_id, agent_name, agent_id, incident_id,
+                diagnosis_task_manager.get_thread_id(incident_id),
+                new_thread_pending=diagnosis_task_manager.is_running(incident_id) and not diagnosis_task_manager.get_thread_id(incident_id))
+
         try:
-            thread_id = diagnosis_task_manager.get_thread_id(incident_id) or incident.thread_id
+            thread_id = await verify_current_delivery()
             if thread_id:
-                yield msg_thread(thread_id, agent_name)
+                await verify_current_delivery()
+                yield msg_thread(thread_id, diagnosis_task_manager.get_agent_name(incident_id) or agent_name)
                 yielded_run_started = True
 
             # Replay historical steps from LangGraph checkpoint values (todos)
@@ -1516,21 +1658,28 @@ async def diagnose_incident(
                         if isinstance(todo, dict):
                             step_name = todo.get("name") or todo.get("title") or todo.get("content") or str(todo)
                             step_status = str(todo.get("status", "")).lower()
+                            await verify_current_delivery()
                             yield _step_started(step_name)
                             if step_status in ("done", "completed", "finished", "success"):
+                                await verify_current_delivery()
                                 yield _step_finished(step_name)
+                except ExecutionTrustError:
+                    raise
                 except Exception as ex:
                     logger.warning("diagnose reconnect: could not fetch thread state: %s", ex)
 
             # Replay accumulated text buffer so far
             if stream_state and stream_state.full_text_buffer:
+                await verify_current_delivery()
                 yield _text_message_content("catchup-msg-id", stream_state.full_text_buffer)
 
             # If task is not running anymore, yield final done and finish
             if not diagnosis_task_manager.is_running(incident_id):
                 if stream_state and stream_state.full_text_buffer:
+                    await verify_current_delivery()
                     yield msg_done(thread_id, stream_state.full_text_buffer)
                 elif incident.diagnosis_status in ("completed", "failed", "cancelled"):
+                    await verify_current_delivery()
                     yield msg_done(thread_id, incident.diagnosis_result or "")
                 return
 
@@ -1549,23 +1698,26 @@ async def diagnose_incident(
                     if len(current_text) > sent_chars:
                         new_delta = current_text[sent_chars:]
                         sent_chars = len(current_text)
+                        await verify_current_delivery()
                         yield _text_message_content("live-msg-id", new_delta)
                 else:
+                    await verify_current_delivery()
                     yield msg
 
                 if "RUN_FINISHED" in msg or "RUN_ERROR" in msg:
                     break
 
+        except ExecutionTrustError:
+            logger.info("diagnose: delivery authorization withdrawn for incident=%s", incident_id)
         except (asyncio.CancelledError, GeneratorExit):
             logger.info("diagnose: client disconnected from SSE stream for incident=%s", incident_id)
         finally:
             diagnosis_task_manager.unregister_queue(incident_id, queue)
-
     return StreamingResponse(
         event_stream(),
         media_type="text/event-stream",
         headers={
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-store",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },
@@ -1598,9 +1750,6 @@ async def cancel_diagnosis(
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
 
-    # Stop background task
-    diagnosis_task_manager.cancel_task(incident_id)
-
     if incident.diagnosis_status != "running":
         raise HTTPException(status_code=400, detail="No running diagnosis to cancel")
 
@@ -1608,21 +1757,41 @@ async def cancel_diagnosis(
     if not thread_id:
         raise HTTPException(status_code=400, detail="No active diagnosis thread found")
 
+    import uuid
+
     from langgraph_sdk import get_client
 
-    langgraph_url = os.getenv("LANGGRAPH_API_URL", "http://localhost:2025")
-    client = get_client(url=langgraph_url)
-    await _cancel_incident_diagnosis_run(client, thread_id, incident_id)
+    from app.alerting.diagnosis_run_control import interrupt_owned_runs
+    from app.gateway.file_authorization import require_thread_access
+    from app.models.alerting import IncidentAction
 
-    # Update incident status
-    incident.diagnosis_status = "cancelled"
-    incident.diagnosis_error = "诊断已被用户取消"
+    factory = get_session_factory()
+    await require_thread_access(request, thread_id, factory=factory)
+    # Persist stop intent before cancelling local delivery or waiting on the
+    # network. Old workers can no longer admit tools or overwrite the result.
+    incident.diagnosis_status = "failed"
+    incident.diagnosis_error = "cancel_requested: remote interruption unknown; inspect external effects"
     session.add(incident)
+    action = IncidentAction(id=str(uuid.uuid4()), tenant_id=tenant_id, incident_id=incident_id,
+        actor_id=user_id, action_type="diagnosis_cancel_requested",
+        action_payload={"thread_id": thread_id, "interruption": "unknown", "external_effects": "unknown"})
+    session.add(action)
     await session.commit()
-    await session.refresh(incident)
+    diagnosis_task_manager.cancel_task(incident_id)
 
-    logger.info("diagnose: cancelled by user for incident=%s", incident_id)
-    return {"status": "cancelled", "incident_id": incident_id}
+    client = get_client(url=os.getenv("LANGGRAPH_API_URL", "http://localhost:2025"))
+    outcome = await interrupt_owned_runs(client, thread_id, tenant_id, user_id, factory)
+    await session.refresh(incident)
+    if incident.thread_id == thread_id and (incident.diagnosis_error or "").startswith("cancel_requested:"):
+        incident.diagnosis_status = "cancelled" if outcome.status == "confirmed" else "failed"
+        incident.diagnosis_error = "cancel_requested: interruption " + outcome.status + "; inspect external effects"
+        session.add(incident)
+    action.action_payload = {"thread_id": thread_id, "interruption": outcome.status,
+        "run_ids": list(outcome.run_ids), "external_effects": "unknown"}
+    session.add(action)
+    await session.commit()
+    return {"status": "cancelled" if outcome.status == "confirmed" else "unknown", "incident_id": incident_id,
+        "external_effects": "unknown"}
 
 
 # ---------------------------------------------------------------------------
@@ -1729,6 +1898,11 @@ class AlertSourceCreate(BaseModel):
 
 
 class AlertSourceResponse(BaseModel):
+    @field_validator("config_json", mode="before")
+    @classmethod
+    def hide_ticket_credentials(cls, value: dict) -> dict:
+        return redact_ticket_config(value)
+
     id: str
     name: str
     type: str
@@ -1794,10 +1968,17 @@ async def create_alert_source(
     if body.diagnosis_agent_id:
         await _validate_diagnosis_agent(session, tenant_id, body.diagnosis_agent_id)
 
+    try:
+        source_config = restore_ticket_config(body.config_json)
+        validate_ticket_ref_config(source_config)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
     merged_config = _merge_ai_analysis_into_config(
-        body.config_json, body.ai_analysis_enabled, body.ai_analysis_severities, body.ai_analysis_model,
+        source_config, body.ai_analysis_enabled, body.ai_analysis_severities, body.ai_analysis_model,
         body.diagnosis_agent_id,
     )
+
+    merged_config = await diagnosis_authorization.configure(session, tenant_id, user_id, merged_config, confirm=True)
 
     source = AlertSource(
         id=str(uuid.uuid4()),
@@ -1862,6 +2043,9 @@ async def update_alert_source(
     if source is None:
         raise HTTPException(status_code=404, detail="Alert source not found")
 
+    from copy import deepcopy
+    previous_config = deepcopy(source.config_json or {})
+
     # Validate diagnosis_agent_id if being changed
     if body.diagnosis_agent_id:
         await _validate_diagnosis_agent(session, tenant_id, body.diagnosis_agent_id)
@@ -1875,7 +2059,12 @@ async def update_alert_source(
     if body.auth_mode is not None:
         source.auth_mode = body.auth_mode
     if body.config_json is not None:
-        source.config_json = body.config_json
+        try:
+            source_config = restore_ticket_config(body.config_json, source.config_json)
+            validate_ticket_ref_config(source_config, source.config_json)
+            source.config_json = source_config
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from None
 
     # Merge AI analysis fields into config_json
     source.config_json = _merge_ai_analysis_into_config(
@@ -1885,6 +2074,9 @@ async def update_alert_source(
         body.ai_analysis_model,
         body.diagnosis_agent_id,
     )
+
+    source.config_json = await diagnosis_authorization.configure(session, tenant_id, getattr(request.state,"user_id",None), source.config_json, previous_config,
+        confirm=bool({"ai_analysis_enabled", "ai_analysis_severities", "ai_analysis_model", "diagnosis_agent_id"} & body.model_fields_set))
 
     session.add(source)
     await session.commit()

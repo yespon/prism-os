@@ -2,7 +2,7 @@
 
 .PHONY: help config config-upgrade check install dev dev-daemon start stop up down clean docker-init docker-start docker-stop docker-logs docker-logs-frontend docker-logs-gateway
 
-PYTHON ?= python3
+PYTHON ?= uv run --project backend --locked python
 BASH ?= bash
 
 # Detect OS for Windows compatibility
@@ -197,3 +197,51 @@ create-db:
 # Stop and remove production containers
 down:
 	@./scripts/deploy.sh down
+
+
+# Incremental Octop integration gates. Keep source-only imports distinct from runtime capability.
+UV ?= uv
+PNPM ?= pnpm
+.PHONY: octop-verify octop-check octop-build octop-smoke octop-postgres octop-inventory octop-upgrade octop-compose
+octop-verify:
+	$(PYTHON) scripts/octop_sync.py verify
+	$(PYTHON) scripts/octop_external.py verify
+octop-check: octop-verify
+	cd backend && $(UV) sync --locked
+	cd backend && $(UV) run --locked pytest tests/test_octop_catalog_integrity.py tests/test_octop_integration.py tests/test_octop_presentation.py tests/test_octop_resources.py tests/test_octop_resource_installations.py tests/test_octop_skill_packages.py tests/test_skill_import_recovery.py tests/test_skill_resource_identity.py tests/test_skill_mutation_boundaries.py tests/test_skill_enablement_boundaries.py tests/test_skill_manual_creation.py tests/test_skill_resource_deletion.py tests/test_skill_deletion_process.py tests/test_skill_member_tools.py tests/test_skill_scoped_commands.py tests/test_skill_reference_transactions.py tests/test_agent_skill_references.py tests/test_diagnosis_authorization.py tests/test_langgraph_proxy.py tests/test_incident_diagnosis.py tests/test_governed_ticket.py tests/test_graph_execution_context.py tests/test_runtime_adapters.py tests/test_lead_agent_model_resolution.py tests/test_skills_installer.py tests/test_skills_scope_router.py tests/test_octop_inventory.py tests/test_octop_source_curation.py tests/test_octop_source_fetch.py tests/test_bootstrap_identity_schema.py tests/test_custom_agent.py tests/test_ticket_secret_admin_api.py tests/test_ticket_secret_provider.py tests/test_ticket_secret_migration_command.py -q
+	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py verify
+	cd frontend && $(PNPM) typecheck
+	cd frontend && $(PNPM) exec vitest run src/core/agents/catalog.test.ts src/components/workspace/agents/agent-presentation.test.tsx src/components/workspace/agents/agent-avatar.test.tsx src/server/demo-files.test.ts src/components/workspace/agents/agent-resource-preflight.test.tsx src/core/skills/imports.test.ts src/core/skills/mutations.test.ts src/core/skills/deletions.test.ts src/core/agents/api.test.ts src/components/workspace/agents/agent-skill-selection.test.tsx src/components/workspace/skills/skill-delete-control.test.tsx src/core/skills/hooks.test.tsx src/app/workspace/skills/\[name\]/page.test.tsx src/core/skills/import-context.test.tsx src/components/workspace/skills/skill-import-controls.test.tsx src/components/tenant-admin/tenant-admin-skills-page.test.tsx src/components/workspace/settings/skill-settings-page.test.tsx src/components/workspace/skills/skill-creation-flows.test.tsx src/components/workspace/skills/skill-creation-inspection.test.tsx --maxWorkers=2
+octop-build: octop-check octop-smoke
+	cd backend && $(UV) build --package prismos-octop-capabilities
+	cd backend && $(UV) run --locked python ../scripts/octop_wheel_verify.py dist/prismos_octop_capabilities-0.1.0-py3-none-any.whl --sdist dist/prismos_octop_capabilities-0.1.0.tar.gz
+	cd frontend && $(PNPM) build
+octop-smoke: octop-verify
+	cd backend && $(UV) run --locked python ../scripts/octop_gateway_smoke.py
+
+# Explicit isolated database probe; requires Docker and a cached PostgreSQL image.
+octop-postgres:
+	cd backend && $(UV) run --locked python -m scripts.verify_ticket_secret_postgres
+
+# Static item/dependency inventories; no upstream code or plugins are activated.
+octop-inventory: octop-verify
+	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py verify
+
+# Explicit, empty absolute evidence directories preserve earlier verification runs.
+octop-upgrade:
+	test -n "$(OCTOP_UPGRADE_DIR)"
+	cd backend && $(UV) run --locked python ../scripts/octop_source_fetch.py --revision e473dd3c4a4741618ffde1a42a3492341a189e8e --release 0.3.0b5 --output-dir "$(OCTOP_UPGRADE_DIR)/previous"
+	cd backend && $(UV) run --locked python ../scripts/octop_upgrade_probe.py --previous-archive "$(OCTOP_UPGRADE_DIR)/previous/upstream.tar.gz" --previous-receipt "$(OCTOP_UPGRADE_DIR)/previous/manifest.json" --previous-revision e473dd3c4a4741618ffde1a42a3492341a189e8e --previous-release 0.3.0b5 --output "$(OCTOP_UPGRADE_DIR)/upgrade.json"
+
+# Uses production Dockerfiles/Compose; the smoke owns unique runtime resources.
+octop-compose:
+	test -n "$(OCTOP_COMPOSE_EVIDENCE)"
+	docker build -f backend/Dockerfile -t prismos-octop-backend:verification .
+	docker build -f frontend/Dockerfile --target prod -t prismos-octop-frontend:verification .
+	cd backend && $(UV) run --locked python ../scripts/octop_compose_smoke.py --backend-image prismos-octop-backend:verification --frontend-image prismos-octop-frontend:verification --output-dir "$(OCTOP_COMPOSE_EVIDENCE)"
+
+# Explicit owned PostgreSQL import/recovery probe; keeps execution facts untouched.
+.PHONY: octop-skill-postgres
+octop-skill-postgres:
+	test -n "$(OCTOP_SKILL_PG_DIR)"
+	cd backend && $(UV) run --locked python ../scripts/octop_skill_postgres.py --output-dir "$(OCTOP_SKILL_PG_DIR)"

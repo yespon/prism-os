@@ -1,0 +1,11 @@
+{
+  "command": [
+    "backend/.venv/bin/python",
+    "docs/superpowers/evidence/2026-10-16-octop-governed-readers/runtime_cycle.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-16T16:21:25.766837+00:00",
+  "complete": true,
+  "returncode": 1,
+  "finished_at": "2026-10-16T16:21:51.168091+00:00"
+}

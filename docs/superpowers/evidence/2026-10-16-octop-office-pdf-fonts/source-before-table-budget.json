@@ -1,0 +1,7 @@
+{
+  "scope": "Exact cmap-bounded full backend/PG/image/upgrade source before final table-copy budget",
+  "sha256": {
+    "backend/packages/harness/deerflow/tools/builtins/office_fonts.py": "ab89efa77a3a996733c01a945acd744bade3931ad9293e2dc5859483357fba94",
+    "backend/tests/test_office_pdf_fonts.py": "93019f9b3a4533e40eb718a62b326ec5bc4aaafe47f7317c18d293a7eb38cb4a"
+  }
+}

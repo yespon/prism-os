@@ -1,0 +1,135 @@
+.......F................................................................ [ 79%]
+...................                                                      [100%]
+=================================== FAILURES ===================================
+_ test_withdrawn_original_import_cannot_be_restored_or_rebound_to_new_same_name _
+
+scoped_client = (<starlette.testclient.TestClient object at 0x7f29344b4230>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchem...oflush=True, expire_on_commit=False), PosixPath('/tmp/pytest-of-root/pytest-0/test_withdrawn_original_import0/skills'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f29344f56a0>
+
+    def test_withdrawn_original_import_cannot_be_restored_or_rebound_to_new_same_name(scoped_client, monkeypatch):
+        http, factory, root = source_tree(scoped_client, monkeypatch)
+        imported = http.post("/api/skills/personal/import", files={"archive": ("source.zip", archive_bytes())})
+        assert imported.status_code == 201
+>       old_url = "/api/skills/personal/imports/" + imported.json()["operation_id"]
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'operation_id'
+
+tests/test_skill_resource_deletion.py:146: KeyError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_skill_resource_deletion.py: 18 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_deletions.py:163: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_resource_deletion.py::test_configuration_and_native_withdrawal_before_commit_rollback_are_inspectable
+tests/test_skill_resource_deletion.py::test_actual_withdrawal_commit_then_timeout_does_not_restore_original_contents
+tests/test_skill_resource_deletion.py::test_partial_owned_cleanup_is_resumed_without_guessing_other_members
+tests/test_skill_resource_deletion.py::test_changed_quarantine_is_not_reclaimed_as_owned
+tests/test_skill_resource_deletion.py::test_new_same_name_instance_and_configuration_survive_old_deletion_recovery
+  /root/.codex/worktrees/octop-integration/prism-os/backend/app/integrations/skill_deletions.py:290: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_resource_deletion.py::test_new_same_name_instance_and_configuration_survive_old_deletion_recovery
+tests/test_skill_manual_creation.py::test_new_personal_creation_does_not_inherit_old_same_name_settings
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[False]
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[True]
+tests/test_skill_manual_creation.py::test_configuration_transaction_failure_keeps_registered_disabled_and_old_slot
+tests/test_skill_manual_creation.py::test_actual_configuration_commit_then_timeout_preserves_enabled_and_settings
+tests/test_skill_manual_creation.py::test_changed_native_instance_cannot_receive_old_configuration_initialization
+tests/test_skill_manual_creation.py::test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents
+tests/test_skill_manual_creation.py::test_shared_manual_same_name_public_has_distinct_custom_category
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1572: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(text("BEGIN IMMEDIATE"))
+
+tests/test_skill_resource_deletion.py::test_new_same_name_instance_and_configuration_survive_old_deletion_recovery
+tests/test_skill_manual_creation.py::test_new_personal_creation_does_not_inherit_old_same_name_settings
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[False]
+tests/test_skill_manual_creation.py::test_manual_success_preserves_requested_disabled_state_and_metadata[True]
+tests/test_skill_manual_creation.py::test_bad_manual_intent_is_isolated_without_reading_or_destroying_contents
+tests/test_skill_manual_creation.py::test_shared_manual_same_name_public_has_distinct_custom_category
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_skill_resource_deletion.py::test_withdrawn_original_import_cannot_be_restored_or_rebound_to_new_same_name
+1 failed, 90 passed, 39 warnings in 31.81s

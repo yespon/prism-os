@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_runtime_source_revocation.py::test_policy_allow_cannot_submit_ticket_after_source_authority_withdrawn",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T09:21:09.743867+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T09:21:18.932644+00:00"
+}

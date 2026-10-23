@@ -1,0 +1,8 @@
+{
+  "observed_via": "actual authenticated POST /api/tenants/skills during this block; interactive tool output retained in task history",
+  "http_status": 503,
+  "response_detail": "Skill creation unavailable; inspect current resources",
+  "source_configuration": "scripts/octop_wsl_test_env.py mounts repository skills at /app/skills:ro",
+  "resolved": false,
+  "next_scope": "Owned persistent custom Skill volume; source/public Skills stay read-only; actual create/edit/restart/read regression required"
+}

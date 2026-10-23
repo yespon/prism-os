@@ -1,0 +1,370 @@
+FFFF..FFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+___________ test_invalid_expiry_is_never_an_unlimited_session[None] ____________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_invalid_expiry_is_never_a0/sessions.sqlite), False)
+value = None
+
+    @pytest.mark.parametrize("value", [None, "", "not-a-date", "999999999999999999999999", "2000-01-01T00:00:00Z"])
+    def test_invalid_expiry_is_never_an_unlimited_session(session_store, value):
+        engine, postgres = session_store
+        if postgres and value not in {None, "2000-01-01T00:00:00Z"}:
+            # The real timestamp column rejects malformed values before authentication.
+            with pytest.raises(Exception):
+                with engine.begin() as connection:
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+            return
+        with engine.begin() as connection:
+            connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+>       assert auth._resolve_user_from_auth_db("synthetic-session-a") is None
+E       AssertionError: assert ('user-a', 'user', False) is None
+E        +  where ('user-a', 'user', False) = <function _resolve_user_from_auth_db at 0x797f66f9aa20>('synthetic-session-a')
+E        +    where <function _resolve_user_from_auth_db at 0x797f66f9aa20> = auth._resolve_user_from_auth_db
+
+tests/test_auth_session_delivery.py:63: AssertionError
+_____________ test_invalid_expiry_is_never_an_unlimited_session[] ______________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_invalid_expiry_is_never_a1/sessions.sqlite), False)
+value = ''
+
+    @pytest.mark.parametrize("value", [None, "", "not-a-date", "999999999999999999999999", "2000-01-01T00:00:00Z"])
+    def test_invalid_expiry_is_never_an_unlimited_session(session_store, value):
+        engine, postgres = session_store
+        if postgres and value not in {None, "2000-01-01T00:00:00Z"}:
+            # The real timestamp column rejects malformed values before authentication.
+            with pytest.raises(Exception):
+                with engine.begin() as connection:
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+            return
+        with engine.begin() as connection:
+            connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+>       assert auth._resolve_user_from_auth_db("synthetic-session-a") is None
+E       AssertionError: assert ('user-a', 'user', False) is None
+E        +  where ('user-a', 'user', False) = <function _resolve_user_from_auth_db at 0x797f66f9aa20>('synthetic-session-a')
+E        +    where <function _resolve_user_from_auth_db at 0x797f66f9aa20> = auth._resolve_user_from_auth_db
+
+tests/test_auth_session_delivery.py:63: AssertionError
+________ test_invalid_expiry_is_never_an_unlimited_session[not-a-date] _________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_invalid_expiry_is_never_a2/sessions.sqlite), False)
+value = 'not-a-date'
+
+    @pytest.mark.parametrize("value", [None, "", "not-a-date", "999999999999999999999999", "2000-01-01T00:00:00Z"])
+    def test_invalid_expiry_is_never_an_unlimited_session(session_store, value):
+        engine, postgres = session_store
+        if postgres and value not in {None, "2000-01-01T00:00:00Z"}:
+            # The real timestamp column rejects malformed values before authentication.
+            with pytest.raises(Exception):
+                with engine.begin() as connection:
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+            return
+        with engine.begin() as connection:
+            connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+>       assert auth._resolve_user_from_auth_db("synthetic-session-a") is None
+E       AssertionError: assert ('user-a', 'user', False) is None
+E        +  where ('user-a', 'user', False) = <function _resolve_user_from_auth_db at 0x797f66f9aa20>('synthetic-session-a')
+E        +    where <function _resolve_user_from_auth_db at 0x797f66f9aa20> = auth._resolve_user_from_auth_db
+
+tests/test_auth_session_delivery.py:63: AssertionError
+_ test_invalid_expiry_is_never_an_unlimited_session[999999999999999999999999] __
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_invalid_expiry_is_never_a3/sessions.sqlite), False)
+value = '999999999999999999999999'
+
+    @pytest.mark.parametrize("value", [None, "", "not-a-date", "999999999999999999999999", "2000-01-01T00:00:00Z"])
+    def test_invalid_expiry_is_never_an_unlimited_session(session_store, value):
+        engine, postgres = session_store
+        if postgres and value not in {None, "2000-01-01T00:00:00Z"}:
+            # The real timestamp column rejects malformed values before authentication.
+            with pytest.raises(Exception):
+                with engine.begin() as connection:
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+            return
+        with engine.begin() as connection:
+            connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": value, "id": "session-a"})
+>       assert auth._resolve_user_from_auth_db("synthetic-session-a") is None
+E       AssertionError: assert ('user-a', 'user', False) is None
+E        +  where ('user-a', 'user', False) = <function _resolve_user_from_auth_db at 0x797f66f9aa20>('synthetic-session-a')
+E        +    where <function _resolve_user_from_auth_db at 0x797f66f9aa20> = auth._resolve_user_from_auth_db
+
+tests/test_auth_session_delivery.py:63: AssertionError
+________ test_revoke_while_waiting_does_not_deliver_result[deleted-GET] ________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_revoke_while_waiting_does0/sessions.sqlite), False)
+method = 'GET', change = 'deleted'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("method", ["GET", "POST"])
+    @pytest.mark.parametrize("change", ["deleted", "expired", "owner"])
+    async def test_revoke_while_waiting_does_not_deliver_result(session_store, method, change):
+        engine, _ = session_store
+        started, release = asyncio.Event(), asyncio.Event()
+        writes = []
+        app = FastAPI()
+        app.add_middleware(auth.AuthMiddleware)
+    
+        @app.api_route("/api/owned-result", methods=["GET", "POST"])
+        async def result():
+            if method == "POST":
+                writes.append("original authorized operation")
+            started.set()
+            await release.wait()
+            return {"result": "WITHDRAWN SESSION RESULT"}
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            pending = asyncio.create_task(client.request(method, "/api/owned-result", headers={"Authorization": "Bearer synthetic-session-a"}))
+            await asyncio.wait_for(started.wait(), 3)
+            with engine.begin() as connection:
+                if change == "deleted":
+                    connection.execute(text('DELETE FROM session WHERE id=:id'), {"id": "session-a"})
+                elif change == "expired":
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": datetime.now(UTC) - timedelta(seconds=1), "id": "session-a"})
+                else:
+                    connection.execute(text('UPDATE session SET "userId"=:actor WHERE id=:id'), {"actor": "user-b", "id": "session-a"})
+            release.set()
+            response = await asyncio.wait_for(pending, 3)
+>       assert response.status_code == (401 if method == "GET" else 503)
+E       assert 200 == 401
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_auth_session_delivery.py:104: AssertionError
+_______ test_revoke_while_waiting_does_not_deliver_result[deleted-POST] ________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_revoke_while_waiting_does1/sessions.sqlite), False)
+method = 'POST', change = 'deleted'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("method", ["GET", "POST"])
+    @pytest.mark.parametrize("change", ["deleted", "expired", "owner"])
+    async def test_revoke_while_waiting_does_not_deliver_result(session_store, method, change):
+        engine, _ = session_store
+        started, release = asyncio.Event(), asyncio.Event()
+        writes = []
+        app = FastAPI()
+        app.add_middleware(auth.AuthMiddleware)
+    
+        @app.api_route("/api/owned-result", methods=["GET", "POST"])
+        async def result():
+            if method == "POST":
+                writes.append("original authorized operation")
+            started.set()
+            await release.wait()
+            return {"result": "WITHDRAWN SESSION RESULT"}
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            pending = asyncio.create_task(client.request(method, "/api/owned-result", headers={"Authorization": "Bearer synthetic-session-a"}))
+            await asyncio.wait_for(started.wait(), 3)
+            with engine.begin() as connection:
+                if change == "deleted":
+                    connection.execute(text('DELETE FROM session WHERE id=:id'), {"id": "session-a"})
+                elif change == "expired":
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": datetime.now(UTC) - timedelta(seconds=1), "id": "session-a"})
+                else:
+                    connection.execute(text('UPDATE session SET "userId"=:actor WHERE id=:id'), {"actor": "user-b", "id": "session-a"})
+            release.set()
+            response = await asyncio.wait_for(pending, 3)
+>       assert response.status_code == (401 if method == "GET" else 503)
+E       assert 200 == 503
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_auth_session_delivery.py:104: AssertionError
+________ test_revoke_while_waiting_does_not_deliver_result[expired-GET] ________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_revoke_while_waiting_does2/sessions.sqlite), False)
+method = 'GET', change = 'expired'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("method", ["GET", "POST"])
+    @pytest.mark.parametrize("change", ["deleted", "expired", "owner"])
+    async def test_revoke_while_waiting_does_not_deliver_result(session_store, method, change):
+        engine, _ = session_store
+        started, release = asyncio.Event(), asyncio.Event()
+        writes = []
+        app = FastAPI()
+        app.add_middleware(auth.AuthMiddleware)
+    
+        @app.api_route("/api/owned-result", methods=["GET", "POST"])
+        async def result():
+            if method == "POST":
+                writes.append("original authorized operation")
+            started.set()
+            await release.wait()
+            return {"result": "WITHDRAWN SESSION RESULT"}
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            pending = asyncio.create_task(client.request(method, "/api/owned-result", headers={"Authorization": "Bearer synthetic-session-a"}))
+            await asyncio.wait_for(started.wait(), 3)
+            with engine.begin() as connection:
+                if change == "deleted":
+                    connection.execute(text('DELETE FROM session WHERE id=:id'), {"id": "session-a"})
+                elif change == "expired":
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": datetime.now(UTC) - timedelta(seconds=1), "id": "session-a"})
+                else:
+                    connection.execute(text('UPDATE session SET "userId"=:actor WHERE id=:id'), {"actor": "user-b", "id": "session-a"})
+            release.set()
+            response = await asyncio.wait_for(pending, 3)
+>       assert response.status_code == (401 if method == "GET" else 503)
+E       assert 200 == 401
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_auth_session_delivery.py:104: AssertionError
+_______ test_revoke_while_waiting_does_not_deliver_result[expired-POST] ________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_revoke_while_waiting_does3/sessions.sqlite), False)
+method = 'POST', change = 'expired'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("method", ["GET", "POST"])
+    @pytest.mark.parametrize("change", ["deleted", "expired", "owner"])
+    async def test_revoke_while_waiting_does_not_deliver_result(session_store, method, change):
+        engine, _ = session_store
+        started, release = asyncio.Event(), asyncio.Event()
+        writes = []
+        app = FastAPI()
+        app.add_middleware(auth.AuthMiddleware)
+    
+        @app.api_route("/api/owned-result", methods=["GET", "POST"])
+        async def result():
+            if method == "POST":
+                writes.append("original authorized operation")
+            started.set()
+            await release.wait()
+            return {"result": "WITHDRAWN SESSION RESULT"}
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            pending = asyncio.create_task(client.request(method, "/api/owned-result", headers={"Authorization": "Bearer synthetic-session-a"}))
+            await asyncio.wait_for(started.wait(), 3)
+            with engine.begin() as connection:
+                if change == "deleted":
+                    connection.execute(text('DELETE FROM session WHERE id=:id'), {"id": "session-a"})
+                elif change == "expired":
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": datetime.now(UTC) - timedelta(seconds=1), "id": "session-a"})
+                else:
+                    connection.execute(text('UPDATE session SET "userId"=:actor WHERE id=:id'), {"actor": "user-b", "id": "session-a"})
+            release.set()
+            response = await asyncio.wait_for(pending, 3)
+>       assert response.status_code == (401 if method == "GET" else 503)
+E       assert 200 == 503
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_auth_session_delivery.py:104: AssertionError
+_________ test_revoke_while_waiting_does_not_deliver_result[owner-GET] _________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_revoke_while_waiting_does4/sessions.sqlite), False)
+method = 'GET', change = 'owner'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("method", ["GET", "POST"])
+    @pytest.mark.parametrize("change", ["deleted", "expired", "owner"])
+    async def test_revoke_while_waiting_does_not_deliver_result(session_store, method, change):
+        engine, _ = session_store
+        started, release = asyncio.Event(), asyncio.Event()
+        writes = []
+        app = FastAPI()
+        app.add_middleware(auth.AuthMiddleware)
+    
+        @app.api_route("/api/owned-result", methods=["GET", "POST"])
+        async def result():
+            if method == "POST":
+                writes.append("original authorized operation")
+            started.set()
+            await release.wait()
+            return {"result": "WITHDRAWN SESSION RESULT"}
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            pending = asyncio.create_task(client.request(method, "/api/owned-result", headers={"Authorization": "Bearer synthetic-session-a"}))
+            await asyncio.wait_for(started.wait(), 3)
+            with engine.begin() as connection:
+                if change == "deleted":
+                    connection.execute(text('DELETE FROM session WHERE id=:id'), {"id": "session-a"})
+                elif change == "expired":
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": datetime.now(UTC) - timedelta(seconds=1), "id": "session-a"})
+                else:
+                    connection.execute(text('UPDATE session SET "userId"=:actor WHERE id=:id'), {"actor": "user-b", "id": "session-a"})
+            release.set()
+            response = await asyncio.wait_for(pending, 3)
+>       assert response.status_code == (401 if method == "GET" else 503)
+E       assert 200 == 401
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_auth_session_delivery.py:104: AssertionError
+________ test_revoke_while_waiting_does_not_deliver_result[owner-POST] _________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_revoke_while_waiting_does5/sessions.sqlite), False)
+method = 'POST', change = 'owner'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("method", ["GET", "POST"])
+    @pytest.mark.parametrize("change", ["deleted", "expired", "owner"])
+    async def test_revoke_while_waiting_does_not_deliver_result(session_store, method, change):
+        engine, _ = session_store
+        started, release = asyncio.Event(), asyncio.Event()
+        writes = []
+        app = FastAPI()
+        app.add_middleware(auth.AuthMiddleware)
+    
+        @app.api_route("/api/owned-result", methods=["GET", "POST"])
+        async def result():
+            if method == "POST":
+                writes.append("original authorized operation")
+            started.set()
+            await release.wait()
+            return {"result": "WITHDRAWN SESSION RESULT"}
+    
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            pending = asyncio.create_task(client.request(method, "/api/owned-result", headers={"Authorization": "Bearer synthetic-session-a"}))
+            await asyncio.wait_for(started.wait(), 3)
+            with engine.begin() as connection:
+                if change == "deleted":
+                    connection.execute(text('DELETE FROM session WHERE id=:id'), {"id": "session-a"})
+                elif change == "expired":
+                    connection.execute(text('UPDATE session SET "expiresAt"=:expires WHERE id=:id'), {"expires": datetime.now(UTC) - timedelta(seconds=1), "id": "session-a"})
+                else:
+                    connection.execute(text('UPDATE session SET "userId"=:actor WHERE id=:id'), {"actor": "user-b", "id": "session-a"})
+            release.set()
+            response = await asyncio.wait_for(pending, 3)
+>       assert response.status_code == (401 if method == "GET" else 503)
+E       assert 200 == 503
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_auth_session_delivery.py:104: AssertionError
+__________ test_session_storage_failure_does_not_log_bearer_material ___________
+
+session_store = (Engine(sqlite+pysqlite:////tmp/pytest-of-root/pytest-75/test_session_storage_failure_d0/sessions.sqlite), False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x797f66b13ef0>
+caplog = <_pytest.logging.LogCaptureFixture object at 0x797f66b50980>
+
+    def test_session_storage_failure_does_not_log_bearer_material(session_store, monkeypatch, caplog):
+        def unavailable():
+            raise RuntimeError("synthetic-session-a private storage exception")
+        monkeypatch.setattr(auth, "auth_connection", unavailable)
+        assert auth._resolve_user_from_auth_db("synthetic-session-a") is None
+>       assert "synthetic-session-a" not in caplog.text
+E       AssertionError: assert 'synthetic-session-a' not in 'WARNING  ap... exception\n'
+E         
+E         'synthetic-session-a' is contained here:
+E            auth db: synthetic-session-a private storage exception
+E         ?           +++++++++++++++++++
+
+tests/test_auth_session_delivery.py:115: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  app.gateway.auth:auth.py:59 Failed to resolve user from auth db: synthetic-session-a private storage exception
+=============================== warnings summary ===============================
+tests/test_auth_session_delivery.py: 28 warnings
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: DeprecationWarning: The default datetime adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    cursor.execute(statement, parameters)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_auth_session_delivery.py::test_invalid_expiry_is_never_an_unlimited_session[None]
+FAILED tests/test_auth_session_delivery.py::test_invalid_expiry_is_never_an_unlimited_session[]
+FAILED tests/test_auth_session_delivery.py::test_invalid_expiry_is_never_an_unlimited_session[not-a-date]
+FAILED tests/test_auth_session_delivery.py::test_invalid_expiry_is_never_an_unlimited_session[999999999999999999999999]
+FAILED tests/test_auth_session_delivery.py::test_revoke_while_waiting_does_not_deliver_result[deleted-GET]
+FAILED tests/test_auth_session_delivery.py::test_revoke_while_waiting_does_not_deliver_result[deleted-POST]
+FAILED tests/test_auth_session_delivery.py::test_revoke_while_waiting_does_not_deliver_result[expired-GET]
+FAILED tests/test_auth_session_delivery.py::test_revoke_while_waiting_does_not_deliver_result[expired-POST]
+FAILED tests/test_auth_session_delivery.py::test_revoke_while_waiting_does_not_deliver_result[owner-GET]
+FAILED tests/test_auth_session_delivery.py::test_revoke_while_waiting_does_not_deliver_result[owner-POST]
+FAILED tests/test_auth_session_delivery.py::test_session_storage_failure_does_not_log_bearer_material
+11 failed, 2 passed, 28 warnings in 9.80s

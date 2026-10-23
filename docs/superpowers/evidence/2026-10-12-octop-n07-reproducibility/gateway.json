@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "gateway": "real uvicorn process",
+  "auth": "real Better Auth session and tenant membership",
+  "migration_head": "n8h9i0j1k2l3",
+  "catalog": {
+    "release": "b6",
+    "revision": "eb28011249c02cafd389b2d424294c6c1b9cf422",
+    "templates": 290,
+    "personas": 16,
+    "integrity_verified": true,
+    "mode": "prompt_templates",
+    "automatic_resource_installation": false
+  },
+  "agent_created_and_reloaded": true,
+  "presentation_edited_and_reopened": true,
+  "duplicate_persona_prevented": true,
+  "questionnaire_readonly": true,
+  "avatars_authenticated_and_hash_verified": true,
+  "temporary_databases": true
+}

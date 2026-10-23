@@ -1,0 +1,33 @@
+{
+  "command": [
+    "env",
+    "PRISMOS_SCOPED_TEST_IMAGE=sha256:44260bb65a20c39bb63582f7c0a207b2fc8155e55dc96022da3f6ca3a7b9cc78",
+    "/root/.codex/worktrees/octop-integration/prism-os/backend/.venv/bin/python",
+    "/root/.codex/worktrees/octop-integration/prism-os/scripts/octop_upgrade_probe.py",
+    "--previous-archive",
+    "/tmp/prismos-copy-share-upgrade/previous/upstream.tar.gz",
+    "--previous-receipt",
+    "/tmp/prismos-copy-share-upgrade/previous/manifest.json",
+    "--previous-revision",
+    "e473dd3c4a4741618ffde1a42a3492341a189e8e",
+    "--previous-release",
+    "0.3.0b5",
+    "--output",
+    "/root/.codex/worktrees/octop-integration/prism-os/docs/superpowers/evidence/2026-10-15-octop-n09-auxiliary-resources/upgrade-accepted.json",
+    "--test-file",
+    "tests/test_auxiliary_resource_runtime.py",
+    "--test-file",
+    "tests/test_octop_integration.py",
+    "--test-file",
+    "tests/test_octop_presentation.py",
+    "--test-file",
+    "tests/test_octop_resources.py",
+    "--test-file",
+    "tests/test_tenant_context_on_config_routers.py"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os",
+  "started_at": "2026-10-15T05:16:07.649497+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T05:18:55.361785+00:00"
+}

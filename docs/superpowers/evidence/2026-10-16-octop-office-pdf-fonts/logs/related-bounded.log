@@ -1,0 +1,36 @@
+....................                                                     [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /root/.codex/worktrees/octop-integration/prism-os/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_office_pdf_fonts.py::test_authorized_uploaded_font_native_download_and_foreign_font_denial
+tests/test_office_pdf_fonts.py::test_font_member_withdrawal_cannot_publish[before]
+tests/test_office_pdf_fonts.py::test_font_member_withdrawal_cannot_publish[during]
+tests/test_office_pdf_fonts.py::test_selected_fixture_font_supports_actual_native_text_and_visible_pixels
+tests/test_office_pdf_fonts.py::test_font_path_schema_and_action_are_explicit
+tests/test_office_pdf_fonts.py::test_http_font_upload_to_native_generation_and_current_download
+  /root/.codex/worktrees/octop-integration/prism-os/backend/packages/harness/deerflow/database/user_config_service.py:1727: DeprecationWarning: 
+          🚨 You probably want to use `session.exec()` instead of `session.execute()`.
+  
+          This is the original SQLAlchemy `session.execute()` method that returns objects
+          of type `Row`, and that you have to call `scalars()` to get the model objects.
+  
+          For example:
+  
+          ```Python
+          result = await session.execute(select(Hero))
+          heroes = result.scalars().all()
+          ```
+  
+          instead you could use `exec()`:
+  
+          ```Python
+          result = await session.exec(select(Hero))
+          heroes = result.all()
+          ```
+          
+    await session.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+20 passed, 7 warnings in 9.98s

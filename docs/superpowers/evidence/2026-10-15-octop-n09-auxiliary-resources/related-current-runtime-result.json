@@ -1,0 +1,27 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_resource_catalog_access.py",
+    "tests/test_auxiliary_resource_runtime.py",
+    "tests/test_octop_skill_packages.py",
+    "tests/test_octop_resource_installations.py",
+    "tests/test_octop_integration.py",
+    "tests/test_skill_import_recovery.py",
+    "tests/test_skill_mutation_boundaries.py",
+    "tests/test_skill_enablement_boundaries.py",
+    "tests/test_skill_manual_creation.py",
+    "tests/test_agent_skill_references.py",
+    "tests/test_skills_scope_router.py",
+    "tests/test_skills_parser.py",
+    "tests/test_skills_loader.py",
+    "tests/test_custom_agent.py",
+    "-q"
+  ],
+  "cwd": "/root/.codex/worktrees/octop-integration/prism-os/backend",
+  "started_at": "2026-10-15T04:35:14.769202+00:00",
+  "complete": true,
+  "returncode": 0,
+  "finished_at": "2026-10-15T04:37:25.504226+00:00"
+}

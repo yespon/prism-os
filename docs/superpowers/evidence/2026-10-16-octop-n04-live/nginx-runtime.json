@@ -1,0 +1,30 @@
+{
+  "/api/alert-sources": {
+    "status": 401,
+    "json": true
+  },
+  "/api/incidents": {
+    "status": 401,
+    "json": true
+  },
+  "/api/approvals/not-owned": {
+    "status": 401,
+    "json": true
+  },
+  "/api/tenant-admin/settings": {
+    "status": 401,
+    "json": true
+  },
+  "/api/tenant-im/bots": {
+    "status": 401,
+    "json": true
+  },
+  "/api/terminal/chat": {
+    "status": 401,
+    "next_terminal_auth_preserved": true
+  },
+  "/api/terminal/chat/approve": {
+    "status": 401,
+    "next_terminal_auth_preserved": true
+  }
+}

@@ -1,0 +1,8 @@
+WARN Skipping file for python-telegram-bot: python_telegram_bot-5.3.1-py3.5.egg
+WARN Skipping file for python-telegram-bot: python_telegram_bot-6.0.0-py3.5.egg
+  × No solution found when resolving dependencies:
+  ╰─▶ Because octop-harness==1.0.1 depends on langchain-mcp-adapters>=0.3.0
+      and langchain-mcp-adapters==0.2.1, we can conclude that
+      octop-harness==1.0.1 cannot be used.
+      And because you require octop-harness==1.0.1, we can conclude that your
+      requirements are unsatisfiable.

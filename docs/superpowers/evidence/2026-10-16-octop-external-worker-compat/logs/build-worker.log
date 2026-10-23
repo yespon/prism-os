@@ -1,0 +1,269 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 724B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#2 DONE 0.4s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/7] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#4 CACHED
+
+#5 [2/7] WORKDIR /worker
+#5 DONE 0.1s
+
+#6 [internal] load build context
+#6 transferring context: 3.44MB 0.1s done
+#6 DONE 0.1s
+
+#7 [3/7] COPY requirements.lock wheels.lock /worker/
+#7 DONE 0.1s
+
+#8 [4/7] COPY archives /worker/archives
+#8 DONE 0.0s
+
+#9 [5/7] RUN python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes --index-url https://pypi.org/simple -r requirements.lock     && python -m pip install --disable-pip-version-check --no-cache-dir --no-deps --require-hashes -r wheels.lock
+#9 3.360 Collecting aiohappyeyeballs==2.6.2 (from -r requirements.lock (line 3))
+#9 4.083   Downloading aiohappyeyeballs-2.6.2-py3-none-any.whl (15 kB)
+#9 5.982 Collecting aiohttp==3.14.1 (from -r requirements.lock (line 9))
+#9 6.204   Downloading aiohttp-3.14.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+#9 7.448      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 2.2 MB/s eta 0:00:00
+#9 7.657 Collecting aiosignal==1.4.0 (from -r requirements.lock (line 135))
+#9 7.831   Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+#9 8.040 Collecting aiosqlite==0.22.1 (from -r requirements.lock (line 141))
+#9 8.215   Downloading aiosqlite-0.22.1-py3-none-any.whl (17 kB)
+#9 8.425 Collecting annotated-types==0.7.0 (from -r requirements.lock (line 147))
+#9 8.598   Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+#9 9.027 Collecting anthropic==0.125.0 (from -r requirements.lock (line 153))
+#9 9.201   Downloading anthropic-0.125.0-py3-none-any.whl (1.2 MB)
+#9 9.338      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 10.4 MB/s eta 0:00:00
+#9 9.555 Collecting anyio==4.14.1 (from -r requirements.lock (line 159))
+#9 9.781   Downloading anyio-4.14.1-py3-none-any.whl (124 kB)
+#9 9.984 Collecting attrs==26.1.0 (from -r requirements.lock (line 172))
+#9 10.16   Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+#9 10.40 Collecting beautifulsoup4==4.15.0 (from -r requirements.lock (line 180))
+#9 10.60   Downloading beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+#9 10.81 Collecting bidict==0.23.1 (from -r requirements.lock (line 186))
+#9 11.01   Downloading bidict-0.23.1-py3-none-any.whl (32 kB)
+#9 11.33 Collecting bracex==3.0 (from -r requirements.lock (line 192))
+#9 11.52   Downloading bracex-3.0-py3-none-any.whl (11 kB)
+#9 11.73 Collecting certifi==2026.6.17 (from -r requirements.lock (line 198))
+#9 11.90   Downloading certifi-2026.6.17-py3-none-any.whl (133 kB)
+#9 12.33 Collecting cffi==2.0.0 (from -r requirements.lock (line 206))
+#9 12.51   Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (219 kB)
+#9 12.87 Collecting charset-normalizer==3.4.7 (from -r requirements.lock (line 294))
+#9 13.04   Downloading charset_normalizer-3.4.7-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
+#9 13.26 Collecting click==8.4.2 (from -r requirements.lock (line 427))
+#9 13.43   Downloading click-8.4.2-py3-none-any.whl (119 kB)
+#9 13.87 Collecting cryptography==49.0.0 (from -r requirements.lock (line 433))
+#9 14.08   Downloading cryptography-49.0.0-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
+#9 14.42      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 13.5 MB/s eta 0:00:00
+#9 14.71 Collecting deepagents==0.7.9 (from -r requirements.lock (line 486))
+#9 14.88   Downloading deepagents-0.7.9-py3-none-any.whl (314 kB)
+#9 15.12 Collecting dingtalk-stream==0.24.3 (from -r requirements.lock (line 492))
+#9 15.31   Downloading dingtalk_stream-0.24.3-py3-none-any.whl (27 kB)
+#9 15.52 Collecting discord-py==2.7.1 (from -r requirements.lock (line 497))
+#9 15.70   Downloading discord_py-2.7.1-py3-none-any.whl (1.2 MB)
+#9 15.93      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 4.9 MB/s eta 0:00:00
+#9 16.23 Collecting distro==1.9.0 (from -r requirements.lock (line 503))
+#9 16.41   Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+#9 16.60 Collecting docstring-parser==0.18.0 (from -r requirements.lock (line 512))
+#9 16.84   Downloading docstring_parser-0.18.0-py3-none-any.whl (22 kB)
+#9 17.05 Collecting filetype==1.2.0 (from -r requirements.lock (line 518))
+#9 17.23   Downloading filetype-1.2.0-py2.py3-none-any.whl (19 kB)
+#9 17.50 Collecting frozenlist==1.8.0 (from -r requirements.lock (line 524))
+#9 17.69   Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (242 kB)
+#9 18.09 Collecting google-auth==2.55.1 (from -r requirements.lock (line 659))
+#9 18.28   Downloading google_auth-2.55.1-py3-none-any.whl (252 kB)
+#9 18.53 Collecting google-genai==2.10.0 (from -r requirements.lock (line 665))
+#9 18.70   Downloading google_genai-2.10.0-py3-none-any.whl (957 kB)
+#9 18.75      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 958.0/958.0 kB 25.2 MB/s eta 0:00:00
+#9 18.95 Collecting h11==0.16.0 (from -r requirements.lock (line 671))
+#9 19.20   Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#9 19.41 Collecting httpcore==1.0.9 (from -r requirements.lock (line 679))
+#9 19.59   Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#9 19.92 Collecting httpx==0.28.1 (from -r requirements.lock (line 685))
+#9 20.11   Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#9 20.32 Collecting httpx-sse==0.4.3 (from -r requirements.lock (line 701))
+#9 20.50   Downloading httpx_sse-0.4.3-py3-none-any.whl (9.0 kB)
+#9 20.74 Collecting idna==3.18 (from -r requirements.lock (line 707))
+#9 20.91   Downloading idna-3.18-py3-none-any.whl (65 kB)
+#9 21.22 Collecting jiter==0.16.0 (from -r requirements.lock (line 716))
+#9 21.40   Downloading jiter-0.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (343 kB)
+#9 21.62 Collecting jsonpatch==1.33 (from -r requirements.lock (line 826))
+#9 21.79   Downloading jsonpatch-1.33-py2.py3-none-any.whl (12 kB)
+#9 21.99 Collecting jsonpointer==3.1.1 (from -r requirements.lock (line 832))
+#9 22.19   Downloading jsonpointer-3.1.1-py3-none-any.whl (7.7 kB)
+#9 22.39 Collecting jsonschema==4.26.0 (from -r requirements.lock (line 838))
+#9 22.58   Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+#9 22.77 Collecting jsonschema-specifications==2025.9.1 (from -r requirements.lock (line 844))
+#9 22.99   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+#9 23.26 Collecting langchain==1.3.18 (from -r requirements.lock (line 850))
+#9 23.43   Downloading langchain-1.3.18-py3-none-any.whl (148 kB)
+#9 23.67 Collecting langchain-anthropic==1.7.0 (from -r requirements.lock (line 857))
+#9 23.84   Downloading langchain_anthropic-1.7.0-py3-none-any.whl (60 kB)
+#9 24.08 Collecting langchain-core==1.6.0 (from -r requirements.lock (line 864))
+#9 24.32   Downloading langchain_core-1.6.0-py3-none-any.whl (570 kB)
+#9 24.35      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 570.0/570.0 kB 49.7 MB/s eta 0:00:00
+#9 24.56 Collecting langchain-google-genai==4.3.6 (from -r requirements.lock (line 880))
+#9 24.73   Downloading langchain_google_genai-4.3.6-py3-none-any.whl (78 kB)
+#9 24.93 Collecting langchain-mcp-adapters==0.3.0 (from -r requirements.lock (line 886))
+#9 25.14   Downloading langchain_mcp_adapters-0.3.0-py3-none-any.whl (25 kB)
+#9 25.37 Collecting langchain-openai==1.3.3 (from -r requirements.lock (line 892))
+#9 25.55   Downloading langchain_openai-1.3.3-py3-none-any.whl (120 kB)
+#9 25.76 Collecting langchain-protocol==0.0.18 (from -r requirements.lock (line 898))
+#9 25.94   Downloading langchain_protocol-0.0.18-py3-none-any.whl (7.2 kB)
+#9 26.20 Collecting langgraph==1.2.11 (from -r requirements.lock (line 905))
+#9 26.37   Downloading langgraph-1.2.11-py3-none-any.whl (248 kB)
+#9 26.62 Collecting langgraph-checkpoint==4.1.1 (from -r requirements.lock (line 912))
+#9 26.80   Downloading langgraph_checkpoint-4.1.1-py3-none-any.whl (56 kB)
+#9 27.00 Collecting langgraph-checkpoint-sqlite==3.1.0 (from -r requirements.lock (line 920))
+#9 27.18   Downloading langgraph_checkpoint_sqlite-3.1.0-py3-none-any.whl (38 kB)
+#9 27.37 Collecting langgraph-prebuilt==1.1.0 (from -r requirements.lock (line 926))
+#9 27.55   Downloading langgraph_prebuilt-1.1.0-py3-none-any.whl (41 kB)
+#9 27.77 Collecting langgraph-sdk==0.4.2 (from -r requirements.lock (line 932))
+#9 27.94   Downloading langgraph_sdk-0.4.2-py3-none-any.whl (160 kB)
+#9 28.22 Collecting langsmith==0.11.2 (from -r requirements.lock (line 938))
+#9 28.42   Downloading langsmith-0.11.2-py3-none-any.whl (753 kB)
+#9 28.48      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 753.9/753.9 kB 62.0 MB/s eta 0:00:00
+#9 28.69 Collecting lark-oapi==1.7.3 (from -r requirements.lock (line 945))
+#9 28.87   Downloading lark_oapi-1.7.3-py3-none-any.whl (7.7 MB)
+#9 29.32      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 27.3 MB/s eta 0:00:00
+#9 29.57 Collecting markdownify==1.2.2 (from -r requirements.lock (line 951))
+#9 29.74   Downloading markdownify-1.2.2-py3-none-any.whl (15 kB)
+#9 29.95 Collecting mcp==1.28.1 (from -r requirements.lock (line 957))
+#9 30.13   Downloading mcp-1.28.1-py3-none-any.whl (222 kB)
+#9 30.60 Collecting multidict==6.7.1 (from -r requirements.lock (line 964))
+#9 30.77   Downloading multidict-6.7.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (256 kB)
+#9 31.03 Collecting openai==2.44.0 (from -r requirements.lock (line 1115))
+#9 31.21   Downloading openai-2.44.0-py3-none-any.whl (1.4 MB)
+#9 31.27      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 23.7 MB/s eta 0:00:00
+#9 31.74 Collecting orjson==3.11.9 (from -r requirements.lock (line 1121))
+#9 31.92   Downloading orjson-3.11.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (134 kB)
+#9 32.15 Collecting ormsgpack==1.12.2 (from -r requirements.lock (line 1200))
+#9 32.33   Downloading ormsgpack-1.12.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (212 kB)
+#9 32.53 Collecting packaging==26.2 (from -r requirements.lock (line 1253))
+#9 32.71   Downloading packaging-26.2-py3-none-any.whl (100 kB)
+#9 32.91 Collecting paho-mqtt==2.1.0 (from -r requirements.lock (line 1261))
+#9 33.11   Downloading paho_mqtt-2.1.0-py3-none-any.whl (67 kB)
+#9 33.38 Collecting propcache==0.5.2 (from -r requirements.lock (line 1267))
+#9 33.55   Downloading propcache-0.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (61 kB)
+#9 33.78 Collecting pyasn1==0.6.3 (from -r requirements.lock (line 1393))
+#9 33.95   Downloading pyasn1-0.6.3-py3-none-any.whl (83 kB)
+#9 34.27 Collecting pyasn1-modules==0.4.2 (from -r requirements.lock (line 1399))
+#9 34.44   Downloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+#9 34.66 Collecting pycparser==3.0 (from -r requirements.lock (line 1405))
+#9 34.87   Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+#9 35.14 Collecting pycryptodome==3.23.0 (from -r requirements.lock (line 1411))
+#9 35.32   Downloading pycryptodome-3.23.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.3 MB)
+#9 35.63      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 7.4 MB/s eta 0:00:00
+#9 35.95 Collecting pydantic==2.13.4 (from -r requirements.lock (line 1456))
+#9 36.12   Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+#9 37.10 Collecting pydantic-core==2.46.4 (from -r requirements.lock (line 1473))
+#9 37.33   Downloading pydantic_core-2.46.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#9 37.40      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 29.3 MB/s eta 0:00:00
+#9 37.61 Collecting pydantic-settings==2.14.2 (from -r requirements.lock (line 1597))
+#9 37.79   Downloading pydantic_settings-2.14.2-py3-none-any.whl (61 kB)
+#9 38.00 Collecting pyjwt==2.13.0 (from -r requirements.lock (line 1603))
+#9 38.17   Downloading pyjwt-2.13.0-py3-none-any.whl (31 kB)
+#9 38.38 Collecting python-dotenv==1.2.2 (from -r requirements.lock (line 1609))
+#9 38.56   Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+#9 38.77 Collecting python-engineio==4.13.3 (from -r requirements.lock (line 1616))
+#9 39.04   Downloading python_engineio-4.13.3-py3-none-any.whl (59 kB)
+#9 39.28 Collecting python-multipart==0.0.32 (from -r requirements.lock (line 1622))
+#9 39.45   Downloading python_multipart-0.0.32-py3-none-any.whl (30 kB)
+#9 39.69 Collecting python-socketio==5.16.3 (from -r requirements.lock (line 1628))
+#9 39.89   Downloading python_socketio-5.16.3-py3-none-any.whl (82 kB)
+#9 40.12 Collecting python-telegram-bot==22.8 (from -r requirements.lock (line 1634))
+#9 40.36   Downloading python_telegram_bot-22.8-py3-none-any.whl (769 kB)
+#9 40.38      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 769.4/769.4 kB 33.8 MB/s eta 0:00:00
+#9 40.62 Collecting pyyaml==6.0.3 (from -r requirements.lock (line 1640))
+#9 40.81   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#9 40.85      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 51.3 MB/s eta 0:00:00
+#9 41.06 Collecting referencing==0.37.0 (from -r requirements.lock (line 1718))
+#9 41.24   Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+#9 41.81 Collecting regex==2026.6.28 (from -r requirements.lock (line 1725))
+#9 41.99   Downloading regex-2026.6.28-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+#9 42.25      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.3/801.3 kB 2.3 MB/s eta 0:00:00
+#9 42.47 Collecting requests==2.34.2 (from -r requirements.lock (line 1843))
+#9 42.64   Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+#9 42.85 Collecting requests-toolbelt==1.0.0 (from -r requirements.lock (line 1855))
+#9 43.03   Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+#9 43.47 Collecting rpds-py==2026.6.3 (from -r requirements.lock (line 1862))
+#9 43.68   Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (366 kB)
+#9 43.98 Collecting simple-websocket==1.1.0 (from -r requirements.lock (line 1983))
+#9 44.18   Downloading simple_websocket-1.1.0-py3-none-any.whl (13 kB)
+#9 44.39 Collecting six==1.17.0 (from -r requirements.lock (line 1989))
+#9 44.57   Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#9 44.80 Collecting sniffio==1.3.1 (from -r requirements.lock (line 1995))
+#9 44.98   Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+#9 45.22 Collecting soupsieve==2.8.4 (from -r requirements.lock (line 2004))
+#9 45.40   Downloading soupsieve-2.8.4-py3-none-any.whl (37 kB)
+#9 45.63 Collecting sqlite-vec==0.1.9 (from -r requirements.lock (line 2010))
+#9 45.80   Downloading sqlite_vec-0.1.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux1_x86_64.whl (163 kB)
+#9 46.03 Collecting sse-starlette==3.4.5 (from -r requirements.lock (line 2019))
+#9 46.23   Downloading sse_starlette-3.4.5-py3-none-any.whl (16 kB)
+#9 46.45 Collecting starlette==1.3.1 (from -r requirements.lock (line 2025))
+#9 46.64   Downloading starlette-1.3.1-py3-none-any.whl (73 kB)
+#9 46.85 Collecting tenacity==9.1.4 (from -r requirements.lock (line 2032))
+#9 47.03   Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+#9 47.27 Collecting tiktoken==0.13.0 (from -r requirements.lock (line 2039))
+#9 47.44   Downloading tiktoken-0.13.0-cp312-cp312-manylinux_2_28_x86_64.whl (1.1 MB)
+#9 47.67      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 19.8 MB/s eta 0:00:00
+#9 47.88 Collecting tqdm==4.68.3 (from -r requirements.lock (line 2100))
+#9 48.06   Downloading tqdm-4.68.3-py3-none-any.whl (78 kB)
+#9 48.26 Collecting typing-extensions==4.15.0 (from -r requirements.lock (line 2106))
+#9 48.44   Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+#9 48.65 Collecting typing-inspection==0.4.2 (from -r requirements.lock (line 2128))
+#9 48.84   Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+#9 49.05 Collecting urllib3==2.7.0 (from -r requirements.lock (line 2136))
+#9 49.23   Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+#9 49.81 Collecting uuid-utils==0.16.2 (from -r requirements.lock (line 2142))
+#9 50.00   Downloading uuid_utils-0.16.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (323 kB)
+#9 50.24 Collecting uvicorn==0.49.0 (from -r requirements.lock (line 2240))
+#9 50.41   Downloading uvicorn-0.49.0-py3-none-any.whl (71 kB)
+#9 50.64 Collecting wcmatch==11.0.1 (from -r requirements.lock (line 2246))
+#9 50.93   Downloading wcmatch-11.0.1-py3-none-any.whl (43 kB)
+#9 51.14 Collecting websocket-client==1.9.0 (from -r requirements.lock (line 2252))
+#9 51.31   Downloading websocket_client-1.9.0-py3-none-any.whl (82 kB)
+#9 51.71 Collecting websockets==15.0.1 (from -r requirements.lock (line 2258))
+#9 51.89   Downloading websockets-15.0.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (182 kB)
+#9 52.13 Collecting wecom-aibot-sdk==1.0.8 (from -r requirements.lock (line 2337))
+#9 52.31   Downloading wecom_aibot_sdk-1.0.8-py3-none-any.whl (28 kB)
+#9 52.52 Collecting wsproto==1.3.2 (from -r requirements.lock (line 2343))
+#9 52.69   Downloading wsproto-1.3.2-py3-none-any.whl (24 kB)
+#9 53.02 Collecting xxhash==3.8.0 (from -r requirements.lock (line 2349))
+#9 53.19   Downloading xxhash-3.8.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (220 kB)
+#9 53.63 Collecting yarl==1.24.2 (from -r requirements.lock (line 2541))
+#9 53.80   Downloading yarl-1.24.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (105 kB)
+#9 54.07 Collecting zstandard==0.25.0 (from -r requirements.lock (line 2649))
+#9 54.24   Downloading zstandard-0.25.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.5 MB)
+#9 54.49      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 23.9 MB/s eta 0:00:00
+#9 55.49 Installing collected packages: sqlite-vec, filetype, zstandard, xxhash, websockets, websocket-client, uuid-utils, urllib3, typing-extensions, tqdm, tenacity, soupsieve, sniffio, six, rpds-py, regex, pyyaml, python-multipart, python-dotenv, pyjwt, pycryptodome, pycparser, pyasn1, propcache, paho-mqtt, packaging, ormsgpack, orjson, multidict, jsonpointer, jiter, idna, httpx-sse, h11, frozenlist, docstring-parser, distro, click, charset-normalizer, certifi, bracex, bidict, attrs, annotated-types, aiosqlite, aiohappyeyeballs, yarl, wsproto, wcmatch, uvicorn, typing-inspection, requests, referencing, pydantic-core, pyasn1-modules, langchain-protocol, jsonpatch, httpcore, cffi, beautifulsoup4, anyio, aiosignal, tiktoken, starlette, simple-websocket, requests-toolbelt, pydantic, markdownify, jsonschema-specifications, httpx, cryptography, aiohttp, wecom-aibot-sdk, sse-starlette, python-telegram-bot, python-engineio, pydantic-settings, openai, lark-oapi, langsmith, jsonschema, google-auth, discord-py, dingtalk-stream, anthropic, python-socketio, mcp, langchain-core, langgraph-sdk, langgraph-checkpoint, langchain-openai, langchain-mcp-adapters, langchain-anthropic, google-genai, langgraph-prebuilt, langgraph-checkpoint-sqlite, langchain-google-genai, langgraph, langchain, deepagents
+#9 75.70 Successfully installed aiohappyeyeballs-2.6.2 aiohttp-3.14.1 aiosignal-1.4.0 aiosqlite-0.22.1 annotated-types-0.7.0 anthropic-0.125.0 anyio-4.14.1 attrs-26.1.0 beautifulsoup4-4.15.0 bidict-0.23.1 bracex-3.0 certifi-2026.6.17 cffi-2.0.0 charset-normalizer-3.4.7 click-8.4.2 cryptography-49.0.0 deepagents-0.7.9 dingtalk-stream-0.24.3 discord-py-2.7.1 distro-1.9.0 docstring-parser-0.18.0 filetype-1.2.0 frozenlist-1.8.0 google-auth-2.55.1 google-genai-2.10.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 httpx-sse-0.4.3 idna-3.18 jiter-0.16.0 jsonpatch-1.33 jsonpointer-3.1.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 langchain-1.3.18 langchain-anthropic-1.7.0 langchain-core-1.6.0 langchain-google-genai-4.3.6 langchain-mcp-adapters-0.3.0 langchain-openai-1.3.3 langchain-protocol-0.0.18 langgraph-1.2.11 langgraph-checkpoint-4.1.1 langgraph-checkpoint-sqlite-3.1.0 langgraph-prebuilt-1.1.0 langgraph-sdk-0.4.2 langsmith-0.11.2 lark-oapi-1.7.3 markdownify-1.2.2 mcp-1.28.1 multidict-6.7.1 openai-2.44.0 orjson-3.11.9 ormsgpack-1.12.2 packaging-26.2 paho-mqtt-2.1.0 propcache-0.5.2 pyasn1-0.6.3 pyasn1-modules-0.4.2 pycparser-3.0 pycryptodome-3.23.0 pydantic-2.13.4 pydantic-core-2.46.4 pydantic-settings-2.14.2 pyjwt-2.13.0 python-dotenv-1.2.2 python-engineio-4.13.3 python-multipart-0.0.32 python-socketio-5.16.3 python-telegram-bot-22.8 pyyaml-6.0.3 referencing-0.37.0 regex-2026.6.28 requests-2.34.2 requests-toolbelt-1.0.0 rpds-py-2026.6.3 simple-websocket-1.1.0 six-1.17.0 sniffio-1.3.1 soupsieve-2.8.4 sqlite-vec-0.1.9 sse-starlette-3.4.5 starlette-1.3.1 tenacity-9.1.4 tiktoken-0.13.0 tqdm-4.68.3 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.7.0 uuid-utils-0.16.2 uvicorn-0.49.0 wcmatch-11.0.1 websocket-client-1.9.0 websockets-15.0.1 wecom-aibot-sdk-1.0.8 wsproto-1.3.2 xxhash-3.8.0 yarl-1.24.2 zstandard-0.25.0
+#9 75.70 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 76.71 Processing ./archives/octop_browser-1.0.0-py3-none-any.whl (from -r wheels.lock (line 1))
+#9 76.72 Processing ./archives/octop_gateway-1.0.0-py3-none-any.whl (from -r wheels.lock (line 2))
+#9 76.73 Processing ./archives/octop_memory-1.0.0-py3-none-any.whl (from -r wheels.lock (line 3))
+#9 76.74 Installing collected packages: octop-memory, octop-gateway, octop-browser
+#9 77.21 Successfully installed octop-browser-1.0.0 octop-gateway-1.0.0 octop-memory-1.0.0
+#9 77.21 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 DONE 77.6s
+
+#10 [6/7] COPY harness /worker/harness
+#10 DONE 0.1s
+
+#11 [7/7] COPY source-receipt.json worker_rpc.py /worker/
+#11 DONE 0.0s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 3.9s done
+#12 writing image sha256:5eabc29cdcda254348c6b769cfb2bcfca0aa6847222f5315cc4d4263fb43a249 done
+#12 naming to docker.io/library/prismos-octop-worker-compat:20261016 done
+#12 DONE 3.9s
