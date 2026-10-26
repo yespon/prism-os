@@ -40,7 +40,7 @@ export const TodoPrioritySchema = z.enum(['high', 'medium', 'low'])
 export const TodoToolCallSchema = z.object({
   id: z.string(),
   name: z.string(),
-  parameters: z.record(z.any()),
+  parameters: z.record(z.string(), z.any()),
   timestamp: z.date()
 })
 
