@@ -1,5 +1,5 @@
 {
-  "host_lock_sha256": "b485ce0a39c71e27c9e3d876f6d0585c1862221d1c8569d9475fb8e9c856b9a5",
+  "host_lock_sha256": "31ffdc8495312f4d08598338ab9e3f51905a8c7cc98c6d17da4ad74297ffc6f8",
   "upstream_lock_sha256": "9dd1e05b55d10383a0cfd575d19af05c05d616ed257eb148eb59bca28b62de2e",
   "marker_environment": {
     "python_version": "3.12",
@@ -821,7 +821,7 @@
           {
             "requirement": "langgraph-checkpoint>=2.0; extra == 'langgraph'",
             "name": "langgraph-checkpoint",
-            "host_locked": "4.2.0",
+            "host_locked": "4.3.0",
             "upstream_locked": "4.1.1",
             "host_check": "compatible"
           }
@@ -830,14 +830,14 @@
           {
             "requirement": "langgraph-checkpoint-postgres>=2.0; extra == 'langgraph-postgres'",
             "name": "langgraph-checkpoint-postgres",
-            "host_locked": "3.1.2",
+            "host_locked": "3.2.0",
             "upstream_locked": "3.1.0",
             "host_check": "compatible"
           },
           {
             "requirement": "langgraph-checkpoint>=2.0; extra == 'langgraph-postgres'",
             "name": "langgraph-checkpoint",
-            "host_locked": "4.2.0",
+            "host_locked": "4.3.0",
             "upstream_locked": "4.1.1",
             "host_check": "compatible"
           },

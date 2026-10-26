@@ -37,6 +37,9 @@ class ExecutionSnapshot(FrozenContractModel):
     schema_version: PlatformSchemaVersion = PLATFORM_SCHEMA_V1
     agent_name: str | None = None
     agent_id: str | None = None
+    # Immutable agent version this run executed under (R5 versioning): the
+    # deployment pointer's version id at run start, when a deployment exists.
+    agent_version_id: str | None = None
     model_name: str | None = None
     tool_groups: tuple[str, ...] = ()
     source: str | None = None

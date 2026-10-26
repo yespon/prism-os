@@ -1,19 +1,30 @@
-"""Extension package manifests and installation (R5, M7 minimal).
+"""Extension package manifests and installation (R5 leftover -> R6 persistence).
 
 An extension package is a directory with a manifest.json declaring its
 name, version, entry metadata, permissions and the files it ships. The
 registry verifies the manifest digest before an install is recorded;
 untrusted code is never loaded into the gateway process (red line) -
-this slice only records and validates manifests.
+this module only records and validates manifests.
+
+Installations persist in the extension_installations table (one row per
+install, with the manifest and its digest); enable/disable and remove
+mutate the row. Reads are tenant-scoped.
 """
 
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
 from uuid import uuid4
+
+from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from deerflow.database.session import get_session_factory
 
 
 class ExtensionError(Exception):
@@ -32,6 +43,7 @@ class ExtensionManifest:
 @dataclass
 class ExtensionInstallation:
     id: str
+    tenant_id: str
     manifest: ExtensionManifest
     manifest_sha256: str
     installed_by: str
@@ -41,10 +53,11 @@ class ExtensionInstallation:
 _REQUIRED_KEYS = {"name", "version", "permissions"}
 
 
-def load_manifest(path: Path) -> tuple[ExtensionManifest, str]:
-    """Load and validate a manifest.json; returns (manifest, sha256 of the file).
+def load_manifest(path: Path) -> tuple[ExtensionManifest, str, dict]:
+    """Load and validate a manifest.json.
 
-    Accepts either the manifest file itself or its containing directory.
+    Returns (manifest, sha256 of the file, parsed json) - the raw json is
+    persisted alongside so the row is self-describing.
     """
     if path.is_dir():
         path = path / "manifest.json"
@@ -65,46 +78,94 @@ def load_manifest(path: Path) -> tuple[ExtensionManifest, str]:
         entry=data.get("entry"),
     )
     digest = sha256(path.read_bytes()).hexdigest()
-    return manifest, digest
+    return manifest, digest, data
+
+
+def _to_installation(row) -> ExtensionInstallation:
+    return ExtensionInstallation(
+        id=row.id, tenant_id=row.tenant_id,
+        manifest=ExtensionManifest(
+            name=row.name, version=row.version,
+            permissions=tuple(json.loads(row.permissions_json)),
+        ),
+        manifest_sha256=row.manifest_sha256,
+        installed_by=row.installed_by,
+        enabled=row.enabled,
+    )
 
 
 class ExtensionRegistry:
     """Records extension installations after manifest validation.
 
-    Minimal slice: installations live in memory (the R5 real-deployment
-    rehearsal exercises the API path; persistence lands with the R6 data
-    work package). Permissions are recorded and exposed for the caller's
-    policy decisions; the registry never executes package code.
+    Installations persist in the extension_installations table; the
+    registry never executes package code (gateway-process red line).
     """
 
-    def __init__(self) -> None:
-        self._installations: dict[str, ExtensionInstallation] = {}
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession] | None = None,
+                 tenant_id: str = "") -> None:
+        self._session_factory = session_factory or get_session_factory()
+        self._tenant_id = tenant_id
 
-    def install(self, package_dir: Path, *, installed_by: str) -> ExtensionInstallation:
-        manifest, digest = load_manifest(package_dir / "manifest.json")
+    async def install(self, package_dir: Path, *, installed_by: str) -> ExtensionInstallation:
+        manifest, digest, raw = load_manifest(package_dir / "manifest.json")
         if manifest.entry and not (package_dir / manifest.entry).is_file():
             raise ExtensionError(f"declared entry {manifest.entry!r} missing from package")
+        from app.models.extensions import ExtensionInstallationRecord
+
         installation = ExtensionInstallation(
-            id=f"ext_{uuid4().hex}", manifest=manifest, manifest_sha256=digest,
+            id=f"ext_{uuid4().hex}", tenant_id=self._tenant_id,
+            manifest=manifest, manifest_sha256=digest,
             installed_by=installed_by, enabled=True,
         )
-        self._installations[installation.id] = installation
+        record = ExtensionInstallationRecord(
+            id=installation.id, tenant_id=self._tenant_id,
+            name=manifest.name, version=manifest.version,
+            manifest_sha256=digest,
+            manifest_json=json.dumps(raw, sort_keys=True, ensure_ascii=False),
+            permissions_json=json.dumps(list(manifest.permissions)),
+            installed_by=installed_by, enabled=True,
+            created_at=datetime.now(UTC),
+        )
+        async with self._session_factory() as session, session.begin():
+            session.add(record)
         return installation
 
-    def get(self, installation_id: str) -> ExtensionInstallation:
-        record = self._installations.get(installation_id)
-        if record is None:
+    async def get(self, installation_id: str) -> ExtensionInstallation:
+        from app.models.extensions import ExtensionInstallationRecord
+
+        async with self._session_factory() as session:
+            row = await session.get(ExtensionInstallationRecord, installation_id)
+        if row is None or row.tenant_id != self._tenant_id:
             raise ExtensionError("installation not found")
-        return record
+        return _to_installation(row)
 
-    def list(self) -> list[ExtensionInstallation]:
-        return list(self._installations.values())
+    async def list(self) -> list[ExtensionInstallation]:
+        from app.models.extensions import ExtensionInstallationRecord
 
-    def set_enabled(self, installation_id: str, *, enabled: bool, by: str) -> ExtensionInstallation:
-        record = self.get(installation_id)
-        record.enabled = enabled
-        return record
+        async with self._session_factory() as session:
+            rows = (await session.exec(
+                select(ExtensionInstallationRecord).where(
+                    ExtensionInstallationRecord.tenant_id == self._tenant_id)
+            )).all()
+        return [_to_installation(row) for row in rows]
 
-    def remove(self, installation_id: str, *, by: str) -> None:
-        self.get(installation_id)  # raises when unknown
-        del self._installations[installation_id]
+    async def set_enabled(self, installation_id: str, *, enabled: bool, by: str) -> ExtensionInstallation:
+        from app.models.extensions import ExtensionInstallationRecord
+
+        async with self._session_factory() as session, session.begin():
+            row = await session.get(ExtensionInstallationRecord, installation_id)
+        if row is None or row.tenant_id != self._tenant_id:
+            raise ExtensionError("installation not found")
+        row.enabled = enabled
+        async with self._session_factory() as session, session.begin():
+            session.add(row)
+        return _to_installation(row)
+
+    async def remove(self, installation_id: str, *, by: str) -> None:
+        from app.models.extensions import ExtensionInstallationRecord
+
+        async with self._session_factory() as session, session.begin():
+            row = await session.get(ExtensionInstallationRecord, installation_id)
+            if row is None or row.tenant_id != self._tenant_id:
+                raise ExtensionError("installation not found")
+            await session.delete(row)
