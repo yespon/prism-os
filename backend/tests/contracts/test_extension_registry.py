@@ -1,10 +1,14 @@
-"""R5 extension package registry contracts."""
+"""R6: extension registry persistence contracts."""
 
 import json
 
 import pytest
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.extensions import ExtensionError, ExtensionRegistry, load_manifest
+from app.models import extensions as _extension_models  # noqa: F401
 
 
 def _package(tmp_path, *, name="skill-pack", version="1.0.0", permissions=None, entry=None):
@@ -19,43 +23,73 @@ def _package(tmp_path, *, name="skill-pack", version="1.0.0", permissions=None, 
     return directory
 
 
+@pytest.fixture
+async def registry(tmp_path):
+    engine = create_async_engine(f"sqlite+aiosqlite:///{tmp_path / 'extensions.db'}")
+    async with engine.begin() as connection:
+        await connection.run_sync(SQLModel.metadata.create_all)
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    yield ExtensionRegistry(factory, tenant_id="t1"), factory
+    await engine.dispose()
+
+
 def test_manifest_validation(tmp_path):
-    manifest, digest = load_manifest(_package(tmp_path))
+    manifest, digest, raw = load_manifest(_package(tmp_path))
     assert manifest.name == "skill-pack" and manifest.version == "1.0.0"
     assert manifest.permissions == ("knowledge.read",)
-    assert len(digest) == 64
+    assert len(digest) == 64 and raw["version"] == "1.0.0"
 
-    # Missing required keys refused.
     bad = _package(tmp_path / "x")
     (bad / "manifest.json").write_text('{"name": "only-name"}')
     with pytest.raises(ExtensionError, match="name, version, permissions"):
         load_manifest(bad / "manifest.json")
 
 
-def test_install_records_permissions_and_digest(tmp_path):
-    registry = ExtensionRegistry()
-    installed = registry.install(_package(tmp_path, permissions=["knowledge.read", "files.read"]),
-                                 installed_by="admin-1")
+@pytest.mark.anyio
+async def test_install_persists_and_rereads(registry, tmp_path):
+    registry, factory = registry
+    installed = await registry.install(
+        _package(tmp_path, permissions=["knowledge.read", "files.read"]),
+        installed_by="admin-1")
     assert installed.manifest.permissions == ("knowledge.read", "files.read")
-    assert installed.enabled is True
-    assert registry.get(installed.id).manifest_sha256 == installed.manifest_sha256
+
+    fresh = ExtensionRegistry(factory, tenant_id="t1")
+    rows = await fresh.list()
+    assert [r.id for r in rows] == [installed.id]
+    assert rows[0].manifest.permissions == ("knowledge.read", "files.read")
+    assert rows[0].enabled is True
 
 
-def test_declared_entry_must_exist(tmp_path):
-    registry = ExtensionRegistry()
+@pytest.mark.anyio
+async def test_declared_entry_must_exist(registry, tmp_path):
+    registry, _factory = registry
     directory = _package(tmp_path, entry="main.js")
-    (directory / "main.js").unlink()  # declared but missing
+    (directory / "main.js").unlink()
     with pytest.raises(ExtensionError, match="entry"):
-        registry.install(directory, installed_by="admin-1")
+        await registry.install(directory, installed_by="admin-1")
 
 
-def test_enable_disable_and_remove(tmp_path):
-    registry = ExtensionRegistry()
-    installed = registry.install(_package(tmp_path), installed_by="admin-1")
+@pytest.mark.anyio
+async def test_enable_disable_and_remove(registry, tmp_path):
+    registry, _factory = registry
+    installed = await registry.install(_package(tmp_path), installed_by="admin-1")
 
-    disabled = registry.set_enabled(installed.id, enabled=False, by="admin-1")
+    disabled = await registry.set_enabled(installed.id, enabled=False, by="admin-1")
     assert disabled.enabled is False
 
-    registry.remove(installed.id, by="admin-1")
+    await registry.remove(installed.id, by="admin-1")
     with pytest.raises(ExtensionError):
-        registry.get(installed.id)
+        await registry.get(installed.id)
+
+
+@pytest.mark.anyio
+async def test_tenant_isolation(registry, tmp_path):
+    registry, factory = registry
+    installed = await registry.install(_package(tmp_path), installed_by="admin-1")
+
+    other = ExtensionRegistry(factory, tenant_id="t2")
+    assert await other.list() == []
+    with pytest.raises(ExtensionError):
+        await other.get(installed.id)
+    with pytest.raises(ExtensionError):
+        await other.set_enabled(installed.id, enabled=False, by="x")

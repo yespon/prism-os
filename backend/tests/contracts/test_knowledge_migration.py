@@ -13,7 +13,7 @@ def test_knowledge_migration_single_head_and_reversible(tmp_path) -> None:
     db_path = tmp_path / "knowledge-migration.db"
     config = Config(str(Path("alembic.ini").resolve()))
     config.set_main_option("sqlalchemy.url", f"sqlite+aiosqlite:///{db_path}")
-    assert ScriptDirectory.from_config(config).get_heads() == ["t4n5o6p7q8r9"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["u5o6p7q8r9s0"]
 
     command.upgrade(config, "head")
     with sqlite3.connect(db_path) as connection:
@@ -22,7 +22,7 @@ def test_knowledge_migration_single_head_and_reversible(tmp_path) -> None:
             "knowledge_bases", "knowledge_documents", "knowledge_members",
             "connector_catalog", "connector_instances", "platform_run_facts",
         } <= tables
-        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "t4n5o6p7q8r9"
+        assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "u5o6p7q8r9s0"
 
     command.downgrade(config, "o9i0j1k2l3m4")
     with sqlite3.connect(db_path) as connection:
