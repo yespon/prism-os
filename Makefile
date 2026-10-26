@@ -225,6 +225,7 @@ octop-postgres:
 
 # Static item/dependency inventories; no upstream code or plugins are activated.
 octop-inventory: octop-verify
+	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py generate
 	cd backend && $(UV) run --locked python ../scripts/octop_inventory.py verify
 
 # Explicit, empty absolute evidence directories preserve earlier verification runs.
