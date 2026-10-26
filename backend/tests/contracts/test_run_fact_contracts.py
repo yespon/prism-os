@@ -130,3 +130,65 @@ async def test_record_from_envelope_helper(repository):
     assert fact.run_id == "run-9"
     stored = await repository.get("tenant-a", "run-9")
     assert stored.snapshot.agent_name == "default"
+
+
+@pytest.mark.anyio
+async def test_snapshot_carries_deployed_agent_version(tmp_path):
+    """R5 versioning link: the run fact freezes the deployed version id at
+    run start; no deployment yields None; a later deploy never rewrites the
+    recorded fact."""
+    from app.versioning import VersioningService
+
+    engine = create_async_engine(f"sqlite+aiosqlite:///{tmp_path / 'versioned.db'}")
+    async with engine.begin() as connection:
+        await connection.run_sync(SQLModel.metadata.create_all)
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    from app.platform.runs import RunFactRepository
+
+    repo = RunFactRepository(factory)
+
+    class _Agent:
+        tenant_id = "t1"
+        id = "agent-v"
+        name = "assistant"
+        description = ""
+        model = None
+        tool_groups = []
+        system_prompt = "p"
+        skills = []
+        tags = []
+        meta_info = {}
+        created_by = "user-1"
+
+    versioning = VersioningService(factory)
+    v1 = await versioning.publish(_Agent())
+    await versioning.deploy("t1", "agent-v", v1.id, deployed_by="admin-1")
+
+    from unittest.mock import patch as _patch
+
+    from app.alerting.governed_ticket_tool import _current_agent_version
+
+    with _patch("app.versioning.VersioningService", lambda: versioning):
+        linked = await _current_agent_version("t1", "agent-v")
+    assert linked == v1.id
+
+    missing = await _current_agent_version("t1", "agent-none")
+    assert missing is None
+    cross = await _current_agent_version("t2", "agent-v")
+    assert cross is None
+
+    # A later deploy changes the pointer but the recorded fact keeps v1.
+    from app.platform.contracts import ExecutionSnapshot
+
+    await repo.record_from_envelope(
+        _envelope(run_id="run-v", agent="assistant"),
+        ExecutionSnapshot(agent_id="agent-v", agent_version_id=v1.id),
+    )
+    class _AgentV2(_Agent):
+        system_prompt = "p2"
+
+    v2 = await versioning.publish(_AgentV2())
+    await versioning.deploy("t1", "agent-v", v2.id, deployed_by="admin-1")
+    stored = await repo.get("tenant-a", "run-v")
+    assert stored.snapshot.agent_version_id == v1.id
+    await engine.dispose()

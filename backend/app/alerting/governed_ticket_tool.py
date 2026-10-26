@@ -74,6 +74,23 @@ def ticket_execution(scope: dict[str, str]) -> ExecutionEnvelope:
     )
 
 
+async def _current_agent_version(tenant_id: str | None, agent_id: str | None) -> str | None:
+    """Resolve the tenant's current deployment pointer for the agent, if any.
+
+    Purely informational: no deployment or a missing agent yields None and
+    never blocks the governed action.
+    """
+    if not tenant_id or not agent_id:
+        return None
+    try:
+        from app.versioning import VersioningService
+
+        deployment = await VersioningService().get_deployment(tenant_id, agent_id)
+        return deployment.version_id if deployment else None
+    except Exception:  # noqa: BLE001 - the version link is a projection, never a gate
+        return None
+
+
 async def _record_run_fact(execution: ExecutionEnvelope, scope: dict[str, str]) -> None:
     """R1-A: persist the durable run fact before the governed action executes.
 
@@ -85,9 +102,11 @@ async def _record_run_fact(execution: ExecutionEnvelope, scope: dict[str, str]) 
     from app.platform.contracts import ExecutionSnapshot
 
     try:
+        agent_version_id = await _current_agent_version(scope.get("tenant_id"), scope.get("agent_id"))
         snapshot = ExecutionSnapshot(
             agent_name=scope.get("agent_name"),
             agent_id=scope.get("agent_id"),
+            agent_version_id=agent_version_id,
             source="diagnosis",
             attributes={
                 key: scope[key]
