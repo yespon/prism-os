@@ -31,7 +31,7 @@ dependencies = [
     # Security floors for transitive deps (2026-10 CVE batch).
     "pillow>=13.0",
     "urllib3>=2.8",
-    "mcp>=1.30.0,<2",
+    "mcp>=1.30.0,<3",
     "multidict>=6.9.1",
     "oauthlib>=4.0.0",
     "anyio>=4.14.2",
